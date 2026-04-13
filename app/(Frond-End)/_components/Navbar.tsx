@@ -1,28 +1,12 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { HiOutlineMenu, HiX } from "react-icons/hi";
-
-import { cn } from "@/lib/utils";
-
-const menuItems = [
-  { en: "Home", slug: "/" },
-  { en: "Apartment", slug: "#" },
-  { en: "Hotel", slug: "#" },
-  { en: "Tours", slug: "#" },
-  { en: "Contact Us", slug: "#" },
-];
 
 export default function Navbar() {
-  const pathname = usePathname();
-
-  const [menuOpen, setMenuOpen] = useState(false);
-
+  const containerClass = "px-4 py-2 sm:px-8 sm:py-3 md:px-16 md:py-4 lg:px-24 lg:py-4 xl:px-32 xl:py-4 2xl:px-[240px] 2xl:py-4"
   return (
-    <header className="bg-primaryColor py-4 px-4">
-     
+    <header
+      className={`bg-[#043940] ${containerClass}`}
+    >
+      {/* ...content... */}
     </header>
   );
 }
