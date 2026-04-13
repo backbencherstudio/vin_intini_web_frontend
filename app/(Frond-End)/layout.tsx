@@ -1,8 +1,5 @@
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import "react-datepicker/dist/react-datepicker.css";
-import "swiper/css";
-import "swiper/css/navigation";
+import Footer from "@/app/(Frond-End)/_components/Footer";
+import Navbar from "@/app/(Frond-End)/_components/Navbar";
 export default function FrontEndLayout({
   children,
 }: {
