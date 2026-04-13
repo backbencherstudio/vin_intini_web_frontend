@@ -176,3 +176,7 @@ input:checked ~ .checkmark {
 
   border-radius: 50%;
 }
+
+body{
+  font-family: 'Segoe UI', sans-serif;
+}

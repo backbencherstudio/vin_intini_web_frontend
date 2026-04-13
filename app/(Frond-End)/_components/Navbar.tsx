@@ -1,28 +1,27 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { HiOutlineMenu, HiX } from "react-icons/hi";
-
-import { cn } from "@/lib/utils";
-
-const menuItems = [
-  { en: "Home", slug: "/" },
-  { en: "Apartment", slug: "#" },
-  { en: "Hotel", slug: "#" },
-  { en: "Tours", slug: "#" },
-  { en: "Contact Us", slug: "#" },
-];
+import Image from "next/image";
 
 export default function Navbar() {
-  const pathname = usePathname();
-
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <header className="bg-primaryColor py-4 px-4">
-     
+    <header
+      className={`w-full bg-[#043940] text-[#07C3BB] font-normal leading-[150%] tracking-[0.08px]`}
+    >
+      <div className="container py-4! flex items-center justify-between">
+        <Image
+          src="/logo.svg"
+          alt="Logo"
+          width={256}
+          height={50}
+        />
+        <div className="flex items-center gap-4">
+          <Link href="/login" className="px-4 py-2 border border-[#07C3BB] rounded-xl hover:bg-[#07C3BB] hover:text-white transition-colors duration-300">
+            Sign in
+          </Link>
+          <Link href="/register" className="px-4 py-2 border border-[#07C3BB] bg-[#07C3BB] text-white rounded-xl hover:bg-transparent hover:text-[#07C3BB] transition-colors duration-300">
+            Join Now
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
