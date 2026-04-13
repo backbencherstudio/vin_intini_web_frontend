@@ -16,7 +16,9 @@
   --color-ratingColor: var(--ratingColor);
   --color-headerColor: var(--headerColor);
   --color-grayColor1: var(--grayColor1);
-  --color-redColor: #e12626;
+  --color-redColor: #EB3D4D;
+  --color-borderColor: #d2d2d5;
+  --color-lightGreenColor: #d3f4ef;
   --color-greenColor: #83bf6e;
   --color-checkBoxColor: #17c13c;
   --color-orengeColor: #ff6a55;
@@ -63,14 +65,14 @@
 }
 
 :root {
-  --primaryColor: #0b1466;
+  --primaryColor: #04a1b7;
   --secondaryColor: #d6ae29;
-  --blackColor: #0B0B0B;
-  --whiteColor: #FFFFFF;
+  --blackColor: #0b0b0b;
+  --whiteColor: #ffffff;
   --ratingColor: #ffc52e;
-  --headerColor: #040815;
+  --headerColor: #1d1f2c;
   --grayColor1: #777980;
-  --bgColor: rgba(243, 243, 244, 0.5);
+  --bgColor: #e9e9ea;
   --descriptionColor: #4a4c56;
   /* ========== */
   --radius: 0.625rem;
