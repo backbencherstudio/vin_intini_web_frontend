@@ -1,12 +1,27 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
-  const containerClass = "px-4 py-2 sm:px-8 sm:py-3 md:px-16 md:py-4 lg:px-24 lg:py-4 xl:px-32 xl:py-4 2xl:px-[240px] 2xl:py-4"
   return (
     <header
-      className={`bg-[#043940] ${containerClass}`}
+      className={`w-full bg-[#043940] text-[#07C3BB] font-normal leading-[150%] tracking-[0.08px]`}
     >
-      {/* ...content... */}
+      <div className="container py-4! flex items-center justify-between">
+        <Image
+          src="/logo.svg"
+          alt="Logo"
+          width={256}
+          height={50}
+        />
+        <div className="flex items-center gap-4">
+          <Link href="/login" className="px-4 py-2 border border-[#07C3BB] rounded-xl hover:bg-[#07C3BB] hover:text-white transition-colors duration-300">
+            Sign in
+          </Link>
+          <Link href="/register" className="px-4 py-2 border border-[#07C3BB] bg-[#07C3BB] text-white rounded-xl hover:bg-transparent hover:text-[#07C3BB] transition-colors duration-300">
+            Join Now
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }
