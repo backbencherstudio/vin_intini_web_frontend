@@ -4,10 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 .container {
-  max-width: 1342px;
+  max-width: 1440px;
   padding: 0 16px;
   margin: 0 auto;
 }
+
 @theme inline {
   --color-primaryColor: var(--primaryColor);
   --color-secondaryColor: var(--secondaryColor);
@@ -147,17 +148,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
+
 .pointer-events-none {
   pointer-events: none;
   display: block !important;
   opacity: 1 !important;
 }
 
-input:checked ~ .checkmark {
+input:checked~.checkmark {
   background-color: var(--color-green-600);
 }
 
@@ -165,6 +168,7 @@ input:checked ~ .checkmark {
   opacity: 1;
   cursor: pointer;
 }
+
 .close .\[\&_svg\]\:pointer-events-none svg {
   pointer-events: none;
   background-color: var(--secondaryColor);
@@ -177,6 +181,29 @@ input:checked ~ .checkmark {
   border-radius: 50%;
 }
 
-body{
+body {
   font-family: 'Segoe UI', sans-serif;
+}
+
+.thrive {
+  background: linear-gradient(179deg, #FDFDFD -16.52%, #04A1B7 72.34%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes bounce-x {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-bounce-x {
+  animation: bounce-x 2s infinite linear;
 }

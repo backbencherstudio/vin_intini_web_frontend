@@ -5,7 +5,7 @@ export default function FrontEndLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="w-screen h-screen overflow-hidden">
       {children}
     </div>
   );

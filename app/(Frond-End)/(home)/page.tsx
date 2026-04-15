@@ -1,9 +1,12 @@
+import Hero from "./_components/Hero";
+import Features from "./_components/Features";
 
 
 export default function Home() {
   return (
-    <div className=" flex justify-center items-center h-screen ">
-      home page
+    <div className="w-full h-full">
+      <Hero />
+      <Features />
     </div>
   );
 }
