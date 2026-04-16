@@ -1,10 +1,11 @@
 "use client";
 
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import {
   useForgotPasswordMutation,
   useVerifyOtpMutation,
 } from "@/feature/slice/auth/authSlice";
-import { FileIcon, LeftAngleBracketIcon } from "@/public/svgIcons";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +22,7 @@ export default function page() {
     forgotPassword,
     { isLoading: isForgotPasswordLoading, isError: isForgotPasswordError },
   ] = useForgotPasswordMutation();
+
   useEffect(() => {
     const email = localStorage.getItem("resetEmail");
     if (email) {
@@ -112,7 +114,7 @@ export default function page() {
 
       toast.success(response?.message || "OTP verified successfully.");
 
-      router.push("/forgot-password/reset-password");
+      router.push("/forgot-password/verify-email");
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");
     }
@@ -120,26 +122,24 @@ export default function page() {
   };
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-10 md:py-14 min-h-full bg-muted/40 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-xl border border-[#DFE1E7] bg-white p-5 sm:p-6 md:p-7">
+    <div className="">
+      <div className="">
         <div className="flex flex-col items-center text-center">
-          <div className="w-18 h-18 rounded-full bg-linear-to-t to-primaryColor/48 text-primaryColor flex items-center justify-center">
-            <div className="w-13 h-13 border border-[#B6CFC0] rounded-full bg-white text-primaryColor flex items-center justify-center ">
-              <FileIcon />
-            </div>
-          </div>
-          <h1 className="mt-4 text-3xl font-semibold text-[#1D1F2C]">
+          <h1 className="mt-4 md:text-xl text-lg lg:text-2xl font-semibold text-headerColor">
             OTP Verification
           </h1>
-          <p className="mt-2 text-sm text-[#4A4C56] max-w-72.5">
-            We have sent a verification code to email address
-            <span className="block font-semibold text-[#1D1F2C]">
-              {verifyMail}
-            </span>
+          <p className="mt-2 text-sm text-descriptionColor ">
+            We’ve sent a OTP to you{" "}
+            <span className=" font-semibold text-descriptionColor">
+              ‘{verifyMail}’
+            </span>{" "}
+            email. Please check out and input the correct code
           </p>
         </div>
 
-        <div className="mt-6 flex gap-2">
+        <div
+          className={`mt-10 flex  ${isError ? "border-redColor " : ""} rounded-md border max-w-[193px] mx-auto border-grayColor1 `}
+        >
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -152,40 +152,44 @@ export default function page() {
               ref={(element) => {
                 inputRefs.current[index] = element;
               }}
-              className="h-12 w-full rounded-lg border border-[#DFE1E7] bg-[#F5F6FA] text-center text-[#1D1F2C] focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+              className={`h-13 ${isError ? "border-redColor text-redColor " : ""} ${index === 0 ? "border-none rounded-l-md" : index === otpLength - 1 ? "rounded-r-md" : "border-l"} w-full  border-l border-grayColor1 text-center text-headerColor text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primaryColor/60 `}
             />
           ))}
         </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-[#4A4C56]">
-            Haven&apos;t you got the OTP yet?
-          </p>
+        <div className="text-center mt-2">
+          {isError && (
+            <span className="text-sm  text-redColor">
+              OTP didn’t matched! Try again
+            </span>
+          )}
+        </div>
+        <div className="mt-4 flex justify-center items-center gap-1 text-center">
+          <p className="text-sm text-descriptionColor">Didn’t received code?</p>
           <button
             type="button"
             onClick={handleResendClick}
             disabled={isForgotPasswordLoading}
-            className="mt-2 text-sm font-medium  text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
+            className=" text-sm font-medium   text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
-            {isForgotPasswordLoading ? "Sending..." : "Resend Code"}
+            {isForgotPasswordLoading ? "Sending..." : "Resend"}
           </button>
         </div>
 
-        <button
+        <ButtonReuseable
           type="button"
           onClick={handleClick}
+          sendingMsg="Verifying..."
+          title="Verify"
           disabled={isLoading || otp.some((digit) => digit === "")}
-          className="mt-6 w-full cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed h-11 rounded-lg bg-primaryColor text-white font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
-        >
-          {isLoading ? "Verifying..." : "Verify OTP"}
-        </button>
+          loading={isLoading}
+          className="mt-6 w-full "
+        />
 
         <div className="mt-4 flex items-center justify-center">
           <Link
-            href="/login"
-            className="inline-flex items-center gap-1 text-sm text-[#808191] hover:text-[#4A4C56] transition-colors"
+            href="/forgot-password"
+            className="inline-flex items-center gap-1 text-sm text-primaryColor hover:opacity-80 transition-opacity font-medium"
           >
-            <LeftAngleBracketIcon />
             Back to Login
           </Link>
         </div>

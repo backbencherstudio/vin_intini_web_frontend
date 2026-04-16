@@ -24,10 +24,12 @@ function layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <div className="max-w-lg bg-whiteColor rounded-lg p-4 md:p-6  mx-auto">
+        <div className="max-w-lg bg-whiteColor rounded-lg p-4 md:p-6   mx-auto">
           {children}
         </div>
-        <MainFooter />
+        <div className="mt-40">
+          <MainFooter />
+        </div>
       </div>
     </div>
   );
