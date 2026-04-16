@@ -117,7 +117,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full h-12 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-primaryColor text-white font-medium hover:opacity-90 transition-opacity"
+          className="w-full h-12 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white font-medium hover:opacity-90 transition-opacity"
         >
           {isLoading ? "Connecting..." : "Sign in"}
         </button>
