@@ -1,6 +1,6 @@
 "use client";
 import { useResetPasswordMutation } from "@/feature/slice/auth/authSlice";
-import { FileIcon, OpenEyeIcon } from "@/public/svgIcons";
+import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -52,9 +52,7 @@ export default function page() {
     <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-10 md:py-14 min-h-full bg-muted/40 flex items-center justify-center">
       <div className="w-full max-w-md rounded-xl border border-[#DFE1E7] bg-white p-5 sm:p-6 md:p-7">
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-primaryColor/10 text-primaryColor flex items-center justify-center border border-primaryColor/20">
-            <FileIcon />
-          </div>
+         
           <h1 className="mt-4 text-3xl font-semibold text-[#1D1F2C]">
             Create New Password
           </h1>

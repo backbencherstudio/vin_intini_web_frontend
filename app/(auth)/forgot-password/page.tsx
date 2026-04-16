@@ -1,15 +1,17 @@
 "use client";
+import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import { useForgotPasswordMutation } from "@/feature/slice/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export default function page() {
-  const { handleSubmit, register } = useForm();
-  const [forgotPassword, { isLoading, isError, isSuccess }] =
-    useForgotPasswordMutation();
-
-  console.log(isSuccess, "success");
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm();
+  const [forgotPassword, { isLoading, isError }] = useForgotPasswordMutation();
 
   const router = useRouter();
   const onSubmit = async (data: any) => {
@@ -25,27 +27,23 @@ export default function page() {
     }
   };
   return (
-    <div className="">
+    <div className=" ">
       <div className="w-full  ">
         <div className=" items-center text-center">
-          <h3 className="mt-4 text-lg md:text-xl lg:text-2xl font-semibold text-headerColor">
+          <h3 className=" text-lg md:text-xl lg:text-2xl font-semibold text-headerColor">
             Reset your password
           </h3>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-descriptionColor mb-2"
-            >
-              Email
-            </label>
-            <input
+            <ReusableInput
+              label="Email"
               id="email"
               type="email"
               placeholder="johndoe@example.com"
-              className="w-full h-11 rounded-lg border border-borderColor bg-inputBg px-3 text-sm text-descriptionColor placeholder:text-placeholderColor focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+              error={errors.email ? "Please enter a valid email address." : ""}
+              className=" rounded-lg "
               {...register("email", { required: true })}
             />
           </div>

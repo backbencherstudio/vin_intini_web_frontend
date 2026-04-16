@@ -149,12 +149,12 @@ export const FaceBookIcon = ({ className }: { className?: string }) => (
     className={className}
   >
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M2.18182 9.3333C1.20406 9.3333 1 9.5252 1 10.4444V12.1111C1 13.0304 1.20406 13.2222 2.18182 13.2222H4.54545V19.8889C4.54545 20.8081 4.74951 21 5.72727 21H8.0909C9.0687 21 9.2727 20.8081 9.2727 19.8889V13.2222H11.9267C12.6683 13.2222 12.8594 13.0867 13.0631 12.4164L13.5696 10.7497C13.9185 9.6014 13.7035 9.3333 12.4332 9.3333H9.2727V6.55556C9.2727 5.94191 9.8018 5.44444 10.4545 5.44444H13.8182C14.7959 5.44444 15 5.25259 15 4.33333V2.11111C15 1.19185 14.7959 1 13.8182 1H10.4545C7.191 1 4.54545 3.48731 4.54545 6.55556V9.3333H2.18182Z"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -170,9 +170,9 @@ export const InstagramIcon = ({ className }: { className?: string }) => (
     <path
       d="M15.3748 4.75024H15.2498M1 10C1 5.75736 1 3.63604 2.31802 2.31802C3.63604 1 5.75736 1 10 1C14.2426 1 16.364 1 17.682 2.31802C19 3.63604 19 5.75736 19 10C19 14.2426 19 16.364 17.682 17.682C16.364 19 14.2426 19 10 19C5.75736 19 3.63604 19 2.31802 17.682C1 16.364 1 14.2426 1 10ZM14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6C12.2091 6 14 7.79086 14 10ZM15.4998 4.75024C15.4998 4.88832 15.3878 5.00024 15.2498 5.00024C15.1117 5.00024 14.9998 4.88832 14.9998 4.75024C14.9998 4.61217 15.1117 4.50024 15.2498 4.50024C15.3878 4.50024 15.4998 4.61217 15.4998 4.75024Z"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -188,9 +188,9 @@ export const LinkedInIcon = ({ className }: { className?: string }) => (
     <path
       d="M5 8V15M9 11V15M9 11C9 9.3431 10.3431 8 12 8C13.6569 8 15 9.3431 15 11V15M9 11V8M5.125 4.75H5M5.25 4.75C5.25 4.88807 5.13807 5 5 5C4.86193 5 4.75 4.88807 4.75 4.75C4.75 4.61193 4.86193 4.5 5 4.5C5.13807 4.5 5.25 4.61193 5.25 4.75ZM1 10C1 5.75736 1 3.63604 2.31802 2.31802C3.63604 1 5.75736 1 10 1C14.2426 1 16.364 1 17.682 2.31802C19 3.63604 19 5.75736 19 10C19 14.2426 19 16.364 17.682 17.682C16.364 19 14.2426 19 10 19C5.75736 19 3.63604 19 2.31802 17.682C1 16.364 1 14.2426 1 10Z"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -206,9 +206,9 @@ export const TwitterIcon = ({ className }: { className?: string }) => (
     <path
       d="M1 19L8.5484 11.4516M8.5484 11.4516L1 1H6L11.4516 8.5484M8.5484 11.4516L14 19H19L11.4516 8.5484M19 1L11.4516 8.5484"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -268,7 +268,7 @@ export const FacebookIcon = ({ className }: { className?: string }) => (
     viewBox="0 0 24 24"
     fill="none"
   >
-    <g clip-path="url(#clip0_5305_116107)">
+    <g clipPath="url(#clip0_5305_116107)">
       <path
         d="M24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 17.9895 4.3882 22.954 10.125 23.8542V15.4688H7.07812V12H10.125V9.35625C10.125 6.34875 11.9166 4.6875 14.6576 4.6875C15.9701 4.6875 17.3438 4.92188 17.3438 4.92188V7.875H15.8306C14.34 7.875 13.875 8.80008 13.875 9.75V12H17.2031L16.6711 15.4688H13.875V23.8542C19.6118 22.954 24 17.9895 24 12Z"
         fill="#1877F2"

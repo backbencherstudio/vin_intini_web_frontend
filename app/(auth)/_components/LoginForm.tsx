@@ -4,6 +4,7 @@ import { useLoginMutation } from "@/feature/slice/auth/authSlice";
 import { setToken } from "@/lib/token";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 
+import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import SocialShare from "./SociaShare";
 interface LoginFormData {
   email: string;
   password: string;
-  remember: boolean;
 }
 
 function LoginForm() {
@@ -23,7 +23,6 @@ function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
-      remember: false,
     },
   });
   const [login, { isLoading }] = useLoginMutation();
@@ -58,14 +57,9 @@ function LoginForm() {
     <div className=" space-y-4 md:space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-4">
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-[#1D1F2C] mb-2"
-          >
-            Email
-          </label>
-          <input
+          <ReusableInput
             id="email"
+            label="Email"
             type="email"
             placeholder="Enter your Email"
             {...register("email", {
@@ -75,7 +69,7 @@ function LoginForm() {
                 message: "Invalid email address",
               },
             })}
-            className="w-full h-11 rounded-lg border border-[#DFE1E7] bg-[#F5F6FA] px-3 text-sm text-[#1D1F2C] placeholder:text-[#808191] focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+            className=" rounded-lg "
           />
         </div>
 
@@ -87,7 +81,7 @@ function LoginForm() {
             Password
           </label>
           <div className="relative">
-            <input
+            <ReusableInput
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
@@ -98,7 +92,7 @@ function LoginForm() {
                   message: "Password must be at least 6 characters",
                 },
               })}
-              className="w-full h-11 rounded-lg border border-[#DFE1E7] bg-[#F5F6FA] px-3 pr-10 text-sm text-[#1D1F2C] placeholder:text-[#808191] focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+              className=" rounded-lg "
             />
             <button
               type="button"
