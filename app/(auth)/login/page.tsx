@@ -1,10 +1,12 @@
+import LoginForm from "../_components/LoginForm";
+
 function page() {
   return (
     <div>
-      login page
-      <div>
-        <input type="text" placeholder="email" />
-      </div>
+      <h4 className="text-lg md:text-xl lg:text-2xl font-semibold text-headerColor text-center max-w-[375px] mx-auto">
+        Connecting the minds shaping Psychology and Neuroscience.
+      </h4>
+      <LoginForm />
     </div>
   );
 }
