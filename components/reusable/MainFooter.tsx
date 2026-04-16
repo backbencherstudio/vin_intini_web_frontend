@@ -13,22 +13,22 @@ function MainFooter() {
     {
       href: "#",
       label: "Facebook",
-      icon: <FaceBookIcon className="h-[16px] w-[16px]" />,
+      icon: <FaceBookIcon className="h-4 w-4" />,
     },
     {
       href: "#",
       label: "Instagram",
-      icon: <InstagramIcon className="h-[16px] w-[16px]" />,
+      icon: <InstagramIcon className="h-4 w-4" />,
     },
     {
       href: "#",
       label: "LinkedIn",
-      icon: <LinkedInIcon className="h-[16px] w-[16px]" />,
+      icon: <LinkedInIcon className="h-4 w-4" />,
     },
     {
       href: "#",
       label: "X",
-      icon: <TwitterIcon className="h-[16px] w-[16px]" />,
+      icon: <TwitterIcon className="h-4 w-4" />,
     },
   ];
   return (
@@ -47,7 +47,7 @@ function MainFooter() {
               </Link>
             </div>
 
-            <p className="max-w-[325px] text-left text-base md:text-xl lg:text-2xl leading-[1.25] text-[#54565a]">
+            <p className="max-w-[325px] text-left text-base md:text-xl lg:text-2xl leading-tight text-[#54565a]">
               The networking platform for brain health professionals and
               students.
             </p>
