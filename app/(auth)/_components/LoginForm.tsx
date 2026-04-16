@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FiEyeOff } from "react-icons/fi";
+import SocialShare from "./SociaShare";
 
 interface LoginFormData {
   email: string;
@@ -54,7 +55,7 @@ function LoginForm() {
   };
 
   return (
-    <div>
+    <div className=" space-y-4 md:space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-4">
         <div>
           <label
@@ -127,6 +128,25 @@ function LoginForm() {
           {isLoading ? "Connecting..." : "Sign in"}
         </button>
       </form>
+      <div className=" relative h-px w-full bg-borderColor">
+        <p className="text-center absolute left-1/2 top-1/2 text-base text-descriptionColor -translate-x-1/2 -translate-y-1/2 bg-white px-4">
+          or
+        </p>
+      </div>
+      <div className="">
+        <SocialShare />
+      </div>
+      <div>
+        <p className="text-center text-sm md:text-base text-grayColor1">
+          Don’t have an account?{" "}
+          <Link
+            href="/registration"
+            className="text-primaryColor hover:underline"
+          >
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
