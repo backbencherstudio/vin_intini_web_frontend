@@ -3,6 +3,7 @@ import Image from "next/image";
 import FeatureCard from "./FeatureCard";
 import { landingPageFeatures } from "@/public/staticData";
 import WrapperContainer from "../../_components/WrapperContainer";
+import JoinButton from "@/components/reusable/JoinButton";
 
 export default function Features() {
     return (
@@ -16,10 +17,7 @@ export default function Features() {
                                 <h1 className="text-blackColor text-lg sm:text-3xl md:text-lg lg:text-3xl xl:text-5xl font-semibold leading-[130%] -tracking-[0.96px] max-w-[290px]">Why Choose Mind Unite?</h1>
                                 <p className="text-[#404040] text-xs sm:text-base md:text-xs xl:text-sm font-normal leading-[160%] -tracking-[0.5px] max-w-[290px]">Everything you need to build your career in the mind sciences, all in one platform.</p>
                             </div>
-                            <button type="button" className="w-fit flex items-center px-3 sm:px-6 md:px-3 lg:px-6 py-1.5 sm:py-3 md:py-1.5 lg:py-3 gap-1.5 sm:gap-3 rounded-lg sm:rounded-xl md:rounded-lg lg:rounded-xl bg-primaryColor border border-primaryColor hover:bg-primaryColor/90 hover:rounded transition-all duration-300 cursor-pointer">
-                                <span className="text-xs sm:text-base md:text-sm lg:text-lg font-semibold leading-[160%] text-white">Join Now</span>
-                                <RightArrowIcon className="w-4 sm:w-6 md:w-5 lg:w-6 h-4 sm:h-6 md:h-5 lg:h-6 text-white animate-bounce-x" />
-                            </button>
+                            <JoinButton title="Join Now"/>
                         </div>
                         <div className="">
                             <Image
