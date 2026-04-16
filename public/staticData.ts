@@ -58,3 +58,56 @@ export const howWeWorkSteps = [
         description: "Turn connections and discovery into real opportunities. Apply for relevant jobs, track applications, boost profile visibility, and access premium tools designed to accelerate your career growth.",
     }
 ]
+
+
+
+export const opportunities = [
+    {
+        id: "1",
+        job_title: "Neuroscience Research Lead",
+        company_name: "Johns Hopkins University",
+        company_logo: "/images/company-logo-1.png",
+        location: "Baltimore, MD 21218, United States",
+        created_at: "2024-04-25T10:00:00Z",
+        job_field: "neuroscience",
+        job_type: "full-time",
+        job_position: "leadership",
+        isSaved: false
+    },
+    {
+        id: "2",
+        job_title: "Clinical Psychologist",
+        company_name: "Stanford University",
+        company_logo: "/images/company-logo-2.png",
+        location: "Stanford, CA 94305, United States",
+        created_at: "2024-03-25T10:00:00Z",
+        job_field: "clinical",
+        job_type: "full-time",
+        job_position: "research",
+        isSaved: false
+    },
+    {
+        id: "3",
+        job_title: "Licensed Counselor",
+        company_name: "Penn State University",
+        company_logo: "/images/company-logo-3.png",
+        location: "Cambridge, MA 02139, United States",
+        created_at: "2024-04-25T10:00:00Z",
+        job_field: "counselling",
+        job_type: "part-time",
+        job_position: "remote",
+        isSaved: false
+    },
+    {
+        id: "4",
+        job_title: "Behavioral Analyst",
+        company_name: "University of Washington",
+        company_logo: "/images/company-logo-4.png",
+        location: "Seattle, WA 98195, United States",
+        created_at: "2024-04-25T10:00:00Z",
+        job_field: "behavioral",
+        job_type: "full-time",
+        job_position: "analysis",
+        isSaved: false
+    },
+]
