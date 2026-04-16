@@ -36,6 +36,13 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: { email, otp },
       }),
     }),
+    regVerifyOtp: builder.mutation({
+      query: ({ email, otp }) => ({
+        url: "/register/verify-otp",
+        method: "POST",
+        body: { email, otp },
+      }),
+    }),
     resetPassword: builder.mutation({
       query: ({ email, new_password, new_password_confirmation }) => ({
         url: "/password-reset",
@@ -51,6 +58,7 @@ export const {
   useRefreshTokenMutation,
   useForgotPasswordMutation,
   useVerifyOtpMutation,
+  useRegVerifyOtpMutation,
   useRegistrationMutation,
   useResetPasswordMutation,
 } = authSlice;
