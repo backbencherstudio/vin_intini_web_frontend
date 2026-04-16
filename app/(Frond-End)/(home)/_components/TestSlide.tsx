@@ -26,7 +26,7 @@ export default function TestSlide({ data }: PropType) {
   const goPrev = () => swiperRef.current?.slidePrev();
 
   return (
-    <section className="container">
+    <section className="">
       <div className=" mb-20">
 
         <div className="relative grid grid-cols-12">
