@@ -1,7 +1,7 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type ReusableInputProps = {
+  id: string;
   label?: string;
   error?: string;
   containerClassName?: string;
@@ -10,6 +10,7 @@ type ReusableInputProps = {
 
 const ReusableInput = ({
   label,
+  id,
   error,
   containerClassName,
   required,
@@ -20,14 +21,14 @@ const ReusableInput = ({
   return (
     <div className={`space-y-1.5 ${containerClassName || ""}`}>
       {label && (
-        <Label className="text-sm text-headerColor font-medium">
+        <Label htmlFor={id} className="text-sm text-headerColor font-medium">
           {label} {required && <span className="text-redColor">*</span>}
         </Label>
       )}
 
-      <Input
+      <input
         type={type}
-        className={`h-12! md:h-13! bg-bgColor ${className || ""}`}
+        className={`h-12! md:h-13! w-full px-3 border border-borderColor  placeholder:text-placeholderColor focus:outline-none focus:ring-2 focus:ring-primaryColor/20! ${className || ""}`}
         {...props}
       />
 
