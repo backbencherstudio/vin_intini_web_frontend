@@ -1,6 +1,7 @@
 import { DiamondIcon, RightArrowIcon } from "@/public/svgIcons/Icons"
 import Image from "next/image";
 import WrapperContainer from "../../_components/WrapperContainer";
+import JoinButton from "@/components/reusable/JoinButton";
 
 export default function Hero() {
     return (
@@ -28,10 +29,7 @@ export default function Hero() {
                             <p className="text-sm sm:text-lg text-[#404040] font-normal leading-[160%]">A professional networking platform built exclusively for psychologists, counselors, neuroscientists, and related organizations.</p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <button type="button" className="flex items-center px-3 sm:px-6 py-1.5 sm:py-3 gap-1.5 sm:gap-3 rounded-lg sm:rounded-xl bg-primaryColor border border-primaryColor hover:bg-primaryColor/90 hover:rounded transition-all duration-300 cursor-pointer">
-                                <span className="text-sm sm:text-base md:text-lg font-semibold leading-[160%] text-white">Join Now</span>
-                                <RightArrowIcon className="w-5 sm:w-6 h-5 sm:h-6 text-white animate-bounce-x" />
-                            </button>
+                            <JoinButton title="Join Now" />
                             <button type="button" className="flex items-center px-3 sm:px-6 py-1.5 sm:py-3 gap-1.5 sm:gap-3 rounded-lg sm:rounded-xl bg-transparent text-primaryColor border border-primaryColor hover:bg-primaryColor/10 hover:rounded transition-all duration-300 cursor-pointer">
                                 <span className="text-sm sm:text-base md:text-lg font-semibold leading-[160%]">Explore Features</span>
                             </button>
