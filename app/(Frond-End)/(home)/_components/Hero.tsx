@@ -30,8 +30,8 @@ export default function Hero() {
                         </div>
                         <div className="flex items-center gap-4">
                             <JoinButton title="Join Now" />
-                            <button type="button" className="flex items-center px-3 sm:px-6 py-1.5 sm:py-3 gap-1.5 sm:gap-3 rounded-lg sm:rounded-xl bg-transparent text-primaryColor border border-primaryColor hover:bg-primaryColor/10 hover:rounded transition-all duration-300 cursor-pointer">
-                                <span className="text-sm sm:text-base md:text-lg font-semibold leading-[160%]">Explore Features</span>
+                            <button type="button" className="flex items-center px-3 sm:px-6 md:px-3 lg:px-6 py-1.5 sm:py-3 md:py-1.5 lg:py-3 gap-1.5 sm:gap-3 rounded-lg sm:rounded-xl md:rounded-lg lg:rounded-xl bg-transparent text-primaryColor border border-primaryColor hover:bg-primaryColor/10 hover:rounded transition-all duration-300 cursor-pointer">
+                                <span className="text-xs sm:text-base md:text-sm lg:text-lg font-semibold leading-[160%]">Explore Features</span>
                             </button>
                         </div>
                     </div>
