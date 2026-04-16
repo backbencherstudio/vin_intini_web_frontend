@@ -1,3 +1,5 @@
+import { Testimonial } from "@/app/type";
+
 export const demoData = [
   {
     id: "1",
@@ -210,3 +212,43 @@ export const demoData = [
   
   },
 ];
+
+
+export const testimonials: Testimonial[] = [
+  {
+    id: "1",
+    review: "This platform made my job search so much easier. The interface is user-friendly and the support team is fantastic!",
+    rating: 5,
+    imgUrl: "/images/testimonial/banner1.png",
+    reviewer: {
+      name: "Alice Johnson",
+      occupation: "Software Engineer",
+      location: "New York, USA",
+      avatarUrl: "/images/testimonial/user1.png",
+    },
+  },
+  {
+    id: "2",
+    review: "I found my dream job within a week of signing up. Highly recommended for anyone looking for new opportunities!",
+    rating: 4,
+    imgUrl: "/images/testimonial/banner2.png",
+    reviewer: {
+      name: "Brian Lee",
+      occupation: "Marketing Specialist",
+      location: "London, UK",
+      avatarUrl: "/images/testimonial/user2.png",
+    },
+  },
+  {
+    id: "3",
+    review: "The neuroscience network helped me connect with professionals in my field. Great resource for networking!",
+    rating: 5,
+    imgUrl: "/images/testimonial/banner3.png",
+    reviewer: {
+      name: "Carla Mendes",
+      occupation: "Neuroscientist",
+      location: "Lisbon, Portugal",
+      avatarUrl: "/images/testimonial/user3.jpg",
+    },
+  },
+]

@@ -1,5 +1,6 @@
 import WrapperContainer from "../../_components/WrapperContainer";
 import TestSlide from "./TestSlide";
+import { testimonials } from "@/public/demoData/DemoData";
 
 export default function Testimonials() {
   return (
@@ -15,7 +16,7 @@ export default function Testimonials() {
             </h2>
           </div>
           <div className="w-full grid grid-cols-1">
-            <TestSlide />
+            <TestSlide data={testimonials} />
           </div>
         </div>
       </WrapperContainer>

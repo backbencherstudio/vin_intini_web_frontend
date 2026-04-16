@@ -20,17 +20,9 @@ export const DiamondIcon = ({ className }: { className?: string }) => (
 );
 
 export const RightArrowIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M2.9992 14.0003C2.9992 14.5523 3.4462 15.0003 3.9992 15.0003H17.5851L15.2922 17.2933C14.9012 17.6842 14.9012 18.3163 15.2922 18.7073C15.4872 18.9023 15.7432 19.0003 15.9992 19.0003C16.2552 19.0003 16.5112 18.9023 16.7062 18.7073L20.7053 14.7083C20.7983 14.6153 20.8713 14.5054 20.9223 14.3824C21.0233 14.1384 21.0233 13.8622 20.9223 13.6182C20.8713 13.4952 20.7983 13.3853 20.7053 13.2923L16.7062 9.29325C16.3152 8.90225 15.6832 8.90225 15.2922 9.29325C14.9012 9.68425 14.9012 10.3163 15.2922 10.7073L17.5851 13.0003H3.9992C3.4462 13.0003 2.9992 13.4483 2.9992 14.0003Z"
-      fill="currentColor"
-    />
-  </svg>
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <path d="M19 12L5 12M19 12L15 8M19 12L15 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 );
 
 export const UsersIcon = ({ className }: { className?: string }) => (
@@ -136,6 +128,13 @@ export const OpenBookIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+
+
+export const FullStarIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+    <path d="M12.9621 4.59625L14.9041 8.51324C15.0501 8.80824 15.3321 9.01226 15.6591 9.05926L20.142 9.70721C20.964 9.82621 21.2921 10.8342 20.6971 11.4122L17.4561 14.5572C17.2191 14.7872 17.1111 15.1182 17.1671 15.4432L17.908 19.7473C18.058 20.6203 17.1411 21.2862 16.3551 20.8752L12.4671 18.8403C12.1751 18.6873 11.8271 18.6873 11.5361 18.8403L7.65108 20.8732C6.86408 21.2852 5.94405 20.6182 6.09505 19.7432L6.83614 15.4432C6.89214 15.1182 6.78408 14.7872 6.54708 14.5572L3.30611 11.4122C2.71011 10.8342 3.03804 9.82621 3.86104 9.70721L8.34407 9.05926C8.67007 9.01226 8.95208 8.80824 9.09908 8.51324L11.0411 4.59625C11.4321 3.80125 12.5681 3.80125 12.9621 4.59625Z" fill="currentColor" />
+  </svg>
+)
 
 // utso code for icons, you can add more icons here and export them to use in your components.
 
