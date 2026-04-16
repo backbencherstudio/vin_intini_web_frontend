@@ -133,10 +133,7 @@ function LoginForm() {
       <div>
         <p className="text-center text-sm md:text-base text-grayColor1">
           Don’t have an account?{" "}
-          <Link
-            href="/registration"
-            className="text-primaryColor hover:underline"
-          >
+          <Link href="/sign-up" className="text-primaryColor hover:underline">
             Sign up
           </Link>
         </p>
