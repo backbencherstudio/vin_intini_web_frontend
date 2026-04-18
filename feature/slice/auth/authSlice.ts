@@ -9,6 +9,13 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    registration: builder.mutation({
+      query: (credentials) => ({
+        url: "/register",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     refreshToken: builder.mutation({
       query: () => ({
         url: "/refresh",
@@ -22,9 +29,23 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: { email },
       }),
     }),
+    regSendOTP: builder.mutation({
+      query: (email) => ({
+        url: "/register/resend-otp",
+        method: "POST",
+        body: { email },
+      }),
+    }),
     verifyOtp: builder.mutation({
       query: ({ email, otp }) => ({
         url: "/verify-otp",
+        method: "POST",
+        body: { email, otp },
+      }),
+    }),
+    regVerifyOtp: builder.mutation({
+      query: ({ email, otp }) => ({
+        url: "/register/verify-otp",
         method: "POST",
         body: { email, otp },
       }),
@@ -44,5 +65,8 @@ export const {
   useRefreshTokenMutation,
   useForgotPasswordMutation,
   useVerifyOtpMutation,
+  useRegVerifyOtpMutation,
+  useRegistrationMutation,
+  useRegSendOTPMutation,
   useResetPasswordMutation,
 } = authSlice;
