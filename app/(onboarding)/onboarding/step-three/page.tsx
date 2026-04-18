@@ -157,7 +157,7 @@ function page() {
             type="button"
             onClick={handleContinue}
             loading={isLoading}
-            sendingMsg="Connecting..."
+            sendingMsg="Saving..."
             title="Continue"
             disabled={selectedOptions.length === 0}
             className="w-full lg:py-4!"

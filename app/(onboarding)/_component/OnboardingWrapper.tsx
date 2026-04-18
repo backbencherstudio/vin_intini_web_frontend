@@ -12,8 +12,8 @@ function OnboardingWrapper({
   return (
     <div>
       <div className=" bg-whiteColor rounded-lg p-4 md:p-6 ">
-        <div className="max-w-[345px]  mx-auto text-center">
-          <h4 className="text-lg  md:text-xl lg:text-2xl font-medium text-headerColor">
+        <div className=" mx-auto text-center">
+          <h4 className="text-lg  md:text-xl lg:text-2xl font-semibold text-headerColor">
             {title}
           </h4>
           {description && (

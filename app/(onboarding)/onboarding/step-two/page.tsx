@@ -103,7 +103,7 @@ function page() {
           <ButtonReuseable
             type="submit"
             loading={isLoading}
-            sendingMsg="Connecting..."
+            sendingMsg="Saving..."
             title="Continue"
             className="w-full lg:py-4!"
           />

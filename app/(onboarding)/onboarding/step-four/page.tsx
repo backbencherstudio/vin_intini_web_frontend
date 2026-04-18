@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
+import { useRouter } from "next/navigation";
 
 interface StepFourData {
   highest_degree: string;
@@ -139,7 +140,7 @@ function page() {
   const stepFourData = useSelector((state: any) => state.onboarding.stepFour);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const {
     control,
     register,
@@ -163,6 +164,7 @@ function page() {
           data,
         }),
       );
+      router.push("/onboarding/step-five");
       setIsLoading(false);
     }, 1200);
   };
