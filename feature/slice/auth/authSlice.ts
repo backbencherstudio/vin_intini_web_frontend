@@ -29,6 +29,13 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: { email },
       }),
     }),
+    regSendOTP: builder.mutation({
+      query: (email) => ({
+        url: "/register/resend-otp",
+        method: "POST",
+        body: { email },
+      }),
+    }),
     verifyOtp: builder.mutation({
       query: ({ email, otp }) => ({
         url: "/verify-otp",
@@ -60,5 +67,6 @@ export const {
   useVerifyOtpMutation,
   useRegVerifyOtpMutation,
   useRegistrationMutation,
+  useRegSendOTPMutation,
   useResetPasswordMutation,
 } = authSlice;

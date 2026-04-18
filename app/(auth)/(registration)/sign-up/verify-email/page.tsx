@@ -2,12 +2,10 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import {
-  useForgotPasswordMutation,
+  useRegSendOTPMutation,
   useRegVerifyOtpMutation,
-  useVerifyOtpMutation,
 } from "@/feature/slice/auth/authSlice";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -17,15 +15,16 @@ export default function page() {
   const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [verifyMail, setVerifyMail] = useState<string>("");
-  const [verifyOtp, { isLoading, isError, isSuccess }] = useRegVerifyOtpMutation();
+  const [regVerifyOtp, { isLoading, isError, isSuccess }] =
+    useRegVerifyOtpMutation();
   const router = useRouter();
   const [
-    forgotPassword,
-    { isLoading: isForgotPasswordLoading, isError: isForgotPasswordError },
-  ] = useForgotPasswordMutation();
+    regSendOTP,
+    { isLoading: isRegSendOTPLoading, isError: isRegSendOTPError },
+  ] = useRegSendOTPMutation();
 
   useEffect(() => {
-    const email = localStorage.getItem("resetEmail");
+    const email = localStorage.getItem("regEmail");
     if (email) {
       setVerifyMail(email);
     }
@@ -98,7 +97,7 @@ export default function page() {
   };
   const handleResendClick = async () => {
     try {
-      await forgotPassword(verifyMail).unwrap();
+      await regSendOTP(verifyMail).unwrap();
       toast.success("OTP resent successfully.");
     } catch (error) {
       toast.error("Failed to resend OTP. Please try again.");
@@ -108,14 +107,15 @@ export default function page() {
   const handleClick = async () => {
     try {
       const enteredOtp = otp.join("");
-      const response = await verifyOtp({
+      console.log("chekc");
+
+      const response = await regVerifyOtp({
         email: verifyMail,
         otp: enteredOtp,
       }).unwrap();
 
       toast.success(response?.message || "OTP verified successfully.");
-
-      router.push("/forgot-password/verify-email");
+      router.push("/sign-up/verify-complete");
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");
     }
@@ -169,10 +169,10 @@ export default function page() {
           <button
             type="button"
             onClick={handleResendClick}
-            disabled={isForgotPasswordLoading}
+            disabled={isRegSendOTPLoading}
             className=" text-sm font-medium   text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
-            {isForgotPasswordLoading ? "Sending..." : "Resend"}
+            {isRegSendOTPLoading ? "Sending..." : "Resend"}
           </button>
         </div>
 

@@ -28,8 +28,6 @@ function RegistrationForm() {
   const onSubmit = async (data: RegFromData) => {
     try {
       const response = await registration(data).unwrap();
-      console.log(response, "check registration");
-
       if (response.error) {
         const status =
           "status" in response.error ? response.error.status : undefined;
@@ -39,6 +37,7 @@ function RegistrationForm() {
       }
 
       toast.success("Registration successful!");
+      localStorage.setItem("regEmail", data.email);
       route.push("/sign-up/verify-email");
     } catch (error) {
       console.log("Registration error:", error);
