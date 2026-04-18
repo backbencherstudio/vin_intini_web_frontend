@@ -4,6 +4,7 @@ import ButtonReuseable from "@/components/reusable/CustomButton";
 import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
@@ -53,7 +54,7 @@ function page() {
   const stepFiveData = useSelector((state: any) => state.onboarding.stepFive);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const initialSelectedOptions = useMemo(() => {
     const selectedTitles: string[] = stepFiveData?.selectedTitles || [];
     return interestOptions.filter((option) =>
@@ -95,6 +96,7 @@ function page() {
           },
         }),
       );
+      router.push("/onboarding/step-six");
       setIsLoading(false);
     }, 1200);
   };

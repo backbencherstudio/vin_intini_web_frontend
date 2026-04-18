@@ -649,3 +649,59 @@ export const ClinicalIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const UploadUserIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+  >
+    <path
+      d="M19.9993 10.6667C19.9993 6.98477 17.0145 4 13.3327 4C9.65079 4 6.66602 6.98477 6.66602 10.6667C6.66602 14.3485 9.65079 17.3333 13.3327 17.3333C17.0145 17.3333 19.9993 14.3485 19.9993 10.6667Z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M23.3327 27.9993V18.666M18.666 23.3327H27.9993"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4 26.6673C4 21.5127 8.17868 17.334 13.3333 17.334C15.3163 17.334 17.1549 17.9524 18.6667 19.0069"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+export const UploadIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M2 11.334C2 11.954 2 12.264 2.06815 12.5183C2.25308 13.2085 2.79218 13.7476 3.48236 13.9325C3.73669 14.0007 4.04669 14.0007 4.66667 14.0007H11.3333C11.9533 14.0007 12.2633 14.0007 12.5176 13.9325C13.2078 13.7476 13.7469 13.2085 13.9318 12.5183C14 12.264 14 11.954 14 11.334"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11 4.99998C11 4.99998 8.79052 2.00001 7.99999 2C7.20939 1.99999 5 5 5 5M7.99999 2.66667V10.6667"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
