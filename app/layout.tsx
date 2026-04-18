@@ -1,5 +1,6 @@
 import ReduxProvider from "@/components/reusable/ReduxProvider";
 import { AppConfig } from "@/config/app.config";
+import "antd/dist/reset.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";

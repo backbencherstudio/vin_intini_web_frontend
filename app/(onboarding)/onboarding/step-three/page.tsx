@@ -53,7 +53,6 @@ function page() {
       Icon: ClinicalIcon,
     },
   ];
-  console.log(stepThreeData, "stepThreeData");
   const initialSelectedOptions = useMemo(() => {
     const selectedTitles: string[] = stepThreeData?.selectedTitles || [];
     return roleOptions.filter((option) =>
@@ -161,7 +160,7 @@ function page() {
             sendingMsg="Connecting..."
             title="Continue"
             disabled={selectedOptions.length === 0}
-            className="w-full"
+            className="w-full lg:py-4!"
           />
         </div>
       </OnboardingWrapper>

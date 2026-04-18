@@ -105,7 +105,7 @@ function page() {
             loading={isLoading}
             sendingMsg="Connecting..."
             title="Continue"
-            className="w-full "
+            className="w-full lg:py-4!"
           />
         </form>
       </OnboardingWrapper>

@@ -2,11 +2,11 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../_component/OnboardingWrapper";
-import { useRouter } from "next/navigation";
 interface StepOneData {
   first_name: string;
   last_name: string;
@@ -79,7 +79,7 @@ function page() {
             loading={isLoading}
             sendingMsg="Connecting..."
             title="Continue"
-            className="w-full "
+            className="w-full lg:py-4!"
           />
         </form>
       </OnboardingWrapper>
