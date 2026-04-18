@@ -18,8 +18,7 @@ interface StepOneData {
   postal_code: string;
 }
 function page() {
-  const onboardingData = useSelector((state: any) => state.onboarding.stepOne);
-  const onboardingTwoData = useSelector((state: any) => state.onboarding.stepTwo);
+  const onboardingData = useSelector((state: any) => state.onboarding.stepTwo);
   const {
     register,
     handleSubmit,
@@ -27,14 +26,14 @@ function page() {
     formState: { errors },
   } = useForm<StepOneData>({
     defaultValues: {
-      country: onboardingTwoData?.country || "",
-      postal_code: onboardingTwoData?.postal_code || "",
+      country: onboardingData?.country || "",
+      postal_code: onboardingData?.postal_code || "",
     },
   });
   const router = useRouter();
   const dispatch = useDispatch();
 
-  console.log(onboardingData, "onboardingData");
+ 
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);

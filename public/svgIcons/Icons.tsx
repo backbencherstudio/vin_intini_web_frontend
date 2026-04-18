@@ -506,3 +506,28 @@ export const VerifyIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const LeftArrowIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M4.58301 10.002H15.833"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.16693 15.002C9.16693 15.002 4.167 11.3195 4.16699 10.0019C4.16698 8.68433 9.16702 5.00195 9.16702 5.00195"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
