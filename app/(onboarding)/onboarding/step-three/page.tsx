@@ -1,112 +1,169 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import {
+  ClinicalIcon,
+  LeftArrowIcon,
+  ProfessionalIcon,
+  ResearcherIcon,
+  StudentIcon,
+} from "@/public/svgIcons/Icons";
+import type { ComponentType } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
-import { countries } from "@/public/demoData/Country";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
-interface StepOneData {
-  country: string;
-  postal_code: string;
+
+interface RoleOption {
+  id: number;
+  title: string;
+  subtitle: string;
+  Icon: ComponentType<{ className?: string }>;
 }
+
 function page() {
-  const onboardingData = useSelector((state: any) => state.onboarding.stepTwo);
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<StepOneData>({
-    defaultValues: {
-      country: onboardingData?.country || "",
-      postal_code: onboardingData?.postal_code || "",
+  const stepThreeData = useSelector((state: any) => state.onboarding.stepThree);
+
+  const roleOptions: RoleOption[] = [
+    {
+      id: 1,
+      title: "Student",
+      subtitle: "Undergrad/grad exploring psych/neuro paths, etc.",
+      Icon: StudentIcon,
     },
-  });
+    {
+      id: 2,
+      title: "Early-Career Professional",
+      subtitle: "Postdoc, entry-level clinician, etc.",
+      Icon: ProfessionalIcon,
+    },
+    {
+      id: 3,
+      title: "Researcher/ Academic",
+      subtitle: "Professor, Lab Director, etc.",
+      Icon: ResearcherIcon,
+    },
+    {
+      id: 4,
+      title: "Clinical Professional",
+      subtitle: "Psychologist, Psychiatrist, Neurologist, Neurosurgeon, etc.",
+      Icon: ClinicalIcon,
+    },
+  ];
+  console.log(stepThreeData, "stepThreeData");
+  const initialSelectedOptions = useMemo(() => {
+    const selectedTitles: string[] = stepThreeData?.selectedTitles || [];
+    return roleOptions.filter((option) =>
+      selectedTitles.includes(option.title),
+    );
+  }, [stepThreeData]);
+
+  const [selectedOptions, setSelectedOptions] = useState<RoleOption[]>(
+    initialSelectedOptions,
+  );
   const router = useRouter();
   const dispatch = useDispatch();
 
- 
   const [isLoading, setIsLoading] = useState(false);
-  const onSubmit = (data: StepOneData) => {
+
+  useEffect(() => {
+    const selectedTitles: string[] = stepThreeData?.selectedTitles || [];
+    setSelectedOptions(
+      roleOptions.filter((option) => selectedTitles.includes(option.title)),
+    );
+  }, [stepThreeData]);
+
+  const toggleSelection = (option: RoleOption) => {
+    setSelectedOptions((previous) => {
+      const alreadySelected = previous.some((item) => item.id === option.id);
+      if (alreadySelected) {
+        return previous.filter((item) => item.id !== option.id);
+      }
+      return [...previous, option];
+    });
+  };
+
+  const handleContinue = () => {
+    if (selectedOptions.length === 0) return;
+
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(setStepData({ step: "stepTwo", data }));
-      router.push("/onboarding/step-three");
+      dispatch(
+        setStepData({
+          step: "stepThree",
+          data: {
+            selectedTitles: selectedOptions.map((item) => item.title),
+          },
+        }),
+      );
+        router.push("/onboarding/step-four");
       setIsLoading(false);
     }, 2000);
   };
   return (
-    <div className="max-w-lg mx-auto ">
+    <div className="max-w-[638px] mx-auto ">
       <div className="flex items-center justify-between mb-4">
         <Link
-          href="/onboarding"
+          href="/onboarding/step-two"
           className="flex items-center text-sm font-medium text-headerColor"
         >
           <LeftArrowIcon />
           Back
         </Link>
-        <p className="text-sm font-medium text-headerColor">Step 2/7</p>
+        <p className="text-sm font-medium text-headerColor">Step 3/7</p>
       </div>
       <OnboardingWrapper
-        title={`Welcome, ${onboardingData?.first_name || "there"}!`}
-        description="Tell us where you are from."
+        title="Welcome to Mind Unite!"
+        description="Select all that apply."
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-7 lg:mt-10 space-y-4"
-        >
-          <div>
-            <label className="block mb-2 text-sm font-medium text-headerColor">
-              {" "}
-              Country/Region <span className="text-red-500">*</span>
-            </label>
-            <Controller
-              control={control}
-              name="country"
-              rules={{ required: "Country is required" }}
-              render={({ field }) => {
-                return (
-                  <SelecteInputField
-                    options={countries}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    placeholder="Select country"
-                  />
-                );
-              }}
-            />
-          </div>
-
-          <div>
-            <ReusableInput
-              id="postal_code"
-              label="Postal Code"
-              required
-              type="number"
-              placeholder="Enter your postal code"
-              {...register("postal_code", {
-                required: "Postal code is required",
-              })}
-              className=" rounded-lg "
-            />
+        <div className="mt-7 lg:mt-10 space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {roleOptions.map((option) => {
+              const isSelected = selectedOptions.some(
+                (item) => item.id === option.id,
+              );
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => toggleSelection(option)}
+                  className={`w-full text-left hover:shadow-md p-4 border cursor-pointer flex-col flex justify-start rounded-lg transition-colors ${
+                    isSelected
+                      ? "border-buttonColor bg-buttonColor/8! ring-2 ring-buttonColor/20"
+                      : "border-borderColor bg-white"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-md bg-primaryColor/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <option.Icon className="w-5 h-5 text-primaryColor" />
+                    </div>
+                    <div>
+                      <p className="text-lg leading-[140%] font-semibold text-headerColor">
+                        {option.title}
+                      </p>
+                      <p className="text-sm text-descriptionColor mt-1 leading-5">
+                        {option.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
           <ButtonReuseable
-            type="submit"
+            type="button"
+            onClick={handleContinue}
             loading={isLoading}
             sendingMsg="Connecting..."
             title="Continue"
-            className="w-full "
+            disabled={selectedOptions.length === 0}
+            className="w-full"
           />
-        </form>
+        </div>
       </OnboardingWrapper>
     </div>
   );
