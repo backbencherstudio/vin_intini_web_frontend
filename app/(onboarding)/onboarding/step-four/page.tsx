@@ -1,12 +1,12 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import SmartSelectField from "@/components/reusable/InputFiled/SmartSelectField";
 import {
   setStep,
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
+import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import type { SelectProps } from "antd";
 import Link from "next/link";
@@ -143,6 +143,9 @@ function page() {
   const stepFourData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const { data: institutionOptions } = useGetInstitutionQuery("");
+  console.log(institutionOptions);
+
   const router = useRouter();
   const {
     control,
@@ -240,15 +243,34 @@ function page() {
               </p>
             )}
           </div>
-
-          <ReusableInput
-            id="institution"
-            label="Current/Last Institution"
-            placeholder="Stanford University"
-            {...register("institution")}
-            className="rounded-md"
-          />
-
+          <div className="space-y-1.5">
+            <label className="text-sm text-headerColor font-medium block">
+              Current/Last Institution <span className="text-redColor">*</span>
+            </label>
+            <Controller
+              name="institution"
+              control={control}
+              rules={{ required: "Institution is required" }}
+              render={({ field }) => (
+                <SmartSelectField
+                  placeholder="Select institution"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={institutionOptions?.data?.map((inst: any) => ({
+                    value: inst.name,
+                    label: inst.name,
+                  }))}
+                  allowCustomInput
+                  className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
+                />
+              )}
+            />
+            {errors.institution && (
+              <p className="text-red-500 text-xs">
+                {errors.institution.message}
+              </p>
+            )}
+          </div>
           <div className="space-y-1.5">
             <label className="text-sm text-headerColor font-medium block">
               Completed Graduation/ Expected Year{" "}
