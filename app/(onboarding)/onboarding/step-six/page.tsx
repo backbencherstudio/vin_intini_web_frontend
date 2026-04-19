@@ -3,42 +3,37 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
-import {
-  setStep,
-  updateFormData,
-} from "@/feature/slice/onboarding/onboardingSlice";
+import { useProfileSetupMutation } from "@/feature/slice/auth/authSlice";
 import {
   LeftArrowIcon,
   UploadIcon,
   UploadUserIcon,
 } from "@/public/svgIcons/Icons";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 interface StepSixData {
   title: string;
   about: string;
-  profile_image: string;
 }
 
 function page() {
-  const dispatch = useDispatch();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const stepSixData = useSelector((state: any) => state.onboarding.formData);
-  console.log("Step Six Data from Redux:", stepSixData); // Debugging log
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(
     stepSixData?.profile_image || "",
   );
 
+  const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const {
     control,
     register,
-    setValue,
     watch,
     handleSubmit,
     formState: { errors },
@@ -46,7 +41,6 @@ function page() {
     defaultValues: {
       title: stepSixData?.title || "",
       about: stepSixData?.about || "",
-      profile_image: stepSixData?.profile_image || "",
     },
   });
 
@@ -73,22 +67,33 @@ function page() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = String(reader.result || "");
-      setPhotoPreview(result);
-      setValue("profile_image", result, { shouldDirty: true });
-    };
-    reader.readAsDataURL(file);
+    setSelectedImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPhotoPreview(previewUrl);
   };
 
-  const onSubmit = (data: StepSixData) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      dispatch(updateFormData(data));
-      dispatch(setStep(7));
-      setIsLoading(false);
-    }, 1200);
+  const onSubmit = async (data: StepSixData) => {
+    try {
+      const formData = new FormData();
+
+      Object.entries(stepSixData || {}).forEach(([key, value]) => {
+        if (key === "profile_image") return;
+        if (value === undefined || value === null) return;
+        formData.append(key, String(value));
+      });
+
+      formData.set("title", data.title);
+      formData.set("about", data.about || "");
+
+      if (selectedImageFile) {
+        formData.set("profile_image", selectedImageFile);
+      }
+
+      const response = await profileSetup(formData).unwrap();
+      console.log("response", response);
+    } catch (error) {
+      console.error("Error setting up profile:", error);
+    }
   };
 
   return (
@@ -154,8 +159,6 @@ function page() {
               className="hidden"
               onChange={handleFileChange}
             />
-
-            <input type="hidden" {...register("profile_image")} />
           </div>
 
           <div>

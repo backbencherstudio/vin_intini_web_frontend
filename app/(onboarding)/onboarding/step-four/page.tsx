@@ -2,13 +2,13 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
+import SmartSelectField from "@/components/reusable/InputFiled/SmartSelectField";
 import {
   setStep,
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import type { SelectProps } from "antd";
-import { Select } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,7 +18,7 @@ import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 interface StepFourData {
   highest_degree: string;
-  study_category: string;
+  field_study: string;
   institution: string;
   graduation_year: string;
 }
@@ -152,7 +152,7 @@ function page() {
   } = useForm<StepFourData>({
     defaultValues: {
       highest_degree: stepFourData?.highest_degree || "",
-      study_category: stepFourData?.study_category || "",
+      field_study: stepFourData?.field_study || "",
       institution: stepFourData?.institution || "",
       graduation_year: stepFourData?.graduation_year || "",
     },
@@ -198,14 +198,12 @@ function page() {
               control={control}
               rules={{ required: "Highest degree is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select degree"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={degreeOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
               )}
@@ -222,25 +220,23 @@ function page() {
               Field of Study <span className="text-redColor">*</span>
             </label>
             <Controller
-              name="study_category"
+              name="field_study"
               control={control}
               rules={{ required: "Field of study is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select field of study"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={fieldOfStudyOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
               )}
             />
-            {errors.study_category && (
+            {errors.field_study && (
               <p className="text-red-500 text-xs">
-                {errors.study_category.message}
+                {errors.field_study.message}
               </p>
             )}
           </div>
@@ -263,14 +259,12 @@ function page() {
               control={control}
               rules={{ required: "Graduation year is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select year"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={yearOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
                 />
               )}

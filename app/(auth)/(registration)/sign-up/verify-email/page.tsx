@@ -5,6 +5,7 @@ import {
   useRegSendOTPMutation,
   useRegVerifyOtpMutation,
 } from "@/feature/slice/auth/authSlice";
+import { setToken } from "@/lib/token";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -113,8 +114,10 @@ export default function page() {
         email: verifyMail,
         otp: enteredOtp,
       }).unwrap();
+      console.log(response?.token, "response for reg");
 
       toast.success(response?.message || "OTP verified successfully.");
+      await setToken(response?.token || "");
       router.push("/sign-up/verify-complete");
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");
