@@ -4,7 +4,7 @@ const userSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUserProfile: builder.query({
       query: () => ({
-        url: "/profile",
+        url: "/me",
         method: "GET",
       }),
       providesTags: ["User"],

@@ -97,7 +97,7 @@ function page() {
       if (response.status) {
         // Handle success (e.g., navigate to next step)
         toast.success(response?.message || "Profile setup successful!");
-        dispatch(setStep(6));
+        dispatch(setStep(7));
         dispatch(
           updateFormData({
             title: data.title,

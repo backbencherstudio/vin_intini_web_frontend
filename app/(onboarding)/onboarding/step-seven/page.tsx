@@ -2,27 +2,20 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Switch } from "@/components/ui/switch";
+import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
-  setStep,
-  updateFormData,
-} from "@/feature/slice/onboarding/onboardingSlice";
-import {
-  BookOpenText,
-  BriefcaseBusiness,
-  Building2,
-  FlaskConical,
-  Network,
-} from "lucide-react";
+  ClinicalIcon,
+  EmailIcon,
+  PhsychologicalIcon,
+  PremiumIcon,
+  ProgramIcon,
+  PublicationIcon,
+} from "@/public/svgIcons/Icons";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
-
-type NotificationKey =
-  | "new_jobs"
-  | "publications_alerts"
-  | "program_updates"
-  | "premium_offers";
 
 interface FollowOption {
   id: number;
@@ -31,14 +24,31 @@ interface FollowOption {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const notificationLabels: Array<{ key: NotificationKey; label: string }> = [
-  { key: "new_jobs", label: "Email me about new jobs in my field" },
+const notificationLabels: Array<{
+  key: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}> = [
+  {
+    key: "new_jobs",
+    icon: EmailIcon,
+    label: "Email me about new jobs in my field",
+  },
   {
     key: "publications_alerts",
+    icon: PublicationIcon,
     label: "Latest publications and research alerts",
   },
-  { key: "program_updates", label: "Program and residency updates" },
-  { key: "premium_offers", label: "Premium features and special offers" },
+  {
+    key: "program_updates",
+    icon: ProgramIcon,
+    label: "Program and residency updates",
+  },
+  {
+    key: "premium_offers",
+    icon: PremiumIcon,
+    label: "Premium features and special offers",
+  },
 ];
 
 const followOptions: FollowOption[] = [
@@ -46,31 +56,31 @@ const followOptions: FollowOption[] = [
     id: 1,
     title: "American Psychological Association",
     subtitle: "Organization",
-    icon: BriefcaseBusiness,
+    icon: PhsychologicalIcon,
   },
   {
     id: 2,
     title: "Psychological Review",
     subtitle: "Journal",
-    icon: BookOpenText,
+    icon: PhsychologicalIcon,
   },
   {
     id: 3,
     title: "Neuroscience Today",
     subtitle: "Publication",
-    icon: FlaskConical,
+    icon: ClinicalIcon,
   },
   {
     id: 4,
     title: "Pfizer Neuroscience",
     subtitle: "Industry Partner",
-    icon: Building2,
+    icon: ClinicalIcon,
   },
   {
     id: 5,
     title: "Clinical Psychology Network",
     subtitle: "Community",
-    icon: Network,
+    icon: PhsychologicalIcon,
   },
 ];
 
@@ -79,7 +89,7 @@ function page() {
   const dispatch = useDispatch();
   const stepSevenData = useSelector((state: any) => state.onboarding.formData);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { data } = useGetUserProfileQuery("profile-data");
   const defaultPreferences = useMemo(
     () => ({
       new_jobs: stepSevenData?.notification_preferences?.new_jobs ?? true,
@@ -99,7 +109,7 @@ function page() {
   const defaultFollowedIds = useMemo(() => {
     const values = stepSevenData?.followed_entities;
     if (!Array.isArray(values)) {
-      return [2, 4];
+      return []; // Return empty array if values is not an array
     }
 
     return followOptions
@@ -122,23 +132,14 @@ function page() {
   const handleFinish = () => {
     setIsLoading(true);
 
+    router.push(`/${data?.user?.id}`);
     setTimeout(() => {
-      const selectedFollowTitles = followOptions
-        .filter((item) => selectedFollowIds.includes(item.id))
-        .map((item) => item.title);
-
-      dispatch(
-        updateFormData({
-          notification_preferences: notificationPreferences,
-          followed_entities: selectedFollowTitles,
-        }),
-      );
-
-      dispatch(setStep(7));
-      router.push("/");
+      dispatch(onboardingReset());
       setIsLoading(false);
-    }, 900);
+    }, 500);
   };
+
+  console.log("Step Seven Data from Redux:", data); // Debugging log
 
   return (
     <div>
@@ -146,21 +147,22 @@ function page() {
         title="Let's Get You Started"
         description="Customize your experience on Mind Unite."
       >
-        <div className="mt-6 space-y-6 md:space-y-7">
+        <div className="mt-6 md:mt-10 space-y-6 md:space-y-7">
           <div>
             <h3 className="text-base font-semibold text-headerColor">
               Notification Preferences
             </h3>
 
-            <div className="mt-2 divide-y divide-[#e3e7eb]">
+            <div className="mt-2 divide-y divide-borderColor/80">
               {notificationLabels.map((item) => (
                 <div
                   key={item.key}
-                  className="flex items-center justify-between gap-4 py-3"
+                  className="flex items-center justify-between gap-4 py-3 pb-4"
                 >
-                  <p className="text-sm md:text-[15px] text-headerColor/90">
-                    {item.label}
-                  </p>
+                  <div className="text-sm flex items-center gap-2 md:text-[15px] text-descriptionColor">
+                    <item.icon className="h-4 w-4  " />
+                    <span> {item.label}</span>
+                  </div>
 
                   <Switch
                     checked={notificationPreferences[item.key]}
@@ -170,6 +172,7 @@ function page() {
                         [item.key]: checked,
                       }))
                     }
+                    className="cursor-pointer"
                     aria-label={item.label}
                   />
                 </div>
@@ -178,14 +181,14 @@ function page() {
           </div>
 
           <div>
-            <h3 className="text-base font-semibold text-headerColor">
+            <h3 className="text-base font-semibold text-descriptionColor">
               Follow to Get Started
-              <span className="ml-1 text-sm font-normal text-grayColor1">
+              <span className="ml-1 text-sm font-normal text-[#A5A5AB]">
                 (Optional)
               </span>
             </h3>
 
-            <div className="mt-3 space-y-2.5">
+            <div className="mt-3 flex flex-col gap-3 ">
               {followOptions.map((option) => {
                 const isSelected = selectedFollowIds.includes(option.id);
                 const Icon = option.icon;
@@ -195,22 +198,22 @@ function page() {
                     key={option.id}
                     type="button"
                     onClick={() => handleToggleFollow(option.id)}
-                    className={`w-full rounded-lg border px-3.5 py-3 text-left transition-colors cursor-pointer ${
+                    className={`w-full rounded-lg  border px-3.5 py-3 text-left transition-colors cursor-pointer ${
                       isSelected
-                        ? "border-buttonColor bg-buttonColor/10"
+                        ? "border-buttonColor bg-buttonColor/10 ring-2 ring-buttonColor/20"
                         : "border-[#dde4e8] bg-white"
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#dff4f4] text-buttonColor">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#dff4f4] text-buttonColor">
                         <Icon className="h-4 w-4" />
                       </div>
 
                       <div>
-                        <p className="text-sm font-semibold text-headerColor leading-5">
+                        <p className="text-sm font-semibold text-headerColor ">
                           {option.title}
                         </p>
-                        <p className="text-xs text-grayColor1 mt-0.5">
+                        <p className="text-xs text-grayColor1 mt-1 ">
                           {option.subtitle}
                         </p>
                       </div>
