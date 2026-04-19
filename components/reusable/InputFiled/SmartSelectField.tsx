@@ -3,6 +3,7 @@
 import type { SelectProps } from "antd";
 import { Select } from "antd";
 import { useMemo, useState } from "react";
+import "antd/dist/reset.css";
 
 type SmartSelectFieldProps = {
   value?: string;
