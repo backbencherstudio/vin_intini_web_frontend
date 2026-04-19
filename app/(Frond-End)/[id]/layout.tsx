@@ -1,3 +1,4 @@
+import MainNavbar from "../_components/mainPage/MainNavbar";
 
 export default function FrontEndLayout({
   children,
@@ -6,6 +7,7 @@ export default function FrontEndLayout({
 }) {
   return (
     <div>
+      <MainNavbar />
       {children}
     </div>
   );
