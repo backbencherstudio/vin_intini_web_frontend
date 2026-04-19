@@ -21,7 +21,10 @@ const ReusableInput = ({
   return (
     <div className={`space-y-1.5 ${containerClassName || ""}`}>
       {label && (
-        <Label htmlFor={id} className="text-sm text-headerColor font-medium">
+        <Label
+          htmlFor={id}
+          className="text-sm text-descriptionColor font-medium"
+        >
           {label} {required && <span className="text-redColor">*</span>}
         </Label>
       )}

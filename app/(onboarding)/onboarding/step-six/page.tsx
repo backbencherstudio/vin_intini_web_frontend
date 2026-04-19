@@ -2,7 +2,11 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import {
   LeftArrowIcon,
   UploadIcon,
@@ -18,16 +22,17 @@ import OnboardingWrapper from "../../_component/OnboardingWrapper";
 interface StepSixData {
   title: string;
   about: string;
-  photo: string;
+  profile_image: string;
 }
 
 function page() {
   const dispatch = useDispatch();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const stepSixData = useSelector((state: any) => state.onboarding.stepSix);
+  const stepSixData = useSelector((state: any) => state.onboarding.formData);
+  console.log("Step Six Data from Redux:", stepSixData); // Debugging log
   const [isLoading, setIsLoading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string>(
-    stepSixData?.photo || "",
+    stepSixData?.profile_image || "",
   );
 
   const {
@@ -41,7 +46,7 @@ function page() {
     defaultValues: {
       title: stepSixData?.title || "",
       about: stepSixData?.about || "",
-      photo: stepSixData?.photo || "",
+      profile_image: stepSixData?.profile_image || "",
     },
   });
 
@@ -72,7 +77,7 @@ function page() {
     reader.onloadend = () => {
       const result = String(reader.result || "");
       setPhotoPreview(result);
-      setValue("photo", result, { shouldDirty: true });
+      setValue("profile_image", result, { shouldDirty: true });
     };
     reader.readAsDataURL(file);
   };
@@ -80,12 +85,8 @@ function page() {
   const onSubmit = (data: StepSixData) => {
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(
-        setStepData({
-          step: "stepSix",
-          data,
-        }),
-      );
+      dispatch(updateFormData(data));
+      dispatch(setStep(7));
       setIsLoading(false);
     }, 1200);
   };
@@ -112,12 +113,12 @@ function page() {
           className="mt-7 lg:mt-10 space-y-5"
         >
           <div>
-            <label className="text-sm text-headerColor font-semibold block mb-2">
+            <label className="text-sm text-descriptionColor font-semibold block mb-2">
               Profile Photo
             </label>
 
             <div className="flex items-center gap-3">
-              <div className="w-[74px] h-[74px] rounded-full bg-[#E7E8EC] flex items-center justify-center overflow-hidden">
+              <div className="w-[74px] h-[74px] rounded-full bg-bgColor flex items-center justify-center overflow-hidden">
                 {photoPreview ? (
                   <Image
                     src={photoPreview}
@@ -127,7 +128,7 @@ function page() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <UploadUserIcon className="w-8 h-8 text-[#757A86]" />
+                  <UploadUserIcon className="w-8 h-8 text-descriptionColor" />
                 )}
               </div>
 
@@ -135,7 +136,7 @@ function page() {
                 <button
                   type="button"
                   onClick={handleUploadClick}
-                  className="h-10 px-5 rounded-full border border-borderColor flex items-center gap-2 text-sm font-semibold text-descriptionColor cursor-pointer"
+                  className="h-10 px-5 rounded-full border border-borderColor flex items-center gap-2 text-sm font-semibold text-descriptionColor! cursor-pointer"
                 >
                   <UploadIcon className="w-4 h-4 " />
                   Upload Photo
@@ -154,7 +155,7 @@ function page() {
               onChange={handleFileChange}
             />
 
-            <input type="hidden" {...register("photo")} />
+            <input type="hidden" {...register("profile_image")} />
           </div>
 
           <div>
@@ -180,9 +181,6 @@ function page() {
           </div>
 
           <div>
-            <label className="text-sm text-headerColor font-medium block mb-1.5">
-              About
-            </label>
             <Controller
               control={control}
               name="about"
@@ -193,12 +191,13 @@ function page() {
                 },
               }}
               render={({ field }) => (
-                <textarea
+                <ReusableTextarea
+                  label="About"
                   {...field}
                   rows={5}
                   maxLength={250}
                   placeholder="Tell us about your background, interests and profile summary."
-                  className="w-full rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+                  className="w-full rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none "
                 />
               )}
             />

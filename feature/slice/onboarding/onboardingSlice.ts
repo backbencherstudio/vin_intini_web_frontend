@@ -1,40 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface OnboardingState {
-  stepOne: any;
-  stepTwo: any;
-  stepThree: any;
-  stepFour: any;
-  stepFive: any;
-  stepSix: any;
-  stepSeven: any;
+  formData: Record<string, any>;
+  currentStep: number;
 }
 
 const initialState: OnboardingState = {
-  stepOne: {},
-  stepTwo: {},
-  stepThree: {},
-  stepFour: {},
-  stepFive: {},
-  stepSix: {},
-  stepSeven: {},
+  formData: {},
+  currentStep: 1,
 };
 
 export const onboardingSlice = createSlice({
   name: "onboarding",
   initialState,
   reducers: {
-    setStepData: (
-      state,
-      action: PayloadAction<{ step: keyof OnboardingState; data: any }>,
-    ) => {
-      const { step, data } = action.payload;
-      state[step] = data;
+    updateFormData: (state, action: PayloadAction<Record<string, any>>) => {
+      state.formData = {
+        ...state.formData,
+        ...action.payload,
+      };
     },
-    //  reset the onboarding state to initial state
+    setStep: (state, action: PayloadAction<number>) => {
+      state.currentStep = Math.max(state.currentStep, action.payload);
+    },
+
     onboardingReset: () => initialState,
   },
 });
 
-export const { setStepData, onboardingReset } = onboardingSlice.actions;
+export const { updateFormData, setStep, onboardingReset } =
+  onboardingSlice.actions;
 export default onboardingSlice.reducer;

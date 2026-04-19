@@ -1,7 +1,10 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -51,15 +54,15 @@ const interestOptions: InterestOption[] = [
 ];
 
 function page() {
-  const stepFiveData = useSelector((state: any) => state.onboarding.stepFive);
+  const stepFiveData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  console.log("Step Five Data from Redux:", stepFiveData); // Debugging log
   const initialSelectedOptions = useMemo(() => {
-    const selectedTitles: string[] = stepFiveData?.selectedTitles || [];
-    return interestOptions.filter((option) =>
-      selectedTitles.includes(option.title),
-    );
+    const interests: string[] = stepFiveData?.interests || [];
+    return interestOptions.filter((option) => interests.includes(option.title));
   }, [stepFiveData]);
 
   const [selectedOptions, setSelectedOptions] = useState<InterestOption[]>(
@@ -67,9 +70,9 @@ function page() {
   );
 
   useEffect(() => {
-    const selectedTitles: string[] = stepFiveData?.selectedTitles || [];
+    const interests: string[] = stepFiveData?.interests || [];
     setSelectedOptions(
-      interestOptions.filter((option) => selectedTitles.includes(option.title)),
+      interestOptions.filter((option) => interests.includes(option.title)),
     );
   }, [stepFiveData]);
 
@@ -89,13 +92,12 @@ function page() {
     setIsLoading(true);
     setTimeout(() => {
       dispatch(
-        setStepData({
-          step: "stepFive",
-          data: {
-            selectedTitles: selectedOptions.map((item) => item.title),
-          },
+        updateFormData({
+          interests: selectedOptions.map((item) => item.title).join(","),
         }),
       );
+      dispatch(setStep(6));
+
       router.push("/onboarding/step-six");
       setIsLoading(false);
     }, 1200);

@@ -2,20 +2,23 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import type { SelectProps } from "antd";
 import { Select } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
-import { useRouter } from "next/navigation";
 
 interface StepFourData {
   highest_degree: string;
-  field_of_study: string;
+  study_category: string;
   institution: string;
   graduation_year: string;
 }
@@ -137,7 +140,7 @@ const yearOptions: SelectProps["options"] = Array.from(
 );
 
 function page() {
-  const stepFourData = useSelector((state: any) => state.onboarding.stepFour);
+  const stepFourData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -149,7 +152,7 @@ function page() {
   } = useForm<StepFourData>({
     defaultValues: {
       highest_degree: stepFourData?.highest_degree || "",
-      field_of_study: stepFourData?.field_of_study || "",
+      study_category: stepFourData?.study_category || "",
       institution: stepFourData?.institution || "",
       graduation_year: stepFourData?.graduation_year || "",
     },
@@ -158,12 +161,8 @@ function page() {
   const onSubmit = (data: StepFourData) => {
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(
-        setStepData({
-          step: "stepFour",
-          data,
-        }),
-      );
+      dispatch(updateFormData(data));
+      dispatch(setStep(5));
       router.push("/onboarding/step-five");
       setIsLoading(false);
     }, 1200);
@@ -223,7 +222,7 @@ function page() {
               Field of Study <span className="text-redColor">*</span>
             </label>
             <Controller
-              name="field_of_study"
+              name="study_category"
               control={control}
               rules={{ required: "Field of study is required" }}
               render={({ field }) => (
@@ -239,9 +238,9 @@ function page() {
                 />
               )}
             />
-            {errors.field_of_study && (
+            {errors.study_category && (
               <p className="text-red-500 text-xs">
-                {errors.field_of_study.message}
+                {errors.study_category.message}
               </p>
             )}
           </div>
