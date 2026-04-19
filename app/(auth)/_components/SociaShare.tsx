@@ -20,7 +20,7 @@ function SocialShare() {
   // }, [])
   return (
     <div>
-      <div className="text-blackColor space-y-4 text-sm  ">
+      <div className="text-blackColor flex flex-col gap-3 text-sm  ">
         <button
           onClick={fetchGoogleLogin}
           className="flex justify-center cursor-pointer font-semibold items-center gap-2  w-full border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full"

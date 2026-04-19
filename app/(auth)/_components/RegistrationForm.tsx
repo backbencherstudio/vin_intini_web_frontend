@@ -41,6 +41,7 @@ function RegistrationForm() {
       route.push("/sign-up/verify-email");
     } catch (error) {
       console.log("Registration error:", error);
+      toast.error(error?.data?.message || "Registration failed. Please try again.");
     }
   };
 

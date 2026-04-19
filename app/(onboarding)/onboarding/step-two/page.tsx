@@ -1,7 +1,10 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,8 +21,10 @@ interface StepOneData {
   postal_code: string;
 }
 function page() {
-  const onboardingData = useSelector((state: any) => state.onboarding.stepOne);
-  const onboardingTwoData = useSelector((state: any) => state.onboarding.stepTwo);
+  const onboardingData = useSelector(
+    (state: any) => state.onboarding?.formData,
+  );
+
   const {
     register,
     handleSubmit,
@@ -27,8 +32,8 @@ function page() {
     formState: { errors },
   } = useForm<StepOneData>({
     defaultValues: {
-      country: onboardingTwoData?.country || "",
-      postal_code: onboardingTwoData?.postal_code || "",
+      country: onboardingData?.country || "",
+      postal_code: onboardingData?.postal_code || "",
     },
   });
   const router = useRouter();
@@ -39,23 +44,15 @@ function page() {
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(setStepData({ step: "stepTwo", data }));
+      dispatch(updateFormData(data));
+      dispatch(setStep(3));
       router.push("/onboarding/step-three");
       setIsLoading(false);
     }, 2000);
   };
   return (
-    <div className="max-w-lg mx-auto ">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 2/7</p>
-      </div>
+    <div className=" ">
+      
       <OnboardingWrapper
         title={`Welcome, ${onboardingData?.first_name || "there"}!`}
         description="Tell us where you are from."

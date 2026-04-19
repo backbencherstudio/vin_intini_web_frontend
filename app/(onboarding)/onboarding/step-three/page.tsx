@@ -1,6 +1,9 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import {
   ClinicalIcon,
   LeftArrowIcon,
@@ -25,7 +28,7 @@ interface RoleOption {
 }
 
 function page() {
-  const stepThreeData = useSelector((state: any) => state.onboarding.stepThree);
+  const stepThreeData = useSelector((state: any) => state.onboarding?.formData);
 
   const roleOptions: RoleOption[] = [
     {
@@ -54,10 +57,8 @@ function page() {
     },
   ];
   const initialSelectedOptions = useMemo(() => {
-    const selectedTitles: string[] = stepThreeData?.selectedTitles || [];
-    return roleOptions.filter((option) =>
-      selectedTitles.includes(option.title),
-    );
+    const profession: string[] = stepThreeData?.profession || [];
+    return roleOptions.filter((option) => profession.includes(option.title));
   }, [stepThreeData]);
 
   const [selectedOptions, setSelectedOptions] = useState<RoleOption[]>(
@@ -69,9 +70,9 @@ function page() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const selectedTitles: string[] = stepThreeData?.selectedTitles || [];
+    const profession: string[] = stepThreeData?.profession || [];
     setSelectedOptions(
-      roleOptions.filter((option) => selectedTitles.includes(option.title)),
+      roleOptions.filter((option) => profession.includes(option.title)),
     );
   }, [stepThreeData]);
 
@@ -91,29 +92,18 @@ function page() {
     setIsLoading(true);
     setTimeout(() => {
       dispatch(
-        setStepData({
-          step: "stepThree",
-          data: {
-            selectedTitles: selectedOptions.map((item) => item.title),
-          },
+        updateFormData({
+          profession: selectedOptions.map((item) => item.title).join(","),
         }),
       );
-        router.push("/onboarding/step-four");
+      dispatch(setStep(4));
+      router.push("/onboarding/step-four");
       setIsLoading(false);
     }, 2000);
   };
   return (
-    <div className="max-w-[638px] mx-auto ">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-two"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 3/7</p>
-      </div>
+    <div className="">
+      
       <OnboardingWrapper
         title="Welcome to Mind Unite!"
         description="Select all that apply."

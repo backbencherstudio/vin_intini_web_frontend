@@ -8,7 +8,7 @@ function OnboardingLayout({ children }: { children: React.ReactNode }) {
     <div>
       <div className="bg-sectionColor space-y-10 md:space-y-20">
         <header
-          className={`w-full border-b border-borderColor text-[#07C3BB] font-normal leading-[150%] tracking-[0.08px]`}
+          className={`w-full border-b border-borderColor text-primaryColor font-normal leading-[150%] tracking-[0.08px]`}
         >
           <div className="container py-4! flex justify-center ">
             <Link href="/">

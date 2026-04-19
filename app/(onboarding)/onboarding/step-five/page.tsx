@@ -1,7 +1,10 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -51,15 +54,15 @@ const interestOptions: InterestOption[] = [
 ];
 
 function page() {
-  const stepFiveData = useSelector((state: any) => state.onboarding.stepFive);
+  const stepFiveData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  console.log("Step Five Data from Redux:", stepFiveData); // Debugging log
   const initialSelectedOptions = useMemo(() => {
-    const selectedTitles: string[] = stepFiveData?.selectedTitles || [];
-    return interestOptions.filter((option) =>
-      selectedTitles.includes(option.title),
-    );
+    const interests: string[] = stepFiveData?.interests || [];
+    return interestOptions.filter((option) => interests.includes(option.title));
   }, [stepFiveData]);
 
   const [selectedOptions, setSelectedOptions] = useState<InterestOption[]>(
@@ -67,9 +70,9 @@ function page() {
   );
 
   useEffect(() => {
-    const selectedTitles: string[] = stepFiveData?.selectedTitles || [];
+    const interests: string[] = stepFiveData?.interests || [];
     setSelectedOptions(
-      interestOptions.filter((option) => selectedTitles.includes(option.title)),
+      interestOptions.filter((option) => interests.includes(option.title)),
     );
   }, [stepFiveData]);
 
@@ -89,31 +92,20 @@ function page() {
     setIsLoading(true);
     setTimeout(() => {
       dispatch(
-        setStepData({
-          step: "stepFive",
-          data: {
-            selectedTitles: selectedOptions.map((item) => item.title),
-          },
+        updateFormData({
+          interests: selectedOptions.map((item) => item.title).join(","),
         }),
       );
+      dispatch(setStep(6));
+
       router.push("/onboarding/step-six");
       setIsLoading(false);
     }, 1200);
   };
 
   return (
-    <div className="max-w-[532px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-four"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 5/7</p>
-      </div>
-
+    <div className="">
+    
       <OnboardingWrapper
         title="Your Brain Health Fields of Interest"
         description="Please select all that apply."

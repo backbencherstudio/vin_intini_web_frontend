@@ -8,6 +8,16 @@
   padding: 0 16px;
   margin: 0 auto;
 }
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0em;
+}
 
 @theme inline {
   --color-primaryColor: var(--primaryColor);
@@ -29,6 +39,7 @@
   --color-bgColor: var(--bgColor);
   --color-sectionColor: #f6f8fa;
   --color-descriptionColor: var(--descriptionColor);
+  --color-liteDescriptionColor: #a5a5ab;
   /* ======== */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -207,4 +218,16 @@ body {
 
 .animate-bounce-x {
   animation: bounce-x 2s infinite linear;
+}
+
+input,
+button,
+select,
+optgroup,
+textarea {
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  margin: 0;
 }

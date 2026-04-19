@@ -2,38 +2,40 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
+import { useProfileSetupMutation } from "@/feature/slice/auth/authSlice";
+import { UploadIcon, UploadUserIcon } from "@/public/svgIcons/Icons";
+
 import {
-  LeftArrowIcon,
-  UploadIcon,
-  UploadUserIcon,
-} from "@/public/svgIcons/Icons";
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 interface StepSixData {
   title: string;
   about: string;
-  photo: string;
 }
 
 function page() {
-  const dispatch = useDispatch();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const stepSixData = useSelector((state: any) => state.onboarding.stepSix);
-  const [isLoading, setIsLoading] = useState(false);
+  const stepSixData = useSelector((state: any) => state.onboarding.formData);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(
-    stepSixData?.photo || "",
+    stepSixData?.profile_image || "",
   );
-
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const {
     control,
     register,
-    setValue,
     watch,
     handleSubmit,
     formState: { errors },
@@ -41,7 +43,6 @@ function page() {
     defaultValues: {
       title: stepSixData?.title || "",
       about: stepSixData?.about || "",
-      photo: stepSixData?.photo || "",
     },
   });
 
@@ -61,48 +62,60 @@ function page() {
     );
 
     if (!isValidType) {
-      return;
+      return toast.error(
+        "Invalid file type. Please upload a JPG, PNG, or GIF file.",
+      );
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      return;
+      return toast.error("File size must be less than 5MB");
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = String(reader.result || "");
-      setPhotoPreview(result);
-      setValue("photo", result, { shouldDirty: true });
-    };
-    reader.readAsDataURL(file);
+    setSelectedImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPhotoPreview(previewUrl);
   };
 
-  const onSubmit = (data: StepSixData) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      dispatch(
-        setStepData({
-          step: "stepSix",
-          data,
-        }),
-      );
-      setIsLoading(false);
-    }, 1200);
+  const onSubmit = async (data: StepSixData) => {
+    try {
+      const formData = new FormData();
+
+      Object.entries(stepSixData || {}).forEach(([key, value]) => {
+        if (key === "profile_image") return;
+        if (value === undefined || value === null) return;
+        formData.append(key, String(value));
+      });
+
+      formData.set("title", data.title);
+      formData.set("about", data.about || "");
+
+      if (selectedImageFile) {
+        formData.set("profile_image", selectedImageFile);
+      }
+
+      const response = await profileSetup(formData).unwrap();
+      if (response.status) {
+        // Handle success (e.g., navigate to next step)
+        toast.success(response?.message || "Profile setup successful!");
+        dispatch(setStep(7));
+        dispatch(
+          updateFormData({
+            title: data.title,
+            about: data.about,
+            profile_image: photoPreview,
+          }),
+        );
+
+        router.push("/onboarding/step-seven");
+      }
+    } catch (error) {
+      console.error("Error setting up profile:", error);
+      toast.error(error?.message || "Failed to set up profile.");
+    }
   };
 
   return (
-    <div className="max-w-[532px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-five"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 6/7</p>
-      </div>
-
+    <div className="">
       <OnboardingWrapper
         title="Build Your Profile"
         description="Add a photo and bio for your profile."
@@ -112,12 +125,12 @@ function page() {
           className="mt-7 lg:mt-10 space-y-5"
         >
           <div>
-            <label className="text-sm text-headerColor font-semibold block mb-2">
+            <label className="text-sm text-descriptionColor font-semibold block mb-2">
               Profile Photo
             </label>
 
             <div className="flex items-center gap-3">
-              <div className="w-[74px] h-[74px] rounded-full bg-[#E7E8EC] flex items-center justify-center overflow-hidden">
+              <div className="w-[74px] h-[74px] rounded-full bg-bgColor flex items-center justify-center overflow-hidden">
                 {photoPreview ? (
                   <Image
                     src={photoPreview}
@@ -127,7 +140,7 @@ function page() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <UploadUserIcon className="w-8 h-8 text-[#757A86]" />
+                  <UploadUserIcon className="w-8 h-8 text-descriptionColor" />
                 )}
               </div>
 
@@ -135,7 +148,7 @@ function page() {
                 <button
                   type="button"
                   onClick={handleUploadClick}
-                  className="h-10 px-5 rounded-full border border-borderColor flex items-center gap-2 text-sm font-semibold text-descriptionColor cursor-pointer"
+                  className="h-10 px-5 rounded-full border border-borderColor flex items-center gap-2 text-sm font-semibold text-descriptionColor! cursor-pointer"
                 >
                   <UploadIcon className="w-4 h-4 " />
                   Upload Photo
@@ -153,8 +166,6 @@ function page() {
               className="hidden"
               onChange={handleFileChange}
             />
-
-            <input type="hidden" {...register("photo")} />
           </div>
 
           <div>
@@ -180,9 +191,6 @@ function page() {
           </div>
 
           <div>
-            <label className="text-sm text-headerColor font-medium block mb-1.5">
-              About
-            </label>
             <Controller
               control={control}
               name="about"
@@ -193,12 +201,13 @@ function page() {
                 },
               }}
               render={({ field }) => (
-                <textarea
+                <ReusableTextarea
+                  label="About"
                   {...field}
                   rows={5}
                   maxLength={250}
                   placeholder="Tell us about your background, interests and profile summary."
-                  className="w-full rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none focus:ring-2 focus:ring-primaryColor/20"
+                  className="w-full rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none "
                 />
               )}
             />

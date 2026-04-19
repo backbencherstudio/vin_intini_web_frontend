@@ -1,7 +1,10 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,7 +15,9 @@ interface StepOneData {
   last_name: string;
 }
 function page() {
-  const onboardingData = useSelector((state: any) => state.onboarding.stepOne);
+  const onboardingData = useSelector(
+    (state: any) => state.onboarding?.formData,
+  );
   const {
     register,
     handleSubmit,
@@ -31,16 +36,14 @@ function page() {
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(setStepData({ step: "stepOne", data }));
+      dispatch(updateFormData(data));
+      dispatch(setStep(2));
       router.push("/onboarding/step-two");
       setIsLoading(false);
     }, 2000);
   };
   return (
-    <div className="max-w-lg mx-auto ">
-      <div className="flex items-center justify-end mb-4">
-        <p className="text-sm font-medium text-headerColor">Step 1/7</p>
-      </div>
+    <div className="">
       <OnboardingWrapper title="Tell us your name to personalize your profile">
         <form
           onSubmit={handleSubmit(onSubmit)}

@@ -5,6 +5,7 @@ import {
   useRegSendOTPMutation,
   useRegVerifyOtpMutation,
 } from "@/feature/slice/auth/authSlice";
+import { setToken } from "@/lib/token";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -113,8 +114,10 @@ export default function page() {
         email: verifyMail,
         otp: enteredOtp,
       }).unwrap();
+      console.log(response?.token, "response for reg");
 
       toast.success(response?.message || "OTP verified successfully.");
+      await setToken(response?.token || "");
       router.push("/sign-up/verify-complete");
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");
@@ -126,7 +129,7 @@ export default function page() {
     <div className="">
       <div className="">
         <div className="flex flex-col items-center text-center">
-          <h1 className="mt-4 md:text-xl text-lg lg:text-2xl font-semibold text-headerColor">
+          <h1 className="mt-4 pb-1 md:text-xl text-lg lg:text-2xl font-semibold text-headerColor">
             OTP Verification
           </h1>
           <p className="mt-2 text-sm text-descriptionColor ">
@@ -164,13 +167,13 @@ export default function page() {
             </span>
           )}
         </div>
-        <div className="mt-4 flex justify-center items-center gap-1 text-center">
+        <div className="mt-4 mb-6 flex justify-center items-center gap-1 text-center">
           <p className="text-sm text-descriptionColor">Didn’t received code?</p>
           <button
             type="button"
             onClick={handleResendClick}
             disabled={isRegSendOTPLoading}
-            className=" text-sm font-medium   text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
+            className=" text-sm font-medium   text-primaryColor! hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
             {isRegSendOTPLoading ? "Sending..." : "Resend"}
           </button>

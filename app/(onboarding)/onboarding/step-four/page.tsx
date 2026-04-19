@@ -1,21 +1,22 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
-import { setStepData } from "@/feature/slice/onboarding/onboardingSlice";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
+import SmartSelectField from "@/components/reusable/InputFiled/SmartSelectField";
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
+import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
 import type { SelectProps } from "antd";
-import { Select } from "antd";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
-import { useRouter } from "next/navigation";
 
 interface StepFourData {
   highest_degree: string;
-  field_of_study: string;
+  field_study: string;
   institution: string;
   graduation_year: string;
 }
@@ -137,9 +138,12 @@ const yearOptions: SelectProps["options"] = Array.from(
 );
 
 function page() {
-  const stepFourData = useSelector((state: any) => state.onboarding.stepFour);
+  const stepFourData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const { data: institutionOptions } = useGetInstitutionQuery("");
+  console.log(institutionOptions);
+
   const router = useRouter();
   const {
     control,
@@ -149,7 +153,7 @@ function page() {
   } = useForm<StepFourData>({
     defaultValues: {
       highest_degree: stepFourData?.highest_degree || "",
-      field_of_study: stepFourData?.field_of_study || "",
+      field_study: stepFourData?.field_study || "",
       institution: stepFourData?.institution || "",
       graduation_year: stepFourData?.graduation_year || "",
     },
@@ -158,30 +162,15 @@ function page() {
   const onSubmit = (data: StepFourData) => {
     setIsLoading(true);
     setTimeout(() => {
-      dispatch(
-        setStepData({
-          step: "stepFour",
-          data,
-        }),
-      );
+      dispatch(updateFormData(data));
+      dispatch(setStep(5));
       router.push("/onboarding/step-five");
       setIsLoading(false);
     }, 1200);
   };
 
   return (
-    <div className="max-w-[638px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-three"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 4/7</p>
-      </div>
-
+    <div className="">
       <OnboardingWrapper
         title="Your Education Background"
         description="Please select your highest degree achieved."
@@ -199,14 +188,12 @@ function page() {
               control={control}
               rules={{ required: "Highest degree is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select degree"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={degreeOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
               )}
@@ -223,37 +210,54 @@ function page() {
               Field of Study <span className="text-redColor">*</span>
             </label>
             <Controller
-              name="field_of_study"
+              name="field_study"
               control={control}
               rules={{ required: "Field of study is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select field of study"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={fieldOfStudyOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
               )}
             />
-            {errors.field_of_study && (
+            {errors.field_study && (
               <p className="text-red-500 text-xs">
-                {errors.field_of_study.message}
+                {errors.field_study.message}
               </p>
             )}
           </div>
-
-          <ReusableInput
-            id="institution"
-            label="Current/Last Institution"
-            placeholder="Stanford University"
-            {...register("institution")}
-            className="rounded-md"
-          />
-
+          <div className="space-y-1.5">
+            <label className="text-sm text-headerColor font-medium block">
+              Current/Last Institution <span className="text-redColor">*</span>
+            </label>
+            <Controller
+              name="institution"
+              control={control}
+              rules={{ required: "Institution is required" }}
+              render={({ field }) => (
+                <SmartSelectField
+                  placeholder="Select institution"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={institutionOptions?.data?.map((inst: any) => ({
+                    value: inst.name,
+                    label: inst.name,
+                  }))}
+                  allowCustomInput
+                  className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
+                />
+              )}
+            />
+            {errors.institution && (
+              <p className="text-red-500 text-xs">
+                {errors.institution.message}
+              </p>
+            )}
+          </div>
           <div className="space-y-1.5">
             <label className="text-sm text-headerColor font-medium block">
               Completed Graduation/ Expected Year{" "}
@@ -264,14 +268,12 @@ function page() {
               control={control}
               rules={{ required: "Graduation year is required" }}
               render={({ field }) => (
-                <Select
-                  showSearch
-                  optionFilterProp="label"
+                <SmartSelectField
                   placeholder="Select year"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={yearOptions}
-                  size="large"
+                  allowCustomInput
                   className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
                 />
               )}
