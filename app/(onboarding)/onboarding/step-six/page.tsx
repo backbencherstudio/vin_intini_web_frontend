@@ -4,17 +4,18 @@ import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import { useProfileSetupMutation } from "@/feature/slice/auth/authSlice";
-import {
-  LeftArrowIcon,
-  UploadIcon,
-  UploadUserIcon,
-} from "@/public/svgIcons/Icons";
+import { UploadIcon, UploadUserIcon } from "@/public/svgIcons/Icons";
 
+import {
+  setStep,
+  updateFormData,
+} from "@/feature/slice/onboarding/onboardingSlice";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 interface StepSixData {
@@ -29,7 +30,8 @@ function page() {
   const [photoPreview, setPhotoPreview] = useState<string>(
     stepSixData?.profile_image || "",
   );
-
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const {
     control,
@@ -60,11 +62,13 @@ function page() {
     );
 
     if (!isValidType) {
-      return;
+      return toast.error(
+        "Invalid file type. Please upload a JPG, PNG, or GIF file.",
+      );
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      return;
+      return toast.error("File size must be less than 5MB");
     }
 
     setSelectedImageFile(file);
@@ -90,25 +94,28 @@ function page() {
       }
 
       const response = await profileSetup(formData).unwrap();
-      console.log("response", response);
+      if (response.status) {
+        // Handle success (e.g., navigate to next step)
+        toast.success(response?.message || "Profile setup successful!");
+        dispatch(setStep(6));
+        dispatch(
+          updateFormData({
+            title: data.title,
+            about: data.about,
+            profile_image: photoPreview,
+          }),
+        );
+
+        router.push("/onboarding/step-seven");
+      }
     } catch (error) {
       console.error("Error setting up profile:", error);
+      toast.error(error?.message || "Failed to set up profile.");
     }
   };
 
   return (
-    <div className="max-w-[532px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-five"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 6/7</p>
-      </div>
-
+    <div className="">
       <OnboardingWrapper
         title="Build Your Profile"
         description="Add a photo and bio for your profile."

@@ -51,17 +51,8 @@ function page() {
     }, 2000);
   };
   return (
-    <div className="max-w-lg mx-auto ">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 2/7</p>
-      </div>
+    <div className=" ">
+      
       <OnboardingWrapper
         title={`Welcome, ${onboardingData?.first_name || "there"}!`}
         description="Tell us where you are from."

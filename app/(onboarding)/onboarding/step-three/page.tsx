@@ -102,17 +102,8 @@ function page() {
     }, 2000);
   };
   return (
-    <div className="max-w-[638px] mx-auto ">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-two"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 3/7</p>
-      </div>
+    <div className="">
+      
       <OnboardingWrapper
         title="Welcome to Mind Unite!"
         description="Select all that apply."

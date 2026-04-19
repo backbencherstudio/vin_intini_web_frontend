@@ -7,9 +7,7 @@ import {
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import type { SelectProps } from "antd";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -172,18 +170,7 @@ function page() {
   };
 
   return (
-    <div className="max-w-[638px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-three"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 4/7</p>
-      </div>
-
+    <div className="">
       <OnboardingWrapper
         title="Your Education Background"
         description="Please select your highest degree achieved."

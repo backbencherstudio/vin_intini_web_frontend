@@ -43,10 +43,7 @@ function page() {
     }, 2000);
   };
   return (
-    <div className="max-w-lg mx-auto ">
-      <div className="flex items-center justify-end mb-4">
-        <p className="text-sm font-medium text-headerColor">Step 1/7</p>
-      </div>
+    <div className="">
       <OnboardingWrapper title="Tell us your name to personalize your profile">
         <form
           onSubmit={handleSubmit(onSubmit)}

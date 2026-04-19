@@ -104,18 +104,8 @@ function page() {
   };
 
   return (
-    <div className="max-w-[532px] mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <Link
-          href="/onboarding/step-four"
-          className="flex items-center text-sm font-medium text-headerColor"
-        >
-          <LeftArrowIcon />
-          Back
-        </Link>
-        <p className="text-sm font-medium text-headerColor">Step 5/7</p>
-      </div>
-
+    <div className="">
+    
       <OnboardingWrapper
         title="Your Brain Health Fields of Interest"
         description="Please select all that apply."

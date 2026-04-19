@@ -23,11 +23,14 @@ export const onboardingSlice = createSlice({
     setStep: (state, action: PayloadAction<number>) => {
       state.currentStep = Math.max(state.currentStep, action.payload);
     },
+    goToPreviousStep: (state) => {
+      state.currentStep = Math.max(1, state.currentStep - 1);
+    },
 
     onboardingReset: () => initialState,
   },
 });
 
-export const { updateFormData, setStep, onboardingReset } =
+export const { updateFormData, setStep, goToPreviousStep, onboardingReset } =
   onboardingSlice.actions;
 export default onboardingSlice.reducer;
