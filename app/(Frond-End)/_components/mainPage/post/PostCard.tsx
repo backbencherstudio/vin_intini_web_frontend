@@ -1,6 +1,7 @@
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
+import PostComment from "./PostComment";
 
 export type PostCardData = {
   id: number;
@@ -24,7 +25,7 @@ function PostCard({ post }: PostCardProps) {
   if (isLiked) {
     likesCount += 1;
   } else {
-    likesCount ;
+    likesCount;
   }
 
   const handleLikeClick = () => {
@@ -100,12 +101,14 @@ function PostCard({ post }: PostCardProps) {
         </button>
         <button
           type="button"
+          onClick={() => setIsCommented((prv) => !prv)}
           className="flex items-center font-semibold justify-center   gap-2 py-1.5 text-headerColor/90 text-[16px] cursor-pointer hover:opacity-80"
         >
           <CommentIcon className="w-4.5 h-4.5" />
           <span>Comments</span>
         </button>
       </div>
+      <div className="mt-2">{isCommented && <PostComment />}</div>
     </article>
   );
 }
