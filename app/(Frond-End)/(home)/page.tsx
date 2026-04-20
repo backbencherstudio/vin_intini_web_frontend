@@ -4,6 +4,7 @@ import HowWeWork from "./_components/HowWeWork";
 import Testimonials from "./_components/Testimonials";
 import Opportunities from "./_components/Opportunities";
 import OurImpact from "./_components/OurImpact";
+import GetApp from "./_components/GetApp";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Testimonials />
       <Opportunities />
       <OurImpact />
+      <GetApp />
     </div>
   );
 }

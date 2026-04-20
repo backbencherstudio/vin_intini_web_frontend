@@ -177,3 +177,11 @@ export const trustedLeadingInstitutions = [
     "/images/university_of_mis.png",   
     "/images/university_of_tex.png",   
 ]
+
+
+export const features = [
+    "Free professional profile",
+    "Access to exclusive job listings",
+    "Connect with industry leaders",
+    "Share your research & insights"
+]
