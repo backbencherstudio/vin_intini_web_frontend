@@ -32,7 +32,7 @@ function MainFooter() {
     },
   ];
   return (
-    <footer className=" text-[#5f6368] bg-whiteColor py-10">
+    <footer className="  border-t border-[#DFE1E7] bg-whiteColor py-10">
       <div className="container py-5 sm:py-6">
         <div className="flex flex-col gap-5 sm:gap-6">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start sm:gap-8">
