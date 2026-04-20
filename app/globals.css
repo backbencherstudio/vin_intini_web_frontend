@@ -209,15 +209,3 @@ body {
 .animate-bounce-x {
   animation: bounce-x 2s infinite linear;
 }
-
-input,
-button,
-select,
-optgroup,
-textarea {
-  color: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  line-height: inherit;
-  margin: 0;
-}

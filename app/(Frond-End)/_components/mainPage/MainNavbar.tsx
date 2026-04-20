@@ -18,7 +18,7 @@ import { HiOutlineMenu, HiX } from "react-icons/hi";
 import UserHeaderInfo from "./UserHeaderInfo";
 
 const menuItems = [
-  { label: "Home", slug: "/mu/2", icon: HomeIcon },
+  { label: "Home", slug: "/mu/2/home", icon: HomeIcon },
   { label: "Academia", slug: "/mu/2/academia", icon: GlobalIcon },
   { label: " My Network", slug: "/mu/2/my-network", icon: MultiUserIcon },
   {

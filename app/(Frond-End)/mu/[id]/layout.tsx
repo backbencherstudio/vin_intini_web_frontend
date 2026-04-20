@@ -1,16 +1,17 @@
 import MainFooter from "@/components/reusable/MainFooter";
+import React from "react";
 import MainNavbar from "../../_components/mainPage/MainNavbar";
 
-export default function FrontEndLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <MainNavbar />
-      {children}
-      <MainFooter />
+      <div>
+        <MainNavbar />
+        <div className="container ">{children}</div>
+        <MainFooter />
+      </div>
     </div>
   );
 }
+
+export default layout;
