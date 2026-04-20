@@ -1,4 +1,5 @@
 import Navbar from "@/app/(Frond-End)/_components/Navbar";
+import Footer from "../_components/Footer";
 export default function FrontEndLayout({
   children,
 }: {
@@ -9,7 +10,7 @@ export default function FrontEndLayout({
       <Navbar />
       <div className="w-full h-full grid overflow-y-auto min-h-0">
         {children}
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </div>
   );

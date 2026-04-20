@@ -1,4 +1,14 @@
-import { UsersIcon, MonitorIcon, PremiumAnalyticsIcon, OpenBookIcon } from "./svgIcons/Icons";
+import { OurImpactType } from "@/app/type";
+import { 
+    UsersIcon, 
+    MonitorIcon, 
+    PremiumAnalyticsIcon, 
+    OpenBookIcon, 
+    ShootingStarIcon,
+    UserWithStarIcon,
+    OfficeBuildingIcon,
+    ChartIcon
+} from "./svgIcons/Icons";
 
 export const landingPageFeatures = [
     {
@@ -110,4 +120,60 @@ export const opportunities = [
         job_position: "analysis",
         isSaved: false
     },
+]
+
+
+
+export const ourImpactData : OurImpactType[] = [
+    {
+        id: "1",
+        title: "Professionals Joined",
+        description: "Growing community of experts",
+        value: "500",
+        Icon: UserWithStarIcon,
+        uniqueKey: "professionals_joined",
+        bgColor: "bg-[#E2FBFF]",
+        IconBgColor: "bg-[#BCF3FB]"
+    },
+    {
+        id: "2",
+        title: "Organizations Acive",
+        description: "Top institutions & companies",
+        value: "200",
+        Icon: OfficeBuildingIcon,
+        uniqueKey: "organizations_active",
+        bgColor: "bg-[#E4EEFF]",
+        IconBgColor: "bg-[#CEDEFC]"
+    },
+    {
+        id: "3",
+        title: "Research Articles",
+        description: "Shared insights studies",
+        value: "50",
+        Icon: ChartIcon,
+        uniqueKey: "research_articles",
+        bgColor: "bg-[#F8F2FF]",
+        IconBgColor: "bg-[#E9DDF6]"
+    },
+    {
+        id: "4",
+        title: "Satisfaction Rate",
+        description: "From community members",
+        value: "95",
+        Icon: ShootingStarIcon,
+        uniqueKey: "satisfaction_rate",
+        bgColor: "bg-[#EBFFFA]",
+        IconBgColor: "bg-[#C1F9EF]"
+    }
+]
+
+
+export const trustedLeadingInstitutions = [
+    "/images/company-logo-4.png",   
+    "/images/university_of_bos.png",   
+    "/images/university_of_cali.png",   
+    "/images/company-logo-1.png",   
+    "/images/company-logo-2.png",   
+    "/images/university_of_mis.png",   
+    "/images/university_of_tex.png",   
 ]
