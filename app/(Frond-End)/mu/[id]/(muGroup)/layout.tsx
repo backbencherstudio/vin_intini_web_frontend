@@ -12,7 +12,7 @@ export default function FrontEndLayout({
           <div className="hidden md:block col-span-2 border-r border-[#D2D2D5] pr-6 h-full">
             <MainPageLeftSidebar />
           </div>
-          {children}
+          <div className="col-span-8">{children}</div>
         </div>
       </div>
     </div>
