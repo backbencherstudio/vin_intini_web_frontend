@@ -132,7 +132,7 @@ function page() {
   const handleFinish = () => {
     setIsLoading(true);
 
-    router.push(`/${data?.user?.id}`);
+    router.push(`/mu/${data?.user?.id}`);
     setTimeout(() => {
       dispatch(onboardingReset());
       setIsLoading(false);

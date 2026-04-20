@@ -1010,9 +1010,9 @@ export const PlayIcon = ({ className }: { className?: string }) => (
 export const EmojiIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="12"
-    viewBox="0 0 16 12"
+    width="17"
+    height="17"
+    viewBox="0 0 17 17"
     fill="none"
     className={className}
   >
@@ -1040,9 +1040,9 @@ export const SendIcon = ({ className }: { className?: string }) => (
 export const LikeIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="14"
-    viewBox="0 0 18 14"
+    width="21"
+    height="18"
+    viewBox="0 0 21 18"
     fill="none"
     className={className}
   >
