@@ -1,4 +1,5 @@
-import MainNavbar from "../_components/mainPage/MainNavbar";
+import MainFooter from "@/components/reusable/MainFooter";
+import MainNavbar from "../../_components/mainPage/MainNavbar";
 
 export default function FrontEndLayout({
   children,
@@ -9,6 +10,7 @@ export default function FrontEndLayout({
     <div>
       <MainNavbar />
       {children}
+      <MainFooter />
     </div>
   );
 }
