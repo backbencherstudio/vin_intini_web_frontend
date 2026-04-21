@@ -185,3 +185,94 @@ export const features = [
     "Connect with industry leaders",
     "Share your research & insights"
 ]
+
+
+export const countryList = [
+  { value: "all", label: "All" },
+  { value: "scotland", label: "Scotland" },
+  { value: "northern-ireland", label: "Northern Ireland" },
+  { value: "isle-of-man", label: "Isle of Man" },
+  { value: "north-west", label: "North West" },
+  { value: "north-east", label: "North East" },
+  { value: "yorkshire-and-the-humber", label: "Yorkshire and the Humber" },
+  { value: "east-midlands", label: "East Midlands" },
+  { value: "west-midlands", label: "West Midlands" },
+  { value: "wales", label: "Wales" },
+  { value: "eastern", label: "Eastern" },
+  { value: "london", label: "London" },
+  { value: "south-west", label: "South West" },
+  { value: "south-east", label: "South East" }
+];
+
+
+export const regionalList = [
+  "scotland",
+  "northern-ireland",
+  "isle-of-man",
+  "north-west",
+  "north-east",
+  "yorkshire-and-the-humber",
+  "east-midlands",
+  "west-midlands",
+  "wales",
+  "eastern",
+  "london",
+  "south-west",
+  "south-east"
+]
+
+
+export const regionCounts = [
+  {
+    country: "scotland",
+    total_notices: 0
+  },
+  {
+    country: "northern-ireland",
+    total_notices: 0
+  },
+  {
+    country: "isle-of-man",
+    total_notices: 0
+  },
+  {
+    country: "north-west",
+    total_notices: 0
+  },
+  {
+    country: "north-east",
+    total_notices: 0
+  },
+  {
+    country: "yorkshire-and-the-humber",
+    total_notices: 0
+  },
+  {
+    country: "east-midlands",
+    total_notices: 0
+  },
+  {
+    country: "west-midlands",
+    total_notices: 0
+  },
+  {
+    country: "wales",
+    total_notices: 0
+  },
+  {
+    country: "eastern",
+    total_notices: 0
+  },
+  {
+    country: "london",
+    total_notices: 0
+  },
+  {
+    country: "south-west",
+    total_notices: 0
+  },
+  {
+    country: "south-east",
+    total_notices: 0
+  }
+];
