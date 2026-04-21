@@ -2,6 +2,7 @@ import MainFooter from "@/components/reusable/MainFooter";
 import React from "react";
 import MainNavbar from "../../_components/mainPage/MainNavbar";
 
+
 function layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
