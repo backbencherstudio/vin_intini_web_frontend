@@ -64,9 +64,9 @@ export const PsychologyFieldsList = ({
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-3">
       {/* Fields List */}
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col gap-4">
         {paginatedFields.length > 0 ? (
           paginatedFields.map((field) => (
             <PsychologyFieldItem key={field.id} field={field} />

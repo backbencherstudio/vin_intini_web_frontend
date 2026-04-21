@@ -1,19 +1,14 @@
-"use client";
+// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/page.tsx
 
-import { useState } from "react";
-import { PsychologyHeader, PsychologyFieldsList } from "./_components";
-import { psychologyFields } from "./_mock/psychologyData";
+import { redirect } from "next/navigation";
 
-export default function PsychologyNetworkPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+interface PsychologyNetworkPageProps {
+  params: Promise<{ id: string }>;
+}
 
-  return (
-    <div className="flex w-full max-w-[270.25px] flex-col items-start gap-6 px-4 py-6 sm:max-w-2xl md:max-w-4xl md:gap-10 md:px-0 md:py-10 lg:max-w-6xl xl:max-w-[1081px]">
-      <PsychologyHeader onSearch={setSearchQuery} />
-      <PsychologyFieldsList
-        fields={psychologyFields}
-        searchQuery={searchQuery}
-      />
-    </div>
-  );
+export default async function PsychologyNetworkPage({
+  params,
+}: PsychologyNetworkPageProps) {
+  const { id } = await params;
+  redirect(`/mu/${id}/psychology-network/fields`);
 }
