@@ -5,7 +5,7 @@ export default function FrontEndLayout({
 }) {
   return (
     <div>
-      <div className=" container ">
+      <div className=" ">
         <div className="">
           <div className="col-span-8">{children}</div>
         </div>

@@ -4,8 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ImageIcon, Smile } from "lucide-react";
 import Image from "next/image";
+import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
 
 type CommentItem = {
@@ -31,7 +31,7 @@ const mainComment: CommentItem[] = [
 
 function PostComment() {
   return (
-    <section className=" border-t border-borderColor comment-section  p-4">
+    <section className=" border-t border-borderColor comment-section py-4 md:py-4">
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image
@@ -42,39 +42,8 @@ function PostComment() {
             className="h-full w-full object-cover"
           />
         </div>
-
-        <div className="flex-1 rounded-xl border border-headerColor/40 bg-bgLightColor p-3">
-          <textarea
-            placeholder="type..."
-            rows={2}
-            className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none"
-          />
-
-          <div className="mt-3 flex items-center justify-between border-t border-borderColor pt-2.5">
-            <div className="flex items-center gap-3 text-descriptionColor">
-              <button
-                type="button"
-                className="cursor-pointer hover:opacity-80"
-                aria-label="Add image"
-              >
-                <ImageIcon size={16} />
-              </button>
-              <button
-                type="button"
-                className="cursor-pointer hover:opacity-80"
-                aria-label="Add emoji"
-              >
-                <Smile size={16} />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              className="h-8 rounded-full bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor hover:opacity-90 cursor-pointer"
-            >
-              Comment
-            </button>
-          </div>
+        <div className="flex-1">
+          <CommentBoxArea />
         </div>
       </div>
 
@@ -83,11 +52,11 @@ function PostComment() {
           {mainComment.map((item) => (
             <AccordionItem
               value="replies"
-              className="border-b-0 "
+              className="border-b-0 relative after:content-[''] after:top-0 after:left-0  after:ml-1  after:w-2 after:h-full after:bg-blue-500 after:rounded-full "
               key={item?.id}
             >
-              <AccordionTrigger className="py-2 pl-10 text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
-                <CommentRow item={item}  />
+              <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
+                <CommentRow item={item} depth={0} />
               </AccordionTrigger>
               <AccordionContent className="pb-0">
                 <div className="space-y-5">
