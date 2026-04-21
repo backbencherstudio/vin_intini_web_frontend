@@ -42,7 +42,7 @@ function LoginForm() {
       if (response?.data?.success) {
         toast.success("Login successful!");
         await setToken(response.data.token);
-        route.push(`/${response?.data?.user?.id}`);
+        route.push(`/mu/${response?.data?.user?.id}/home`);
       }
     } catch (error) {
       console.log("Login error:", error);
