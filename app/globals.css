@@ -27,7 +27,7 @@
   --color-blueColor: #0068ef;
   --color-ratingColor: #ffc52e;
   --color-bgColor: var(--bgColor);
-  --color-bgLightColor: #F8FAFB;
+  --color-bgLightColor: #f8fafb;
   --color-sectionColor: #f6f8fa;
   --color-descriptionColor: var(--descriptionColor);
   --color-liteDescriptionColor: #a5a5ab;
@@ -209,4 +209,8 @@ body {
 
 .animate-bounce-x {
   animation: bounce-x 2s infinite linear;
+}
+
+.comment-section .accordion_arrow {
+  display: none !important;
 }

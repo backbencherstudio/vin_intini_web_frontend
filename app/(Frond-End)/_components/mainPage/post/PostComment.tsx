@@ -1,87 +1,37 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { ImageIcon, Smile } from "lucide-react";
 import Image from "next/image";
+import CommentRow from "./CommentCard";
 
 type CommentItem = {
   id: number;
-  depth: number;
+  depth?: number;
+  message?: string;
   showReply?: boolean;
+  replyComments?: CommentItem[];
 };
 
-const comments: CommentItem[] = [
-  { id: 1, depth: 0, showReply: true },
-  { id: 2, depth: 1 },
-  { id: 3, depth: 1 },
-  { id: 4, depth: 1 },
+const mainComment: CommentItem[] = [
+  {
+    id: 1,
+    showReply: true,
+    message: "This is a sample comment.",
+    replyComments: [
+      { id: 2, message: "This is a sample comment reply one." },
+      { id: 3, message: "This is a sample comment reply two." },
+      { id: 4, message: "This is a sample comment reply three." },
+    ],
+  },
 ];
-
-function CommentRow({
-  depth,
-  showReply = false,
-}: {
-  depth: number;
-  showReply?: boolean;
-}) {
-  return (
-    <div
-      className={`${depth > 0 ? "ml-6 border-l border-borderColor pl-5" : ""}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-2.5">
-          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
-            <Image
-              src="/profile.png"
-              alt="Profile"
-              width={32}
-              height={32}
-              className="h-full w-full object-cover"
-            />
-          </div>
-
-          <div className="min-w-0">
-            <h4 className="text-sm leading-9 font-semibold text-headerColor">
-              Profile Name
-            </h4>
-            <p className="truncate line-clamp-1 text-[13px] leading-5 text-descriptionColor">
-              Title (whether its a concise or long title, all the text will be
-              in single line. Truncate the sentence i...)
-            </p>
-          </div>
-        </div>
-
-        <span className="shrink-0 text-[14px] leading-5 text-headerColor">
-          1h ago
-        </span>
-      </div>
-
-      <p className="mt-2 pl-10 text-base leading-[150%] text-headerColor/90">
-        I use figma 80% of my work. Even prefer it to Ps and Ai, because it's
-        more comfortable. It's simply nicer smooth, nice to work with. I start
-        projects for printing in figma and then export or recreate in other
-        programs. That's it)
-      </p>
-
-      <div className="mt-2 pl-10 flex items-center gap-3 text-[15px] font-medium text-headerColor/85">
-        <button type="button" className="cursor-pointer hover:opacity-80">
-          Like
-        </button>
-        <span className="text-headerColor/65">10</span>
-        {showReply && (
-          <>
-            <span className="text-headerColor/45">|</span>
-            <button type="button" className="cursor-pointer hover:opacity-80">
-              Reply
-            </button>
-            <span className="text-headerColor/65">100</span>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function PostComment() {
   return (
-    <section className=" border-t border-borderColor  p-4">
+    <section className=" border-t border-borderColor comment-section  p-4">
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image
@@ -128,14 +78,27 @@ function PostComment() {
         </div>
       </div>
 
-      <div className="mt-4 space-y-5">
-        {comments.map((item) => (
-          <CommentRow
-            key={item.id}
-            depth={item.depth}
-            showReply={item.showReply}
-          />
-        ))}
+      <div className="mt-4 space-y-4 ">
+        <Accordion type="single" collapsible defaultValue="replies">
+          {mainComment.map((item) => (
+            <AccordionItem
+              value="replies"
+              className="border-b-0 "
+              key={item?.id}
+            >
+              <AccordionTrigger className="py-2 pl-10 text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
+                <CommentRow item={item}  />
+              </AccordionTrigger>
+              <AccordionContent className="pb-0">
+                <div className="space-y-5">
+                  {item?.replyComments.map((reply) => (
+                    <CommentRow key={reply.id} item={reply} depth={1} />
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
 
       <button
