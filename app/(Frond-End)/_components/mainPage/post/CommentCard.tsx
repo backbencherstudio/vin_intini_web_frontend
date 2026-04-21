@@ -10,7 +10,10 @@ export default function CommentRow({
   item: any;
 }) {
   return (
-    <div className={`${depth > 0 ? "ml-6  pl-5" : " "}`}>
+    <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
+      {depth > 0 && (
+        <div className="pointer-events-none absolute -left-2.5 -top-4.5 h-9 w-7 rounded-bl-2xl border-l border-b border-borderColor" />
+      )}
       <div className="flex items-start gap-2.5">
         <div className="h-8 w-8  overflow-hidden rounded-full">
           <Image

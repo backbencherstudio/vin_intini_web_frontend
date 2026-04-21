@@ -1,0 +1,158 @@
+"use client";
+
+import {
+  BanIcon,
+  GlobalIcon,
+  GroupUserIcon,
+  MultiUserIcon,
+} from "@/public/svgIcons/Icons";
+import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
+
+type PostVisibility = "anyone" | "connections" | "group";
+type CommentControl = "anyone" | "connections" | "no_one";
+
+const postVisibilityOptions: Array<{
+  value: PostVisibility;
+  label: string;
+  icon: string | React.ComponentType<{ className?: string }>;
+}> = [
+  { value: "anyone", label: "Anyone", icon: GlobalIcon },
+  { value: "connections", label: "Connections only", icon: MultiUserIcon },
+  { value: "group", label: "Group", icon: GroupUserIcon },
+];
+
+const commentControlOptions: Array<{
+  value: CommentControl;
+  label: string;
+  icon: string | React.ComponentType<{ className?: string }>;
+}> = [
+  { value: "anyone", label: "Anyone", icon: GlobalIcon },
+  { value: "connections", label: "Connections only", icon: MultiUserIcon },
+  { value: "no_one", label: "No one", icon: BanIcon },
+];
+
+function PostAccessModal({
+  setPostType,
+}: {
+  setPostType: (type: string) => void;
+}) {
+  const [postVisibility, setPostVisibility] =
+    useState<PostVisibility>("anyone");
+  const [commentControl, setCommentControl] =
+    useState<CommentControl>("anyone");
+
+  const handlePostVisibilityChange = (value: PostVisibility) => {
+    setPostVisibility(value);
+
+    if (value === "group") {
+      setPostType("post_group");
+    }
+  };
+
+  return (
+    <section className="bg-whiteColor">
+      <div className="border-b border-borderColor px-4 py-3">
+        <h3 className="text-lg   leading-12 font-semibold text-descriptionColor">
+          Post Setting
+        </h3>
+      </div>
+
+      <div className="px-4 pb-4 pt-5">
+        <h4 className="text-sm font-semibold text-descriptionColor">
+          Select who can see your posts
+        </h4>
+
+        <div className="mt-4 space-y-1">
+          {postVisibilityOptions.map((option) => {
+            const isActive = postVisibility === option.value;
+
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handlePostVisibilityChange(option.value)}
+                className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
+                    <option.icon className="h-5 w-5" />
+                  </div>
+                  <span className="text-lg  font-semibold text-descriptionColor">
+                    {option.label}
+                  </span>
+                </div>
+
+                <span
+                  className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
+                    isActive ? "border-primaryColor" : "border-grayColor1"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="h-2 w-2 rounded-full bg-primaryColor" />
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="border-t border-borderColor px-4 pb-4 pt-5">
+        <h4 className="text-sm font-semibold text-descriptionColor">
+          Comment Control
+        </h4>
+
+        <div className="mt-4 space-y-1">
+          {commentControlOptions.map((option) => {
+            const isActive = commentControl === option.value;
+
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setCommentControl(option.value)}
+                className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
+                    <option.icon className="h-5 w-5" />
+                  </div>
+                  <span className="text-lg  font-semibold text-descriptionColor">
+                    {option.label}
+                  </span>
+                </div>
+
+                <span
+                  className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
+                    isActive ? "border-primaryColor" : "border-grayColor1"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="h-2 w-2 rounded-full bg-primaryColor" />
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-6 flex justify-end gap-4">
+          <button
+            onClick={() => setPostType("Post_write")}
+            className="rounded-md bg-grayColor1 px-4 py-2 text-descriptionColor hover:bg-grayColor2"
+          >
+            Back
+          </button>
+          <button
+            onClick={() => setPostType("Post_write")}
+            className="rounded-md bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default PostAccessModal;
