@@ -12,7 +12,7 @@ interface EquipmentCardProps {
 
 export const EquipmentCard = ({ card }: EquipmentCardProps) => {
   return (
-    <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-[1px] md:max-w-91.75">
+    <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px md:max-w-91.75">
       {/* Image */}
       <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
         <Image

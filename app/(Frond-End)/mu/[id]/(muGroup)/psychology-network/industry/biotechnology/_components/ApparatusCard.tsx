@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -11,9 +10,9 @@ interface ApparatusCardProps {
 
 export const ApparatusCard = ({ card }: ApparatusCardProps) => {
   return (
-    <div className="flex w-full max-w-91.75 flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-[1px]">
+    <div className="flex w-full max-w-91.75 flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px">
       {/* Image */}
-      <div className="relative h-[180px] w-full overflow-hidden rounded-[10px]">
+      <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
         <Image
           src={card.image}
           alt={card.title}

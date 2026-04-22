@@ -16,7 +16,7 @@ export const PartnerCard = ({
 }: PartnerCardProps) => {
   return (
     <div
-      className={`flex w-full flex-col items-start gap-[13px] self-stretch border-b border-[#D2D2D5] p-4 lg:p-1 ${
+      className={`flex w-full flex-col items-start gap-3.25 self-stretch border-b border-[#D2D2D5] p-4 lg:p-1 ${
         isMobile ? "rounded-lg bg-[#F6F8FA]" : ""
       }`}
     >
@@ -32,7 +32,7 @@ export const PartnerCard = ({
         {partner.description}
       </p>
       <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
-        <span className="text-center font-['Arial'] text-sm font-normal leading-[20px]">
+        <span className="text-center font-['Arial'] text-sm font-normal leading-5">
           Learn more
         </span>
         <ArrowUpRight className="h-4 w-4" />
