@@ -5,14 +5,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { NotificationIcon } from "@/public/svgIcons/Icons";
-import { X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
@@ -25,39 +20,15 @@ function UserHeaderInfo() {
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
         <div className="flex items-center gap-4 lg:gap-5 justify-between">
-          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-            <PopoverTrigger
-              className="cursor-pointer relative flex justify-center items-center "
-              onClick={() => setPopoverOpen(!popoverOpen)}
-            >
-              <span className="absolute -top-2 -right-2 flex justify-center items-center text-xs w-4 h-4 text-whiteColor rounded-full bg-redColor">
-                2
-              </span>
-              <NotificationIcon />
-            </PopoverTrigger>
-
-            <PopoverContent className="w-70 md:w-[267px] mt-4 p-0 max-h-[500px] flex flex-col">
-              {/* Header */}
-              <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
-                <h4 className="text-base font-bold md:text-lg text-headerColor">
-                  Notifications
-                </h4>
-
-                <button
-                  onClick={() => setPopoverOpen(false)}
-                  className="text-[#455468] bg-bgColor w-[35px] h-[35px] shadow-sm rounded-full cursor-pointer text-lg font-bold flex items-center justify-center"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="overflow-y-auto px-4 py-3 flex-1">
-                <p className="text-center text-sm text-gray-500 py-6">
-                  No notifications available
-                </p>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Link
+            href={`/mu/1/notification`}
+            className="relative flex justify-center items-center "
+          >
+            <span className="absolute -top-2 -right-2 flex justify-center items-center text-xs w-4 h-4 text-whiteColor rounded-full bg-redColor">
+              2
+            </span>
+            <NotificationIcon />
+          </Link>
 
           <div className="  relative sm:ml-0">
             <DropdownMenu>

@@ -10,8 +10,8 @@ import { useEffect, useRef, useState } from "react";
 interface SmartEmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
   iconClassName?: string;
-  width?: number ;
-  height?: number ;
+  width?: number;
+  height?: number;
   theme?: "light" | "dark" | "auto";
   showPreview?: boolean;
 }
@@ -80,7 +80,6 @@ export default function SmartEmojiPicker({
             height={height}
             theme={theme as any}
             previewConfig={{ showPreview: false }}
-            searchDisabled
             className="comment-emoji-picker"
             categories={[
               { category: Categories.SMILEYS_PEOPLE, name: "Smileys & People" },

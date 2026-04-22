@@ -213,7 +213,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
         <SmartEmojiPicker
           onEmojiSelect={(emoji) => setPostText((prev) => prev + emoji)}
           iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
-          height={200}
+          height={250}
         />
       </div>
       <div className=" flex items-center justify-between border-t border-borderColor pt-3">
