@@ -1,31 +1,32 @@
 "use client";
 
 import {
+  setCommentControl,
+  setPostVisibility,
+} from "@/feature/slice/postCompose/postComposeSlice";
+import {
   BanIcon,
   GlobalIcon,
   GroupUserIcon,
   MultiUserIcon,
 } from "@/public/svgIcons/Icons";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-type PostVisibility = "anyone" | "connections" | "group";
-type CommentControl = "anyone" | "connections" | "no_one";
+type PostVisibility = "anyone" | "connections" | "group" | "no_one";
 
-const postVisibilityOptions: Array<{
+interface postAccessType {
   value: PostVisibility;
   label: string;
   icon: string | React.ComponentType<{ className?: string }>;
-}> = [
+}
+
+const postVisibilityOptions: postAccessType[] = [
   { value: "anyone", label: "Anyone", icon: GlobalIcon },
   { value: "connections", label: "Connections only", icon: MultiUserIcon },
   { value: "group", label: "Group", icon: GroupUserIcon },
 ];
 
-const commentControlOptions: Array<{
-  value: CommentControl;
-  label: string;
-  icon: string | React.ComponentType<{ className?: string }>;
-}> = [
+const commentControlOptions: postAccessType[] = [
   { value: "anyone", label: "Anyone", icon: GlobalIcon },
   { value: "connections", label: "Connections only", icon: MultiUserIcon },
   { value: "no_one", label: "No one", icon: BanIcon },
@@ -36,17 +37,23 @@ function PostAccessModal({
 }: {
   setPostType: (type: string) => void;
 }) {
-  const [postVisibility, setPostVisibility] =
-    useState<PostVisibility>("anyone");
-  const [commentControl, setCommentControl] =
-    useState<CommentControl>("anyone");
+  const dispatch = useDispatch();
+  const { postVisibility, commentControl } = useSelector(
+    (state: any) => state.postCompose,
+  );
 
-  const handlePostVisibilityChange = (value: PostVisibility) => {
-    setPostVisibility(value);
+  const handlePostVisibilityChange = (value) => {
+    if (value !== "group") {
+      dispatch(setPostVisibility(value));
+    }
 
     if (value === "group") {
       setPostType("post_group");
     }
+  };
+
+  const handleCommentControlChange = (value) => {
+    dispatch(setCommentControl(value));
   };
 
   return (
@@ -110,7 +117,7 @@ function PostAccessModal({
               <button
                 key={option.value}
                 type="button"
-                onClick={() => setCommentControl(option.value)}
+                onClick={() => handleCommentControlChange(option.value)}
                 className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
               >
                 <div className="flex items-center gap-3">

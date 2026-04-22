@@ -1,5 +1,6 @@
 "use client";
 import RootDialog from "@/components/reusable/RootDialog";
+import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import {
   EmojiIcon,
   ImageUploadIcon,
@@ -8,18 +9,21 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PostAccessModal from "./post/PostAccessModal";
 import PostGroupListModal from "./post/PostGroupListModal";
 import PostModal from "./post/PostModal";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
-  const data = useSelector((state: any) => state.postCompose);
-  console.log(data);
-
-  const [postType, setPostType] = useState("Post_write");
+  const dispatch = useDispatch();
+  const { postType } = useSelector((state: any) => state.postCompose);
   const [postText, setPostText] = useState("");
+
+  const handleSetPostType = (type: string) => {
+    dispatch(setPostType(type as any));
+  };
+
   return (
     <div className="rounded-md border border-borderColor bg-[#f6f7f8] p-4">
       <div className="flex items-start gap-3">
@@ -83,11 +87,11 @@ function CreatePostSection() {
       {isOpen && (
         <RootDialog open={isOpen} setOpen={setIsOpen}>
           {postType == "Post_write" ? (
-            <PostModal setPostType={setPostType} />
+            <PostModal setPostType={handleSetPostType} />
           ) : postType == "post_access" ? (
-            <PostAccessModal setPostType={setPostType} />
+            <PostAccessModal setPostType={handleSetPostType} />
           ) : (
-            <PostGroupListModal setPostType={setPostType} />
+            <PostGroupListModal setPostType={handleSetPostType} />
           )}
         </RootDialog>
       )}

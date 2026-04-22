@@ -1,9 +1,9 @@
 "use client";
 
-import { toggleSelectedGroupId } from "@/feature/slice/postCompose/postComposeSlice";
+import { setSelectedGroupIds } from "@/feature/slice/postCompose/postComposeSlice";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type GroupItem = {
   id: number;
@@ -34,10 +34,14 @@ function PostGroupListModal({
 }: {
   setPostType: (type: string) => void;
 }) {
-  const [selectedGroupIds, setSelectedGroupIds] = useState<any>([2, 3, 6]);
+  const [localSelectedGroupIds, setLocalSelectedGroupIds] = useState<number[]>([
+    2, 3, 6,
+  ]);
   const dispatch = useDispatch();
+  const { selectedGroupIds } = useSelector((state: any) => state.postCompose);
+
   const handleToggleGroup = (id: number) => {
-    setSelectedGroupIds((previous) => {
+    setLocalSelectedGroupIds((previous) => {
       if (previous.includes(id)) {
         return previous.filter((groupId) => groupId !== id);
       }
@@ -46,7 +50,8 @@ function PostGroupListModal({
   };
 
   const handleSelectGroups = () => {
-    dispatch(toggleSelectedGroupId(selectedGroupIds));
+    dispatch(setSelectedGroupIds(localSelectedGroupIds));
+    setPostType("Post_write");
   };
 
   return (
@@ -64,7 +69,7 @@ function PostGroupListModal({
       <div className="max-h-[510px] overflow-y-auto px-4 py-4">
         <div className="space-y-3">
           {groupItems.map((group) => {
-            const isSelected = selectedGroupIds.includes(group.id);
+            const isSelected = localSelectedGroupIds.includes(group.id);
 
             return (
               <button
@@ -111,7 +116,7 @@ function PostGroupListModal({
           </button>
           <button
             onClick={handleSelectGroups}
-            className="rounded-md bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
+            className="rounded-md bg-buttonColor cursor-pointer px-4 py-2 text-whiteColor hover:bg-buttonHover"
           >
             Done
           </button>

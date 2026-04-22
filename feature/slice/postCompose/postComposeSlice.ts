@@ -15,7 +15,7 @@ const initialState: PostComposeState = {
   postType: "Post_write",
   postVisibility: "anyone",
   commentControl: "anyone",
-  selectedGroupIds: [2, 3, 6],
+  selectedGroupIds: [],
 };
 
 const postComposeSlice = createSlice({
@@ -31,10 +31,8 @@ const postComposeSlice = createSlice({
     setCommentControl: (state, action: PayloadAction<CommentControl>) => {
       state.commentControl = action.payload;
     },
-    toggleSelectedGroupId: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
-
-      state.selectedGroupIds.push(id);
+    setSelectedGroupIds: (state, action: PayloadAction<number[]>) => {
+      state.selectedGroupIds = action.payload;
     },
     resetPostComposeState: () => initialState,
   },
@@ -44,7 +42,7 @@ export const {
   setPostType,
   setPostVisibility,
   setCommentControl,
-  toggleSelectedGroupId,
+  setSelectedGroupIds,
   resetPostComposeState,
 } = postComposeSlice.actions;
 

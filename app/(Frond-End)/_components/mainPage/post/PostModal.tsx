@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   EmojiIcon,
   ImageUploadIcon,
+  MenueArrowDownIcon,
   PlayIcon,
   SendIcon,
 } from "@/public/svgIcons/Icons";
-import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -29,17 +29,17 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
           </div>
 
           <div>
-            <h3 className="text-[20px] font-semibold leading-6 text-headerColor">
+            <h3 className="text-[20px] font-semibold leading-6 text-descriptionColor">
               Vin Intiny
             </h3>
 
             <button
               type="button"
               onClick={() => setPostType("post_access")}
-              className="mt-0.5 inline-flex items-center gap-1 text-[14px] text-descriptionColor hover:opacity-80"
+              className="mt-0.5 inline-flex items-center leading-[160%] gap-1 text-[14px] text-descriptionColor hover:opacity-80"
             >
               <span>Post for everyone</span>
-              <ChevronDown className="h-4 w-4" />
+              <MenueArrowDownIcon className="h-3 w-3" />
             </button>
           </div>
         </div>
@@ -83,7 +83,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
 
           <Button
             type="button"
-            className=" h-8 rounded-full cursor-pointer bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor  hover:bg-buttonColor/90 hover:shadow-xl"
+            className=" h-8 rounded-full cursor-pointer leading-[160%] bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor  hover:bg-buttonColor/90 hover:shadow-xl"
           >
             <SendIcon className="mr-1 h-2.5 w-3.5" />
             Post
