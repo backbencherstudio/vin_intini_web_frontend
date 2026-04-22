@@ -138,7 +138,7 @@ function CommentBoxArea() {
         onChange={handleImagesChange}
       />
 
-      <div className="w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-3">
+      <div className="w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3">
         <textarea
           placeholder="type..."
           rows={2}

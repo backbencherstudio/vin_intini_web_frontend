@@ -5,7 +5,7 @@ function RootDialog({
   open,
   setOpen,
   children,
-  className
+  className,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -15,7 +15,9 @@ function RootDialog({
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className={`p-0 sm:max-w-2xl w-full max-h-[90vh] overflow-y-auto ${className}`}>
+        <DialogContent
+          className={`p-0 sm:max-w-2xl w-full max-h-[90vh] ${className}`}
+        >
           {children}
         </DialogContent>
       </Dialog>

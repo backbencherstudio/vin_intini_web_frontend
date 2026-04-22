@@ -52,14 +52,14 @@ function PostComment() {
           {mainComment.map((item) => (
             <AccordionItem
               value="replies"
-              className="border-b-0 relative after:content-[''] after:top-0 after:left-0  after:ml-1  after:w-2 after:h-full after:bg-blue-500 after:rounded-full "
+              className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-[1px] after:bg-borderColor"
               key={item?.id}
             >
               <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
                 <CommentRow item={item} depth={0} />
               </AccordionTrigger>
               <AccordionContent className="pb-0">
-                <div className="space-y-5">
+                <div className="space-y-5 relative">
                   {item?.replyComments.map((reply) => (
                     <CommentRow key={reply.id} item={reply} depth={1} />
                   ))}

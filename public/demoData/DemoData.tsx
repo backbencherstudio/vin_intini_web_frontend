@@ -252,3 +252,127 @@ export const testimonials: Testimonial[] = [
     },
   },
 ]
+
+type RequestAction = "accept" | "connected" | "ignored";
+
+type ConnectionRequest = {
+  id: number;
+  name: string;
+  title: string;
+  mutualText: string;
+  action: RequestAction;
+};
+
+type SuggestedProfile = {
+  id: number;
+  name: string;
+  role: string;
+  mutualText: string;
+  buttonText: string;
+};
+
+export const connectionRequests: ConnectionRequest[] = [
+  {
+    id: 1,
+    name: "Profile Name",
+    title:
+      "Title (whether its a concise or long title, all the text will be in on single line. Truncate the sentence in one line if needed)",
+    mutualText: "Icon + 0 mutual connection name & total connection",
+    action: "accept",
+  },
+  {
+    id: 2,
+    name: "Vin Intini",
+    title:
+      "Scaling Businesses with Strategy, Systems & AI | Digital Marketing & Brand Growth Strategist | Automation & CRM (Zoho) Hel...",
+    mutualText: "Vasu Rangarjya and 5 other mutual connections",
+    action: "accept",
+  },
+  {
+    id: 3,
+    name: "Vin Intini",
+    title: "You both are now connected",
+    mutualText: "",
+    action: "connected",
+  },
+  {
+    id: 4,
+    name: "Invitation Ignored",
+    title: "You ignored Vin Intini's invitation",
+    mutualText: "",
+    action: "ignored",
+  },
+];
+
+export const suggestedProfiles: SuggestedProfile[] = [
+  {
+    id: 1,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at Figma",
+    mutualText: "1 mutual connections",
+    buttonText: "Connect",
+  },
+  {
+    id: 2,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at CRM Pipeline",
+    mutualText: "Mahamudur Rahman and 5 other mutual",
+    buttonText: "Connect",
+  },
+  {
+    id: 3,
+    name: "This is a very long name when a user type in his...",
+    role: "This is a very long title or professional description wh...",
+    mutualText: "Long first name of the user and 5 other mutual conn...",
+    buttonText: "Connect",
+  },
+  {
+    id: 4,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at Figma",
+    mutualText: "1 mutual connections",
+    buttonText: "Connect",
+  },
+  {
+    id: 5,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at CRM Pipeline",
+    mutualText: "Mahamudur Rahman and 5 other mutual",
+    buttonText: "Connect",
+  },
+  {
+    id: 6,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at Figma",
+    mutualText: "1 mutual connections",
+    buttonText: "Pending",
+  },
+  {
+    id: 7,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at CRM Pipeline",
+    mutualText: "Mahamudur Rahman and 5 other mutual",
+    buttonText: "Connect",
+  },
+  {
+    id: 8,
+    name: "This is a very long name when a user type in his...",
+    role: "This is a very long title or professional description wh...",
+    mutualText: "Long first name of the user and 5 other mutual conn...",
+    buttonText: "Connect",
+  },
+  {
+    id: 9,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at Figma",
+    mutualText: "1 mutual connections",
+    buttonText: "Connect",
+  },
+  {
+    id: 10,
+    name: "Paul-Antoine Campos",
+    role: "Product Designer at CRM Pipeline",
+    mutualText: "Mahamudur Rahman and 5 other mutual",
+    buttonText: "Connect",
+  },
+];
