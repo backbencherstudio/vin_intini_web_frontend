@@ -6,7 +6,6 @@ import {
   GroupUserIcon,
   MultiUserIcon,
 } from "@/public/svgIcons/Icons";
-import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 
 type PostVisibility = "anyone" | "connections" | "group";
@@ -139,13 +138,13 @@ function PostAccessModal({
         <div className="mt-6 flex justify-end gap-4">
           <button
             onClick={() => setPostType("Post_write")}
-            className="rounded-md bg-grayColor1 px-4 py-2 text-descriptionColor hover:bg-grayColor2"
+            className="rounded-md bg-bgLightColor px-4 hover:shadow-lg cursor-pointer py-2 text-descriptionColor hover:bg-bgColor"
           >
             Back
           </button>
           <button
             onClick={() => setPostType("Post_write")}
-            className="rounded-md bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
+            className="rounded-md cursor-pointer hover:shadow-lg bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
           >
             Done
           </button>

@@ -1,7 +1,9 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { toggleSelectedGroupId } from "@/feature/slice/postCompose/postComposeSlice";
+import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 type GroupItem = {
   id: number;
@@ -32,8 +34,8 @@ function PostGroupListModal({
 }: {
   setPostType: (type: string) => void;
 }) {
-  const [selectedGroupIds, setSelectedGroupIds] = useState<number[]>([2, 3, 6]);
-
+  const [selectedGroupIds, setSelectedGroupIds] = useState<any>([2, 3, 6]);
+  const dispatch = useDispatch();
   const handleToggleGroup = (id: number) => {
     setSelectedGroupIds((previous) => {
       if (previous.includes(id)) {
@@ -43,19 +45,23 @@ function PostGroupListModal({
     });
   };
 
+  const handleSelectGroups = () => {
+    dispatch(toggleSelectedGroupId(selectedGroupIds));
+  };
+
   return (
     <section className="bg-whiteColor">
       <div className="border-b border-borderColor px-4 py-3">
         <button
           type="button"
           onClick={() => setPostType("post_access")}
-          className="text-[36px] leading-10 font-semibold text-headerColor"
+          className="text-lg leading-10 font-semibold text-descriptionColor"
         >
           Select a Group
         </button>
       </div>
 
-      <div className="max-h-[660px] overflow-y-auto px-4 py-4">
+      <div className="max-h-[510px] overflow-y-auto px-4 py-4">
         <div className="space-y-3">
           {groupItems.map((group) => {
             const isSelected = selectedGroupIds.includes(group.id);
@@ -73,18 +79,18 @@ function PostGroupListModal({
                   </div>
 
                   <div className="min-w-0">
-                    <h4 className="truncate text-[20px] leading-8 font-semibold text-headerColor">
+                    <h4 className="truncate text-lg leading-8 font-semibold text-descriptionColor">
                       {group.name}
                     </h4>
                     <div className="mt-1 flex items-center gap-2 text-descriptionColor">
-                      <Users className="h-4 w-4" strokeWidth={1.8} />
+                      <GroupUserIcon className="h-4.5 w-4.5" />
                       <span className="text-[13px]">{group.subtitle}</span>
                     </div>
                   </div>
                 </div>
 
                 <span
-                  className={`ml-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+                  className={`ml-3 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
                     isSelected ? "border-buttonColor" : "border-grayColor1"
                   }`}
                 >
@@ -97,10 +103,16 @@ function PostGroupListModal({
           })}
         </div>
         <div className="mt-6 flex justify-end gap-4">
-          <button className="rounded-md bg-grayColor1 px-4 py-2 text-descriptionColor hover:bg-grayColor2">
+          <button
+            onClick={() => setPostType("Post_write")}
+            className="rounded-md bg-bgLightColor px-4 py-2 text-descriptionColor hover:bg-grayColor2"
+          >
             Back
           </button>
-          <button className="rounded-md bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover">
+          <button
+            onClick={handleSelectGroups}
+            className="rounded-md bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
+          >
             Done
           </button>
         </div>

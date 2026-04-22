@@ -33,13 +33,8 @@ const postComposeSlice = createSlice({
     },
     toggleSelectedGroupId: (state, action: PayloadAction<number>) => {
       const id = action.payload;
-      if (state.selectedGroupIds.includes(id)) {
-        state.selectedGroupIds = state.selectedGroupIds.filter(
-          (groupId) => groupId !== id,
-        );
-      } else {
-        state.selectedGroupIds.push(id);
-      }
+
+      state.selectedGroupIds.push(id);
     },
     resetPostComposeState: () => initialState,
   },
