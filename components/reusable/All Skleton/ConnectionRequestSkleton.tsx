@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 function ConnectionRequestSkleton() {
   return (
-    <div className="flex items-start justify-between gap-3 py-3">
+    <div className="flex items-start justify-between border-b border-borderColor gap-3 py-3">
       <div className="flex min-w-0 items-start gap-3">
         <Skeleton className="h-10 w-10 rounded-full" />
         <div className="space-y-1.5">

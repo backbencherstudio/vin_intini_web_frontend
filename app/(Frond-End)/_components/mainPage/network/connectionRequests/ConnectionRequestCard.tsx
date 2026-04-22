@@ -4,31 +4,29 @@ import Image from "next/image";
 function ConnectionRequestCard({ item }: { item: any }) {
   return (
     <div>
-      <article className="flex items-start justify-between gap-3 border-b border-borderColor py-3">
-        <div className="flex  items-start gap-3">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-bgColor">
+      <article className="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-borderColor py-3">
+        <div className="flex h-full items-start gap-3">
+          <div className="flex md:h-16 md:w-16  w-12 h-12 items-center justify-center overflow-hidden rounded-full bg-bgColor">
             {item.id === 1 ? (
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
             ) : (
               <Image
                 src="/profile.png"
                 alt={item.name}
-                width={100}
-                height={100}
+                width={150}
+                height={150}
                 className="h-full w-full object-cover"
               />
             )}
           </div>
 
-          <div className="">
+          <div className="flex-1">
             <h4 className=" text-[18px] text-headerColor font-semibold">
               {item.name}
             </h4>
-            <p className="truncate text-[14px] text-descriptionColor">
-              {item.title}
-            </p>
+            <p className=" text-[14px] text-descriptionColor">{item.title}</p>
             {item.mutualText ? (
-              <p className="mt-1 flex items-center gap-1 truncate text-[12px] text-grayColor1">
+              <p className="mt-1 flex items-center gap-1  text-[12px] text-grayColor1">
                 <Clock3 className="h-3 w-3" />
                 {item.mutualText}
               </p>
@@ -36,7 +34,7 @@ function ConnectionRequestCard({ item }: { item: any }) {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex flex-1 justify-end  w-full items-center gap-2">
           {item.action === "accept" ? (
             <>
               <button
