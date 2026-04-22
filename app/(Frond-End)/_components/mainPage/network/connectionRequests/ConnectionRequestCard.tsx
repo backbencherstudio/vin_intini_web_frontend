@@ -7,7 +7,7 @@ function ConnectionRequestCard({
   allReadyFriends,
 }: {
   item: any;
-  allReadyFriends?: boolean;
+  allReadyFriends?: string;
 }) {
   return (
     <div>
@@ -46,22 +46,31 @@ function ConnectionRequestCard({
                 </div>
               ) : null}
               <div>
-                <span className="text-[12px] text-grayColor1 font-semibold">
-                  Connected since 01 Feb, 2025
-                </span>
+                {allReadyFriends == "friend" && (
+                  <span className="text-[12px] text-grayColor1 font-semibold">
+                    Connected since 01 Feb, 2025
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-1 justify-end  w-full items-center gap-2">
-          {allReadyFriends ? (
+        <div className="flex  w-fit justify-end   items-center gap-2">
+          {allReadyFriends == "friend" ? (
             <button
               type="button"
-              className="rounded-full border border-borderColor hover:shadow-md w-9 h-9 flex justify-center items-center cursor-pointer  text-base text-headerColor hover:bg-bgColor"
+              className="rounded-full border  border-borderColor hover:shadow-md w-9 h-9 flex justify-center items-center cursor-pointer  text-base text-headerColor hover:bg-bgColor"
             >
               {" "}
               <UserMinusIcon className="w-4 h-4" />
+            </button>
+          ) : allReadyFriends == "follower" ? (
+            <button
+              type="button"
+              className="rounded-full border hover:border-primaryColor border-borderColor px-4 py-1 text-sm leading-[140%] text-descriptionColor cursor-pointer font-semibold hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
+            >
+              Unfollow
             </button>
           ) : item.action === "accept" ? (
             <>

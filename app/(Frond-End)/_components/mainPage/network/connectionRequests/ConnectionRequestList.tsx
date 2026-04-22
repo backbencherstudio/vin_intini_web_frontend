@@ -5,7 +5,7 @@ import { connectionRequests } from "@/public/demoData/DemoData";
 import { useEffect, useState } from "react";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList({ allReadyFriends  }: { allReadyFriends?: boolean }) {
+function ConnectionRequestList({ allReadyFriends  }: { allReadyFriends?: string }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
