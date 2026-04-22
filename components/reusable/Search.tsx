@@ -99,7 +99,7 @@ export default function Search() {
   };
 
   return (
-    <div className="w-full min-w-60 relative">
+    <div className="w-full  relative">
       <input
         type="text"
         name="search"
