@@ -15,27 +15,33 @@ function ConnectionListHeader() {
 
   return (
     <div>
-      <div className="flex flex-col gap-2 md:flex-row w-full justify-between items-center">
-        <h1 className="text-xl font-semibold text-headerColor">
+      <div className="flex flex-col gap-3 md:flex-row w-full justify-between items-center">
+        <h1 className="text-base text-nowrap lg:text-xl md:block hidden font-semibold text-headerColor">
           Total Connection{" "}
           <span className="font-normal text-grayColor1">(1500)</span>
         </h1>
-        <div className="flex gap-4 items-center">
-          <div className="relative w-[300px] hidden md:block  max-w-full">
+        <div className="flex gap-4 justify-between w-full items-center">
+          <h1 className="text-base md:hidden font-semibold text-headerColor">
+            Total Connection{" "}
+            <span className="font-normal text-grayColor1">(1500)</span>
+          </h1>
+          <div className="relative w-[220px] lg:w-[300px] mx-auto hidden md:block  max-w-full">
             <Search />
           </div>
           <div className="flex items-center ">
-            <span className="text-grayColor1 text-nowrap">Sort by:</span>
+            <span className="text-grayColor1 hidden lg:block text-nowrap">
+              Sort by:
+            </span>
             <SelecteInputField
               value={selectedSort}
               onValueChange={setSelectedSort}
               options={sortOptions}
               placeholder="Sort by"
-              className="h-10 border-none! shadow-none! shadow-transparent! text-[14px]"
+              className="h-10 border-none! px-1! shadow-none! shadow-transparent! text-[14px]"
             />
           </div>
         </div>
-        <div className="relative w-[300px] mx-auto md:hidden  max-w-full">
+        <div className="relative w-[400px] mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>

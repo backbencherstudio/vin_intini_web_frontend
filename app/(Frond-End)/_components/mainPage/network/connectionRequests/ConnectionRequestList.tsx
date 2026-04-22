@@ -5,7 +5,7 @@ import { connectionRequests } from "@/public/demoData/DemoData";
 import { useEffect, useState } from "react";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList() {
+function ConnectionRequestList({ allReadyFriends  }: { allReadyFriends?: boolean }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function ConnectionRequestList() {
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))
           : connectionRequests.map((item) => (
-              <ConnectionRequestCard key={item.id} item={item} />
+              <ConnectionRequestCard key={item.id} item={item} allReadyFriends={allReadyFriends} />
             ))}
       </div>
     </div>

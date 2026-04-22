@@ -1,7 +1,14 @@
-import { Clock3, ImageIcon, X } from "lucide-react";
+import { UserMinusIcon } from "@/public/svgIcons/Icons";
+import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 
-function ConnectionRequestCard({ item }: { item: any }) {
+function ConnectionRequestCard({
+  item,
+  allReadyFriends,
+}: {
+  item: any;
+  allReadyFriends?: boolean;
+}) {
   return (
     <div>
       <article className="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-borderColor py-3">
@@ -25,17 +32,38 @@ function ConnectionRequestCard({ item }: { item: any }) {
               {item.name}
             </h4>
             <p className=" text-[14px] text-descriptionColor">{item.title}</p>
-            {item.mutualText ? (
-              <p className="mt-1 flex items-center gap-1  text-[12px] text-grayColor1">
-                <Clock3 className="h-3 w-3" />
-                {item.mutualText}
-              </p>
-            ) : null}
+            <div className="flex justify-between items-center">
+              {item.mutualText ? (
+                <div className="mt-1 flex items-center gap-1 text-[12px] text-grayColor1">
+                  <Image
+                    src="/profile.png"
+                    alt="mutual"
+                    width={24}
+                    height={24}
+                    className="h-5 w-5 rounded-full object-cover"
+                  />
+                  <span className="truncate">5 other mutual connections</span>
+                </div>
+              ) : null}
+              <div>
+                <span className="text-[12px] text-grayColor1 font-semibold">
+                  Connected since 01 Feb, 2025
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="flex flex-1 justify-end  w-full items-center gap-2">
-          {item.action === "accept" ? (
+          {allReadyFriends ? (
+            <button
+              type="button"
+              className="rounded-full border border-borderColor hover:shadow-md w-9 h-9 flex justify-center items-center cursor-pointer  text-base text-headerColor hover:bg-bgColor"
+            >
+              {" "}
+              <UserMinusIcon className="w-4 h-4" />
+            </button>
+          ) : item.action === "accept" ? (
             <>
               <button
                 type="button"
