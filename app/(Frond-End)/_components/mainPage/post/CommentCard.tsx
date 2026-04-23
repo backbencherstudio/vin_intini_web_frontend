@@ -10,52 +10,57 @@ export default function CommentRow({
   item: any;
 }) {
   return (
-    <div
-      className={`${depth > 0 ? "ml-6  pl-5" : " border-l border-borderColor h-full"}`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-2.5">
-          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
-            <Image
-              src="/profile.png"
-              alt="Profile"
-              width={32}
-              height={32}
-              className="h-full w-full object-cover"
-            />
-          </div>
-
-          <div className="min-w-0">
-            <h4 className="text-sm leading-9 font-semibold text-headerColor">
-              {item?.name || "Profile Name"}
-            </h4>
-            <p className="truncate line-clamp-1 text-[13px] leading-5 text-descriptionColor">
-              {item?.title || "Title (whether its a concise or long title, all the text will be in single line. Truncate the sentence i...)"}
-            </p>
-          </div>
+    <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
+      {depth > 0 && (
+        <div className="pointer-events-none absolute -left-2.5 -top-4.5 h-9 w-7 rounded-bl-2xl border-l border-b border-borderColor" />
+      )}
+      <div className="flex items-start gap-2.5">
+        <div className="h-8 w-8  overflow-hidden rounded-full">
+          <Image
+            src="/profile.png"
+            alt="Profile"
+            width={32}
+            height={32}
+            className="h-full w-full object-cover"
+          />
         </div>
 
-        <span className="shrink-0 text-[14px] leading-5 text-headerColor">
+        <div className="min-w-0 flex-1">
+          <h4 className="text-sm leading-[140%] font-semibold text-headerColor">
+            {item?.name || "Profile Name"}
+          </h4>
+          <p className=" line-clamp-1 text-[13px] wf font-normal text-descriptionColor">
+            {item?.title ||
+              "Title (whether its a concise or long title, all the text will be in single line. Truncate the sentence i...)"}
+          </p>
+        </div>
+        <p className="ml-auto shrink-0 font-semibold w-fit text-[14px] leading-5 text-descriptionColor">
           1h ago
-        </span>
+        </p>
       </div>
 
-      <p className="mt-2 pl-10 text-base leading-[150%] text-headerColor/90">
+      <p className="mt-2 pl-10 text-base font-normal leading-[150%] text-descriptionColor">
         {item?.message || "This is a sample comment."}
       </p>
 
-      <div className="mt-2 pl-10 flex items-center gap-3 text-[15px] font-medium text-headerColor/85">
-        <button type="button" className="cursor-pointer hover:opacity-80">
-          Like
+      <div className="mt-2 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
+        <button
+          type="button"
+          className="cursor-pointer text-descriptionColor hover:opacity-80"
+        >
+          Like • 100
         </button>
-        <span className="text-headerColor/65">10</span>
-        {showReply && (
+
+        {depth == 0 && (
           <>
             <span className="text-headerColor/45">|</span>
-            <button type="button" className="cursor-pointer hover:opacity-80">
-              Reply
+
+            <button
+              type="button"
+              className="cursor-pointer text-descriptionColor hover:opacity-80"
+            >
+              Reply • 100
             </button>
-            <span className="text-headerColor/65">100</span>
           </>
         )}
       </div>

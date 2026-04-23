@@ -21,7 +21,7 @@ function MainPageLeftSidebar() {
     },
     {
       label: " Following & Followers",
-      slug: "/mu/2/following-followers",
+      slug: "/mu/2/following",
       icon: SingleUserIcon,
     },
     {
