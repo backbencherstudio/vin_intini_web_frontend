@@ -187,92 +187,57 @@ export const features = [
 ]
 
 
-export const countryList = [
-  { value: "all", label: "All" },
-  { value: "scotland", label: "Scotland" },
-  { value: "northern-ireland", label: "Northern Ireland" },
-  { value: "isle-of-man", label: "Isle of Man" },
-  { value: "north-west", label: "North West" },
-  { value: "north-east", label: "North East" },
-  { value: "yorkshire-and-the-humber", label: "Yorkshire and the Humber" },
-  { value: "east-midlands", label: "East Midlands" },
-  { value: "west-midlands", label: "West Midlands" },
-  { value: "wales", label: "Wales" },
-  { value: "eastern", label: "Eastern" },
-  { value: "london", label: "London" },
-  { value: "south-west", label: "South West" },
-  { value: "south-east", label: "South East" }
-];
 
-
-export const regionalList = [
-  "scotland",
-  "northern-ireland",
-  "isle-of-man",
-  "north-west",
-  "north-east",
-  "yorkshire-and-the-humber",
-  "east-midlands",
-  "west-midlands",
-  "wales",
-  "eastern",
-  "london",
-  "south-west",
-  "south-east"
-]
-
-
-export const regionCounts = [
-  {
-    country: "scotland",
-    total_notices: 0
-  },
-  {
-    country: "northern-ireland",
-    total_notices: 0
-  },
-  {
-    country: "isle-of-man",
-    total_notices: 0
-  },
-  {
-    country: "north-west",
-    total_notices: 0
-  },
-  {
-    country: "north-east",
-    total_notices: 0
-  },
-  {
-    country: "yorkshire-and-the-humber",
-    total_notices: 0
-  },
-  {
-    country: "east-midlands",
-    total_notices: 0
-  },
-  {
-    country: "west-midlands",
-    total_notices: 0
-  },
-  {
-    country: "wales",
-    total_notices: 0
-  },
-  {
-    country: "eastern",
-    total_notices: 0
-  },
-  {
-    country: "london",
-    total_notices: 0
-  },
-  {
-    country: "south-west",
-    total_notices: 0
-  },
-  {
-    country: "south-east",
-    total_notices: 0
-  }
+export const usaMapData = [
+  { id: "al", name: "Alabama", value: 47 },
+  { id: "ak", name: "Alaska", value: 83 },
+  { id: "az", name: "Arizona", value: 62 },
+  { id: "ar", name: "Arkansas", value: 31 },
+  { id: "ca", name: "California", value: 95 },
+  { id: "co", name: "Colorado", value: 74 },
+  { id: "ct", name: "Connecticut", value: 28 },
+  { id: "de", name: "Delaware", value: 53 },
+  { id: "fl", name: "Florida", value: 88 },
+  { id: "ga", name: "Georgia", value: 41 },
+  { id: "hi", name: "Hawaii", value: 19 },
+  { id: "id", name: "Idaho", value: 66 },
+  { id: "il", name: "Illinois", value: 39 },
+  { id: "in", name: "Indiana", value: 77 },
+  { id: "ia", name: "Iowa", value: 24 },
+  { id: "ks", name: "Kansas", value: 82 },
+  { id: "ky", name: "Kentucky", value: 55 },
+  { id: "la", name: "Louisiana", value: 43 },
+  { id: "me", name: "Maine", value: 91 },
+  { id: "md", name: "Maryland", value: 37 },
+  { id: "ma", name: "Massachusetts", value: 68 },
+  { id: "mi", name: "Michigan", value: 59 },
+  { id: "mn", name: "Minnesota", value: 72 },
+  { id: "ms", name: "Mississippi", value: 26 },
+  { id: "mo", name: "Missouri", value: 84 },
+  { id: "mt", name: "Montana", value: 15 },
+  { id: "ne", name: "Nebraska", value: 49 },
+  { id: "nv", name: "Nevada", value: 63 },
+  { id: "nh", name: "New Hampshire", value: 71 },
+  { id: "nj", name: "New Jersey", value: 44 },
+  { id: "nm", name: "New Mexico", value: 34 },
+  { id: "ny", name: "New York", value: 92 },
+  { id: "nc", name: "North Carolina", value: 57 },
+  { id: "nd", name: "North Dakota", value: 18 },
+  { id: "oh", name: "Ohio", value: 76 },
+  { id: "ok", name: "Oklahoma", value: 38 },
+  { id: "or", name: "Oregon", value: 64 },
+  { id: "pa", name: "Pennsylvania", value: 85 },
+  { id: "ri", name: "Rhode Island", value: 22 },
+  { id: "sc", name: "South Carolina", value: 51 },
+  { id: "sd", name: "South Dakota", value: 33 },
+  { id: "tn", name: "Tennessee", value: 69 },
+  { id: "tx", name: "Texas", value: 98 },
+  { id: "ut", name: "Utah", value: 45 },
+  { id: "vt", name: "Vermont", value: 13 },
+  { id: "va", name: "Virginia", value: 56 },
+  { id: "wa", name: "Washington", value: 79 },
+  { id: "wv", name: "West Virginia", value: 29 },
+  { id: "wi", name: "Wisconsin", value: 67 },
+  { id: "wy", name: "Wyoming", value: 42 },
+  { id: "dc", name: "District of Columbia", value: 87 }
 ];
