@@ -9,6 +9,7 @@ import {
   AssessmentFilterTabs,
   type FilterCategory,
 } from "./AssessmentFilterTabs";
+import { PaginationDots } from "../../_components";
 
 interface AssessmentGridProps {
   title?: string;
@@ -93,13 +94,13 @@ export const AssessmentGrid = ({
       )}
 
       {/* Pagination Dots - Only show if you want pagination by filter */}
-      {/* <div className="flex w-full justify-center py-6">
+      <div className="flex w-full justify-center py-6">
         <PaginationDots
           total={filterCategories.length}
           activeIndex={getActiveDotIndex()}
           onDotClick={handleDotClick}
         />
-      </div> */}
+      </div>
 
       {/* Load More Button (Mobile) */}
       {filteredCards.length > ITEMS_PER_PAGE &&
