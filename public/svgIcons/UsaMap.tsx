@@ -82,15 +82,13 @@ type UsaMapProps = {
 export const UsaMapIcon = ({ pathFills = {}, redirect, className }: UsaMapProps) => {
     const POPUP_WIDTH = 150;
     const POPUP_HEIGHT = 80;
-    const CURSOR_OFFSET = 14;
     const [hoveredState, setHoveredState] = useState<{
         id: string;
         name: string;
         count: number;
-        x: number;
-        y: number;
     } | null>(null);
     const [hoveredStateId, setHoveredStateId] = useState<string | null>(null);
+    const [popupPosition, setPopupPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
     const router = useRouter();
 
     const getStateFill = (stateId: string, group: string, isHovered: boolean): string => {
@@ -109,43 +107,46 @@ export const UsaMapIcon = ({ pathFills = {}, redirect, className }: UsaMapProps)
         return Math.floor(Math.random() * 100) + 1;
     };
 
-    const handleMouseEnter = (event: React.MouseEvent, state: (typeof STATE_DATA)[0]) => {
-    setHoveredStateId(state.id);
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    
-    // Get cursor position
-    const cursorX = event.clientX;
-    const cursorY = event.clientY;
-    
-    // Calculate popup position (centered on cursor X, 20px above cursor Y)
-    let x = cursorX - (POPUP_WIDTH / 2);
-    let y = cursorY - POPUP_HEIGHT - 20; // 20 pixels above cursor
-    
-    // Ensure popup stays within viewport bounds
-    const maxX = viewportWidth - POPUP_WIDTH;
-    const maxY = viewportHeight - POPUP_HEIGHT;
-    
-    // Clamp X to viewport boundaries
-    x = Math.max(0, Math.min(x, maxX));
-    
-    // Clamp Y to viewport boundaries
-    y = Math.max(0, Math.min(y, maxY));
-    
-    // If popup would go above the viewport, place it below the cursor instead
-    if (cursorY - POPUP_HEIGHT - 20 < 0) {
-        y = cursorY + 20; // Place 20px below cursor instead
-        y = Math.min(y, maxY); // Ensure it doesn't go below viewport
-    }
+    const updatePopupPosition = (event: React.MouseEvent) => {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
 
-    setHoveredState({
-        id: state.id,
-        name: state.name,
-        count: getStateCount(state.id, state.group),
-        x,
-        y,
-    });
-};
+        const cursorX = event.clientX;
+        const cursorY = event.clientY;
+
+        let x = cursorX - (POPUP_WIDTH / 2);
+        let y = cursorY - POPUP_HEIGHT - 20;
+
+        const maxX = viewportWidth - POPUP_WIDTH;
+        const maxY = viewportHeight - POPUP_HEIGHT;
+
+        x = Math.max(0, Math.min(x, maxX));
+
+        if (cursorY - POPUP_HEIGHT - 20 < 0) {
+            y = cursorY + 20;
+            y = Math.min(y, maxY);
+        } else {
+            y = Math.max(0, Math.min(y, maxY));
+        }
+
+        setPopupPosition({ x, y });
+    };
+
+    const handleMouseEnter = (event: React.MouseEvent, state: (typeof STATE_DATA)[0]) => {
+        setHoveredStateId(state.id);
+        setHoveredState({
+            id: state.id,
+            name: state.name,
+            count: getStateCount(state.id, state.group),
+        });
+        updatePopupPosition(event);
+    };
+
+    const handleMouseMove = (event: React.MouseEvent) => {
+        if (hoveredState) {
+            updatePopupPosition(event);
+        }
+    };
 
     const handleMouseLeave = () => {
         setHoveredStateId(null);
@@ -1017,37 +1018,6 @@ export const UsaMapIcon = ({ pathFills = {}, redirect, className }: UsaMapProps)
                     />
                 </g>
 
-                {/* State Labels */}
-                <g className="state-labels">
-                    {STATE_DATA.map((state) => (
-                        <text
-                            key={state.id}
-                            className="state-label"
-                            x={state.labelX}
-                            y={state.labelY}
-                            fill={hoveredStateId === state.id ? "#000000" : "#ffffff"}
-                            fontSize="6"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            pointerEvents="none"
-                        >
-                            {state.id}
-                        </text>
-                    ))}
-                    <text
-                        className="state-label"
-                        x={803}
-                        y={252}
-                        fill={hoveredStateId === "DC" ? "#000000" : "#ffffff"}
-                        fontSize="5"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        pointerEvents="none"
-                    >
-                        DC
-                    </text>
-                </g>
-
                 <g className="borders" fill="none">
                     <path d="m 687.6,447.4 -48.8,5.1 -.5,2.9 2.5,2.8 1.7,.7 .9,1.2 -.4,7.3 -1.1,.6" />
                     <path d="m 666.6,361.1 12.9,45.8 2.9,6.1 1.8,1.9 v 3.2 l 1.7,1 .2,1.1 -2.2,3.8 -.3,3.7 -.5,2.6 2.4,5.7 -.6,6.3 .5,1.4 1.5,1.5 .7,2.2" />
@@ -1167,8 +1137,8 @@ export const UsaMapIcon = ({ pathFills = {}, redirect, className }: UsaMapProps)
                 <div
                     className="fixed pointer-events-none z-50"
                     style={{
-                        left: `${hoveredState.x}px`,
-                        top: `${hoveredState.y}px`,
+                        left: `${popupPosition.x}px`,
+                        top: `${popupPosition.y}px`,
                     }}
                     aria-label={hoveredState.name}
                 >
