@@ -196,7 +196,7 @@ export default function CreateGroupForm() {
           {/* Group Name */}
           <div>
             <label className="block font-semibold text-descriptionColor mb-1.5">
-              Group name
+              Group name <span className="text-redColor">*</span>
             </label>
             <ReusableInput
               id="name"
@@ -218,7 +218,7 @@ export default function CreateGroupForm() {
           {/* Description */}
           <div>
             <label className="block text-base font-semibold text-descriptionColor mb-1.5">
-              Description *
+              Description <span className="text-redColor">*</span>
             </label>
             <ReusableTextarea
               {...register("description", {
@@ -452,7 +452,7 @@ export default function CreateGroupForm() {
           <div className="flex justify-center ">
             <button
               type="submit"
-              className="bg-[#00A3B1] text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-[#008c99] transition-all active:scale-95 shadow-md shadow-cyan-100"
+              className="bg-primaryColor text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
             >
               Create Group
             </button>
