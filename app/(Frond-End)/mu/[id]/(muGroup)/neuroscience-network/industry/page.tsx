@@ -6,5 +6,5 @@ interface IndustryPageProps {
 
 export default async function IndustryPage({ params }: IndustryPageProps) {
   const { id } = await params;
-  redirect(`/mu/${id}/psychology-network/industry/biotechnology`);
+  redirect(`/mu/${id}/neuroscience-network/industry/biotechnology`);
 }
