@@ -1,11 +1,12 @@
+// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/psychopharmacology/page.tsx
+
 "use client";
 
 import { useState } from "react";
 import { IndustryHeader } from "../_components";
-import { PublicationsList } from "./_components/PublicationsList";
-import { publicationsData } from "./_mock/publicationsData";
+import { MedicationGrid } from "./_components";
 
-export default function PublicationsPage() {
+export default function PsychopharmacologyPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -15,15 +16,18 @@ export default function PublicationsPage() {
         <div className="hidden md:block">
           <IndustryHeader
             onSearch={setSearchQuery}
-            title="Newly Published"
-            description="Explore new publications from the brain health community."
+            title="Psychopharmacology & Psychotropics"
+            description="Explore the latest psychopharmacology and psychotropic releases advancing brain health research and treatment."
           />
         </div>
 
         {/* Main Content */}
         <div className="flex w-full flex-col items-start gap-10 pt-6">
           <div className="flex w-full flex-col items-start gap-6">
-            <PublicationsList publications={publicationsData} />
+            <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
+              Psychotropic Medications
+            </h3>
+            <MedicationGrid />
           </div>
         </div>
       </div>
