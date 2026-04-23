@@ -4,7 +4,7 @@ import { CircleHelp } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Search() {
+export default function Search({ placeHolder }: { placeHolder?: string }) {
   const [search, setSearch] = useState<string>("");
   const [product, setProduct] = useState<any>({ results: [] });
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
@@ -106,7 +106,7 @@ export default function Search() {
         value={search}
         onChange={handleChange}
         className="w-full text-sm  bg-whiteColor border border-gray2Color rounded-full py-2 px-4 pl-8 focus:outline-none focus:border-dark-500"
-        placeholder="Search Network"
+        placeholder={placeHolder || "Search Network"}
       />
       <button
         onClick={handleSearch}

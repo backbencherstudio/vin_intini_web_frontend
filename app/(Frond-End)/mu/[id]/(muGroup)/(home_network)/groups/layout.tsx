@@ -1,3 +1,4 @@
+import GroupHeader from "@/app/(Frond-End)/_components/mainPage/group/GroupHeader";
 import GroupSidbar from "@/app/(Frond-End)/_components/mainPage/GroupSidbar";
 import ResuableMenu from "@/components/reusable/ResuableMenu";
 import React from "react";
@@ -17,15 +18,17 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
   ];
   return (
     <div>
-      
       <div className="md:grid grid-cols-12 gap-6">
         <div className="md:col-span-8 col-span-12 space-y-6">
           <div>
+            <GroupHeader />
+          </div>
+          <div>
             <ResuableMenu
-        initialPath="/mu/2/groups"
-        menuData={candidateJobMenus}
-      />
-      {children}
+              initialPath="/mu/2/groups"
+              menuData={candidateJobMenus}
+            />
+            {children}
           </div>
         </div>
         <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 md:pl-6 h-full">
