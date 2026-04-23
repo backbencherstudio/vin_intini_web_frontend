@@ -1,7 +1,6 @@
-
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AssessmentCard as AssessmentCardType } from "../_mock/biotechnologyData";
 
 interface AssessmentCardProps {
@@ -32,11 +31,11 @@ export const AssessmentCard = ({ card }: AssessmentCardProps) => {
       </p>
 
       {/* Learn More Button */}
-      <button className="flex items-center gap-1 text-black hover:underline">
-        <span className="font-['Segoe_UI'] text-sm font-medium">
+      <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
+        <span className="text-center font-['Arial'] text-sm font-normal leading-5">
           Learn more
         </span>
-        <ChevronRight className="h-4 w-4" />
+        <ArrowUpRight className="h-4 w-4" />
       </button>
     </div>
   );
