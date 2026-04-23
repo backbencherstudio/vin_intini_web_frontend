@@ -224,8 +224,8 @@ body {
 }
 
 .epr_-z2fuzw {
-    font-size: 13px !important;
-    height: 32px !important;
+  font-size: 13px !important;
+  height: 32px !important;
 }
 .epr_-xuzz9z {
    
@@ -271,4 +271,13 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;  
   scrollbar-width: none; 
+}
+
+
+.epr_-f1jbax:focus:before {
+  border: 0px solid var(--primaryColor) !important;
+}
+
+.epr_3z09g4 {
+    height: 100% !important;
 }

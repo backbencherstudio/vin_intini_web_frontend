@@ -12,17 +12,19 @@ import {
 import storage from "redux-persist/lib/storage";
 import baseApiSlice from "./slice/baseApi";
 import onboardingSlice from "./slice/onboarding/onboardingSlice";
+import postComposeSlice from "./slice/postCompose/postComposeSlice";
 
 const rootReducer = combineReducers({
   [baseApiSlice.reducerPath]: baseApiSlice.reducer,
   onboarding: onboardingSlice,
+  postCompose: postComposeSlice,
 });
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["onboarding"],
+  whitelist: ["onboarding", "postCompose"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
