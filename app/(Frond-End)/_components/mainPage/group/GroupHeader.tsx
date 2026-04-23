@@ -2,7 +2,7 @@
 import RootDialog from "@/components/reusable/RootDialog";
 import Search from "@/components/reusable/Search";
 import { useState } from "react";
-import GroupCreateModal from "./GroupCreateModal";
+import CreateGroupForm from "./GroupCreateModal";
 
 function GroupHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +32,7 @@ function GroupHeader() {
       </div>
       {isOpen && (
         <RootDialog open={isOpen} setOpen={setIsOpen}>
-          <GroupCreateModal />
+          <CreateGroupForm />
         </RootDialog>
       )}
     </div>
