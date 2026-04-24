@@ -19,7 +19,7 @@ export const PartnersSidebar = () => {
   };
 
   return (
-    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-[#F8FAFB] p-5 md:h-253.5 md:w-85.5 rounded-lg border border-[#ECEFF3]">
+    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-[#F8FAFB] p-5 lg:h-253.5 lg:w-85.5 rounded-lg border border-[#ECEFF3]">
       {/* Header */}
       <div className="flex w-full flex-col items-start gap-2 self-stretch">
         <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
@@ -32,14 +32,14 @@ export const PartnersSidebar = () => {
       </div>
 
       {/* Desktop View - Vertical List */}
-      <div className="hidden w-full flex-col md:flex">
+      <div className="hidden w-full flex-col lg:flex">
         {partnersData.map((partner) => (
           <PartnerCard key={partner.id} partner={partner} />
         ))}
       </div>
 
       {/* Mobile View - Horizontal Scrollable Cards */}
-      <div className="flex w-full flex-col gap-4 md:hidden">
+      <div className="flex w-full flex-col gap-4 lg:hidden">
         <div
           className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide"
           onScroll={handleScroll}

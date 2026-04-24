@@ -1,4 +1,3 @@
-// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/layout.tsx
 
 import { IndustrySidebar } from "./_components/IndustrySidebar";
 import { PartnersSidebar } from "./_components/PartnersSidebar";
@@ -11,7 +10,7 @@ export default function IndustryLayout({
   return (
     <>
       {/* Mobile Layout */}
-      <div className="flex w-full flex-col gap-6 px-4 pt-6 md:hidden">
+      <div className="flex w-full flex-col gap-6 px-4 pt-6 lg:hidden">
         <PartnersSidebar />
         <IndustrySidebar />
         <div className="w-full">{children}</div>

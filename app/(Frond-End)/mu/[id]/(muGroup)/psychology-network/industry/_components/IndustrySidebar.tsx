@@ -1,4 +1,3 @@
-// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/_components/IndustrySidebar.tsx
 
 "use client";
 
@@ -91,9 +90,8 @@ export const IndustrySidebar = () => {
             </div>
           </span>
           <ChevronDown
-            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+              }`}
           />
         </button>
 

@@ -15,7 +15,7 @@ export const LabInfrastructureCard = ({
   icon,
 }: LabInfrastructureCardProps) => {
   return (
-    <div className="flex w-full max-w-91.75 flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
+    <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
       {/* Icon and Title Row */}
       <div className="flex w-full items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8FAFB]">

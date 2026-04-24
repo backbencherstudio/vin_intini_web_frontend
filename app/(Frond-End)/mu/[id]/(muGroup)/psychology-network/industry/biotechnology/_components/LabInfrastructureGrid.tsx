@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   LabInfrastructureCard as LabInfrastructureCardType,
   LabInfrastructureFilterCategory,
@@ -12,12 +12,26 @@ import { LabInfrastructureFilterTabs } from "./LabInfrastructureFilterTabs";
 import { PaginationDots } from "../../_components";
 import { fileIcon } from "@/public/svgIcons/Icons";
 
-const ITEMS_PER_PAGE = 4;
-
 export const LabInfrastructureGrid = () => {
   const [activeFilter, setActiveFilter] =
     useState<LabInfrastructureFilterCategory>("all");
   const [currentPage, setCurrentPage] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const updateItemsPerPage = () => {
+      if (window.innerWidth >= 1024 && window.innerWidth < 1280) {
+        setItemsPerPage(2);
+      } else {
+        setItemsPerPage(4);
+      }
+    };
+    updateItemsPerPage();
+    window.addEventListener("resize", updateItemsPerPage);
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, []);
 
   const filteredCards = useMemo(() => {
     if (activeFilter === "all") return labInfrastructureCards;
@@ -26,13 +40,13 @@ export const LabInfrastructureGrid = () => {
     );
   }, [activeFilter]);
 
-  const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
-
   const paginatedCards = useMemo(() => {
-    const start = currentPage * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return filteredCards.slice(start, end);
-  }, [filteredCards, currentPage]);
+    if (!isMounted) {
+      return filteredCards.slice(0, 4);
+    }
+    const end = (currentPage + 1) * itemsPerPage;
+    return filteredCards.slice(0, end);
+  }, [filteredCards, currentPage, itemsPerPage, isMounted]);
 
   const handleFilterChange = (filter: LabInfrastructureFilterCategory) => {
     setActiveFilter(filter);
@@ -64,7 +78,7 @@ export const LabInfrastructureGrid = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2">
         {paginatedCards.map((card) => (
           <LabInfrastructureCard
             key={card.id}
@@ -82,6 +96,21 @@ export const LabInfrastructureGrid = () => {
           </p>
         </div>
       )}
+
+      {/* Load More Button */}
+      {isMounted && filteredCards.length > itemsPerPage &&
+        (currentPage + 1) * itemsPerPage < filteredCards.length && (
+          <div className="flex w-full items-center justify-center pt-2">
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="flex items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 xl:hidden"
+            >
+              <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
+                Load more
+              </span>
+            </button>
+          </div>
+        )}
 
       {/* Pagination Dots */}
       <div className="flex w-full justify-center py-6">
