@@ -1,4 +1,3 @@
-// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/_components/IndustrySidebar.tsx
 
 "use client";
 
@@ -53,13 +52,8 @@ export const IndustrySidebar = () => {
   return (
     <>
       {/* Desktop View - UNCHANGED */}
-<<<<<<< HEAD
-      <div className="hidden h-full min-h-screen w-full max-w-66 flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white md:flex md:w-66">
-        <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
-=======
-      <div className="hidden w-full max-w-66 flex-col items-center gap-5 self-stretch border-r border-[#DFE1E7] bg-white lg:flex lg:w-66">
+      <div className="hidden w-full max-w-66 flex-col items-center gap-5 self-stretch border-r border-[#DFE1E7] bg-white md:flex md:w-66">
         <div className="flex w-full items-center gap-2.5 self-stretch border-b border-[#DFE1E7] px-5 py-5">
->>>>>>> 3937e769fcc8a92b1382c42cf1f5bf9893d89754
           <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
             Industries
           </h2>
@@ -77,7 +71,7 @@ export const IndustrySidebar = () => {
       </div>
 
       {/* Mobile View - Header + Dropdown */}
-      <div className="w-full lg:hidden">
+      <div className="w-full md:hidden">
         <IndustryHeader
           title={currentPage}
           description={
@@ -96,9 +90,8 @@ export const IndustrySidebar = () => {
             </div>
           </span>
           <ChevronDown
-            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+              }`}
           />
         </button>
 
