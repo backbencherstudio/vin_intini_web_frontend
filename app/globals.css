@@ -164,6 +164,11 @@
   opacity: 1 !important;
 }
 
+
+.selectbar-hidden-display{
+  display: none;
+}
+
 input:checked ~ .checkmark {
   background-color: var(--color-green-600);
 }

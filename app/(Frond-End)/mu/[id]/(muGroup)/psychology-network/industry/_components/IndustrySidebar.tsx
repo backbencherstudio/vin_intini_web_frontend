@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { useParams, usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, icons } from "lucide-react";
 import { IndustryNavItem } from "./IndustryNavItem";
 import {
   BiotechnologyIcon,
@@ -21,17 +21,17 @@ export const IndustrySidebar = () => {
 
   const navItems = [
     {
-      href: `/mu/${muId}/psychology-network/industry/biotechnology`,
+      href: `/mu/${muId}/neuroscience-network/industry/biotechnology`,
       icon: <BiotechnologyIcon />,
       label: "Biotechnology",
     },
     {
-      href: `/mu/${muId}/psychology-network/industry/psychopharmacology`,
+      href: `/mu/${muId}/neuroscience-network/industry/psychopharmacology`,
       icon: <PsychopharmacologyIcon />,
       label: "Psychopharmacology",
     },
     {
-      href: `/mu/${muId}/psychology-network/industry/publications`,
+      href: `/mu/${muId}/neuroscience-network/industry/publications`,
       icon: <PublicationsIcon />,
       label: "Publications",
     },
@@ -52,9 +52,9 @@ export const IndustrySidebar = () => {
 
   return (
     <>
-      {/* Desktop View - UNCHANGED */}
-      <div className="hidden w-full max-w-66 flex-col items-center gap-5 self-stretch border-r border-[#DFE1E7] bg-white md:flex md:w-66">
-        <div className="flex w-full items-center gap-2.5 self-stretch border-b border-[#DFE1E7] px-5 py-5">
+      {/* Desktop View - Shows from lg (1024px) and above */}
+      <div className="hidden h-full min-h-screen w-full max-w-66 flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex lg:w-66">
+        <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
           <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
             Industries
           </h2>
@@ -71,8 +71,8 @@ export const IndustrySidebar = () => {
         </div>
       </div>
 
-      {/* Mobile View - Header + Dropdown */}
-      <div className="w-full md:hidden">
+      {/* Mobile & Tablet View - Shows below lg (1024px) */}
+      <div className="w-full lg:hidden">
         <IndustryHeader
           title={currentPage}
           description={
@@ -85,9 +85,11 @@ export const IndustrySidebar = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="mt-4 flex w-full items-center justify-between rounded-lg border border-[#DFE1E7] bg-white px-4 py-3"
         >
-          <div className="flex items-center gap-2">
-            {currentIcon} {currentPage}
-          </div>
+          <span className="font-['Segoe_UI'] text-base font-semibold text-[#1D1F2C]">
+            <div className="flex items-center gap-2">
+              {currentIcon} {currentPage}
+            </div>
+          </span>
           <ChevronDown
             className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""

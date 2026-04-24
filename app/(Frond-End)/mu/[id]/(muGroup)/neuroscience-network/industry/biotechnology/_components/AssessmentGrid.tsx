@@ -78,7 +78,7 @@ export const AssessmentGrid = ({
       </div>
 
       {/* Cards Grid */}
-      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {paginatedCards.map((card) => (
           <AssessmentCard key={card.id} card={card} />
         ))}

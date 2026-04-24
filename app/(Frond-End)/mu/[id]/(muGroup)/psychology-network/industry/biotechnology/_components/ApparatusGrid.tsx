@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -62,7 +61,7 @@ export const ApparatusGrid = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {paginatedCards.map((card) => (
           <ApparatusCard key={card.id} card={card} />
         ))}

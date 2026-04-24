@@ -17,11 +17,15 @@ export default function IndustryLayout({
         <div className="w-full">{children}</div>
       </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden w-full max-w-90 gap-6 pt-10 sm:max-w-2xl md:flex md:max-w-4xl lg:max-w-6xl xl:max-w-360">
-        <IndustrySidebar />
-        <div className="flex-1">{children}</div>
-        <PartnersSidebar />
+      {/* Desktop Layout - ADD items-stretch */}
+      <div className="hidden w-full items-stretch gap-6 pt-10 md:flex">
+        <div className="w-66 shrink-0">
+          <IndustrySidebar />
+        </div>
+        <div className="min-w-0 flex-1">{children}</div>
+        <div className="w-85.5 shrink-0">
+          <PartnersSidebar />
+        </div>
       </div>
     </>
   );
