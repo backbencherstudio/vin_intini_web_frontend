@@ -22,7 +22,7 @@ export default function PsychopharmacologyPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex w-full flex-col items-start gap-10 pt-6">
+        <div className="flex w-full flex-col items-start gap-10 pt-6 py-6">
           <div className="flex w-full flex-col items-start gap-6">
             <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
               Psychotropic Medications
