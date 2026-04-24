@@ -53,7 +53,7 @@ export const IndustrySidebar = () => {
   return (
     <>
       {/* Desktop View - UNCHANGED */}
-      <div className="hidden w-full max-w-66 flex-col items-center gap-5 self-stretch border-r border-[#DFE1E7] bg-white md:flex md:w-66">
+      <div className="hidden w-full max-w-66 flex-col items-center gap-5 self-stretch border-r border-[#DFE1E7] bg-white lg:flex lg:w-66">
         <div className="flex w-full items-center gap-2.5 self-stretch border-b border-[#DFE1E7] px-5 py-5">
           <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
             Industries
@@ -72,7 +72,7 @@ export const IndustrySidebar = () => {
       </div>
 
       {/* Mobile View - Header + Dropdown */}
-      <div className="w-full md:hidden">
+      <div className="w-full lg:hidden">
         <IndustryHeader
           title={currentPage}
           description={

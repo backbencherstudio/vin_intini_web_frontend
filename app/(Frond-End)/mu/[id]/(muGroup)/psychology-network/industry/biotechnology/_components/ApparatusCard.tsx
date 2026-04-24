@@ -10,7 +10,7 @@ interface ApparatusCardProps {
 
 export const ApparatusCard = ({ card }: ApparatusCardProps) => {
   return (
-    <div className="flex w-full max-w-91.75 flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px">
+    <div className="flex w-full  flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px">
       {/* Image */}
       <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
         <Image

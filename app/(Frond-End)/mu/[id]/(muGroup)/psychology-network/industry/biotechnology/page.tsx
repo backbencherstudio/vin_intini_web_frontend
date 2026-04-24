@@ -14,7 +14,7 @@ export default function BiotechnologyPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex lg:max-w-196.5 flex-col">
+    <div className="flex xl:max-w-196.5 lg:max-w-[455px]  flex-col">
       <div className="flex w-full flex-1 flex-col">
         {/* Hide this header on mobile since it's in IndustrySidebar */}
         <div className="hidden md:block">
@@ -33,13 +33,6 @@ export default function BiotechnologyPage() {
               Neuroscientific and Psychophysiological Equipment
             </h3>
             <EquipmentGrid />
-            <div className="flex w-full items-center justify-center">
-              <button className="flex  items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 md:hidden">
-                <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-                  Load more
-                </span>
-              </button>
-            </div>
           </div>
 
           {/* Section 2: Assessment Instruments */}
@@ -48,13 +41,6 @@ export default function BiotechnologyPage() {
               Psychological Assessment Instruments
             </h3>
             <AssessmentGrid />
-            <div className="flex w-full items-center justify-center">
-              <button className="flex  items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 md:hidden">
-                <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-                  Load more
-                </span>
-              </button>
-            </div>
           </div>
 
           {/* Section 3: Experimental Apparatus */}
@@ -63,13 +49,6 @@ export default function BiotechnologyPage() {
               Experimental Apparatus (Behavioral and Cognitive)
             </h3>
             <ApparatusGrid />
-            <div className="flex w-full items-center justify-center">
-              <button className="flex  items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 md:hidden">
-                <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-                  Load more
-                </span>
-              </button>
-            </div>
           </div>
 
           {/* Section 4: General Lab and Clinical Infrastructure */}
@@ -78,13 +57,6 @@ export default function BiotechnologyPage() {
               General Lab and Clinical Infrastructure
             </h3>
             <LabInfrastructureGrid />
-            <div className="flex w-full items-center justify-center">
-              <button className="flex  items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 md:hidden">
-                <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-                  Load more
-                </span>
-              </button>
-            </div>
           </div>
         </div>
       </div>

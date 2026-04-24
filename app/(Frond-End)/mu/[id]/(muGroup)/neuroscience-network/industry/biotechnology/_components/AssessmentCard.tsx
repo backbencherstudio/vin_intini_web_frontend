@@ -9,7 +9,7 @@ interface AssessmentCardProps {
 
 export const AssessmentCard = ({ card }: AssessmentCardProps) => {
   return (
-    <div className="flex w-full max-w-91.75 flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
+    <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
       {/* Title and Tag Row */}
       <div className="flex w-full items-center justify-between">
         <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
