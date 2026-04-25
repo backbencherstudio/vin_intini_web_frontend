@@ -6,10 +6,7 @@ import { FigmaMark } from "../GroupSidbar";
 function GroupCard({ group }: { group: any }) {
   return (
     <div>
-      <div
-        key={group.id}
-        className="border-b border-borderColor py-4 first:pt-5"
-      >
+      <div className="border-b border-borderColor py-4 first:pt-5">
         <div className="flex items-start gap-3">
           {group.isFirst ? (
             <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
@@ -32,7 +29,7 @@ function GroupCard({ group }: { group: any }) {
             </div>
           </div>
           <Link
-            href="/mu/2/group/1"
+            href={`/mu/2/my-network/group/${group.id}`}
             className={`py-0.5! px-4! border rounded-full!   border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor! hover:text-primaryColor! hover:bg-primaryColor/10! mt-4!`}
           >
             View
