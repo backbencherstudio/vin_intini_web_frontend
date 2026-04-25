@@ -51,7 +51,7 @@ export const PublicationsList = ({ publications }: PublicationsListProps) => {
         )}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end pb-10">
         <PublicationsPagination
           currentPage={currentPage}
           totalPages={DEMO_TOTAL_PAGES}

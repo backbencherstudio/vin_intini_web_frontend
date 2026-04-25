@@ -29,7 +29,7 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
 
       {/* Date, Meta, and Button Row */}
       <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2">
           <span className="font-['Segoe_UI'] text-sm text-[#777980]">
             {publication.date}
           </span>
@@ -38,7 +38,7 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
             {publication.meta}
           </span>
         </div>
-        <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
+        <button className="flex items-center gap-1 text-[#04A1B7] hover:underline whitespace-nowrap">
           <span className="text-center font-['Arial'] text-sm font-normal leading-[20px]">
             Learn more
           </span>

@@ -20,7 +20,7 @@ export default function BiotechnologyPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col">
+    <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col py-8 lg:py-10">
       <div className="flex w-full flex-1 flex-col">
         {/* Hide this header on mobile since it's in IndustrySidebar */}
         <div className="hidden md:block">

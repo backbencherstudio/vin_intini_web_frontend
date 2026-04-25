@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
@@ -45,9 +44,9 @@ export const PublicationsPagination = ({
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className="flex items-center justify-center gap-1 rounded border border-[#A5A5AB] px-2 py-1 hover:bg-[#E9E9EA] disabled:opacity-50 disabled:hover:bg-transparent"
+          className="flex h-8 items-center justify-center gap-1 rounded border border-[#A5A5AB] px-2 hover:bg-[#E9E9EA] disabled:opacity-50 disabled:hover:bg-transparent"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
           <span className="hidden text-sm text-[#1D1F2C] sm:inline">
             Previous
           </span>
@@ -58,11 +57,10 @@ export const PublicationsPagination = ({
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`flex h-7 w-7 flex-col items-center justify-center rounded px-1 ${
-                currentPage === page
+              className={`flex h-8 w-8 flex-col items-center justify-center rounded px-1 ${currentPage === page
                   ? "bg-[#A5A5AB] text-white"
                   : "text-[#1D1F2C] hover:bg-[#A5A5AB] hover:text-white"
-              }`}
+                }`}
             >
               {page}
             </button>
@@ -72,10 +70,10 @@ export const PublicationsPagination = ({
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="flex items-center justify-center gap-1 rounded border border-[#A5A5AB] px-2 py-1 hover:bg-[#E9E9EA] disabled:opacity-50 disabled:hover:bg-transparent"
+          className="flex h-8 items-center justify-center gap-1 rounded border border-[#A5A5AB] px-2 hover:bg-[#E9E9EA] disabled:opacity-50 disabled:hover:bg-transparent"
         >
           <span className="hidden text-sm text-[#1D1F2C] sm:inline">Next</span>
-          <ChevronRight className="h-4 w-4 text-[#1D1F2C]" />
+          <ChevronRight className="h-5 w-5 text-[#1D1F2C]" />
         </button>
       </div>
 
@@ -83,7 +81,7 @@ export const PublicationsPagination = ({
         value={String(pageSize)}
         onValueChange={(value) => onPageSizeChange(Number(value))}
       >
-        <SelectTrigger className="h-auto w-[120px] gap-1 rounded border border-[#A5A5AB] py-1 pr-0">
+        <SelectTrigger className="h-8 w-[120px] gap-1 rounded border border-[#A5A5AB] py-1 pr-0">
           <SelectValue placeholder={`${pageSize} Results`} />
         </SelectTrigger>
         <SelectContent>
