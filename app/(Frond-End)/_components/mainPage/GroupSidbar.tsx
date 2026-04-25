@@ -40,9 +40,9 @@ const groups: GroupItem[] = [
   },
 ];
 
-function FigmaMark() {
+export function FigmaMark() {
   return (
-    <div className="relative h-10 w-10 shrink-0">
+    <div className="relative h-16 w-16 shrink-0">
       <span className="absolute left-0 top-0 h-3.5 w-3.5 rounded-full bg-[#f24e1e]" />
       <span className="absolute left-3.5 top-0 h-3.5 w-3.5 rounded-full bg-[#ff7262]" />
       <span className="absolute left-0 top-3.5 h-3.5 w-3.5 rounded-full bg-[#a259ff]" />

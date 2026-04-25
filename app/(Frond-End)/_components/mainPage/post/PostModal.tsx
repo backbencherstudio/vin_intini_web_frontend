@@ -127,7 +127,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
             <button
               type="button"
               onClick={() => setPostType("post_access")}
-              className="mt-0.5 inline-flex items-center leading-[160%] gap-1 text-[14px] text-descriptionColor hover:opacity-80"
+              className="mt-0.5 inline-flex items-center cursor-pointer leading-[160%] gap-1 text-[14px] text-descriptionColor hover:opacity-80"
             >
               <span>Post for everyone</span>
               <MenueArrowDownIcon className="h-3 w-3" />
@@ -171,7 +171,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveMedia(index)}
-                    className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white"
+                    className="absolute right-2 top-2 rounded-full cursor-pointer bg-black/60 px-2 py-1 text-xs font-medium text-white"
                     aria-label={`Remove media ${index + 1}`}
                   >
                     <X size={14} />
@@ -197,7 +197,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveMedia(index)}
-                    className="absolute right-1 top-1 rounded-full bg-redColor/60 cursor-pointer p-1 text-xs font-medium text-white"
+                    className="absolute  right-1 top-1 rounded-full bg-redColor/60 cursor-pointer p-1 text-xs font-medium text-white"
                     aria-label={`Remove media ${index + 1}`}
                   >
                     <X size={14} />
@@ -242,7 +242,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
             type="button"
             onClick={handleSubmit}
             disabled={!postText.trim() && selectedMedia.length === 0}
-            className=" h-8 rounded-full disabled:cursor-not-allowed disabled:bg-grayColor1 cursor-pointer leading-[160%] bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor  hover:bg-buttonColor/90 hover:shadow-xl"
+            className=" h-8  rounded-full disabled:cursor-not-allowed disabled:bg-grayColor1 cursor-pointer leading-[160%] bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor  hover:bg-buttonColor/90 hover:shadow-xl"
           >
             <SendIcon className="mr-1 h-2.5 w-3.5" />
             Post

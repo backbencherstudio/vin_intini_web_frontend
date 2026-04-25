@@ -1,3 +1,4 @@
+"use client";
 import {
   GroupUserIcon,
   MultiUserIcon,
@@ -6,43 +7,57 @@ import {
 } from "@/public/svgIcons/Icons";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-function MainPageLeftSidebar() {
+function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const menuItems = [
     {
       label: "My Connections",
-      slug: "/mu/2/my-connection",
+      slug: "/mu/1/my-network/my-connection",
       icon: MultiUserIcon,
     },
     {
       label: "Connection Requests",
-      slug: "/mu/2/connection-requests",
+      slug: "/mu/1/my-network/connection-requests",
       icon: PlusUserIcon,
     },
     {
       label: " Following & Followers",
-      slug: "/mu/2/following",
+      slug: "/mu/1/my-network/following",
       icon: SingleUserIcon,
     },
     {
       label: "Groups",
-      slug: "/mu/2/groups",
+      slug: "/mu/1/my-network/groups",
       icon: GroupUserIcon,
       isDropdown: true,
     },
   ];
+
+  const pathName = usePathname();
+  const isActive = (href: string): boolean => {
+    if (href === "/mu/2/my-network/my-connection") {
+      return pathName === "/mu/2/my-network/my-connection";
+    }
+    return pathName.startsWith(href);
+  };
   return (
     <div>
       <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold">
         Manage Network
       </h3>
 
-      <div className="mt-6 space-y-4 ">
+      <div className="mt-6 space-y-1 ">
         {menuItems.map((item) => (
           <Link
             key={item.slug}
             href={item.slug}
-            className="flex items-center gap-3 text-sm text-grayColor1 hover:text-headerColor transition"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 p-2 text-sm transition ${
+              isActive(item.slug)
+                ? "text-headerColor bg-bgLightColor rounded-md font-medium"
+                : "text-grayColor1 hover:text-headerColor"
+            }`}
           >
             {item.icon && <item.icon className="w-4.5 h-4.5" />}
             {item.label}

@@ -1,6 +1,21 @@
-import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  CommentIcon,
+  DeleteIcon,
+  DotIcon,
+  LikeIcon,
+  UserBanIcon,
+} from "@/public/svgIcons/Icons";
 import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
+import DeleteGroup from "../group/DeleteGroup";
+import GroupUserBanDialog from "../group/GroupUserBanDialog";
 import PostComment from "./PostComment";
 
 export type PostCardData = {
@@ -20,7 +35,10 @@ type PostCardProps = {
 
 function PostCard({ post }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isBanUser, setIsBanUser] = useState(false);
   const [isCommented, setIsCommented] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   let likesCount = 10; // This should ideally come from post data
   if (isLiked) {
     likesCount += 1;
@@ -56,17 +74,49 @@ function PostCard({ post }: PostCardProps) {
             </p>
           </div>
         </div>
-
-        <button
-          type="button"
-          className={`h-7 rounded-full border px-3 hover:tracking-widest transition-all duration-200 text-sm font-medium cursor-pointer ${
-            post.isConnected
-              ? "border-buttonColor bg-buttonColor text-whiteColor"
-              : "border-headerColor/60 bg-transparent text-headerColor/80"
-          }`}
-        >
-          {post.isConnected ? "Connected" : "Connect"}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            className={`h-7 rounded-full border px-3 hover:tracking-widest transition-all duration-200 text-sm font-medium cursor-pointer ${
+              post.isConnected
+                ? "border-buttonColor bg-buttonColor text-whiteColor"
+                : "border-headerColor/60 bg-transparent text-headerColor/80"
+            }`}
+          >
+            {post.isConnected ? "Connected" : "Connect"}
+          </button>
+          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+            <DropdownMenuTrigger className="cursor-pointer focus:outline-0">
+              <DotIcon className="w-4 h-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-3">
+              <h4 className="text-base leading-[140%] font-semibold text-headerColor md:text-lg">
+                Action
+              </h4>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  setMenuOpen(false);
+                  setIsDeleted(true);
+                }}
+                className="cursor-pointer"
+              >
+                <DeleteIcon /> Delete post
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  setMenuOpen(false);
+                  setIsBanUser(true);
+                }}
+                className="cursor-pointer"
+              >
+                <UserBanIcon /> Ban User
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="mt-4 space-y-1">
@@ -109,6 +159,10 @@ function PostCard({ post }: PostCardProps) {
         </button>
       </div>
       <div className="mt-2">{isCommented && <PostComment />}</div>
+      {isBanUser && (
+        <GroupUserBanDialog open={isBanUser} setOpen={setIsBanUser} />
+      )}
+      {isDeleted && <DeleteGroup open={isDeleted} setOpen={setIsDeleted} />}
     </article>
   );
 }

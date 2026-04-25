@@ -79,7 +79,12 @@ export default function MainNavbar() {
   const [openMobileDropdownSlug, setOpenMobileDropdownSlug] = useState<
     string | null
   >(null);
-
+  const isActive = (href: string): boolean => {
+    if (href === "/mu/2/home") {
+      return pathname === "/mu/2/home";
+    }
+    return pathname.startsWith(href);
+  };
   return (
     <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),_0_16px_24px_0_rgba(0,0,0,0.01)]">
       <div className="container mx-auto flex items-center justify-between">
@@ -87,10 +92,8 @@ export default function MainNavbar() {
           <Image src={mainLogo} alt="Logo" width={50} height={50} />
         </div>
 
-        <nav className="hidden space-x-6 text-base md:flex">
+        <nav className="hidden space-x-6 text-base lg:flex">
           {menuItems.map((item) => {
-            const isActive = pathname === item.slug;
-
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
 
@@ -107,7 +110,7 @@ export default function MainNavbar() {
                       type="button"
                       className={cn(
                         "group flex w-fit flex-col items-center gap-1 text-sm transition cursor-pointer hover:text-headerColor",
-                        isActive || isDropdownOpen
+                        isActive(item.slug) || isDropdownOpen
                           ? "text-headerColor"
                           : "text-grayColor1",
                       )}
@@ -158,7 +161,7 @@ export default function MainNavbar() {
                 href={item.slug}
                 className={cn(
                   "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
-                  isActive ? "text-headerColor" : "text-grayColor1",
+                  isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
                 )}
               >
                 <item.icon className="h-4.5 w-4.5" />
@@ -168,11 +171,11 @@ export default function MainNavbar() {
           })}
         </nav>
 
-        <div className="hidden items-center space-x-[14px] md:flex">
+        <div className="hidden items-center space-x-[14px] lg:flex">
           <UserHeaderInfo />
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <UserHeaderInfo />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -185,7 +188,7 @@ export default function MainNavbar() {
 
       <div
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out md:hidden",
+          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -216,7 +219,7 @@ export default function MainNavbar() {
                     }
                     className={cn(
                       "flex w-full items-center justify-between gap-2 py-2 text-base",
-                      pathname === item.slug
+                      isActive(item.slug)
                         ? "text-secondaryColor"
                         : "text-white",
                     )}

@@ -1,6 +1,7 @@
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
 import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
+import { ConnectionActionButtons } from "./ConnectionActionButtons";
 
 function ConnectionRequestCard({
   item,
@@ -9,6 +10,12 @@ function ConnectionRequestCard({
   item: any;
   allReadyFriends?: string;
 }) {
+  const handleConnectionAction = (id: number, type: string) => {
+    console.log(`Action: ${type} for User ID: ${id}`);
+  
+  };
+
+  const currentStatus = allReadyFriends || item.action || "none";
   return (
     <div>
       <article className="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-borderColor py-3">
@@ -56,63 +63,13 @@ function ConnectionRequestCard({
           </div>
         </div>
 
-        <div className="flex  w-fit justify-end   items-center gap-2">
-          {allReadyFriends == "friend" ? (
-            <button
-              type="button"
-              className="rounded-full border  border-borderColor hover:shadow-md w-9 h-9 flex justify-center items-center cursor-pointer  text-base text-headerColor hover:bg-bgColor"
-            >
-              {" "}
-              <UserMinusIcon className="w-4 h-4" />
-            </button>
-          ) : allReadyFriends == "follower" ? (
-            <button
-              type="button"
-              className="rounded-full border hover:border-primaryColor border-borderColor px-4 py-1 text-sm leading-[140%] text-descriptionColor cursor-pointer font-semibold hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
-            >
-              Unfollow
-            </button>
-          ) : item.action === "accept" ? (
-            <>
-              <button
-                type="button"
-                className="rounded-full px-3 cursor-pointer py-0.5 text-base text-headerColor hover:bg-bgColor"
-              >
-                Ignore
-              </button>
-              <button
-                type="button"
-                className="rounded-full border border-primaryColor px-4 py-0.5 text-base leading-[140%] font-medium text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
-              >
-                Accept
-              </button>
-            </>
-          ) : item.action === "connected" ? (
-            <>
-              <button
-                type="button"
-                className="rounded-full border border-primaryColor px-4 py-0.5 text-base leading-[160%] font-medium text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
-              >
-                View profile
-              </button>
-              <button
-                type="button"
-                className="p-1 text-descriptionColor cursor-pointer hover:bg-bgColor rounded-full"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              className="p-1 text-descriptionColor cursor-pointer hover:bg-bgColor rounded-full"
-              aria-label="Close"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        <div className="flex w-full md:w-fit justify-end items-center">
+        <ConnectionActionButtons
+          id={item.id} 
+          status={currentStatus} 
+          onAction={handleConnectionAction} 
+        />
+      </div>
       </article>
     </div>
   );
