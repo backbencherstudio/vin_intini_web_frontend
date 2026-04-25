@@ -1,5 +1,6 @@
 "use client";
 
+import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
 import { X } from "lucide-react";
 import { useState } from "react";
@@ -18,19 +19,13 @@ export const ConnectionActionButtons = ({
 }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const primaryBtn =
-    "rounded-full border border-primaryColor px-5 py-1 text-sm font-bold text-primaryColor hover:bg-primaryColor hover:text-whiteColor transition-all duration-200";
-  const secondaryBtn =
-    "rounded-full px-4 py-1 text-sm font-medium text-headerColor hover:bg-bgColor transition-colors";
-  const iconBtn =
-    "p-2 text-descriptionColor hover:bg-bgColor rounded-full transition-colors";
   const renderButtons = () => {
     switch (status) {
       case "friend":
         return (
           <button
             onClick={() => onAction(id, "remove")}
-            className="rounded-full border border-borderColor hover:border-red-200 hover:text-red-500 w-9 h-9 flex justify-center items-center hover:bg-red-50 transition-colors"
+            className={BUTTON_STYLES.borderBtn}
           >
             <UserMinusIcon className="w-4 h-4" />
           </button>
@@ -40,7 +35,7 @@ export const ConnectionActionButtons = ({
         return (
           <button
             onClick={() => setIsOpen(true)}
-            className="rounded-full border border-borderColor px-4 py-1.5 text-sm font-semibold text-descriptionColor hover:bg-primaryColor hover:text-whiteColor hover:border-primaryColor transition-all"
+            className={`${BUTTON_STYLES.borderBtn} `}
           >
             Unfollow
           </button>
@@ -51,13 +46,13 @@ export const ConnectionActionButtons = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onAction(id, "ignore")}
-              className={secondaryBtn}
+              className={BUTTON_STYLES.secondary}
             >
               Ignore
             </button>
             <button
               onClick={() => onAction(id, "accept")}
-              className={primaryBtn}
+              className={BUTTON_STYLES.primary}
             >
               Accept
             </button>
@@ -67,8 +62,11 @@ export const ConnectionActionButtons = ({
       case "connected":
         return (
           <div className="flex items-center gap-2">
-            <button className={primaryBtn}>View profile</button>
-            <button onClick={() => onAction(id, "remove")} className={iconBtn}>
+            <button className={BUTTON_STYLES.primary}>View profile</button>
+            <button
+              onClick={() => onAction(id, "remove")}
+              className={BUTTON_STYLES.iconBtn}
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -76,7 +74,10 @@ export const ConnectionActionButtons = ({
 
       default:
         return (
-          <button onClick={() => onAction(id, "ignore")} className={iconBtn}>
+          <button
+            onClick={() => onAction(id, "ignore")}
+            className={BUTTON_STYLES.iconBtn}
+          >
             <X className="h-4 w-4" />
           </button>
         );
