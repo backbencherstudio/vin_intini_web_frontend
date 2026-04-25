@@ -164,6 +164,11 @@
   opacity: 1 !important;
 }
 
+
+.selectbar-hidden-display{
+  display: none;
+}
+
 input:checked ~ .checkmark {
   background-color: var(--color-green-600);
 }
@@ -228,8 +233,52 @@ body {
   height: 32px !important;
 }
 .epr_-xuzz9z {
+   
+    display: none;
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #D2D2D5 transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 2px !important;
+    height: 1px !important;
+  }
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #D2D2D5 !important;
+    border-radius: 0px !important;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #A5A5AB !important;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-corner {
+    background: transparent !important;
+  }
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  
+  scrollbar-width: none; 
+}
+
+
 .epr_-f1jbax:focus:before {
   border: 0px solid var(--primaryColor) !important;
 }

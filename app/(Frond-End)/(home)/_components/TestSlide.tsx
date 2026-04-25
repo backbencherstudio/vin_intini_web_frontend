@@ -27,8 +27,7 @@ export default function TestSlide({ data }: PropType) {
 
   return (
     <section className="">
-      <div className=" mb-20">
-
+      <div className="">
         <div className="relative grid grid-cols-12">
           <div className="col-span-1 flex justify-center w-full">
             <button onClick={goPrev} >
