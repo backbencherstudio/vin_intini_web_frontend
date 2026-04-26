@@ -218,9 +218,9 @@ export default function MainNavbar() {
                       )
                     }
                     className={cn(
-                      "flex w-full items-center justify-between gap-2 py-2 text-base",
+                      "flex w-full items-center rounded-sm justify-between gap-2 p-2 text-base",
                       isActive(item.slug)
-                        ? "text-secondaryColor"
+                        ? "text-primaryColor bg-whiteColor"
                         : "text-white",
                     )}
                   >
@@ -232,22 +232,24 @@ export default function MainNavbar() {
                       className={cn(
                         "h-3 w-3 transition-transform duration-200",
                         isMobileDropdownOpen
-                          ? "rotate-180 text-secondaryColor"
-                          : "text-white",
+                          ? "rotate-180 text-primaryColor"
+                          : isActive(item.slug)
+                            ? "text-primaryColor bg-whiteColor"
+                            : "text-white",
                       )}
                     />
                   </button>
 
                   {isMobileDropdownOpen && (
-                    <div className="ml-6 mt-1 space-y-1 border-l border-white/20 pl-3">
+                    <div className="ml-6 mt-1 space-y-0.5  border-l border-white/20 pl-3">
                       {item.dropdownItems?.map((dropdownItem) => (
                         <Link
                           key={dropdownItem.slug}
                           href={dropdownItem.slug}
                           className={cn(
-                            "block py-1 text-sm text-white/90 transition hover:text-secondaryColor",
+                            "block p-1.5 rounded-sm text-sm text-white/90 transition hover:text-primaryColor hover:bg-white",
                             pathname === dropdownItem.slug
-                              ? "text-secondaryColor"
+                              ? "text-primaryColor bg-whiteColor"
                               : "text-white/90",
                           )}
                           onClick={() => {
@@ -269,8 +271,10 @@ export default function MainNavbar() {
                 key={item.slug}
                 href={item.slug}
                 className={cn(
-                  "flex items-center gap-2 py-2 text-base",
-                  pathname === item.slug ? "text-secondaryColor" : "text-white",
+                  "flex items-center gap-2 p-2 rounded-sm text-base",
+                  pathname === item.slug
+                    ? "text-primaryColor bg-whiteColor"
+                    : "text-white",
                 )}
                 onClick={() => {
                   setMenuOpen(false);
