@@ -1,5 +1,5 @@
-"use client"
-import React, { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 
 type Option = "success" | "danger" | (string & {});
 
@@ -40,8 +40,8 @@ export function Alert({ type, children }: { type?: Option; children?: any }) {
           background: `${property.backgroundColor}`,
           borderColor: `${property.borderColor}`,
         }}
-        className={`rounded-[4px] border-x-[1px] 
-        border-y-[1px] px-[20px] py-[6px] mb-3`}
+        className={`rounded-lg border-x 
+        border-y px-5 py-1.5 mb-3`}
       >
         {children}
       </div>

@@ -12,7 +12,7 @@ function ConnectionRequestHeader() {
             <span className="text-base text-grayColor1 font-normal">(15)</span>
           </h2>
 
-          <div className="relative w-[300px] hidden md:block  max-w-full">
+          <div className="relative w-75 hidden md:block  max-w-full">
             <Search />
           </div>
         </div>
@@ -24,7 +24,7 @@ function ConnectionRequestHeader() {
           Show All
           <ArrowRight size={16} />
         </Link>
-        <div className="relative w-[300px] mx-auto md:hidden  max-w-full">
+        <div className="relative w-75 mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>

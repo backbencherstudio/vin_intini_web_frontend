@@ -1,11 +1,14 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogoutIcon, NotificationIcon } from "@/public/svgIcons/Icons";
+import {
+  LogoutIcon,
+  NotificationIcon,
+  SettingIcon,
+  UserCircleIcon,
+} from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -52,9 +55,9 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-60.5">
-                <div className="px-3 py-2">
-                  <div className="flex items-center gap-2">
+              <DropdownMenuContent align="end" className="w-60.5 p-3">
+                <div className="">
+                  <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md overflow-hidden mb-2">
                       <Image
                         src={"/profile.png"}
@@ -74,17 +77,33 @@ function UserHeaderInfo() {
                     </div>
                   </div>
                 </div>
-                <DropdownMenuSeparator />
-
-                <button
-                  onClick={() => {
-                    router.push("/login");
-                  }}
-                  className="text-headerColor items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
-                >
-                  <LogoutIcon className="w-4 h-4 group-hover:text-redColor group-hover:fill-redColor" />
-                  Log Out
-                </button>
+                <div className="py-3 space-y-2">
+                  <Link
+                    href={`/mu/1`}
+                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                  >
+                    <UserCircleIcon className="w-5 h-5 text-grayColor1" />
+                    Profile
+                  </Link>
+                  <Link
+                    href={`/mu/1`}
+                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                  >
+                    <SettingIcon className="w-5 h-5 text-grayColor1  " />
+                    Account Setting
+                  </Link>
+                </div>
+                <div className="pt-3  border-t border-borderColor">
+                  <button
+                    onClick={() => {
+                      router.push("/login");
+                    }}
+                    className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
+                  >
+                    <LogoutIcon className="w-4 h-4 group-hover:text-redColor group-hover:fill-redColor" />
+                    Log Out
+                  </button>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
