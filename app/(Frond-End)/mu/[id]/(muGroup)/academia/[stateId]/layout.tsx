@@ -1,14 +1,14 @@
+import Sidebar from "./_components/Sidebar";
+
 export default function layout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="grid grid-cols-[auto_1fr]">
-            <div className="bg-gray-100 min-w-[200px] p-4">
-                <h2>Sidebar</h2>
-            </div>
-            <div className="">
+        <div className="relative grid lg:grid-cols-[auto_1fr] grid-rows-1 h-full min-h-0">
+            <Sidebar />
+            <div className="h-full">
                 {children}
             </div>
         </div>

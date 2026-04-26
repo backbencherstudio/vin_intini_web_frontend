@@ -1,3 +1,4 @@
+import Image from "next/image";
 import GoogleMap from "./GoogleMap";
 
 type PropType = {
@@ -7,8 +8,14 @@ type PropType = {
 export default function StateDetails({ id }: PropType) {
 
     return (
-        <div style={{ padding: '10px' }}>
-            <h3>University Search: {id}</h3>
+        <div className="p-6">
+            <Image 
+                src="/images/googlemap.png"
+                alt="Google Map"
+                width={800}
+                height={600}
+                className="w-full h-full rounded-2xl"
+            />
         </div>
     );
 }

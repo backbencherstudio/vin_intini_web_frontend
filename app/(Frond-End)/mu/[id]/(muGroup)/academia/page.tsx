@@ -3,9 +3,12 @@
 import { UsaMapIcon } from "@/public/svgIcons/UsaMap"
 import { useMemo, useState } from "react";
 import { usaMapData } from "@/public/staticData";
+import { useSearchParams } from "next/navigation";
 
 export default function page() {
     const [mapData, setMapData] = useState(usaMapData);
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect") || "";
 
     return (
         <div
@@ -15,7 +18,7 @@ export default function page() {
             }}
         >
             <p className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-semibold leading-[130%] text-headerColor text-center">Select a state</p>
-            <UsaMapIcon className="w-full" data={mapData} redirect={"redirect"} />
+            <UsaMapIcon className="w-full" data={mapData} redirect={redirect} />
         </div>
     );
 }
