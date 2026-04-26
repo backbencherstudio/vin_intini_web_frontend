@@ -24,7 +24,7 @@ const ReusableTextarea = ({
 
       <textarea
         placeholder={placeholder}
-        className={`min-h-[80px] focus:ring-2! focus:ring-primaryColor/20! ${className || ""}`}
+        className={`min-h-20 focus:ring-2! focus:ring-primaryColor/20! ${className || ""}`}
         {...props}
       />
 

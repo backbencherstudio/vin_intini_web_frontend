@@ -6,8 +6,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
+import ProfileUpdateForm from "./ProfileUpdateForm";
+
 function ProfileHeroSection() {
-  const [isleaved, setILeaved] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
   return (
     <section>
@@ -69,6 +70,8 @@ function ProfileHeroSection() {
           </div>
         </div>
       </div>
+
+      {isNotify && <ProfileUpdateForm open={isNotify} setOpen={setIsNotify} />}
     </section>
   );
 }
