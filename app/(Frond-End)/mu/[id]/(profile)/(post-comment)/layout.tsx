@@ -1,0 +1,44 @@
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React from "react";
+
+function layout({ children }: { children: React.ReactNode }) {
+  const profileFilter = [
+    { id: 1, name: "Post", pathName: "/mu/1/posts" },
+    { id: 2, name: "Comments", pathName: "/mu/1/comments" },
+  ];
+  const pathName = usePathname();
+  const isActive = (href: string): boolean => {
+    if (href === "/mu/2/home") {
+      return pathName === "/mu/2/home";
+    }
+    return pathName.startsWith(href);
+  };
+  return (
+    <div>
+      <div className="mb-3">
+        <h2 className="text-lg md:text-xl font-semibold text-headerColor">
+          All Activity
+        </h2>
+      </div>
+      <div className="w-full overflow-x-auto border-y flex  border-borderColor">
+        {profileFilter.map((filter) => (
+          <Link
+            href={filter.pathName}
+            className={`flex items-center justify-center whitespace-nowrap px-5 py-2 text-sm font-medium transition-colors cursor-pointer ${
+              isActive(filter.pathName)
+                ? "bg-bgLightColor border-t border-grayColor1 border-b text-headerColor"
+                : "bg-white text-descriptionColor hover:bg-bgLightColor hover:text-headerColor"
+            }`}
+          >
+            {filter.name}
+          </Link>
+        ))}
+      </div>
+      <div className="mt-4">{children}</div>
+    </div>
+  );
+}
+
+export default layout;

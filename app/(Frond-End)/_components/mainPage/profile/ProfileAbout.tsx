@@ -6,8 +6,8 @@ function ProfileAbout() {
   const [isNotify, setIsNotify] = useState(false);
   return (
     <div className="pb-4 border-b border-borderColor">
-      <div>
-        <h2 className="text-lg md:text-xl font-semibold mb-4">About</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg md:text-xl font-semibold ">About</h2>
 
         <button
           aria-label="notify-open"
