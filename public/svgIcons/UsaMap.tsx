@@ -178,7 +178,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
 
     const handleClick = (state: (typeof STATE_DATA)[0]) => {
         router.push(
-            `/death-notices?region=${state.group}&state=${state.id}&redirect=${redirect}`
+            `/mu/2/academia/${state.name}?redirect=${redirect}`
         );
     };
 
