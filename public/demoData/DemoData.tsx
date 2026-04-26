@@ -209,15 +209,14 @@ export const demoData = [
     time: "2016-09-23T09:15:00Z",
     additional_information: "Phone Call",
     status: "Pre Application",
-  
   },
 ];
-
 
 export const testimonials: Testimonial[] = [
   {
     id: "1",
-    review: "This platform made my job search so much easier. The interface is user-friendly and the support team is fantastic!",
+    review:
+      "This platform made my job search so much easier. The interface is user-friendly and the support team is fantastic!",
     rating: 5,
     imgUrl: "/images/testimonial/banner1.png",
     reviewer: {
@@ -229,7 +228,8 @@ export const testimonials: Testimonial[] = [
   },
   {
     id: "2",
-    review: "I found my dream job within a week of signing up. Highly recommended for anyone looking for new opportunities!",
+    review:
+      "I found my dream job within a week of signing up. Highly recommended for anyone looking for new opportunities!",
     rating: 4,
     imgUrl: "/images/testimonial/banner2.png",
     reviewer: {
@@ -241,7 +241,8 @@ export const testimonials: Testimonial[] = [
   },
   {
     id: "3",
-    review: "The neuroscience network helped me connect with professionals in my field. Great resource for networking!",
+    review:
+      "The neuroscience network helped me connect with professionals in my field. Great resource for networking!",
     rating: 5,
     imgUrl: "/images/testimonial/banner3.png",
     reviewer: {
@@ -251,7 +252,7 @@ export const testimonials: Testimonial[] = [
       avatarUrl: "/images/testimonial/user3.jpg",
     },
   },
-]
+];
 
 type RequestAction = "accept" | "connected" | "ignored";
 
@@ -374,5 +375,43 @@ export const suggestedProfiles: SuggestedProfile[] = [
     role: "Product Designer at CRM Pipeline",
     mutualText: "Mahamudur Rahman and 5 other mutual",
     buttonText: "Connect",
+  },
+];
+
+type ProfileExperience = {
+  id: number;
+  companyName: string;
+  companyMeta: string;
+  jobTitle: string;
+  jobMeta: string;
+  location: string;
+  description?: string;
+  skills: string[];
+};
+
+export const profileExperiences: ProfileExperience[] = [
+  {
+    id: 1,
+    companyName: "Company Name & Logo",
+    companyMeta: "Job Type • Period",
+    jobTitle: "Job Title",
+    jobMeta: "Starting Date • Still working • Total time",
+    location: "Location • Country • Job Location",
+    skills: [],
+  },
+  {
+    id: 2,
+    companyName: "Company Name & Logo",
+    companyMeta: "Job Type • Period",
+    jobTitle: "Job Title",
+    jobMeta: "Starting Date • Still working • Total time",
+    location: "Location • Country • Job Location",
+    description:
+      "I’m a UI/UX designer focused on creating intuitive, visually engaging, and user-centered digital experiences for websites and mobile applications. I specialize in transforming complex ideas into simple, functional, and aesthetically pleasing interfaces. Currently working as a freelance UI/UX designer, I collaborate with clients to design modern landing pages, SaaS dashboards, and mobile app interfaces that improve usability and engagement.",
+    skills: [
+      "User Interface Design",
+      "User Experience Design",
+      "User Experience Design",
+    ],
   },
 ];
