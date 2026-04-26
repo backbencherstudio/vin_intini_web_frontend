@@ -10,6 +10,7 @@ function layout({ children }: { children: React.ReactNode }) {
         <div className="container h-full w-full  ">{children}</div>
         <MainFooter />
       </div>
+      
     </div>
   );
 }

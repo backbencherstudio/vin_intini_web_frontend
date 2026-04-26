@@ -1,8 +1,9 @@
 "use client";
 import MainPageLeftSidebar from "@/app/(Frond-End)/_components/mainPage/MainPageLeftSidebar";
+import CustomBackButton from "@/components/reusable/CustomBackButton";
 import { cn } from "@/lib/utils";
-import { RightArrowIcon } from "@/public/svgIcons/Icons";
-import { usePathname } from "next/navigation";
+import { LeftArrowIcon, RightArrowIcon } from "@/public/svgIcons/Icons";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 
@@ -17,9 +18,13 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="lg:hidden">
+        <div className="mb-4">
+          <CustomBackButton className="text-base" iconClassName="w-4 h-4" />
+        </div>
         <button
           type="button"
           aria-expanded={menuOpen}
+          aria-label="toggle-manage-network-sidebar"
           aria-controls="manage-network-sidebar"
           onClick={() => setMenuOpen((prev) => !prev)}
           className="text-base w-full pb-3 border-b border-borderColor flex justify-between items-center font-semibold cursor-pointer text-primaryColor"

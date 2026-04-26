@@ -9,7 +9,7 @@ export default function FrontEndLayout({
   return (
     <div>
       <div className="  ">
-        <div className="lg:grid lg:grid-cols-8 xl:grid-cols-10 py-8 gap-6  md:py-10 mb-10">
+        <div className="lg:grid lg:grid-cols-8 xl:grid-cols-10 sm:py-8 py-6 gap-6  md:py-10 mb-10">
           <div className="hidden lg:block col-span-2 border-r border-[#D2D2D5] pr-6 h-full">
             <MainPageLeftSidebar />
           </div>
