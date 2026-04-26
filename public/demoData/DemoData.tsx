@@ -376,3 +376,57 @@ export const suggestedProfiles: SuggestedProfile[] = [
     buttonText: "Connect",
   },
 ];
+
+
+export const gradProgramsData = [
+  {
+    "universityName": "Stanford University",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA-PhD", "PhD"]
+  },
+  {
+    "universityName": "Harvard University",
+    "psychologyDegrees": ["BA/BS", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "PhD"]
+  },
+  {
+    "universityName": "University of Cambridge",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "neuroscienceDegrees": ["MA-PhD", "PhD"]
+  },
+  {
+    "universityName": "MIT",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA-PhD", "PhD"]
+  },
+  {
+    "universityName": "University of Oxford",
+    "psychologyDegrees": ["BA/BS", "MA", "MA-PhD"],
+    "neuroscienceDegrees": ["PhD"]
+  },
+  {
+    "universityName": "Yale University",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA", "PhD"]
+  },
+  {
+    "universityName": "University College London",
+    "psychologyDegrees": ["MA", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "PhD"]
+  },
+  {
+    "universityName": "University of Toronto",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA-PhD"]
+  },
+  {
+    "universityName": "ETH Zurich",
+    "psychologyDegrees": ["BA/BS", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA", "PhD"]
+  },
+  {
+    "universityName": "University of California, Los Angeles",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["MA", "MA-PhD", "PhD"]
+  }
+]

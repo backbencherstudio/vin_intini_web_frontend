@@ -345,6 +345,73 @@ export const CheckMarkWithCircleIcon = ({
   </svg>
 );
 
+
+export const RightAngleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+    <path d="M10.417 15C10.417 15 15.417 11.3176 15.417 10C15.417 8.68233 10.417 5 10.417 5" stroke="#4A4C56" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M4.58305 15C4.58305 15 9.58301 11.3176 9.58301 10C9.58301 8.68233 4.58301 5 4.58301 5" stroke="#4A4C56" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+);
+
+
+export const BrainIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+    <path d="M16.998 7.12652C17.3182 7.04393 17.654 7 18 7C20.2091 7 22 8.79086 22 11C22 13.2091 20.2091 15 18 15C17.6451 15 17.3009 14.9538 16.9733 14.867M16.998 7.12652C16.9993 7.08451 17 7.04233 17 7C17 4.79086 15.2091 3 13 3C11.0824 3 9.47994 4.34939 9.09041 6.15043M16.998 7.12652C16.9769 7.80763 16.7854 8.44584 16.4649 9M16.9733 14.867C16.9909 14.7472 17 14.6247 17 14.5C17 13.2905 16.1411 12.2816 15 12.05M16.9733 14.867C16.7957 16.0737 15.756 17 14.5 17H14C11.7909 17 10 18.7909 10 21M9.09041 6.15043C8.74377 6.05243 8.37801 6 8 6C5.79086 6 4 7.79086 4 10C4 10.3886 4.05542 10.7643 4.15878 11.1195M9.09041 6.15043C10.1015 6.43625 10.9498 7.10965 11.4649 8M4.15878 11.1195C2.9114 11.4832 2 12.6352 2 14C2 15.6569 3.34315 17 5 17C6.30622 17 7.41746 16.1652 7.82929 15M4.15878 11.1195C4.24921 11.4303 4.37632 11.7255 4.53513 12" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M11.8361 11.7435C11.3257 12.2353 10.453 12.3202 9.70713 11.9008C8.9612 11.4814 8.58031 10.6917 8.73535 10" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" />
+  </svg>
+);
+
+
+export const HospitalIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+    <path d="M12 4.5V6M12 6V7.5M12 6H13.5M12 6H10.5" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M8.58579 2.58579C8 3.17157 8 4.11438 8 6C8 7.88562 8 8.82843 8.58579 9.41421C9.17157 10 10.1144 10 12 10C13.8856 10 14.8284 10 15.4142 9.41421C16 8.82843 16 7.88562 16 6C16 4.11438 16 3.17157 15.4142 2.58579C14.8284 2 13.8856 2 12 2C10.1144 2 9.17157 2 8.58579 2.58579Z" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M4 22V11.9707C4 8.66123 4 7.00649 5.02513 5.97836C5.67665 5.32493 6.58055 5.08679 8 5M20 22V11.9707C20 8.66123 20 7.00649 18.9749 5.97836C18.3233 5.32493 17.4194 5.08679 16 5" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M3 22H21" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M9.5 22V19.5C9.5 18.5654 9.5 18.0981 9.70096 17.75C9.83261 17.522 10.022 17.3326 10.25 17.201C10.5981 17 11.0654 17 12 17C12.9346 17 13.4019 17 13.75 17.201C13.978 17.3326 14.1674 17.522 14.299 17.75C14.5 18.0981 14.5 18.5654 14.5 19.5V22" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M8.00896 13H8M12 13H11.991M16.0011 13H15.9922" stroke="#4A4C56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)
+
+
+export const JobSearchIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+    <path d="M11.0065 21H9.60546C6.02021 21 4.22759 21 3.11379 19.8651C2 18.7301 2 16.9034 2 13.25C2 9.59662 2 7.76992 3.11379 6.63496C4.22759 5.5 6.02021 5.5 9.60546 5.5H13.4082C16.9934 5.5 18.7861 5.5 19.8999 6.63496C20.7568 7.50819 20.9544 8.7909 21 11" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M20.0169 20.0233L22 22M21.053 17.5265C21.053 15.5789 19.4741 14 17.5265 14C15.5788 14 14 15.5789 14 17.5265C14 19.4742 15.5788 21.0531 17.5265 21.0531C19.4741 21.0531 21.053 19.4742 21.053 17.5265Z" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M16 5.5L15.9006 5.19094C15.4056 3.65089 15.1581 2.88087 14.5688 2.44043C13.9796 2 13.1969 2 11.6315 2H11.3684C9.80304 2 9.02035 2 8.43111 2.44043C7.84186 2.88087 7.59435 3.65089 7.09934 5.19094L7 5.5" stroke="#4A4C56" stroke-width="1.5" />
+  </svg>
+);
+
+
+export const UndergradCapIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M2 8C2 9.34178 10.0949 13 11.9861 13C13.8772 13 21.9722 9.34178 21.9722 8C21.9722 6.65822 13.8772 3 11.9861 3C10.0949 3 2 6.65822 2 8Z" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M5.99414 11L6.23925 16.6299C6.24415 16.7426 6.25634 16.8555 6.28901 16.9635C6.38998 17.2973 6.57608 17.6006 6.86 17.8044C9.08146 19.3985 14.8901 19.3985 17.1115 17.8044C17.3956 17.6006 17.5816 17.2973 17.6826 16.9635C17.7152 16.8555 17.7274 16.7426 17.7324 16.6299L17.9774 11" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M20.4734 9.5V16.5M20.4734 16.5C19.6814 17.9463 19.3312 18.7212 18.9755 20C18.8983 20.455 18.9596 20.6843 19.2732 20.8879C19.4006 20.9706 19.5537 21 19.7055 21H21.2259C21.3876 21 21.5507 20.9663 21.6838 20.8745C21.9753 20.6735 22.0503 20.453 21.9713 20C21.6595 18.8126 21.2623 18.0008 20.4734 16.5Z" stroke="#4A4C56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+);
+
+
+export const FilterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+    <path d="M5.83203 17.5V15" stroke="#777980" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M14.168 17.5V12.5" stroke="#777980" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M14.168 5V2.5" stroke="#777980" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M5.83203 7.5V2.5" stroke="#777980" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M5.83203 15C5.05546 15 4.66718 15 4.36089 14.8732C3.95251 14.704 3.62806 14.3795 3.4589 13.9712C3.33203 13.6648 3.33203 13.2766 3.33203 12.5C3.33203 11.7234 3.33203 11.3352 3.4589 11.0288C3.62806 10.6205 3.95251 10.296 4.36089 10.1268C4.66718 10 5.05546 10 5.83203 10C6.6086 10 6.99688 10 7.30317 10.1268C7.71155 10.296 8.03601 10.6205 8.20516 11.0288C8.33203 11.3352 8.33203 11.7234 8.33203 12.5C8.33203 13.2766 8.33203 13.6648 8.20516 13.9712C8.03601 14.3795 7.71155 14.704 7.30317 14.8732C6.99688 15 6.6086 15 5.83203 15Z" stroke="#777980" stroke-width="1.2" />
+    <path d="M14.168 10C13.3914 10 13.0031 10 12.6968 9.87317C12.2885 9.704 11.964 9.3795 11.7948 8.97117C11.668 8.66483 11.668 8.27657 11.668 7.5C11.668 6.72343 11.668 6.33515 11.7948 6.02886C11.964 5.62048 12.2885 5.29602 12.6968 5.12687C13.0031 5 13.3914 5 14.168 5C14.9446 5 15.3328 5 15.6391 5.12687C16.0475 5.29602 16.372 5.62048 16.5411 6.02886C16.668 6.33515 16.668 6.72343 16.668 7.5C16.668 8.27657 16.668 8.66483 16.5411 8.97117C16.372 9.3795 16.0475 9.704 15.6391 9.87317C15.3328 10 14.9446 10 14.168 10Z" stroke="#777980" stroke-width="1.2" />
+  </svg>
+)
+
+
+export const SearchIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+    <path d="M14.168 14.1641L17.5013 17.4974" stroke="#777980" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667Z" stroke="#777980" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+);
+
+
 // utso code for icons, you can add more icons here and export them to use in your components.
 
 export const FaceBookIcon = ({ className }: { className?: string }) => (
