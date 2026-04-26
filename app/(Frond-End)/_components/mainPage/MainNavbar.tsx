@@ -86,7 +86,7 @@ export default function MainNavbar() {
     return pathname.startsWith(href);
   };
   return (
-    <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),_0_16px_24px_0_rgba(0,0,0,0.01)]">
+    <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)]">
       <div className="container mx-auto flex items-center justify-between">
         <div>
           <Image src={mainLogo} alt="Logo" width={50} height={50} />
@@ -132,7 +132,7 @@ export default function MainNavbar() {
 
                   <DropdownMenuContent
                     align="center"
-                    className="mt-3 w-[205px]  rounded-xl bg-whiteColor p-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
+                    className="mt-3 w-51.25  rounded-xl bg-whiteColor p-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
                   >
                     {item.dropdownItems?.map((dropdownItem, index) => (
                       <DropdownMenuItem
@@ -171,7 +171,7 @@ export default function MainNavbar() {
           })}
         </nav>
 
-        <div className="hidden items-center space-x-[14px] lg:flex">
+        <div className="hidden items-center space-x-3.5 lg:flex">
           <UserHeaderInfo />
         </div>
 
