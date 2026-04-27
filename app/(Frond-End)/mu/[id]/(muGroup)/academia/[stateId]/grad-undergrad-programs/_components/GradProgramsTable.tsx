@@ -22,7 +22,7 @@ export default function GradprogramsTable() {
             accessor: "universityName",
             width: "300px",
             formatter: (accessor: string, row: any) => (
-                <div className="w-full h-full text-start pl-2 py-1.5 text-[#0B0B0B]">
+                <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
                     {accessor}
                 </div>
             ),
@@ -32,7 +32,7 @@ export default function GradprogramsTable() {
             accessor: "psychologyDegrees",
             width: "170px",
             formatter: (accessor: string[], row: any) => (
-                <div className="w-full h-full text-start pl-2 py-1.5 text-[#0B0B0B]">
+                <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
                     {accessor.join(", ")}
                 </div>
             ),
@@ -42,7 +42,7 @@ export default function GradprogramsTable() {
             accessor: "neuroscienceDegrees",
             width: "190px",
             formatter: (accessor: string[], row: any) => (
-                <div className="w-full h-full text-start pl-2 py-1.5 text-[#0B0B0B]">
+                <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
                     {accessor.join(", ")}
                 </div>
             ),
@@ -65,7 +65,7 @@ export default function GradprogramsTable() {
                 }}
                 rowStyle={{
                     hover: true,
-                    hoverbg: "hover:bg-[#A5A5AB]"
+                    hoverbg: "hover:bg-[#ECEFF3]"
                 }}
             />
         </div>

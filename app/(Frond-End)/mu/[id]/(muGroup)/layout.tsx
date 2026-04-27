@@ -4,10 +4,10 @@ export default function FrontEndLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <div className=" ">
+    <div className="h-full">
+      <div className="h-full w-full grid">
         <div className="">
-          <div className="col-span-8">{children}</div>
+          <div className="col-span-8 h-full">{children}</div>
         </div>
       </div>
     </div>

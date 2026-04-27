@@ -8,7 +8,7 @@ export default function layout({
     return (
         <div className="relative grid lg:grid-cols-[auto_1fr] grid-rows-1 h-full min-h-0">
             <Sidebar />
-            <div className="h-full">
+            <div className="h-full grid">
                 {children}
             </div>
         </div>

@@ -243,3 +243,10 @@ export const usaMapData = [
 ];
 
 
+
+export const Limits = [
+    10,
+    25,
+    50,
+    100
+]
