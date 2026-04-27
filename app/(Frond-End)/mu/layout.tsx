@@ -1,7 +1,6 @@
 import MainFooter from "@/components/reusable/MainFooter";
 import React from "react";
-import MainNavbar from "./_components/mainPage/MainNavbar";
-
+import MainNavbar from "../_components/mainPage/MainNavbar";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +10,6 @@ function layout({ children }: { children: React.ReactNode }) {
         <div className="container h-full w-full  ">{children}</div>
         <MainFooter />
       </div>
-      
     </div>
   );
 }
