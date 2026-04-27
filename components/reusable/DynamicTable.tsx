@@ -1,105 +1,137 @@
 "use client";
-
+ 
 import Image from "next/image";
 import React from "react";
-import Loader from "./Loader";
-import PaginationPage from "./PaginationPage";
-
+import {
+  HiOutlineChevronDown,
+  HiOutlineChevronUp,
+  HiOutlineSelector,
+} from "react-icons/hi";
+ 
 interface ColumnConfig {
   label: React.ReactNode;
   width: any;
   accessor: string;
-  formatter?: (value: any, row: any) => React.ReactNode;
+  sortable?: boolean;
+  formatter?: (value: any, row: any, i: number) => React.ReactNode;
 }
-
+ 
+interface SortConfig {
+  key: string;
+  direction: "ascending" | "descending";
+}
+ 
 interface DynamicTableProps {
-  columns: any;
+  columns: ColumnConfig[];
   data: any[];
-  currentPage: number;
-  itemsPerPage: number;
-  onPageChange: (page: number) => void;
+  currentPage?: number;
+  itemsPerPage?: number;
+  onPageChange?: (page: number) => void;
   onView?: (row: any) => void;
   onDelete?: (id: any) => void;
   noDataMessage?: string;
-  totalpage: number;
-  totalItems?: number;
-  setItemsPerPage?: (n: number) => void;
-  loading?: boolean;
-  error?: string;
-  border?: boolean;
-  renderFooter?: (colSpan: number) => React.ReactNode;
+  sortConfig?: SortConfig | null;
+  onSort?: (key: string) => void;
+  header?: {
+    bg?: string;
+    padding?: string;
+    text?: string;
+    rounded?: string;
+    fontWeight?: string;
+    fontSize?: string;
+    position?: "justify-center" | "justify-start" | "justify-end";
+  },
+  tableMinWidth?: string;
+  tableMaxWidth?: string;
+  rowStyle?: {
+    hover?: boolean;
+    hoverbg?: string;
+    bg?: string;
+    border?: string;
+    spaceing?: string;
+    rowClickable?: boolean;
+    rowClick?: (row: any) => void;
+    cursorStype?: string;
+  }
 }
-
+ 
 export default function DynamicTable({
   columns,
   data,
   currentPage,
   itemsPerPage,
-  border = true,
   onPageChange,
-  loading,
   onView,
-  totalpage,
   onDelete,
-  noDataMessage = "No data found !.",
-  totalItems,
-  setItemsPerPage,
-  error,
-  renderFooter,
+  noDataMessage = "No data found.",
+  sortConfig,
+  onSort,
+  header = {
+    position: "justify-start",
+  },
+  rowStyle
 }: DynamicTableProps) {
+  // const totalPages = Math.ceil(data.length / itemsPerPage);
+  // const data = data.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
+ 
+  const renderSortIcon = (columnKey: string) => {
+    if (!sortConfig || sortConfig.key !== columnKey) {
+      return <HiOutlineSelector className="w-5 h-5 text-headerColor" />;
+    }
+    if (sortConfig.direction === "ascending") {
+      return <HiOutlineChevronUp className="w-4 h-4" />;
+    }
+    return <HiOutlineChevronDown className="w-4 h-4" />;
+  };
+ 
   return (
-    <div>
+    <div className="w-full h-full grid">
       {/* Table Wrapper with Border & Radius */}
-      <div className={`rounded-t-md ${border ? "border border-gray-200" : ""}`}>
-        <div className={` overflow-auto bg-white ${border ? "p-2" : ""}`}>
-          <table
-            className={`min-w-[1000px] w-full text-left bg-whiteColor  ${border ? "p-2" : ""}`}
-          >
-            <thead className=" sticky top-0 text-white rounded-2xl! overflow-hidden  p-2">
-              <tr className="">
+      <div className="overflow-hidden h-full">
+        <div className="overflow-x-auto">
+          <table className={`w-full text-left ${rowStyle?.spaceing || ''}`}>
+            <thead className="sticky top-0 z-99">
+              <tr style={{borderRadius: '100%'}} className="text-center">
                 {columns.map((col, index) => (
                   <th
                     key={index}
-                    style={{ width: col.width || "auto" }}
-                    className={`${index == 0 ? "rounded-l-lg" : index === columns.length - 1 ? "rounded-r-lg" : ""} px-4! bg-blackColor   py-5! text-sm font-medium border-b  `}
+                    style={{ minWidth: col.width || "auto" }}
+                    className="whitespace-nowrap text-sm font-normal capitalize  text-descriptionColor"
+                  // onClick={() =>
+                  //   col.sortable && onSort && onSort(col.accessor)
+                  // }
                   >
-                    {col.label}
+                    <div
+                      className={`flex gap-1 ${header?.position} ${col.sortable ? "cursor-pointer" : ""} ${index === 0 ? "rounded-tl-lg" : ""} ${index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
+                      style={{ background: header?.bg, padding: header?.padding,color: header?.text, fontWeight: header?.fontWeight, fontSize: header?.fontSize }}
+                    >
+                      {col.label}
+                      {/* {col.sortable && renderSortIcon(col.accessor)} */}
+                    </div>
                   </th>
                 ))}
                 {(onView || onDelete) && (
-                  <th>
-                    <div className="px-4 border border-red-600  rounded-2xl py-3 text-sm font-medium text-[#4a4c56] border-b  bg-neutral-50">
-                      Action
-                    </div>
+                  <th className="px-4 py-3 text-base font-medium text-Gray-Black-400 border-b border-border">
+                    Action
                   </th>
                 )}
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={columns.length + (onView || onDelete ? 1 : 0)}
-                    className="px-4 py-10 text-center text-[#4a4c56] text-sm"
-                  >
-                    <Loader />
-                  </td>
-                </tr>
-              ) : data?.length > 0 ? (
+              {data.length > 0 ? (
                 data.map((row, i) => (
-                  <tr key={i} className="border-t border-gray-100">
+                  <tr key={i} className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ''} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ''} ${rowStyle?.rowClickable ? "cursor-pointer" : 'cursor-default'}`} onClick={() => rowStyle?.rowClickable && rowStyle.rowClick ? rowStyle.rowClick(row) : null}>
                     {columns.map((col, idx) => (
                       <td
                         key={idx}
                         style={{ width: col.width || "auto" }}
-                        className="px-4 py-3 text-sm text-[#4a4c56]"
+                        className="text-Gray-Black-400"
                       >
                         {col.formatter
-                          ? col.formatter(
-                              row[col.accessor],
-                              row,
-                              (currentPage - 1) * itemsPerPage + i,
-                            )
+                          ? col.formatter(row[col.accessor], row, i)
                           : row[col.accessor]}
                       </td>
                     ))}
@@ -107,7 +139,7 @@ export default function DynamicTable({
                       <td className="px-4 py-3 flex gap-4 items-center">
                         {onView && (
                           <span
-                            className="text-xs underline text-[#4a4c56]  cursor-pointer"
+                            className="text-sm underline text-Gray-Black-400  cursor-pointer"
                             onClick={() => onView(row)}
                           >
                             View details
@@ -130,42 +162,16 @@ export default function DynamicTable({
               ) : (
                 <tr>
                   <td
-                    colSpan={columns.length + (onView || onDelete ? 1 : 0)}
-                    className="px-4 py-10 text-center text-[#4a4c56] text-sm"
+                    colSpan={columns.length + 1}
+                    className="px-4 py-10 text-center text-Gray-Black-400 text-sm"
                   >
-                    {error ? (
-                      <p className="text-red-500 text-xl capitalize font-semibold">
-                        {" "}
-                        {error + " " + "please login again"}
-                      </p>
-                    ) : (
-                      <p className="text-xl text-gray-500 capitalize font-semibold">
-                        {noDataMessage}
-                      </p>
-                    )}
+                    {noDataMessage}
                   </td>
                 </tr>
               )}
-              {/* data rows */}
             </tbody>
-            {renderFooter && (
-              <tfoot>
-                {renderFooter(columns.length + (onView || onDelete ? 1 : 0))}
-              </tfoot>
-            )}
           </table>
         </div>
-      </div>
-      <div>
-        <PaginationPage
-          totalPages={totalpage}
-          dataLength={data?.length || 0}
-          totalItems={totalItems}
-          onPageChange={onPageChange}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-        />
       </div>
     </div>
   );

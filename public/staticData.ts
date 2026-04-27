@@ -241,3 +241,12 @@ export const usaMapData = [
   { id: "wy", name: "Wyoming", value: 42 },
   { id: "dc", name: "District of Columbia", value: 87 }
 ];
+
+
+
+export const Limits = [
+    10,
+    25,
+    50,
+    100
+]
