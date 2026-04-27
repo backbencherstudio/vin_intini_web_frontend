@@ -31,7 +31,7 @@ function ProfileSidebar() {
               <ProfileUserConnectCard
                 key={profile.id}
                 profile={profile}
-                borderb={index !== peopleYouMayKnow.length - 1}
+               
               />
             ))}
       </div>

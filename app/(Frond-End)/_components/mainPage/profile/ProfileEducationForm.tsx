@@ -8,52 +8,54 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-export type ExperienceFormValues = {
-  title: string;
-  employmentType: string;
-  company: string;
+export type EducationFormValues = {
+  school: string;
+  degree: string;
+  fieldOfStudy: string;
   startMonth: string;
   startYear: string;
   endMonth: string;
   endYear: string;
   isCurrent: boolean;
-  location: string;
-  locationType: string;
+  grade: string;
+  activities: string;
   description: string;
   skills: string[];
 };
 
-type ExpreanceAddFromProps = {
+type ProfileEducationFormProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  onSubmitData?: (values: ExperienceFormValues) => void;
-  initialValues?: Partial<ExperienceFormValues>;
+  initialValues?: Partial<EducationFormValues>;
 };
 
-const defaultExperienceValues: ExperienceFormValues = {
-  title: "",
-  employmentType: "",
-  company: "",
+const defaultEducationValues: EducationFormValues = {
+  school: "",
+  degree: "",
+  fieldOfStudy: "",
   startMonth: "",
   startYear: "",
   endMonth: "",
   endYear: "",
   isCurrent: false,
-  location: "",
-  locationType: "",
+  grade: "",
+  activities: "",
   description: "",
   skills: [],
 };
 
-const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
+const degreeOptions = [
+  { value: "High School", label: "High School" },
+  { value: "Associates Degree", label: "Associates Degree" },
+  { value: "Bachelor's Degree", label: "Bachelor's Degree" },
+  { value: "Master's Degree", label: "Master's Degree" },
+  { value: "PsyD", label: "PsyD" },
+  { value: "PhD", label: "PhD" },
+  { value: "DO", label: "DO" },
+  { value: "MD", label: "MD" },
+  { value: "MD-DO", label: "MD-DO" },
+  { value: "MD-PhD", label: "MD-PhD" },
+  { value: "Other", label: "Other" },
 ];
 
 const monthOptions = [
@@ -71,66 +73,55 @@ const monthOptions = [
   "December",
 ].map((month) => ({ value: month, label: month }));
 
-const yearOptions = ["2026", "2025", "2024", "2023", "2022", "2021"].map(
-  (year) => ({ value: year, label: year }),
-);
-
-const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
-];
+const yearOptions = [
+  "2027",
+  "2026",
+  "2025",
+  "2024",
+  "2023",
+  "2022",
+  "2021",
+].map((year) => ({ value: year, label: year }));
 
 const skillOptions = [
-  { value: "User Experience", label: "User Experience" },
-  { value: "User Experience Design", label: "User Experience Design" },
-  { value: "User Interface", label: "User Interface" },
   { value: "User Interface Design", label: "User Interface Design" },
-  { value: "User Analytics", label: "User Analytics" },
-  { value: "User Behavior", label: "User Behavior" },
+  { value: "User Experience Design", label: "User Experience Design" },
+  { value: "Research", label: "Research" },
+  { value: "Academic Writing", label: "Academic Writing" },
+  { value: "Data Analysis", label: "Data Analysis" },
+  { value: "Team Leadership", label: "Team Leadership" },
 ];
 
-function ExpreanceAddFrom({
+function ProfileEducationForm({
   open,
   setOpen,
-  onSubmitData,
   initialValues,
-}: ExpreanceAddFromProps) {
+}: ProfileEducationFormProps) {
   const [showSkillsPicker, setShowSkillsPicker] = useState(false);
 
   const { control, register, handleSubmit, watch, reset } =
-    useForm<ExperienceFormValues>({
-      defaultValues: defaultExperienceValues,
+    useForm<EducationFormValues>({
+      defaultValues: defaultEducationValues,
     });
 
   useEffect(() => {
     if (!open) return;
 
-    const mergedValues: ExperienceFormValues = {
-      ...defaultExperienceValues,
+    const mergedValues: EducationFormValues = {
+      ...defaultEducationValues,
       ...initialValues,
       skills: initialValues?.skills || [],
     };
 
+    reset(mergedValues);
     setShowSkillsPicker(mergedValues.skills.length > 0);
-  }, [open, initialValues]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    reset({
-      ...defaultExperienceValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    });
   }, [open, initialValues, reset]);
 
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills = watch("skills") || [];
 
-  const onSubmit = (values: ExperienceFormValues) => {
-    onSubmitData?.(values);
-    console.log("Add Experience Form Values:", values);
+  const onSubmit = (values: EducationFormValues) => {
+    console.log("Education Form Values:", values);
     setOpen(false);
   };
 
@@ -142,46 +133,58 @@ function ExpreanceAddFrom({
     >
       <div className="max-h-[90vh] overflow-y-auto p-4 sm:p-5">
         <h2 className="text-[32px] font-semibold leading-[1.1] text-headerColor sm:text-[30px]">
-          {initialValues ? "Edit Experience" : "Add Experience"}
+          {initialValues ? "Edit Education" : "Add Education"}
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <ReusableInput
-            id="title"
-            label="Title"
-            placeholder="Title"
+            id="school"
+            label="School"
+            placeholder="School"
             required
-            {...register("title")}
+            {...register("school")}
             className="rounded-lg border-borderColor"
           />
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
-              Employment type
+              Degree <span className="text-redColor">*</span>
             </label>
             <Controller
-              name="employmentType"
+              name="degree"
               control={control}
               render={({ field }) => (
                 <CreatableSelectField
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={employmentTypeOptions}
-                  placeholder="Select Industry here..."
+                  options={degreeOptions}
+                  placeholder="Select degree here..."
+                  allowCustomInput
                   className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                 />
               )}
             />
           </div>
 
-          <ReusableInput
-            id="company"
-            label="Company or Organization"
-            placeholder="Company or Organization"
-            required
-            {...register("company")}
-            className="rounded-lg border-borderColor"
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
+              Field of study <span className="text-redColor">*</span>
+            </label>
+            <Controller
+              name="fieldOfStudy"
+              control={control}
+              render={({ field }) => (
+                <CreatableSelectField
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={skillOptions}
+                  placeholder="Select field here..."
+                  allowCustomInput
+                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                />
+              )}
+            />
+          </div>
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
@@ -258,39 +261,27 @@ function ExpreanceAddFrom({
                 {...register("isCurrent")}
                 className="h-4 w-4"
               />
-              I&apos;m currently working in this position
+              I&apos;m currently studying here
             </label>
           </div>
 
           <ReusableInput
-            id="location"
-            label="Location"
-            placeholder="Location"
-            required
-            {...register("location")}
+            id="grade"
+            label="Grade"
+            type="number"
+            placeholder="Grade"
+            {...register("grade")}
             className="rounded-lg border-borderColor"
           />
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
-              Location type
-            </label>
-            <Controller
-              name="locationType"
-              control={control}
-              render={({ field }) => (
-                <CreatableSelectField
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  options={locationTypeOptions}
-                  placeholder="Select here..."
-                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
-                />
-              )}
+            <ReusableTextarea
+              label="Activities and societies"
+              placeholder="Activities and societies"
+              maxLength={2500}
+              {...register("activities")}
+              className="min-h-28 w-full rounded-lg border border-borderColor bg-white px-3 py-2 text-base text-descriptionColor outline-none"
             />
-            <p className="mt-1 text-sm text-descriptionColor">
-              Select a location ex. hybrid
-            </p>
           </div>
 
           <div>
@@ -306,7 +297,7 @@ function ExpreanceAddFrom({
             </p>
           </div>
 
-          <div className="">
+          <div>
             <label className="mb-0.5 block text-[14px] font-semibold text-descriptionColor">
               Skills
             </label>
@@ -327,7 +318,7 @@ function ExpreanceAddFrom({
                     onChangeValues={field.onChange}
                     options={skillOptions}
                     placeholder="Select skill here..."
-                    className="mb-2.5 w-full  [&_.ant-select-selector]:min-h-13! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                    className="mb-2.5 w-full [&_.ant-select-selector]:min-h-13! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                   />
                 )}
               />
@@ -360,4 +351,4 @@ function ExpreanceAddFrom({
   );
 }
 
-export default ExpreanceAddFrom;
+export default ProfileEducationForm;

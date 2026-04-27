@@ -1,6 +1,33 @@
 import { EditeIcon } from "@/public/svgIcons/Icons";
+import { useState } from "react";
+import ExpreanceAddFrom from "./ExpreanceAddFrom";
 
-function ProfileExpreanceCard({ item, borderb }: any) {
+type ProfileExperienceItem = {
+  id: number;
+  companyName: string;
+  companyMeta: string;
+  jobTitle: string;
+  jobMeta: string;
+  location: string;
+  description?: string;
+  skills: string[];
+};
+
+function ProfileExpreanceCard({
+  item,
+  borderb,
+ 
+}: {
+  item: ProfileExperienceItem;
+  borderb: boolean;
+  
+}) {
+    const [ isEditOpen, setIsEditOpen] = useState(false);
+    const onEdit = (item: ProfileExperienceItem) => {
+      // Handle edit action here, e.g., open an edit form with the item details
+      console.log("Edit experience:", item);
+        setIsEditOpen(true);
+    }
   return (
     <div>
       {" "}
@@ -15,7 +42,11 @@ function ProfileExpreanceCard({ item, borderb }: any) {
                 {item.companyName}
               </h3>
 
-              <button className="cursor-pointer">
+              <button
+                type="button"
+                onClick={() => onEdit(item)}
+                className="cursor-pointer"
+              >
                 <EditeIcon className="h-4 w-4 text-descriptionColor" />
               </button>
             </div>
@@ -62,6 +93,10 @@ function ProfileExpreanceCard({ item, borderb }: any) {
           </div>
         )}
       </article>
+
+      {
+        isEditOpen && <ExpreanceAddFrom open={isEditOpen} setOpen={setIsEditOpen} initialValues={item} />
+      }
     </div>
   );
 }

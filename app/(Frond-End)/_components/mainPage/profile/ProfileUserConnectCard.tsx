@@ -1,12 +1,12 @@
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import Image from "next/image";
 
-function ProfileUserConnectCard({ profile, borderb }: any) {
+function ProfileUserConnectCard({ profile }: any) {
   return (
     <div>
       <article
         key={profile.id}
-        className={` py-4 ${borderb ? "border-b border-borderColor" : ""}`}
+        className={` py-4  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">

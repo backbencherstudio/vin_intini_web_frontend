@@ -415,3 +415,55 @@ export const profileExperiences: ProfileExperience[] = [
     ],
   },
 ];
+
+type ProfileEducation = {
+  id: number;
+  institutionName: string;
+  degree: string;
+  fieldOfStudy: string;
+  startMonth: string;
+  startYear: string;
+  endMonth: string;
+  endYear: string;
+  grade: string;
+  description: string;
+  activities: string;
+  skills: string[];
+};
+
+export const profileEducations: ProfileEducation[] = [
+  {
+    id: 1,
+    institutionName: "Institution Logo & Name",
+    degree: "Degree name",
+    fieldOfStudy: "Field of study",
+    startMonth: "",
+    startYear: "Started date",
+    endMonth: "",
+    endYear: "End date",
+    grade: "Education grade here",
+    description: "Description of achievements and responsibilities",
+    activities: "Activities and societies here",
+    skills: ["Skills here"],
+  },
+  {
+    id: 2,
+    institutionName: "BGMEA University of Fashion & Technology",
+    degree: "Bachelor's degree",
+    fieldOfStudy: "Apparel and Textile Manufacture",
+    startMonth: "",
+    startYear: "2018",
+    endMonth: "",
+    endYear: "2022",
+    grade: "3.44",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Vulputate viverra at nec faucibus. Adipiscing at eros amet euismod imperdiet maecenas erat tincidunt. Lobortis turpis in iaculis massa at sed tincidunt. A ipsum at turpis mi purus in dui sed scelerisque.",
+    activities:
+      "Lorem ipsum dolor sit amet consectetur. Vulputate viverra at nec faucibus. Adipiscing at eros amet euismod imperdiet maecenas erat tincidunt. Lobortis turpis in iaculis massa at sed tincidunt. A ipsum at turpis mi purus in dui sed scelerisque.",
+    skills: [
+      "User Interface Design",
+      "User Experience Design",
+      "User Experience Design",
+    ],
+  },
+];
