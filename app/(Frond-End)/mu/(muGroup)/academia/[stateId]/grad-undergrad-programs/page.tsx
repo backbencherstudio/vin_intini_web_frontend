@@ -18,7 +18,7 @@ export default function page() {
     const [selectedDegree, setSelectedDegree] = useState<string>("all");
     const [limit, setLimit] = useState<number>(10)
     return (
-        <div className="pl-6 space-y-6">
+        <div className="xl:pl-6 space-y-6">
             <AcademiHeader
                 title="Graduate and Undergraduate Programs"
                 description="See State Map for Doctorate Programs"

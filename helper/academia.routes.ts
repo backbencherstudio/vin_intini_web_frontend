@@ -8,38 +8,37 @@ type RouteConfig = {
 export const routes: Record<string, RouteConfig> = {
     home: {
         label: "Academia",
-        href: "/mu/",
-        buildHref: (id: string) => `/mu/${id}/academia`,
+        href: "/mu/academia",
     },
     stateacademia: {
-        label: (id?: string, stateName?: string) => {
-            if (id && stateName) {
+        label: (stateName?: string) => {
+            if (stateName) {
                 return `${stateName}`;
             }
             return "State Academia";
         },
         href: "/mu/state/",
-        buildHref: (id: string, stateName: string) => `/mu/${id}/academia/${stateName}`,
+        buildHref: (stateName: string) => `/mu/academia/${stateName}`,
     },
     undergradgradprograms: {
         label: "Undergrad & Grad Programs",
         href: "/",
-        buildHref: (userid: string, stateId: string) => `/mu/${userid}/academia/${stateId}/grad-undergrad-programs`,
+        buildHref: (stateId: string) => `/mu/academia/${stateId}/grad-undergrad-programs`,
     },
     hospitals: {
         label: "Hospitals",
         href: "/",
-        buildHref: (userid: string, stateId: string) => `/mu/${userid}/academia/${stateId}/hospitals`,
+        buildHref: (stateId: string) => `/mu/academia/${stateId}/hospitals`,
     },
     medicalresidencies: {
         label: "Medical Residencies",
         href: "/",
-        buildHref: (userid: string, stateId: string) => `/mu/${userid}/academia/${stateId}/medical-residencies`,
+        buildHref: (stateId: string) => `/mu/academia/${stateId}/medical-residencies`,
     },
     employmentopportunities: {
         label: "Employment Opportunities",
         href: "/",
-        buildHref: (userid: string, stateId: string) => `/mu/${userid}/academia/${stateId}/employment-opportunities`,
+        buildHref: (stateId: string) => `/mu/academia/${stateId}/employment-opportunities`,
     }
 };
 

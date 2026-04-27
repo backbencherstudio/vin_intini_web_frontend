@@ -13,18 +13,51 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Limits } from "@/public/staticData";
+import StateInstitutionTable from "./_components/StateInstitutionTable";
+import HospitalTable from "./_components/HospitalTable";
+import ResidencyTable from "./_components/ResidencyTable";
+
+const tabs = [
+    { label: "University Hospitals", value: "universityHospitals" },
+    { label: "State Institutions", value: "stateInstitutions" },
+    { label: "Medical Residency Programs", value: "medicalResidencyPrograms" },
+]
 
 export default function page() {
 
     const [selectedDegree, setSelectedDegree] = useState<string>("all")
     const [limit, setLimit] = useState<number>(10)
+    const [ activeTab, setActiveTab] = useState<string>("universityHospitals")
+
+
 
     return (
-        <div className="pl-6 space-y-6">
+        <div className="xl:pl-6 space-y-6">
             <AcademiHeader
                 title="University Hospitals & State Institutions"
             />
-            <GradprogramsTable />
+            <div>
+                <div className="flex w-fit bg-gray-200 rounded-md overflow-hidden">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.value}
+                            className={`px-4 py-2 cursor-pointer ${
+                                activeTab === tab.value
+                                    ? "bg-blue-500 text-white rounded-md"
+                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:rounded-md transition-colors duration-300"
+                            }`}
+                            onClick={() => setActiveTab(tab.value)}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <div className="grid grid-cols-1 gap-6">
+                {activeTab === "stateInstitutions" && <StateInstitutionTable />}
+                {activeTab === "universityHospitals" && <HospitalTable />}
+                {activeTab === "medicalResidencyPrograms" && <ResidencyTable />}
+            </div>
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
                     page={1}
@@ -37,7 +70,7 @@ export default function page() {
                     value={limit.toString()}
                     onValueChange={(value) => setLimit(Number(value))}
                 >
-                    <SelectTrigger className="bg-white min-w-[80px] focus-visible:border-[#A5A5AB] focus-visible:ring-0">
+                    <SelectTrigger className="bg-white min-w-20 focus-visible:border-[#A5A5AB] focus-visible:ring-0">
                         <SelectValue placeholder="Select limit" />
                     </SelectTrigger>
                     <SelectContent>

@@ -178,7 +178,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
 
     const handleClick = (state: (typeof STATE_DATA)[0]) => {
         router.push(
-            `/mu/2/academia/${state.name}?redirect=${redirect ? redirect + "_" : ""}stateacademia:"2":${state.name}`
+            `/mu/academia/${state.name}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.name}`
         );
     };
 
