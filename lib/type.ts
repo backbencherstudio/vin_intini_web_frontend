@@ -13,7 +13,6 @@ export type Testimonial = {
     }
 }
 
-
 export type OurImpactType = {
     id: string;
     title: string;
