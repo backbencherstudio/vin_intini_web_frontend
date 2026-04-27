@@ -1,7 +1,7 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import SmartSelectField from "@/components/reusable/InputFiled/SmartSelectField";
+import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import {
   setStep,
   updateFormData,
@@ -188,7 +188,7 @@ function page() {
               control={control}
               rules={{ required: "Highest degree is required" }}
               render={({ field }) => (
-                <SmartSelectField
+                <CreatableSelectField
                   placeholder="Select degree"
                   value={field.value || undefined}
                   onChange={field.onChange}
@@ -214,7 +214,7 @@ function page() {
               control={control}
               rules={{ required: "Field of study is required" }}
               render={({ field }) => (
-                <SmartSelectField
+                <CreatableSelectField
                   placeholder="Select field of study"
                   value={field.value || undefined}
                   onChange={field.onChange}
@@ -239,7 +239,7 @@ function page() {
               control={control}
               rules={{ required: "Institution is required" }}
               render={({ field }) => (
-                <SmartSelectField
+                <CreatableSelectField
                   placeholder="Select institution"
                   value={field.value || undefined}
                   onChange={field.onChange}
@@ -268,7 +268,7 @@ function page() {
               control={control}
               rules={{ required: "Graduation year is required" }}
               render={({ field }) => (
-                <SmartSelectField
+                <CreatableSelectField
                   placeholder="Select year"
                   value={field.value || undefined}
                   onChange={field.onChange}

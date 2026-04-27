@@ -1,6 +1,8 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 type GroupItem = {
   id: number;
@@ -40,22 +42,10 @@ const groups: GroupItem[] = [
   },
 ];
 
-export function FigmaMark() {
-  return (
-    <div className="relative h-16 w-16 shrink-0">
-      <span className="absolute left-0 top-0 h-3.5 w-3.5 rounded-full bg-[#f24e1e]" />
-      <span className="absolute left-3.5 top-0 h-3.5 w-3.5 rounded-full bg-[#ff7262]" />
-      <span className="absolute left-0 top-3.5 h-3.5 w-3.5 rounded-full bg-[#a259ff]" />
-      <span className="absolute left-3.5 top-3.5 h-3.5 w-3.5 rounded-full bg-[#1abcfe]" />
-      <span className="absolute left-0 top-7 h-3.5 w-3.5 rounded-full bg-[#0acf83]" />
-    </div>
-  );
-}
-
 function GroupSidbar() {
   return (
     <aside className="rounded-md ">
-      <h3 className="text-[18px] py-3 font-semibold text-headerColor">
+      <h3 className="text-base lg:text-lg py-3 font-semibold text-headerColor">
         Groups you might be Interested
       </h3>
 
@@ -66,16 +56,22 @@ function GroupSidbar() {
             className="border-t border-borderColor py-4 first:pt-5"
           >
             <div className="flex items-start gap-3">
-              {group.isFirst ? (
-                <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
+              <div className="flex xl:h-18 xl:w-18 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
+                {group.isFirst ? (
                   <ImageIcon size={30} strokeWidth={1.8} />
-                </div>
-              ) : (
-                <FigmaMark />
-              )}
+                ) : (
+                  <Image
+                    src={groupImage}
+                    alt="Group placeholder"
+                    width={72}
+                    height={72}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                )}
+              </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-base md:text-lg leading-[150%]  font-semibold text-headerColor">
+                <p className="text-base lg:text-lg leading-[150%]  font-semibold text-headerColor">
                   {group.name}
                 </p>
 

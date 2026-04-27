@@ -33,43 +33,43 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { label: "Home", slug: "/mu/2/home", icon: HomeIcon },
-  { label: "Academia", slug: "/mu/2/academia", icon: GlobalIcon },
-  { label: "My Network", slug: "/mu/2/my-network", icon: MultiUserIcon },
+  { label: "Home", slug: "/mu/home", icon: HomeIcon },
+  { label: "Academia", slug: "/mu/academia", icon: GlobalIcon },
+  { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
   {
     label: "Psychology Network",
-    slug: "/mu/2/psychology-network",
+    slug: "/mu/psychology-network",
     icon: PsychologyMenuIcon,
     isDropdown: true,
     dropdownItems: [
-      { label: "Psychology Fields", slug: "/mu/2/psychology-network/fields" },
+      { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
       {
         label: "Psychology Careers",
-        slug: "/mu/2/psychology-network/careers",
+        slug: "/mu/psychology-network/careers",
       },
-      { label: "Industry", slug: "/mu/2/psychology-network/industry" },
-      { label: "Jobs", slug: "/mu/2/psychology-network/jobs" },
+      { label: "Industry", slug: "/mu/psychology-network/industry" },
+      { label: "Jobs", slug: "/mu/psychology-network/jobs" },
     ],
   },
   {
     label: "Neuroscience Network",
-    slug: "/mu/2/neuroscience-network",
+    slug: "/mu/neuroscience-network",
     icon: ClinicalIcon,
     isDropdown: true,
     dropdownItems: [
       {
         label: "Neuroscience Fields",
-        slug: "/mu/2/neuroscience-network/fields",
+        slug: "/mu/neuroscience-network/fields",
       },
       {
         label: "Neuroscience Careers",
-        slug: "/mu/2/neuroscience-network/careers",
+        slug: "/mu/neuroscience-network/careers",
       },
-      { label: "Industry", slug: "/mu/2/neuroscience-network/industry" },
-      { label: "Jobs", slug: "/mu/2/neuroscience-network/jobs" },
+      { label: "Industry", slug: "/mu/neuroscience-network/industry" },
+      { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
     ],
   },
-  { label: "Jobs", slug: "/mu/2/jobs", icon: JobsIcon },
+  { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
 ];
 
 export default function MainNavbar() {
@@ -80,8 +80,8 @@ export default function MainNavbar() {
     string | null
   >(null);
   const isActive = (href: string): boolean => {
-    if (href === "/mu/2/home") {
-      return pathname === "/mu/2/home";
+    if (href === "/mu/home") {
+      return pathname === "/mu/home";
     }
     return pathname.startsWith(href);
   };

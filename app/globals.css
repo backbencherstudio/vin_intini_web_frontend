@@ -164,8 +164,7 @@
   opacity: 1 !important;
 }
 
-
-.selectbar-hidden-display{
+.selectbar-hidden-display {
   display: none;
 }
 
@@ -233,51 +232,48 @@ body {
   height: 32px !important;
 }
 .epr_-xuzz9z {
-   
-    display: none;
+  display: none;
 }
-
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #D2D2D5 transparent;
+  scrollbar-color: #d2d2d5 transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    width: 2px !important;
-    height: 1px !important;
-  }
+  width: 2px !important;
+  height: 1px !important;
+}
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent !important;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #D2D2D5 !important;
-    border-radius: 0px !important;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #A5A5AB !important;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-button {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-corner {
-    background: transparent !important;
-  }
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d2d2d5 !important;
+  border-radius: 0px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #a5a5ab !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none;  
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-
 
 .epr_-f1jbax:focus:before {
   border: 0px solid var(--primaryColor) !important;
@@ -285,4 +281,26 @@ body {
 
 .epr_3z09g4 {
   height: 100% !important;
+}
+.ant-select-content-item {
+  font-size: 12px !important;
+}
+
+
+
+
+/* Focused State */
+:where(.css-dev-only-do-not-override-xogyor).ant-select.ant-select-outlined:not(
+    .ant-select-disabled
+  ).ant-select-focused
+  .ant-select-selector {
+  border-color: var(--primaryColor) !important;
+  /* This creates a 2px ring using box-shadow (0 offset, 0 blur, 2px spread) */
+  box-shadow: 0 0 0 3px var(--primaryColor) !important;
+  outline: none !important;
+}
+
+:where(.css-dev-only-do-not-override-xogyor).ant-select.ant-select-outlined:not(.ant-select-disabled):hover {
+    --ant-select-border-color: var(--color-borderColor) !important;
+    --ant-select-background-color: var(--ant-select-selector-bg);
 }

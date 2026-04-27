@@ -17,7 +17,7 @@ function GroupHeroSection() {
   const [isNotify, setIsNotify] = useState(false);
   return (
     <section>
-      <div className=" h-40 md:h-48 w-full bg-gradient-to-r rounded-md from-cyan-100 to-blue-200">
+      <div className=" h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
         <Image
           src={coverPreview}
           className="w-full h-full object-cover rounded-md"
@@ -69,7 +69,7 @@ function GroupHeroSection() {
       <RootDialog
         open={isleaved || isNotify}
         setOpen={isleaved ? setILeaved : setIsNotify}
-        className=" max-w-[600px]!"
+        className=" max-w-150!"
       >
         {isleaved ? (
           <GroupLeaveDialog setIsNotify={setILeaved} />

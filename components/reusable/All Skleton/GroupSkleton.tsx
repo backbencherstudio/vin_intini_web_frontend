@@ -10,14 +10,14 @@ function GroupSkleton() {
           </div>
 
           <div className="space-y-2">
-            <Skeleton className="h-5 w-[180px] md:w-[250px]" />
+            <Skeleton className="h-5 w-45 md:w-62.5" />
             <div className="flex items-center space-x-2">
               <Skeleton className="h-3 w-3 rounded-sm" />
-              <Skeleton className="h-3 w-[100px]" />
+              <Skeleton className="h-3 w-25" />
             </div>
           </div>
         </div>
-        <Skeleton className="h-9 w-[70px] rounded-full" />
+        <Skeleton className="h-9 w-17.5 rounded-full" />
       </div>
     </div>
   );

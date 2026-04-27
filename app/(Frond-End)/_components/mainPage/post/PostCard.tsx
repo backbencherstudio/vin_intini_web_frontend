@@ -120,7 +120,7 @@ function PostCard({ post }: PostCardProps) {
       </div>
 
       <div className="mt-4 space-y-1">
-        <p className="text-[16px] leading-7 text-headerColor/85 break-words">
+        <p className="text-[16px] leading-7 text-headerColor/85 wrap-break-word">
           {post.contentLines}
         </p>
       </div>

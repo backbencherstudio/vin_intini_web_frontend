@@ -9,8 +9,8 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
         <div className="md:col-span-8 col-span-12 space-y-6">
           <div>{children}</div>
         </div>
-        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 md:pl-6 h-full">
-          <GroupMemberList/>
+        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 lg:pl-6 h-full">
+          <GroupMemberList />
           <GroupSidbar />
         </div>
       </div>

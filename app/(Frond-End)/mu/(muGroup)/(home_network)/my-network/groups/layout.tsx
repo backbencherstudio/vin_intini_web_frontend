@@ -8,12 +8,12 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
     {
       id: 1,
       title: "Groups you Connected",
-      href: "/mu/2/groups",
+      href: "/mu/groups",
     },
     {
       id: 2,
       title: "Groups you Created",
-      href: "/mu/2/groups/group-created",
+      href: "/mu/groups/group-created",
     },
   ];
   return (
@@ -25,13 +25,13 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <ResuableMenu
-              initialPath="/mu/2/groups"
+              initialPath="/mu/groups"
               menuData={candidateJobMenus}
             />
             {children}
           </div>
         </div>
-        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 md:pl-6 h-full">
+        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 lg:pl-6 h-full">
           <GroupSidbar />
         </div>
       </div>

@@ -47,7 +47,7 @@ function MainFooter() {
               </Link>
             </div>
 
-            <p className="max-w-[325px] text-left text-base md:text-xl lg:text-2xl leading-tight text-[#54565a]">
+            <p className="max-w-81.25 text-left text-base md:text-xl lg:text-2xl leading-tight text-[#54565a]">
               The networking platform for brain health professionals and
               students.
             </p>
