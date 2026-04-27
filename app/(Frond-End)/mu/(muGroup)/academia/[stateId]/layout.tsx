@@ -1,4 +1,4 @@
-import Sidebar from "./_components/Sidebar";
+import StateLayout from "./_components/StateLayout";
 
 export default function layout({
     children,
@@ -6,11 +6,8 @@ export default function layout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="relative grid lg:grid-cols-[auto_1fr] grid-rows-1 h-full min-h-0">
-            <Sidebar />
-            <div className="h-full grid">
-                {children}
-            </div>
-        </div>
+        <StateLayout>
+            {children}
+        </StateLayout>
     );
 }

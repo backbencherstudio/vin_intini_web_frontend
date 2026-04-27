@@ -34,7 +34,7 @@ type MenuItem = {
 
 const menuItems: MenuItem[] = [
   { label: "Home", slug: "/mu/home", icon: HomeIcon },
-  { label: "Academia", slug: "/mu/academia", icon: GlobalIcon },
+  { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
   { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
   {
     label: "Psychology Network",

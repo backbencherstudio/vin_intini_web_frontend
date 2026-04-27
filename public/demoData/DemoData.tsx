@@ -1,3 +1,4 @@
+import { EmpOpportunityType } from "@/app/type";
 import { Testimonial } from "@/lib/type";
 
 export const demoData = [
@@ -515,8 +516,224 @@ export const gradProgramsData = [
     neuroscienceDegrees: ["BA/BS", "MA", "PhD"],
   },
   {
-    universityName: "University of California, Los Angeles",
-    psychologyDegrees: ["BA/BS", "PhD"],
-    neuroscienceDegrees: ["MA", "MA-PhD", "PhD"],
+    "universityName": "University of California, Los Angeles",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["MA", "MA-PhD", "PhD"]
+  }
+]
+
+
+export const MedicalResidencyPrograms = [
+  {
+    "universityName": "Stanford University",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "location": "Stanford, California, USA",
   },
+  {
+    "universityName": "Harvard University",
+    "psychologyDegrees": ["BA/BS", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "PhD"],
+    "location": "Cambridge, Massachusetts, USA"
+  },
+  {
+    "universityName": "University of Cambridge",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "neuroscienceDegrees": ["MA-PhD", "PhD"],
+    "location": "Cambridge, England, UK"
+  },
+  {
+    "universityName": "MIT",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA-PhD", "PhD"],
+    "location": "Cambridge, Massachusetts, USA"
+  },
+  {
+    "universityName": "University of Oxford",
+    "psychologyDegrees": ["BA/BS", "MA", "MA-PhD"],
+    "neuroscienceDegrees": ["PhD"],
+    "location": "Oxford, England, UK"
+  },
+  {
+    "universityName": "Yale University",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA", "PhD"],
+    "location": "New Haven, Connecticut, USA"
+  },
+  {
+    "universityName": "University College London",
+    "psychologyDegrees": ["MA", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "PhD"],
+    "location": "London, England, UK"
+  },
+  {
+    "universityName": "University of Toronto",
+    "psychologyDegrees": ["BA/BS", "MA", "PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA-PhD"],
+    "location": "Toronto, Ontario, Canada"
+  },
+  {
+    "universityName": "ETH Zurich",
+    "psychologyDegrees": ["BA/BS", "MA-PhD"],
+    "neuroscienceDegrees": ["BA/BS", "MA", "PhD"],
+    "location": "Zurich, Switzerland"
+  },
+  {
+    "universityName": "University of California, Los Angeles",
+    "psychologyDegrees": ["BA/BS", "PhD"],
+    "neuroscienceDegrees": ["MA", "MA-PhD", "PhD"],
+    "location": "Los Angeles, California, USA"
+  }
+]
+
+
+
+export const opportunities: EmpOpportunityType[] = [
+  {
+    id: "1",
+    title: "UI Designer",
+    location: "Dhaka, Bangladesh",
+    company: "PixelCraft Ltd.",
+    type: "Full Time",
+    mode: "Hybrid",
+    salaryRange: "$30k - $45k",
+    postedTime: "10 min ago",
+  },
+  {
+    id: "2",
+    title: "Frontend Developer",
+    location: "Remote",
+    company: "CodeWave Inc.",
+    type: "Contract",
+    mode: "Remote",
+    salaryRange: "$40k - $70k",
+    postedTime: "1 hour ago",
+  },
+  {
+    id: "3",
+    title: "Product Designer",
+    location: "Chattogram, Bangladesh",
+    company: "DesignHub",
+    type: "Full Time",
+    mode: "On-site",
+    salaryRange: "$35k - $50k",
+    postedTime: "2 hours ago",
+  },
+  {
+    id: "4",
+    title: "UX Research Intern",
+    location: "Dhaka, Bangladesh",
+    company: "Insight Labs",
+    type: "Internship",
+    mode: "Hybrid",
+    salaryRange: "$10k - $15k",
+    postedTime: "Yesterday",
+  },
+  {
+    id: "5",
+    title: "React Developer",
+    location: "Sylhet, Bangladesh",
+    company: "NextGen Soft",
+    type: "Part Time",
+    mode: "Remote",
+    salaryRange: "$20k - $30k",
+    postedTime: "3 days ago",
+  },
+];
+
+
+
+export const moreOpportunities: EmpOpportunityType[] = [
+  {
+    id: "6",
+    title: "Backend Developer",
+    location: "Dhaka, Bangladesh",
+    company: "TechNova Solutions",
+    type: "Full Time",
+    mode: "On-site",
+    salaryRange: "$50k - $80k",
+    postedTime: "15 min ago",
+  },
+  {
+    id: "7",
+    title: "Mobile App Developer",
+    location: "Remote",
+    company: "AppNest",
+    type: "Contract",
+    mode: "Remote",
+    salaryRange: "$45k - $75k",
+    postedTime: "30 min ago",
+  },
+  {
+    id: "8",
+    title: "Graphic Designer",
+    location: "Khulna, Bangladesh",
+    company: "Creative Studio BD",
+    type: "Part Time",
+    mode: "Hybrid",
+    salaryRange: "$15k - $25k",
+    postedTime: "4 hours ago",
+  },
+  {
+    id: "9",
+    title: "DevOps Engineer",
+    location: "Dhaka, Bangladesh",
+    company: "CloudCore",
+    type: "Full Time",
+    mode: "Hybrid",
+    salaryRange: "$60k - $90k",
+    postedTime: "1 day ago",
+  },
+  {
+    id: "10",
+    title: "QA Engineer",
+    location: "Rajshahi, Bangladesh",
+    company: "SoftTest Labs",
+    type: "Full Time",
+    mode: "On-site",
+    salaryRange: "$25k - $40k",
+    postedTime: "2 days ago",
+  },
+];
+
+
+export const hospitalPartnerships = [
+  { universityName: "Harvard University", hospital: "Massachusetts General Hospital" },
+  { universityName: "Stanford University", hospital: "Stanford Health Care" },
+  { universityName: "Johns Hopkins University", hospital: "Johns Hopkins Hospital" },
+  { universityName: "University of Oxford", hospital: "John Radcliffe Hospital" },
+  { universityName: "University of Cambridge", hospital: "Addenbrooke's Hospital" },
+  { universityName: "University of Toronto", hospital: "Toronto General Hospital" },
+  { universityName: "University of Melbourne", hospital: "Royal Melbourne Hospital" },
+  { universityName: "National University of Singapore", hospital: "National University Hospital" },
+  { universityName: "University of Tokyo", hospital: "University of Tokyo Hospital" },
+  { universityName: "Karolinska Institute", hospital: "Karolinska University Hospital" },
+];
+
+
+export const stateInstitutions = [
+  { stateInstitutionName: "Dhaka Medical College", location: "Dhaka, Bangladesh" },
+  { stateInstitutionName: "Chittagong Medical College", location: "Chattogram, Bangladesh" },
+  { stateInstitutionName: "Rajshahi Medical College", location: "Rajshahi, Bangladesh" },
+  { stateInstitutionName: "Khulna Medical College", location: "Khulna, Bangladesh" },
+  { stateInstitutionName: "Sylhet MAG Osmani Medical College", location: "Sylhet, Bangladesh" },
+  { stateInstitutionName: "Mymensingh Medical College", location: "Mymensingh, Bangladesh" },
+  { stateInstitutionName: "Rangpur Medical College", location: "Rangpur, Bangladesh" },
+  { stateInstitutionName: "Barisal Medical College", location: "Barisal, Bangladesh" },
+  { stateInstitutionName: "Cumilla Medical College", location: "Cumilla, Bangladesh" },
+  { stateInstitutionName: "Shaheed Ziaur Rahman Medical College", location: "Bogura, Bangladesh" },
+];
+
+
+
+export const privateInstitutions = [
+  { residency: "Internal Medicine Residency", location: "Dhaka, Bangladesh" },
+  { residency: "General Surgery Residency", location: "Chattogram, Bangladesh" },
+  { residency: "Pediatrics Residency", location: "Rajshahi, Bangladesh" },
+  { residency: "Cardiology Residency", location: "Khulna, Bangladesh" },
+  { residency: "Neurology Residency", location: "Sylhet, Bangladesh" },
+  { residency: "Orthopedic Surgery Residency", location: "Mymensingh, Bangladesh" },
+  { residency: "Dermatology Residency", location: "Rangpur, Bangladesh" },
+  { residency: "Psychiatry Residency", location: "Barisal, Bangladesh" },
+  { residency: "Anesthesiology Residency", location: "Cumilla, Bangladesh" },
+  { residency: "Radiology Residency", location: "Bogura, Bangladesh" },
 ];

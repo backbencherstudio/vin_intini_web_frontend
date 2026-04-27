@@ -13,6 +13,7 @@ export default function Navbar() {
             alt="Logo"
             width={256}
             height={50}
+            className="w-50 sm:w-62.5"
           />
         </Link>
         <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-base">
