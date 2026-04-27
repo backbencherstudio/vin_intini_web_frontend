@@ -24,3 +24,15 @@ export type OurImpactType = {
     bgColor: string;
     IconBgColor: string;
 }
+
+
+export type EmpOpportunityType = {
+    id: string;
+    title: string;
+    location: string;
+    company: string;
+    type: "Full Time" | "Part Time" | "Internship" | "Contract";
+    mode: "Remote" | "On-site" | "Hybrid";
+    salaryRange: string;
+    postedTime: string;
+}
