@@ -412,6 +412,12 @@ export const SearchIcon = ({ className }: { className?: string }) => (
 );
 
 
+export const LeftAngleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+  <path d="M12.5 5C12.5 5 7.50001 8.68242 7.5 10C7.49999 11.3177 12.5 15 12.5 15" stroke="#777980" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+)
+
 // utso code for icons, you can add more icons here and export them to use in your components.
 
 export const FaceBookIcon = ({ className }: { className?: string }) => (
