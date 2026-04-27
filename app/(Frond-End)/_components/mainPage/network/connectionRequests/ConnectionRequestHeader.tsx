@@ -18,7 +18,7 @@ function ConnectionRequestHeader() {
         </div>
 
         <Link
-          href="/mu/1/my-network/connection-requests"
+          href="/mu/my-network/connection-requests"
           className="inline-flex items-center gap-1 text-[15px] font-semibold text-headerColor"
         >
           Show All

@@ -48,7 +48,7 @@ const GroupMemberList = () => {
         </div>
 
         {/* Action Button */}
-        <button className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-[16px] font-semibold text-white transition-all hover:bg-[#008c99] active:scale-95">
+        <button className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-sm lg:text-base font-semibold text-white transition-all hover:bg-[#008c99] active:scale-95">
           Invite a Connection
         </button>
       </div>

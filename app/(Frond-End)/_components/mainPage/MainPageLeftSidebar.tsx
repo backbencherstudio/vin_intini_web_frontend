@@ -13,22 +13,22 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const menuItems = [
     {
       label: "My Connections",
-      slug: "/mu/1/my-network/my-connection",
+      slug: "/mu/my-network/my-connection",
       icon: MultiUserIcon,
     },
     {
       label: "Connection Requests",
-      slug: "/mu/1/my-network/connection-requests",
+      slug: "/mu/my-network/connection-requests",
       icon: PlusUserIcon,
     },
     {
       label: " Following & Followers",
-      slug: "/mu/1/my-network/following",
+      slug: "/mu/my-network/following",
       icon: SingleUserIcon,
     },
     {
       label: "Groups",
-      slug: "/mu/1/my-network/groups",
+      slug: "/mu/my-network/groups",
       icon: GroupUserIcon,
       isDropdown: true,
     },
@@ -36,8 +36,8 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
 
   const pathName = usePathname();
   const isActive = (href: string): boolean => {
-    if (href === "/mu/2/my-network/my-connection") {
-      return pathName === "/mu/2/my-network/my-connection";
+    if (href === "/mu/my-network/my-connection") {
+      return pathName === "/mu/my-network/my-connection";
     }
     return pathName.startsWith(href);
   };

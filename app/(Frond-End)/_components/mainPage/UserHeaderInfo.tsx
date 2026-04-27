@@ -24,7 +24,7 @@ function UserHeaderInfo() {
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
         <div className="flex items-center gap-4 lg:gap-5 justify-between">
           <Link
-            href={`/mu/1/notification`}
+            href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
             <span className="absolute -top-2 -right-2 flex justify-center items-center text-xs w-4 h-4 text-whiteColor rounded-full bg-redColor">

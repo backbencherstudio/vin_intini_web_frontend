@@ -6,18 +6,18 @@ function FollowingLayout({ children }: { children: React.ReactNode }) {
     {
       id: 1,
       title: "Following",
-      href: "/mu/1/my-network/following",
+      href: "/mu/my-network/following",
     },
     {
       id: 2,
       title: "Followers",
-      href: "/mu/1/my-network/following/followers",
+      href: "/mu/my-network/following/followers",
     },
   ];
   return (
     <div>
       <ResuableMenu
-        initialPath="/mu/1/my-network/following"
+        initialPath="/mu/my-network/following"
         menuData={candidateJobMenus}
       />
       {children}
