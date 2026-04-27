@@ -3,3 +3,5 @@ declare global {
       katex: typeof import("katex");
     }
   }
+
+  
