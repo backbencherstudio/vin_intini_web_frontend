@@ -1,20 +1,21 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
-import { connectionRequests } from "@/public/demoData/DemoData";
-
-import { useEffect, useState } from "react";
+import Error from "@/components/reusable/Error";
+import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
+import { ConnectionRequest } from "@/lib/type";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList({ allReadyFriends  }: { allReadyFriends?: string }) {
-  const [isLoading, setIsLoading] = useState(true);
+function ConnectionRequestList({
+  allReadyFriends,
+}: {
+  allReadyFriends?: string;
+}) {
+  const { data, isLoading, isError } = useGetConnectionsQuery("");
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
+  if (isError) {
+    return <Error />;
+  }
 
-    return () => clearTimeout(timeout);
-  }, []);
   return (
     <div>
       <div className="">
@@ -22,8 +23,12 @@ function ConnectionRequestList({ allReadyFriends  }: { allReadyFriends?: string 
           ? Array.from({ length: 4 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))
-          : connectionRequests.map((item) => (
-              <ConnectionRequestCard key={item.id} item={item} allReadyFriends={allReadyFriends} />
+          : data?.data?.map((item: ConnectionRequest) => (
+              <ConnectionRequestCard
+                key={item.id}
+                item={item}
+                allReadyFriends={allReadyFriends}
+              />
             ))}
       </div>
     </div>

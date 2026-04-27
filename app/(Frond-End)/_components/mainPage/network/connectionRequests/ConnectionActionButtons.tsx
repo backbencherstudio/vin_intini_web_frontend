@@ -8,7 +8,7 @@ import UserUnfollowDialog from "../UserUnfollowDialog";
 
 interface ActionProps {
   id: number;
-  status: "friend" | "follower" | "accept" | "connected" | "none";
+  status: any;
   onAction: (id: number, type: string) => void;
 }
 
@@ -41,7 +41,7 @@ export const ConnectionActionButtons = ({
           </button>
         );
 
-      case "accept":
+      case "pending":
         return (
           <div className="flex items-center gap-2">
             <button

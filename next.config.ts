@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "maps.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "vin.apphero.agency",
+      },
+      {
+        protocol: "http",
+        hostname: "vin.apphero.agency",
+      },
     ],
   },
 };
