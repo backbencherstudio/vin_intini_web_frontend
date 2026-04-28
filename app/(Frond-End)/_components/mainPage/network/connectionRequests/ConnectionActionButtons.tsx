@@ -2,11 +2,12 @@
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
+  useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } from "@/feature/slice/connect/connectSlice";
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -15,15 +16,22 @@ import UserUnfollowDialog from "../UserUnfollowDialog";
 interface ActionProps {
   id: number;
   status: any;
+  userId?: number;
 }
 
-export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
+export const ConnectionActionButtons = ({
+  id,
+  status,
+  userId,
+}: ActionProps) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
   const [requestAccept, { isLoading: isAccepting }] =
     useRequestAcceptMutation();
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
+  const [removeRequest, { isLoading: isRemoving }] = useRemoveRequestMutation();
 
   const handleConnectionAction = async (type: "accept" | "ignore") => {
     try {
@@ -40,13 +48,30 @@ export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
       console.log("Error handling connection action:", error);
     }
   };
+  const handleUnfirend = async () => {
+    try {
+      const result = await removeRequest({ userId }).unwrap();
+      console.log(result, "==============");
+      
+      toast.success(result.message || "Connection removed.");
+    } catch (error) {
+      console.error("Error opening unfollow dialog:", error);
+    }
+  };
 
   const renderButtons = () => {
     switch (status) {
-      case "friend":
+      case "accepted":
         return (
-          <button className={BUTTON_STYLES.borderBtn}>
-            <UserMinusIcon className="w-4 h-4" />
+          <button
+            onClick={handleUnfirend}
+            className={` w-9 h-9 flex items-center disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
+          >
+            {isRemoving ? (
+              <Loader className="w-4.5 animate-spin h-4.5" />
+            ) : (
+              <UserMinusIcon className="w-4.5 h-4.5" />
+            )}
           </button>
         );
 

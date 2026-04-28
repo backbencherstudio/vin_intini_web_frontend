@@ -2,7 +2,7 @@
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
 import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
-import {  ConnectionRequestType } from "@/lib/type";
+import { ConnectionRequestType } from "@/lib/type";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
 function ConnectionRequestList({
@@ -24,11 +24,7 @@ function ConnectionRequestList({
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))
           : data?.data?.map((item: ConnectionRequestType) => (
-              <ConnectionRequestCard
-                key={item.id}
-                item={item}
-                allReadyFriends={allReadyFriends}
-              />
+              <ConnectionRequestCard key={item.id} item={item} />
             ))}
       </div>
     </div>

@@ -9,16 +9,18 @@ const connectSlice = baseApiSlice.injectEndpoints({
       }),
     }),
     getMyConnections: builder.query({
-      query: () => ({
-        url: "/connections",
+      query: (search) => ({
+        url: `/connections${search ? `?search=${search}` : ""}`,
         method: "GET",
       }),
+      providesTags: ["connect"],
     }),
     getMyConnectionSuggestions: builder.query({
       query: () => ({
         url: "/connections/suggestions",
         method: "GET",
       }),
+      providesTags: ["connect"],
     }),
     sendRequest: builder.mutation({
       query: ({ payload }) => ({
@@ -26,18 +28,21 @@ const connectSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["connect"],
     }),
     removeRequest: builder.mutation({
       query: ({ id }) => ({
         url: `/connections/${id}/remove`,
         method: "POST",
       }),
+      invalidatesTags: ["connect"],
     }),
     requestAccept: builder.mutation({
       query: ({ id }) => ({
         url: `/connections/requests/${id}/accept`,
         method: "POST",
       }),
+      invalidatesTags: ["connect"],
     }),
     requestReject: builder.mutation({
       query: ({ id }) => ({

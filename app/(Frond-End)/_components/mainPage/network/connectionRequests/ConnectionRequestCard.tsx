@@ -3,17 +3,11 @@ import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
 
-function ConnectionRequestCard({
-  item,
-  allReadyFriends,
-}: {
-  item: ConnectionRequestType;
-  allReadyFriends?: string;
-}) {
+function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
   return (
     <div>
-      <article className="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-borderColor py-3">
-        <div className="flex h-full items-start gap-3">
+      <article className="flex flex-col md:flex-row lg:gap-6 xl:gap-8 items-center justify-between gap-3 border-b border-borderColor py-3">
+        <div className="flex h-full items-start flex-1 gap-3 ">
           <div className="flex md:h-16 md:w-16  w-12 h-12 items-center justify-center overflow-hidden rounded-full bg-bgColor">
             {item.id === 1 ? (
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
@@ -35,25 +29,33 @@ function ConnectionRequestCard({
             <p className=" text-[14px] text-descriptionColor">
               {item?.user?.title}
             </p>
-            <div className="flex justify-between items-center">
-              {item.mutual_connections.length > 0 ? (
-                <div className="mt-1 flex items-center gap-1 text-[12px] text-grayColor1">
+            <div
+              className={`flex ${item?.mutual_connections?.length > 0 ? "justify-between" : "justify-end"}  items-center`}
+            >
+              {item?.mutual_connections?.length > 0 ? (
+                <div className="mt-1 flex  items-center gap-1 text-[12px] text-grayColor1">
                   <Image
-                    src="/profile.png"
+                    src={
+                      item?.mutual_connections[0]?.profile_image_url ||
+                      "/profile.png"
+                    }
                     alt="mutual"
                     width={24}
                     height={24}
                     className="h-5 w-5 rounded-full object-cover"
                   />
                   <span className="truncate">
-                    {item.mutual_connections.length} other mutual connections
+                    {item?.mutual_connections[0]?.name}{" "}
+                    {item?.mutual_connections?.length > 1 &&
+                      item?.mutual_connections?.length + "and others "}{" "}
+                    mutual connections
                   </span>
                 </div>
               ) : null}
-              <div>
-                {allReadyFriends == "friend" && (
+              <div className="">
+                {item?.status == "accepted" && (
                   <span className="text-[12px] text-grayColor1 font-semibold">
-                    Connected since 01 Feb, 2025
+                    {item?.connected_since}
                   </span>
                 )}
               </div>
@@ -62,7 +64,11 @@ function ConnectionRequestCard({
         </div>
 
         <div className="flex w-full md:w-fit justify-end items-center">
-          <ConnectionActionButtons id={item.id} status={item.status} />
+          <ConnectionActionButtons
+            id={item?.id}
+            userId={item?.user?.id}
+            status={item?.status}
+          />
         </div>
       </article>
     </div>

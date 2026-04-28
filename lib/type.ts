@@ -38,8 +38,10 @@ export interface ConnectionRequestType {
   id: number;
   status: "pending" | "accepted" | "ignored" | "declined";
   status_label: string;
+  action_label: string;
   is_incoming: boolean;
   is_outgoing: boolean;
+  is_connectable: boolean;
   can_accept: boolean;
   can_ignore: boolean;
   connected_since: string | null;
