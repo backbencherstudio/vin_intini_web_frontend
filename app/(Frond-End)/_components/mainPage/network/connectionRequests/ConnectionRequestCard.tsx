@@ -10,10 +10,6 @@ function ConnectionRequestCard({
   item: ConnectionRequestType;
   allReadyFriends?: string;
 }) {
-  const handleConnectionAction = (id: number, type: string) => {
-    console.log(`Action: ${type} for User ID: ${id}`);
-  };
-
   return (
     <div>
       <article className="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-borderColor py-3">
@@ -66,11 +62,7 @@ function ConnectionRequestCard({
         </div>
 
         <div className="flex w-full md:w-fit justify-end items-center">
-          <ConnectionActionButtons
-            id={item.id}
-            status={item.status}
-            onAction={handleConnectionAction}
-          />
+          <ConnectionActionButtons id={item.id} status={item.status} />
         </div>
       </article>
     </div>

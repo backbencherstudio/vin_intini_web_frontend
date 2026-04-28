@@ -1,32 +1,51 @@
 "use client";
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
+import {
+  useRequestAcceptMutation,
+  useRequestRejectMutation,
+} from "@/feature/slice/connect/connectSlice";
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
 import { X } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import UserUnfollowDialog from "../UserUnfollowDialog";
 
 interface ActionProps {
   id: number;
   status: any;
-  onAction: (id: number, type: string) => void;
 }
 
-export const ConnectionActionButtons = ({
-  id,
-  status,
-  onAction,
-}: ActionProps) => {
+export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [identyConnection, setIdentyConnection] = useState("");
+  const [requestAccept, { isLoading: isAccepting }] =
+    useRequestAcceptMutation();
+  const [requestReject, { isLoading: isRejecting }] =
+    useRequestRejectMutation();
+
+  const handleConnectionAction = async (type: "accept" | "ignore") => {
+    try {
+      if (type === "accept") {
+        const response = await requestAccept({ id }).unwrap();
+        toast.success(response.message || "Connection request accepted!");
+        setIdentyConnection("accept");
+        return;
+      }
+
+      const response = await requestReject({ id }).unwrap();
+      toast.success(response.message || "Connection request ignored.");
+    } catch (error) {
+      console.log("Error handling connection action:", error);
+    }
+  };
 
   const renderButtons = () => {
     switch (status) {
       case "friend":
         return (
-          <button
-            onClick={() => onAction(id, "remove")}
-            className={BUTTON_STYLES.borderBtn}
-          >
+          <button className={BUTTON_STYLES.borderBtn}>
             <UserMinusIcon className="w-4 h-4" />
           </button>
         );
@@ -44,27 +63,46 @@ export const ConnectionActionButtons = ({
       case "pending":
         return (
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onAction(id, "ignore")}
-              className={BUTTON_STYLES.secondary}
-            >
-              Ignore
-            </button>
-            <button
-              onClick={() => onAction(id, "accept")}
-              className={BUTTON_STYLES.primary}
-            >
-              Accept
-            </button>
+            {identyConnection === "ignore" ? (
+              <button
+                disabled={isAccepting || isRejecting}
+                className={BUTTON_STYLES.iconBtn}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            ) : identyConnection === "accept" ? (
+              <Link href={`/mu/${id}`} className={BUTTON_STYLES.primary}>
+                View profile
+              </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={isRejecting}
+                  onClick={() => handleConnectionAction("ignore")}
+                  className={`${BUTTON_STYLES.secondary} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor`}
+                >
+                  {isRejecting ? "Ignoring..." : "Ignore"}
+                </button>
+                <button
+                  disabled={isAccepting}
+                  onClick={() => handleConnectionAction("accept")}
+                  className={`${BUTTON_STYLES.primary} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor`}
+                >
+                  {isAccepting ? "Accepting..." : "Accept"}
+                </button>
+              </div>
+            )}
           </div>
         );
 
       case "connected":
         return (
           <div className="flex items-center gap-2">
-            <button className={BUTTON_STYLES.primary}>View profile</button>
+            <Link href={`/mu/${id}`} className={BUTTON_STYLES.primary}>
+              View profile
+            </Link>
             <button
-              onClick={() => onAction(id, "remove")}
+              disabled={isAccepting || isRejecting}
               className={BUTTON_STYLES.iconBtn}
             >
               <X className="h-4 w-4" />
@@ -74,10 +112,7 @@ export const ConnectionActionButtons = ({
 
       default:
         return (
-          <button
-            onClick={() => onAction(id, "ignore")}
-            className={BUTTON_STYLES.iconBtn}
-          >
+          <button className={BUTTON_STYLES.iconBtn}>
             <X className="h-4 w-4" />
           </button>
         );
