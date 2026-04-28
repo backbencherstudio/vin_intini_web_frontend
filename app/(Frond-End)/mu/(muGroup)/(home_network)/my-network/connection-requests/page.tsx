@@ -6,7 +6,7 @@ function page() {
     <div>
       <ConnectionRequestHeader />
       <div>
-        <ConnectionRequestList />
+        <ConnectionRequestList isNetwork= {true} />
       </div>
     </div>
   );

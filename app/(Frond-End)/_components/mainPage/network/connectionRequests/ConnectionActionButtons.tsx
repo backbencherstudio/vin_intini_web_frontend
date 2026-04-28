@@ -2,11 +2,16 @@
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
+  useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } from "@/feature/slice/connect/connectSlice";
+import {
+  useFollowUserMutation,
+  useUnfollowUserMutation,
+} from "@/feature/slice/connect/followSlice";
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -15,15 +20,26 @@ import UserUnfollowDialog from "../UserUnfollowDialog";
 interface ActionProps {
   id: number;
   status: any;
+  userId?: number;
+  isFollower?: boolean;
 }
 
-export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
+export const ConnectionActionButtons = ({
+  id,
+  status,
+  userId,
+  isFollower,
+}: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
   const [requestAccept, { isLoading: isAccepting }] =
     useRequestAcceptMutation();
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
+  const [removeRequest, { isLoading: isRemoving }] = useRemoveRequestMutation();
+  const [unfollowUser, { isLoading: isUnfollowing }] =
+    useUnfollowUserMutation();
+  const [followUser, { isLoading: isFollowing }] = useFollowUserMutation();
 
   const handleConnectionAction = async (type: "accept" | "ignore") => {
     try {
@@ -40,23 +56,47 @@ export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
       console.log("Error handling connection action:", error);
     }
   };
+  const handleUnfirend = async () => {
+    try {
+      const result = await removeRequest({ id: userId }).unwrap();
+
+      toast.success(result.message || "Connection removed.");
+    } catch (error) {
+      console.error("Error opening unfollow dialog:", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      const result = await unfollowUser({ userId: userId }).unwrap();
+      toast.success(result.message || "Unfollowed successfully.");
+    } catch (error) {
+      console.error("Error opening unfollow dialog:", error);
+    }
+  };
+  const handleUserfollow = async () => {
+    try {
+      const result = await followUser({ userId: userId }).unwrap();
+      toast.success(result.message || "Followed successfully.");
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
 
   const renderButtons = () => {
     switch (status) {
-      case "friend":
-        return (
-          <button className={BUTTON_STYLES.borderBtn}>
-            <UserMinusIcon className="w-4 h-4" />
-          </button>
-        );
-
-      case "follower":
+      case "accepted":
         return (
           <button
-            onClick={() => setIsOpen(true)}
-            className={`${BUTTON_STYLES.borderBtn} `}
+            onClick={handleUnfirend}
+            disabled={isRemoving}
+            className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
           >
-            Unfollow
+            {isRemoving ? (
+              <Loader className="w-4.5 animate-spin h-4.5" />
+            ) : (
+              <UserMinusIcon className="w-4.5 h-4.5" />
+            )}
           </button>
         );
 
@@ -111,9 +151,21 @@ export const ConnectionActionButtons = ({ id, status }: ActionProps) => {
         );
 
       default:
-        return (
-          <button className={BUTTON_STYLES.iconBtn}>
-            <X className="h-4 w-4" />
+        return isFollower ? (
+          <button
+            onClick={handleUnfollow}
+            disabled={isUnfollowing}
+            className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
+          >
+            {isUnfollowing ? "Removing..." : "Unfollow"}
+          </button>
+        ) : (
+          <button
+            onClick={handleUserfollow}
+            disabled={isFollowing}
+            className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
+          >
+            {isFollowing ? "Following..." : "Follow"}
           </button>
         );
     }

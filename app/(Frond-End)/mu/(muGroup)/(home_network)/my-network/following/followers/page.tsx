@@ -7,7 +7,7 @@ function page() {
         1000 people are following you
       </p>
       <div className="mt-6">
-        <ConnectionRequestList allReadyFriends={"follower"} />
+        <ConnectionRequestList  />
       </div>
     </div>
   );
