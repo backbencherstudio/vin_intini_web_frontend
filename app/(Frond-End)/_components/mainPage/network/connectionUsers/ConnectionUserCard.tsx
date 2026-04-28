@@ -1,8 +1,31 @@
+import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, mutual_connections } = profile;
+  console.log(user.id);
+
+  const [sendRequest, { isLoading }] = useSendRequestMutation();
+  const handleConnect = async () => {
+    console.log("check==========");
+
+    const payload = {
+      user_id: user.id,
+    };
+    console.log(payload);
+
+    try {
+      const result = await sendRequest(payload).unwrap();
+      console.log(result, "result");
+
+      toast.success(result.message || "Connection request sent!");
+    } catch (error) {
+      console.error("Error sending connection request:", error);
+      toast.error("Failed to send connection request.");
+    }
+  };
   return (
     <div>
       <article className="overflow-hidden group rounded-md hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 flex flex-col h-full justify-between border border-borderColor bg-white">
@@ -53,9 +76,11 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           <div className="flex justify-center">
             <button
               type="button"
-              className="mt-3 px-8 py-1 rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
+              onClick={handleConnect}
+              disabled={isLoading}
+              className="mt-3 px-8 py-1 disabled:bg-bgColor disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
             >
-              Connect
+              {isLoading ? "Sending..." : "Connect"}
             </button>
           </div>
         </div>
