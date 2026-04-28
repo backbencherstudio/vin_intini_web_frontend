@@ -24,7 +24,6 @@ export const ConnectionActionButtons = ({
   status,
   userId,
 }: ActionProps) => {
-
   const [isOpen, setIsOpen] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
   const [requestAccept, { isLoading: isAccepting }] =
@@ -50,9 +49,8 @@ export const ConnectionActionButtons = ({
   };
   const handleUnfirend = async () => {
     try {
-      const result = await removeRequest({ userId }).unwrap();
-      console.log(result, "==============");
-      
+      const result = await removeRequest({ id: userId }).unwrap();
+
       toast.success(result.message || "Connection removed.");
     } catch (error) {
       console.error("Error opening unfollow dialog:", error);
@@ -65,7 +63,8 @@ export const ConnectionActionButtons = ({
         return (
           <button
             onClick={handleUnfirend}
-            className={` w-9 h-9 flex items-center disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
+            disabled={isRemoving}
+            className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
           >
             {isRemoving ? (
               <Loader className="w-4.5 animate-spin h-4.5" />

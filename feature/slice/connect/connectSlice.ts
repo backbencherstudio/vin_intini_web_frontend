@@ -33,7 +33,7 @@ const connectSlice = baseApiSlice.injectEndpoints({
     removeRequest: builder.mutation({
       query: ({ id }) => ({
         url: `/connections/${id}/remove`,
-        method: "POST",
+        method: "DELETE",
       }),
       invalidatesTags: ["connect"],
     }),
