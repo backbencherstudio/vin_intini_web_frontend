@@ -25,7 +25,7 @@ function ConnectionListHeader() {
             Total Connection{" "}
             <span className="font-normal text-grayColor1">(1500)</span>
           </h1>
-          <div className="relative w-[220px] lg:w-[300px] mx-auto hidden md:block  max-w-full">
+          <div className="relative w-55 lg:w-75 mx-auto hidden md:block  max-w-full">
             <Search />
           </div>
           <div className="flex items-center ">
@@ -41,7 +41,7 @@ function ConnectionListHeader() {
             />
           </div>
         </div>
-        <div className="relative w-[400px] mx-auto md:hidden  max-w-full">
+        <div className="relative w-100 mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>

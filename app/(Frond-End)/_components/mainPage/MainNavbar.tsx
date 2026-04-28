@@ -33,43 +33,43 @@ type MenuItem = {
 };
 
 const menuItems: MenuItem[] = [
-  { label: "Home", slug: "/mu/2/home", icon: HomeIcon },
-  { label: "Academia", slug: "/mu/2/academia", icon: GlobalIcon },
-  { label: "My Network", slug: "/mu/2/my-network", icon: MultiUserIcon },
+  { label: "Home", slug: "/mu/home", icon: HomeIcon },
+  { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
+  { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
   {
     label: "Psychology Network",
-    slug: "/mu/2/psychology-network",
+    slug: "/mu/psychology-network",
     icon: PsychologyMenuIcon,
     isDropdown: true,
     dropdownItems: [
-      { label: "Psychology Fields", slug: "/mu/2/psychology-network/fields" },
+      { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
       {
         label: "Psychology Careers",
-        slug: "/mu/2/psychology-network/careers",
+        slug: "/mu/psychology-network/careers",
       },
-      { label: "Industry", slug: "/mu/2/psychology-network/industry" },
-      { label: "Jobs", slug: "/mu/2/psychology-network/jobs" },
+      { label: "Industry", slug: "/mu/psychology-network/industry" },
+      { label: "Jobs", slug: "/mu/psychology-network/jobs" },
     ],
   },
   {
     label: "Neuroscience Network",
-    slug: "/mu/2/neuroscience-network",
+    slug: "/mu/neuroscience-network",
     icon: ClinicalIcon,
     isDropdown: true,
     dropdownItems: [
       {
         label: "Neuroscience Fields",
-        slug: "/mu/2/neuroscience-network/fields",
+        slug: "/mu/neuroscience-network/fields",
       },
       {
         label: "Neuroscience Careers",
-        slug: "/mu/2/neuroscience-network/careers",
+        slug: "/mu/neuroscience-network/careers",
       },
-      { label: "Industry", slug: "/mu/2/neuroscience-network/industry" },
-      { label: "Jobs", slug: "/mu/2/neuroscience-network/jobs" },
+      { label: "Industry", slug: "/mu/neuroscience-network/industry" },
+      { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
     ],
   },
-  { label: "Jobs", slug: "/mu/2/jobs", icon: JobsIcon },
+  { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
 ];
 
 export default function MainNavbar() {
@@ -79,18 +79,21 @@ export default function MainNavbar() {
   const [openMobileDropdownSlug, setOpenMobileDropdownSlug] = useState<
     string | null
   >(null);
-
+  const isActive = (href: string): boolean => {
+    if (href === "/mu/home") {
+      return pathname === "/mu/home";
+    }
+    return pathname.startsWith(href);
+  };
   return (
-    <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),_0_16px_24px_0_rgba(0,0,0,0.01)]">
+    <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)]">
       <div className="container mx-auto flex items-center justify-between">
         <div>
           <Image src={mainLogo} alt="Logo" width={50} height={50} />
         </div>
 
-        <nav className="hidden space-x-6 text-base md:flex">
+        <nav className="hidden space-x-6 text-base lg:flex">
           {menuItems.map((item) => {
-            const isActive = pathname === item.slug;
-
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
 
@@ -107,7 +110,7 @@ export default function MainNavbar() {
                       type="button"
                       className={cn(
                         "group flex w-fit flex-col items-center gap-1 text-sm transition cursor-pointer hover:text-headerColor",
-                        isActive || isDropdownOpen
+                        isActive(item.slug) || isDropdownOpen
                           ? "text-headerColor"
                           : "text-grayColor1",
                       )}
@@ -129,7 +132,7 @@ export default function MainNavbar() {
 
                   <DropdownMenuContent
                     align="center"
-                    className="mt-3 w-[205px]  rounded-xl bg-whiteColor p-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
+                    className="mt-3 w-51.25  rounded-xl bg-whiteColor p-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
                   >
                     {item.dropdownItems?.map((dropdownItem, index) => (
                       <DropdownMenuItem
@@ -158,7 +161,7 @@ export default function MainNavbar() {
                 href={item.slug}
                 className={cn(
                   "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
-                  isActive ? "text-headerColor" : "text-grayColor1",
+                  isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
                 )}
               >
                 <item.icon className="h-4.5 w-4.5" />
@@ -168,11 +171,11 @@ export default function MainNavbar() {
           })}
         </nav>
 
-        <div className="hidden items-center space-x-[14px] md:flex">
+        <div className="hidden items-center space-x-3.5 lg:flex">
           <UserHeaderInfo />
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <UserHeaderInfo />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -185,7 +188,7 @@ export default function MainNavbar() {
 
       <div
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out md:hidden",
+          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -215,9 +218,9 @@ export default function MainNavbar() {
                       )
                     }
                     className={cn(
-                      "flex w-full items-center justify-between gap-2 py-2 text-base",
-                      pathname === item.slug
-                        ? "text-secondaryColor"
+                      "flex w-full items-center rounded-sm justify-between gap-2 p-2 text-base",
+                      isActive(item.slug)
+                        ? "text-primaryColor bg-whiteColor"
                         : "text-white",
                     )}
                   >
@@ -229,22 +232,24 @@ export default function MainNavbar() {
                       className={cn(
                         "h-3 w-3 transition-transform duration-200",
                         isMobileDropdownOpen
-                          ? "rotate-180 text-secondaryColor"
-                          : "text-white",
+                          ? "rotate-180 text-primaryColor"
+                          : isActive(item.slug)
+                            ? "text-primaryColor bg-whiteColor"
+                            : "text-white",
                       )}
                     />
                   </button>
 
                   {isMobileDropdownOpen && (
-                    <div className="ml-6 mt-1 space-y-1 border-l border-white/20 pl-3">
+                    <div className="ml-6 mt-1 space-y-0.5  border-l border-white/20 pl-3">
                       {item.dropdownItems?.map((dropdownItem) => (
                         <Link
                           key={dropdownItem.slug}
                           href={dropdownItem.slug}
                           className={cn(
-                            "block py-1 text-sm text-white/90 transition hover:text-secondaryColor",
+                            "block p-1.5 rounded-sm text-sm text-white/90 transition hover:text-primaryColor hover:bg-white",
                             pathname === dropdownItem.slug
-                              ? "text-secondaryColor"
+                              ? "text-primaryColor bg-whiteColor"
                               : "text-white/90",
                           )}
                           onClick={() => {
@@ -266,8 +271,10 @@ export default function MainNavbar() {
                 key={item.slug}
                 href={item.slug}
                 className={cn(
-                  "flex items-center gap-2 py-2 text-base",
-                  pathname === item.slug ? "text-secondaryColor" : "text-white",
+                  "flex items-center gap-2 p-2 rounded-sm text-base",
+                  pathname === item.slug
+                    ? "text-primaryColor bg-whiteColor"
+                    : "text-white",
                 )}
                 onClick={() => {
                   setMenuOpen(false);

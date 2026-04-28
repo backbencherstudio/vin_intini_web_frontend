@@ -12,19 +12,19 @@ function ConnectionRequestHeader() {
             <span className="text-base text-grayColor1 font-normal">(15)</span>
           </h2>
 
-          <div className="relative w-[300px] hidden md:block  max-w-full">
+          <div className="relative w-75 hidden md:block  max-w-full">
             <Search />
           </div>
         </div>
 
         <Link
-          href="/mu/id/connection_requests"
+          href="/mu/my-network/connection-requests"
           className="inline-flex items-center gap-1 text-[15px] font-semibold text-headerColor"
         >
           Show All
           <ArrowRight size={16} />
         </Link>
-        <div className="relative w-[300px] mx-auto md:hidden  max-w-full">
+        <div className="relative w-75 mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>

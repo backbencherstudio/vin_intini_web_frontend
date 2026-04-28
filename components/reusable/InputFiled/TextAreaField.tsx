@@ -17,14 +17,14 @@ const ReusableTextarea = ({
   return (
     <div className="space-y-1.5">
       {label && (
-        <Label className="text-sm text-descriptionColor font-medium">
+        <Label className="text-base text-descriptionColor font-semibold">
           {label}
         </Label>
       )}
 
       <textarea
         placeholder={placeholder}
-        className={`min-h-[80px] focus:ring-2! focus:ring-primaryColor/20! ${className || ""}`}
+        className={`min-h-20 focus:ring-2! focus:ring-primaryColor/20! ${className || ""}`}
         {...props}
       />
 

@@ -1,11 +1,14 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NotificationIcon } from "@/public/svgIcons/Icons";
+import {
+  LogoutIcon,
+  NotificationIcon,
+  SettingIcon,
+  UserCircleIcon,
+} from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +24,7 @@ function UserHeaderInfo() {
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
         <div className="flex items-center gap-4 lg:gap-5 justify-between">
           <Link
-            href={`/mu/1/notification`}
+            href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
             <span className="absolute -top-2 -right-2 flex justify-center items-center text-xs w-4 h-4 text-whiteColor rounded-full bg-redColor">
@@ -52,25 +55,55 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-48">
-                <div className="px-4 py-2">
-                  <p className="text-sm font-semibold text-headerColor">
-                    {"User"}
-                  </p>
-                  <p className="text-xs text-textColor">
-                    {"admin@company.com"}
-                  </p>
+              <DropdownMenuContent align="end" className="w-60.5 p-3">
+                <div className="">
+                  <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
+                    <div className=" w-10 h-10 rounded-md overflow-hidden mb-2">
+                      <Image
+                        src={"/profile.png"}
+                        alt="Admin Avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-md w-full h-full"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-headerColor">
+                        {"Vin Intini"}
+                      </p>
+                      <p className="text-sm  text-grayColor1 line-clamp-1">
+                        {"CEO & Founder, MindUnite"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem
-                  onClick={() => {
-                    router.push("/login");
-                  }}
-                  className="text-redColor hover:bg-redColor/10 flex justify-center w-full hover:text-redColor hover:border hover:border-redColor font-semibold cursor-pointer"
-                >
-                  Log Out
-                </DropdownMenuItem>
+                <div className="py-3 space-y-2">
+                  <Link
+                    href={`/mu/1`}
+                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                  >
+                    <UserCircleIcon className="w-5 h-5 text-grayColor1" />
+                    Profile
+                  </Link>
+                  <Link
+                    href={`/mu/1`}
+                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                  >
+                    <SettingIcon className="w-5 h-5 text-grayColor1  " />
+                    Account Setting
+                  </Link>
+                </div>
+                <div className="pt-3  border-t border-borderColor">
+                  <button
+                    onClick={() => {
+                      router.push("/login");
+                    }}
+                    className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
+                  >
+                    <LogoutIcon className="w-4 h-4 group-hover:text-redColor group-hover:fill-redColor" />
+                    Log Out
+                  </button>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

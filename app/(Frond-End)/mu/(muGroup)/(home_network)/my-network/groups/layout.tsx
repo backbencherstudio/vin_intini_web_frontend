@@ -1,0 +1,42 @@
+import GroupHeader from "@/app/(Frond-End)/_components/mainPage/group/GroupHeader";
+import GroupSidbar from "@/app/(Frond-End)/_components/mainPage/GroupSidbar";
+import ResuableMenu from "@/components/reusable/ResuableMenu";
+import React from "react";
+
+function GroupLayout({ children }: { children: React.ReactNode }) {
+  const candidateJobMenus = [
+    {
+      id: 1,
+      title: "Groups you Connected",
+      href: "/mu/groups",
+    },
+    {
+      id: 2,
+      title: "Groups you Created",
+      href: "/mu/groups/group-created",
+    },
+  ];
+  return (
+    <div>
+      <div className="md:grid grid-cols-12 gap-6">
+        <div className="md:col-span-8 col-span-12 space-y-6">
+          <div>
+            <GroupHeader />
+          </div>
+          <div>
+            <ResuableMenu
+              initialPath="/mu/groups"
+              menuData={candidateJobMenus}
+            />
+            {children}
+          </div>
+        </div>
+        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 lg:pl-6 h-full">
+          <GroupSidbar />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default GroupLayout;
