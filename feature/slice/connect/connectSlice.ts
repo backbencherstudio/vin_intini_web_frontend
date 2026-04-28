@@ -22,6 +22,7 @@ const connectSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["connect"],
     }),
+
     sendRequest: builder.mutation({
       query: ({ payload }) => ({
         url: "/connections/request",
@@ -61,4 +62,5 @@ export const {
   useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
+ 
 } = connectSlice;

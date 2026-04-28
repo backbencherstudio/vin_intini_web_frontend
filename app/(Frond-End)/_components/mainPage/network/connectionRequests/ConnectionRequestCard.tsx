@@ -68,6 +68,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
             id={item?.id}
             userId={item?.user?.id}
             status={item?.status}
+            isFollower={item?.is_following_back}
           />
         </div>
       </article>

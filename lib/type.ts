@@ -42,6 +42,7 @@ export interface ConnectionRequestType {
   is_incoming: boolean;
   is_outgoing: boolean;
   is_connectable: boolean;
+  is_following_back: boolean;
   can_accept: boolean;
   can_ignore: boolean;
   connected_since: string | null;

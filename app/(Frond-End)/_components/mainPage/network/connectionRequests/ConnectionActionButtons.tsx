@@ -6,6 +6,10 @@ import {
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } from "@/feature/slice/connect/connectSlice";
+import {
+  useFollowUserMutation,
+  useUnfollowUserMutation,
+} from "@/feature/slice/connect/followSlice";
 import { UserMinusIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Link from "next/link";
@@ -17,12 +21,14 @@ interface ActionProps {
   id: number;
   status: any;
   userId?: number;
+  isFollower?: boolean;
 }
 
 export const ConnectionActionButtons = ({
   id,
   status,
   userId,
+  isFollower,
 }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
@@ -31,6 +37,9 @@ export const ConnectionActionButtons = ({
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
   const [removeRequest, { isLoading: isRemoving }] = useRemoveRequestMutation();
+  const [unfollowUser, { isLoading: isUnfollowing }] =
+    useUnfollowUserMutation();
+  const [followUser, { isLoading: isFollowing }] = useFollowUserMutation();
 
   const handleConnectionAction = async (type: "accept" | "ignore") => {
     try {
@@ -57,6 +66,23 @@ export const ConnectionActionButtons = ({
     }
   };
 
+  const handleUnfollow = async () => {
+    try {
+      const result = await unfollowUser({ userId: userId }).unwrap();
+      toast.success(result.message || "Unfollowed successfully.");
+    } catch (error) {
+      console.error("Error opening unfollow dialog:", error);
+    }
+  };
+  const handleUserfollow = async () => {
+    try {
+      const result = await followUser({ userId: userId }).unwrap();
+      toast.success(result.message || "Followed successfully.");
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
   const renderButtons = () => {
     switch (status) {
       case "accepted":
@@ -71,16 +97,6 @@ export const ConnectionActionButtons = ({
             ) : (
               <UserMinusIcon className="w-4.5 h-4.5" />
             )}
-          </button>
-        );
-
-      case "follower":
-        return (
-          <button
-            onClick={() => setIsOpen(true)}
-            className={`${BUTTON_STYLES.borderBtn} `}
-          >
-            Unfollow
           </button>
         );
 
@@ -135,9 +151,21 @@ export const ConnectionActionButtons = ({
         );
 
       default:
-        return (
-          <button className={BUTTON_STYLES.iconBtn}>
-            <X className="h-4 w-4" />
+        return isFollower ? (
+          <button
+            onClick={handleUnfollow}
+            disabled={isUnfollowing}
+            className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
+          >
+            {isUnfollowing ? "Removing..." : "Unfollow"}
+          </button>
+        ) : (
+          <button
+            onClick={handleUserfollow}
+            disabled={isFollowing}
+            className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
+          >
+            {isFollowing ? "Following..." : "Follow"}
           </button>
         );
     }

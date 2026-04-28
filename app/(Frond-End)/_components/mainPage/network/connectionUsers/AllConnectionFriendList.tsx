@@ -4,6 +4,7 @@ import Error from "@/components/reusable/Error";
 import { useGetMyConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
+import ConnectionNotFound from "../connectionRequests/ConnectionNotFound";
 import ConnectionRequestCard from "../connectionRequests/ConnectionRequestCard";
 import ConnectionListHeader from "./ConnectionListHeader";
 
@@ -29,13 +30,17 @@ function AllConnectionFriendList() {
     <div>
       <ConnectionListHeader data={data} />
       <div className="">
-        {isLoading
-          ? Array.from({ length: 8 }).map((_, index) => (
-              <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
-            ))
-          : data?.data?.map((item: ConnectionRequestType) => (
-              <ConnectionRequestCard key={item.id} item={item} />
-            ))}
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
+          ))
+        ) : data?.data?.length > 0 ? (
+          data?.data?.map((item: ConnectionRequestType) => (
+            <ConnectionRequestCard key={item.id} item={item} />
+          ))
+        ) : (
+          <ConnectionNotFound title="No Connections Found" />
+        )}
       </div>
     </div>
   );
