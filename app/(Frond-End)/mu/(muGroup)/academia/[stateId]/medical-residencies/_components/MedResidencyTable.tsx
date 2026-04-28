@@ -4,7 +4,7 @@ import DynamicTable from "@/components/reusable/DynamicTable";
 import { MedicalResidencyPrograms } from "@/public/demoData/DemoData";
 
 
-export default function MedResidencyTable() {
+export default function MedResidencyTable({ data }: { data: any[] }) {
 
     const columns = [
         {
@@ -19,7 +19,7 @@ export default function MedResidencyTable() {
         },
         {
             label: "Universities",
-            accessor: "universityName",
+            accessor: "program_name",
             width: "300px",
             formatter: (accessor: string, row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
@@ -29,11 +29,11 @@ export default function MedResidencyTable() {
         },
         {
             label: "Degrees",
-            accessor: "psychologyDegrees",
+            accessor: "degree_types",
             width: "170px",
             formatter: (accessor: string[], row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
-                    {accessor.join(", ")}
+                    {accessor?.join(", ") || "--"}
                 </div>
             ),
         },
@@ -53,7 +53,7 @@ export default function MedResidencyTable() {
         <div>
             <DynamicTable
                 columns={columns}
-                data={MedicalResidencyPrograms}
+                data={data}
                 header={{
                     position: "justify-start",
                     padding: "8px 0px 8px 8px",

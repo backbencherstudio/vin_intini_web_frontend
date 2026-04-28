@@ -1,10 +1,12 @@
 "use client"
 
 import DynamicTable from "@/components/reusable/DynamicTable";
-import { gradProgramsData } from "@/public/demoData/DemoData";
 
+type PropType = {
+    data: any[];
+}
 
-export default function GradprogramsTable() {
+export default function GradprogramsTable({ data }: PropType) {
 
     const columns = [
         {
@@ -19,7 +21,7 @@ export default function GradprogramsTable() {
         },
         {
             label: "Universities",
-            accessor: "universityName",
+            accessor: "name",
             width: "300px",
             formatter: (accessor: string, row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
@@ -29,21 +31,21 @@ export default function GradprogramsTable() {
         },
         {
             label: "Psychology Degrees",
-            accessor: "psychologyDegrees",
+            accessor: "psychology_degrees",
             width: "170px",
             formatter: (accessor: string[], row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
-                    {accessor.join(", ")}
+                    {accessor?.join(", ") || "--"}
                 </div>
             ),
         },
         {
             label: "Neuroscience Degrees",
-            accessor: "neuroscienceDegrees",
+            accessor: "neuroscience_degrees",
             width: "190px",
             formatter: (accessor: string[], row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
-                    {accessor.join(", ")}
+                    {accessor?.join(", ") || "--"}
                 </div>
             ),
         },
@@ -53,7 +55,7 @@ export default function GradprogramsTable() {
         <div>
             <DynamicTable
                 columns={columns}
-                data={gradProgramsData}
+                data={data}
                 header={{
                     position: "justify-start",
                     padding: "8px 0px 8px 8px",
