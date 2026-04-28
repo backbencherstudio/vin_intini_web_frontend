@@ -9,7 +9,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { FilterIcon, SearchIcon } from "@/public/svgIcons/Icons";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type PropType = {
     title: string;
@@ -34,6 +34,18 @@ export default function AcademiHeader({
     searchPlaceHolder = "Search...",
 }: PropType) {
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (!onSearch) return;
+        if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+        debounceTimeout.current = setTimeout(() => {
+            onSearch(searchQuery);
+        }, 500);
+        return () => {
+            if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+        };
+    }, [searchQuery, onSearch]);
 
     return (
         <div className="space-y-4 md:space-y-6">
@@ -53,7 +65,7 @@ export default function AcademiHeader({
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 md:justify-between">
                 {/* Filter */}
                 {filterData && (
-                    <div className="max-w-60.5 px-2 py-1 grid grid-cols-[auto_1fr] gap-2 md:gap-3 items-center bg-[#F6F8FA] w-full md:w-fit rounded-lg">
+                    <div className="sm:max-w-60.5 px-2 py-1 flex sm:grid sm:grid-cols-[auto_1fr] gap-2 md:gap-3 items-center justify-between bg-[#F6F8FA] w-full md:w-fit rounded-lg">
                         <h2 className="text-descriptionColor text-sm md:text-base font-normal leading-[150%] tracking-[0.08px] whitespace-nowrap">
                             Filter Degree
                         </h2>
@@ -61,7 +73,7 @@ export default function AcademiHeader({
                             value={selectedDegree}
                             onValueChange={setSelectedDegree}
                         >
-                            <SelectTrigger className="bg-white w-full md:w-32.5 grid grid-cols-[auto_1fr_auto] focus-visible:border-[#e5e5e5] focus-visible:ring-0">
+                            <SelectTrigger className="bg-white w-full max-w-34.5 sm:max-w-full md:w-34.5 grid grid-cols-[auto_1fr_auto] focus-visible:border-[#e5e5e5] focus-visible:ring-0">
                                 <FilterIcon className="w-4 h-4 md:w-5 md:h-5" />
                                 <SelectValue placeholder="Select a degree" />
                             </SelectTrigger>
@@ -81,8 +93,8 @@ export default function AcademiHeader({
 
                 {/* Search */}
                 {onSearch && (
-                    <div className="w-full flex flex-col sm:flex-row justify-end gap-2 md:gap-3">
-                        <div className="flex-1 max-w-80 flex items-center gap-2 px-3 py-2 border border-[#A5A5AB] rounded-full">
+                    <div className="w-full flex justify-end gap-2 md:gap-3">
+                        <div className="flex-1 sm:max-w-80 flex items-center gap-2 px-3 py-2 border border-[#A5A5AB] rounded-full">
                             <SearchIcon className="w-4 h-4 md:w-5 md:h-5" />
                             <input
                                 type="text"
@@ -93,13 +105,6 @@ export default function AcademiHeader({
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => onSearch(searchQuery)}
-                            className="px-6 sm:px-8 md:px-9 py-2 bg-primaryColor text-white rounded-full text-sm md:text-base font-semibold leading-[150%] tracking-[0.08px] hover:bg-[#] hover:text-[#ffffff] cursor-pointer"
-                        >
-                            Search
-                        </button>
                     </div>
                 )}
             </div>

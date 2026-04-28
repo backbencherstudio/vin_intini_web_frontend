@@ -1,11 +1,22 @@
+"use client";
+
 import Image from "next/image";
 import GoogleMap from "./GoogleMap";
+import { useAcademiaContext } from "../../_components/AcademiaContext";
+import { useEffect } from "react";
 
 type PropType = {
     id: string; // e.g., "Texas"
 }
 
 export default function StateDetails({ id }: PropType) {
+    const { setStateCode } = useAcademiaContext();
+
+    useEffect(()=>{
+        if(id) {
+            setStateCode(id);
+        }
+    },[id])
 
     return (
         <div className="p-6">

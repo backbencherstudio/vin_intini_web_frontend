@@ -13,9 +13,20 @@ import {
 import MedResidencyTable from "./_components/MedResidencyTable";
 import Pagination from "@/components/reusable/Pagination";
 import { Limits } from "@/public/staticData";
+import { useGetResidenciesQuery } from "@/feature/slice/academia/academiaSlice";
+import { useParams } from "next/navigation";
+import TableLoading from "../grad-undergrad-programs/_components/TableLoading";
 
 export default function page(){
     const [limit, setLimit] = useState<number>(10);
+    const { stateId } = useParams();
+    const { data, isLoading, error } = useGetResidenciesQuery(stateId);
+
+    if(isLoading){
+        return(
+            <TableLoading />
+        )
+    }
 
     return(
         <div className="xl:pl-6 space-y-6">
@@ -24,7 +35,7 @@ export default function page(){
                 onSearch={(query) => console.log("Search query:", query)}
                 searchPlaceHolder="Search Degree/ University..."
             />
-            <MedResidencyTable />
+            <MedResidencyTable data={data?.data || []} />
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
                     page={1}

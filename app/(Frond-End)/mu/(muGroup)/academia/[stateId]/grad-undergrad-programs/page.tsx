@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AcademiHeader from "../_components/AcademiHeader"
 import GradProgramsTable from "./_components/GradProgramsTable"
 import Pagination from "@/components/reusable/Pagination";
@@ -13,10 +13,22 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Limits } from "@/public/staticData";
+import { useGetUndergradGradProgramsQuery } from "@/feature/slice/academia/academiaSlice";
+import { useParams } from "next/navigation";
+import TableLoading from "./_components/TableLoading";
 
 export default function page() {
     const [selectedDegree, setSelectedDegree] = useState<string>("all");
-    const [limit, setLimit] = useState<number>(10)
+    const [limit, setLimit] = useState<number>(10);
+    const params = useParams();
+    const { data, isLoading, error } = useGetUndergradGradProgramsQuery(params.stateId);
+
+    if(isLoading){
+        return(
+            <TableLoading />
+        )
+    }
+
     return (
         <div className="xl:pl-6 space-y-6">
             <AcademiHeader
@@ -30,10 +42,11 @@ export default function page() {
                     { key: "phd", label: "PhD" },
                     { key: "ma-phd", label: "MA-PhD" },
                 ]}
-                onSearch={(query) => console.log("Search query:", query)}
+                onSearch={() => {}}
                 searchPlaceHolder="Search Degree/ University..."
             />
-            <GradProgramsTable />
+            
+            <GradProgramsTable data={data?.data || []} />
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
                     page={1}
@@ -46,7 +59,7 @@ export default function page() {
                     value={limit.toString()}
                     onValueChange={(value) => setLimit(Number(value))}
                 >
-                    <SelectTrigger className="bg-white min-w-[80px] focus-visible:border-[#A5A5AB] focus-visible:ring-0">
+                    <SelectTrigger className="bg-white min-w-20 focus-visible:border-[#A5A5AB] focus-visible:ring-0">
                         <SelectValue placeholder="Select limit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -61,5 +74,5 @@ export default function page() {
                 </Select>
             </div>
         </div>
-    )
+    );
 }

@@ -51,3 +51,24 @@ export interface ConnectionRequestType {
   requested_at: string;
   responded_at: string | null;
 }
+
+
+export type EmpOpportunityType = {
+  id: string;
+  title: string;
+  location: string;
+  company: string;
+  type: "Full Time" | "Part Time" | "Internship" | "Contract";
+  mode: "Remote" | "On-site" | "Hybrid";
+  salaryRange: string;
+  postedTime: string;
+}
+
+
+export type USAMapType = {
+  id: number;
+  name: string;
+  code: string;
+  slug: string;
+  total_resources: number;
+};
