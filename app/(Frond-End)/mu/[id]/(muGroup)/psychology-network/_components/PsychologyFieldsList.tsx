@@ -81,7 +81,7 @@ export const PsychologyFieldsList = ({
       </div>
 
       {/* Pagination - Always show with 3 pages */}
-      <div className="flex justify-end">
+      <div className="hidden">
         <PsychologyPagination
           currentPage={currentPage}
           totalPages={DEMO_TOTAL_PAGES}

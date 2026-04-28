@@ -6,9 +6,34 @@ import { useState } from "react";
 import { PartnerCard } from "./PartnerCard";
 import { PaginationDots } from "./PaginationDots";
 import { partnersData } from "../_mock/partnersData";
+import { BiotechnologyIcon, PsychopharmacologyIcon, PublicationsIcon } from "@/public/svgIcons/Icons";
+import { useParams, usePathname } from "next/navigation";
 
 export const PartnersSidebar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+
+  const params = useParams();
+  const pathname = usePathname();
+  const muId = params.id as string;
+
+  const navItems = [
+    {
+      href: `/mu/${muId}/neuroscience-network/industry/biotechnology`,
+      label: "Biotechnology",
+    },
+    {
+      href: `/mu/${muId}/neuroscience-network/industry/psychopharmacology`,
+      label: "Psychopharmacology",
+    },
+    {
+      href: `/mu/${muId}/neuroscience-network/industry/publications`,
+      label: "Publications",
+    },
+  ];
+
+  const currentPage = navItems.find((item) => pathname === item.href);
+
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
@@ -26,7 +51,7 @@ export const PartnersSidebar = () => {
           Mind Unite Partners
         </h3>
         <p className="font-['Segoe_UI'] text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
-          Leading Biotech companies advancing brain health research and
+          Leading {currentPage?.label} companies advancing brain health research and
           treatment.
         </p>
       </div>
