@@ -1,9 +1,9 @@
 "use client";
 
-import { buildSourceBreadcrumbs } from "@/lib/source-breadcrumb";
+import {buildSourceBreadcrumbs} from "../../../../../../../lib/source-breadcrumb";
 import { redirect, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BrainIcon, UndergradCapIcon, HospitalIcon, JobSearchIcon } from "@/public/svgIcons/Icons";
+import { BrainIcon, UndergradCapIcon, HospitalIcon, JobSearchIcon } from "../../../../../../../public/svgIcons/Icons";
 import Link from "next/link";
 import { IoMenu } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";

@@ -1,101 +1,48 @@
 "use client";
 
-import { CircleHelp } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Search({ placeHolder }: { placeHolder?: string }) {
   const [search, setSearch] = useState<string>("");
-  const [product, setProduct] = useState<any>({ results: [] });
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const pathName = usePathname();
+  const pathname = usePathname();
 
-  // Fetch products once when the component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Demo data
-        const demoProducts = {
-          data: {
-            results: [
-              {
-                product: {
-                  name: "Maid Service Package A",
-                  category: { slug: "maid-services" },
-                },
-              },
-              {
-                product: {
-                  name: "Maid Service Package B",
-                  category: { slug: "maid-services" },
-                },
-              },
-              {
-                product: {
-                  name: "Cleaning Services",
-                  category: { slug: "cleaning" },
-                },
-              },
-              {
-                product: {
-                  name: "Household Management",
-                  category: { slug: "household" },
-                },
-              },
-              {
-                product: {
-                  name: "Care Services",
-                  category: { slug: "care-services" },
-                },
-              },
-            ],
-          },
-        };
-        setProduct(demoProducts?.data || { results: [] });
-      } catch (error) {
-        console.error("Failed to fetch product info:", error);
-      }
-    };
+    if (typeof window === "undefined") return;
 
-    fetchData();
+    const urlValue =
+      new URLSearchParams(window.location.search).get("search") || "";
+    setSearch(urlValue);
   }, []);
 
-  // Filter products when `search` or `product.results` changes
   useEffect(() => {
-    if (search.trim() !== "" && product.results.length > 0) {
-      setFilteredProducts(
-        product?.results?.filter((item: any) =>
-          item?.product?.name?.toLowerCase().includes(search.toLowerCase()),
-        ) || [],
-      );
-    } else {
-      setFilteredProducts([]);
-    }
-  }, [search, product.results]);
+    if (typeof window === "undefined") return;
+
+    const handler = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (search.trim()) {
+        params.set("search", search.trim());
+      } else {
+        params.delete("search");
+      }
+
+      const nextQuery = params.toString();
+      const currentQuery = window.location.search.replace(/^\?/, "");
+
+      if (nextQuery === currentQuery) return;
+
+      router.replace(`${pathname}${nextQuery ? `?${nextQuery}` : ""}`, {
+        scroll: false,
+      });
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [search, pathname, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-  };
-
-  const handleSearch = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("product", search);
-
-    router.push(`/products?${params.toString()}`);
-
-    // Clear the input field after navigating
-    setSearch("");
-  };
-  const handleProductNameSearch = (path: string, name: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("product", name);
-    router.push(`/category/${path}?${params.toString()}`);
-
-    // Clear the input field after navigating
-    setSearch("");
   };
 
   return (
@@ -108,10 +55,7 @@ export default function Search({ placeHolder }: { placeHolder?: string }) {
         className="w-full text-sm  bg-whiteColor border border-gray2Color rounded-full py-2 px-4 pl-8 focus:outline-none focus:border-dark-500"
         placeholder={placeHolder || "Search Network"}
       />
-      <button
-        onClick={handleSearch}
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-2xl"
-      >
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-2xl">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -124,34 +68,7 @@ export default function Search({ placeHolder }: { placeHolder?: string }) {
             fill="#777980"
           />
         </svg>
-      </button>
-
-      {/* Display the filtered product list */}
-      {search !== "" && (
-        <div className="mt-4 bg-white shadow-md rounded-lg px-3 py-6 absolute w-full">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((item: any, index: number) => (
-              <button
-                key={index}
-                onClick={() =>
-                  handleProductNameSearch(
-                    item.product.category.slug,
-                    item.product.name,
-                  )
-                }
-                className="block w-full text-left p-2 text-blackColor text-base font-semibold rounded-md"
-              >
-                {item.product.name}
-              </button>
-            ))
-          ) : (
-            <p className="text-textColor p-2 flex justify-center font-semibold items-center gap-3">
-              <CircleHelp className="text-primaryColor" size={40} /> No matching
-              products found.
-            </p>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   );
 }
