@@ -1,4 +1,4 @@
-import { ConnectionRequest } from "@/lib/type";
+import { ConnectionRequestType } from "@/lib/type";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
@@ -7,7 +7,7 @@ function ConnectionRequestCard({
   item,
   allReadyFriends,
 }: {
-  item: ConnectionRequest;
+  item: ConnectionRequestType;
   allReadyFriends?: string;
 }) {
   const handleConnectionAction = (id: number, type: string) => {

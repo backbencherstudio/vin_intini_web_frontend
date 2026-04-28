@@ -1,30 +1,28 @@
-import { JSX } from "react";
-
 export type Testimonial = {
-    id: string;
-    review: string;
-    rating: number;
-    imgUrl: string;
-    reviewer: {
-        name: string;
-        occupation: string;
-        location: string;
-        avatarUrl: string;
-    }
-}
+  id: string;
+  review: string;
+  rating: number;
+  imgUrl: string;
+  reviewer: {
+    name: string;
+    occupation: string;
+    location: string;
+    avatarUrl: string;
+  };
+};
 
 export type OurImpactType = {
-    id: string;
-    title: string;
-    description: string;
-    Icon: any;
-    value: string;
-    uniqueKey: string;
-    bgColor: string;
-    IconBgColor: string;
-}
+  id: string;
+  title: string;
+  description: string;
+  Icon: any;
+  value: string;
+  uniqueKey: string;
+  bgColor: string;
+  IconBgColor: string;
+};
 
-export interface UserProfile {
+export interface UserProfileType {
   id: number;
   name: string;
   first_name: string;
@@ -36,16 +34,16 @@ export interface UserProfile {
   cover_image_url: string | null;
 }
 
-export interface ConnectionRequest {
+export interface ConnectionRequestType {
   id: number;
-  status: "pending" | "accepted" | "ignored" | "declined"; 
+  status: "pending" | "accepted" | "ignored" | "declined";
   status_label: string;
   is_incoming: boolean;
   is_outgoing: boolean;
   can_accept: boolean;
   can_ignore: boolean;
-  connected_since: string | null; 
-  user: UserProfile;
+  connected_since: string | null;
+  user: UserProfileType;
   mutual_connections_count: number;
   mutual_connections: any[];
   message: string;

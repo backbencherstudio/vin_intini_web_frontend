@@ -11,9 +11,13 @@ function ReduxProvider({ children }: { children: React.ReactNode }) {
     <div>
       <Toaster />
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          {children}
-        </PersistGate>
+        {persistor ? (
+          <PersistGate loading={null} persistor={persistor}>
+            {children}
+          </PersistGate>
+        ) : (
+          children
+        )}
       </Provider>
     </div>
   );

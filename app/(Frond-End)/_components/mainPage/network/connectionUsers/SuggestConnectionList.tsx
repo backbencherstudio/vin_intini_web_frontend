@@ -1,19 +1,16 @@
 "use client";
 import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
-import { suggestedProfiles } from "@/public/demoData/DemoData";
-import { useEffect, useState } from "react";
+import Error from "@/components/reusable/Error";
+import { useGetMyConnectionSuggestionsQuery } from "@/feature/slice/connect/connectSlice";
 import ConnectionUserCard from "./ConnectionUserCard";
+import { ConnectionRequestType } from "@/lib/type";
 
 function SuggestConnectionList() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading, isError } = useGetMyConnectionSuggestionsQuery("");
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-
-    return () => clearTimeout(timeout);
-  }, []);
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <div>
@@ -24,7 +21,7 @@ function SuggestConnectionList() {
                 key={`suggested-profile-skeleton-${index}`}
               />
             ))
-          : suggestedProfiles.map((profile) => (
+          : data?.data?.map((profile :ConnectionRequestType) => (
               <ConnectionUserCard profile={profile} key={profile.id} />
             ))}
       </div>
