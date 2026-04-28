@@ -66,7 +66,7 @@ export const NeuroscienceFieldsList = ({
   return (
     <div className="flex w-full flex-col gap-3">
       {/* Fields List */}
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col gap-4 pb-20">
         {paginatedFields.length > 0 ? (
           paginatedFields.map((field) => (
             <NeuroscienceFieldItem key={field.id} field={field} />
@@ -81,7 +81,7 @@ export const NeuroscienceFieldsList = ({
       </div>
 
       {/* Pagination - Always show with 3 pages */}
-      <div className="flex justify-end">
+      <div className="hidden flex justify-end">
         <NeurosciencePagination
           currentPage={currentPage}
           totalPages={DEMO_TOTAL_PAGES}

@@ -11,7 +11,7 @@ interface PublicationCardProps {
 
 export const PublicationCard = ({ publication }: PublicationCardProps) => {
   return (
-    <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-[#DFE1E7] p-3 hover:bg-[#F6F8FA]">
+    <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-[#DFE1E7] p-2 hover:bg-[#F6F8FA]">
       {/* Journal and Tag Row */}
       <div className="flex w-full items-center justify-between">
         <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] group-hover:text-[#04A1B7]">

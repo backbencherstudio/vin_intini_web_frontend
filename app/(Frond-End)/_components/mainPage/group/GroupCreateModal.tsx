@@ -126,7 +126,7 @@ export default function CreateGroupForm() {
     <div className="max-h-[90vh] overflow-y-auto pt-10 ">
       <form onSubmit={handleSubmit(onSubmit)} className="  ">
         {/* Cover Photo & Logo Section */}
-        <div className="relative h-40 md:h-48 w-full bg-gradient-to-r from-cyan-100 to-blue-200">
+        <div className="relative h-40 md:h-48 w-full bg-linear-to-r from-cyan-100 to-blue-200">
           {coverPreview && (
             <Image
               src={coverPreview}

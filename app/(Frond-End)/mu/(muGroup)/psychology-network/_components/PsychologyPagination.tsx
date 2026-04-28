@@ -39,7 +39,7 @@ export const PsychologyPagination = ({
   };
 
   return (
-    <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-1">
+    <div className="hidden flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-1">
       {/* Pagination Controls */}
       <div className="flex items-center gap-1 py-1 pl-0 pr-2">
         {/* Previous Button */}

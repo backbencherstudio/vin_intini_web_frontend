@@ -37,7 +37,7 @@ export const PublicationsList = ({ publications }: PublicationsListProps) => {
 
   return (
     <div className="flex w-full flex-col gap-10">
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col pb-20">
         {paginatedPublications.length > 0 ? (
           paginatedPublications.map((publication) => (
             <PublicationCard key={publication.id} publication={publication} />
@@ -51,7 +51,7 @@ export const PublicationsList = ({ publications }: PublicationsListProps) => {
         )}
       </div>
 
-      <div className="flex justify-end pb-10">
+      {/* <div className="flex justify-end pb-10">
         <PublicationsPagination
           currentPage={currentPage}
           totalPages={DEMO_TOTAL_PAGES}
@@ -59,7 +59,7 @@ export const PublicationsList = ({ publications }: PublicationsListProps) => {
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

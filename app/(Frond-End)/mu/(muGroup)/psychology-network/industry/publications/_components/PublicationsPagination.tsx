@@ -39,7 +39,7 @@ export const PublicationsPagination = ({
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="hidden items-center gap-1">
       <div className="flex items-center gap-1 py-1 pl-0 pr-2">
         <button
           onClick={handlePrevious}
@@ -58,8 +58,8 @@ export const PublicationsPagination = ({
               key={page}
               onClick={() => onPageChange(page)}
               className={`flex h-8 w-8 flex-col items-center justify-center rounded px-1 ${currentPage === page
-                  ? "bg-[#A5A5AB] text-white"
-                  : "text-[#1D1F2C] hover:bg-[#A5A5AB] hover:text-white"
+                ? "bg-[#A5A5AB] text-white"
+                : "text-[#1D1F2C] hover:bg-[#A5A5AB] hover:text-white"
                 }`}
             >
               {page}

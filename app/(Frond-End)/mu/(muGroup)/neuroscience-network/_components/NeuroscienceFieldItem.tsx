@@ -17,7 +17,7 @@ export const NeuroscienceFieldItem = ({
     <>
       {/* Desktop Layout - Always expanded */}
       <div className="hidden w-full flex-col items-start gap-3 self-stretch border-b border-[#DFE1E7] p-3 hover:bg-[#F6F8FA] md:flex">
-        <h3 className="flex-1 text-[#04A1B7] font-['Segoe_UI'] text-2xl font-semibold leading-[130%] tracking-[0.12px] underline decoration-solid">
+        <h3 className="flex-1 text-[#04A1B7] font-['Segoe_UI'] text-2xl font-semibold leading-[130%] tracking-[0.12px] decoration-solid">
           {field.category}
         </h3>
         <ul className="flex flex-1 list-disc flex-col gap-2 pl-6">
@@ -42,9 +42,8 @@ export const NeuroscienceFieldItem = ({
             {field.category}
           </h3>
           <ChevronDown
-            className={`h-5 w-5 text-[#04A1B7] transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`h-5 w-5 text-[#04A1B7] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+              }`}
           />
         </button>
 

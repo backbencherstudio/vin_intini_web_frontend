@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 export default function FrontEndLayout({
   children,
 }: {
@@ -7,7 +9,9 @@ export default function FrontEndLayout({
     <div className="h-full">
       <div className="h-full w-full grid">
         <div className="">
-          <div className="col-span-8 h-full">{children}</div>
+          <div className="col-span-8 h-full">
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          </div>
         </div>
       </div>
     </div>
