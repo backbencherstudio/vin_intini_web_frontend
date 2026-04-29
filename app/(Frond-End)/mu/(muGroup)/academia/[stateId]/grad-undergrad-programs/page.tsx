@@ -20,8 +20,9 @@ import TableLoading from "./_components/TableLoading";
 export default function page() {
     const [selectedDegree, setSelectedDegree] = useState<string>("all");
     const [limit, setLimit] = useState<number>(10);
+    const [page, setPage] = useState<number>(1);
     const params = useParams();
-    const { data, isLoading, error } = useGetUndergradGradProgramsQuery(params.stateId);
+    const { data, isLoading, error } = useGetUndergradGradProgramsQuery({id: params.stateId, limit, page});
 
     if(isLoading){
         return(
@@ -49,11 +50,11 @@ export default function page() {
             <GradProgramsTable data={data?.data || []} />
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
-                    page={1}
+                    page={page}
                     pageSize={limit}
-                    total={10}
-                    totalPages={1}
-                    onPageChange={(page) => console.log("Page changed to:", page)}
+                    total={data?.total || 10}
+                    totalPages={data?.total_page || 1}
+                    onPageChange={(page) => setPage(page)}
                 />
                 <Select
                     value={limit.toString()}

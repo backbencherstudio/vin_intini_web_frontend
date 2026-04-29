@@ -1,13 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AcademiHeader from "../_components/AcademiHeader";
 import EmploymentCard from "./_components/EmploymentCard";
 import { opportunities, moreOpportunities } from "@/public/demoData/DemoData";
 import Pagination from "@/components/reusable/Pagination";
+import EmploymentLoading from "./_components/EmploymentLoading";
 
 
 export default function page() {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }
+            , 2000);
+        return () => clearTimeout(timer);
+    }, [])
+
+    if (isLoading) {
+        return (
+            <EmploymentLoading />
+        )
+    }
 
 
     return (
@@ -26,7 +41,7 @@ export default function page() {
                         </div>
                         <div className="space-y-4">
                             {opportunities.map((opportunity, index) => (
-                                <EmploymentCard key={opportunity.id} data={opportunity}/>
+                                <EmploymentCard key={opportunity.id} data={opportunity} />
                             ))}
                         </div>
                     </div>
@@ -37,7 +52,7 @@ export default function page() {
                         </div>
                         <div className="space-y-4">
                             {moreOpportunities.map((opportunity, index) => (
-                                <EmploymentCard key={opportunity.id} data={opportunity}/>
+                                <EmploymentCard key={opportunity.id} data={opportunity} />
                             ))}
                         </div>
                     </div>
