@@ -1,10 +1,9 @@
-import GroupList from '@/app/(Frond-End)/_components/mainPage/group/GroupList';
+import CreateMyGroupList from "@/app/(Frond-End)/_components/mainPage/group/CreateMyGroupList";
 
 function page() {
   return (
     <div>
-      <GroupList />
-     
+      <CreateMyGroupList />
     </div>
   );
 }

@@ -1,13 +1,11 @@
-import ConnectionRequestList from "@/app/(Frond-End)/_components/mainPage/network/connectionRequests/ConnectionRequestList";
+import FollowingList from "@/app/(Frond-End)/_components/mainPage/follower/FollowingList";
 
 function page() {
   return (
     <div>
-      <p className="text-sm  text-grayColor1 mt-1">
-        1000 people are following you
-      </p>
-      <div className="mt-6">
-        <ConnectionRequestList  />
+     
+      <div className="">
+        <FollowingList />
       </div>
     </div>
   );

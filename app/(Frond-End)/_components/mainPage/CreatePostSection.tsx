@@ -29,7 +29,7 @@ function CreatePostSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src="/profile.png"
+            src="/empty_user.jpg"
             alt="User avatar"
             width={32}
             height={32}

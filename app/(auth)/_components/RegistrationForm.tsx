@@ -41,7 +41,9 @@ function RegistrationForm() {
       route.push("/sign-up/verify-email");
     } catch (error) {
       console.log("Registration error:", error);
-      toast.error(error?.data?.message || "Registration failed. Please try again.");
+      toast.error(
+        error?.data?.message || "Registration failed. Please try again.",
+      );
     }
   };
 
@@ -95,14 +97,14 @@ function RegistrationForm() {
                 type="button"
                 onClick={togglePasswordVisibility}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 cursor-pointer -translate-y-1/2 text-[#4A4C56] hover:text-primaryColor transition-colors"
+                className="absolute right-3 top-1/2 cursor-pointer active:scale-95 -translate-y-1/2 text-[#4A4C56] hover:text-primaryColor transition-colors"
               >
                 {showPassword ? <FiEyeOff size={18} /> : <OpenEyeIcon />}
               </button>
             </div>
           </div>
 
-          <div className="text-center mx-auto text-sm max-w-[366px] text-descriptionColor pt-1">
+          <div className="text-center mx-auto text-sm max-w-91.5 text-descriptionColor pt-1">
             By clicking <span className="font-medium">Join Now</span>, you agree
             to the <span className="font-medium">MindUnite</span>{" "}
             <Link href={"#"} className="text-primaryColor">
@@ -121,7 +123,7 @@ function RegistrationForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white font-medium hover:opacity-90 transition-opacity"
+            className="w-full h-12 active:scale-95 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white font-medium hover:opacity-90 transition-opacity"
           >
             {isLoading ? "Connecting..." : "Sign in"}
           </button>

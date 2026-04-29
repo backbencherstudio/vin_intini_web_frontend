@@ -1,6 +1,6 @@
 "use client";
+import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
-import logoPreview from "@/public/profile.png";
 import { EditeIcon, GroupUserIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";

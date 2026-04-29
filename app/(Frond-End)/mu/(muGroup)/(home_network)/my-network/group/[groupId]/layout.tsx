@@ -2,7 +2,15 @@ import GroupMemberList from "@/app/(Frond-End)/_components/mainPage/group/GroupM
 import GroupSidbar from "@/app/(Frond-End)/_components/mainPage/GroupSidbar";
 import React from "react";
 
-function GroupLayout({ children }: { children: React.ReactNode }) {
+async function GroupLayout({
+  params,
+  children,
+}: {
+  params: Promise<{ groupId: string }>;
+  children: React.ReactNode;
+}) {
+  const { groupId } = await params;
+
   return (
     <div>
       <div className="md:grid grid-cols-12 gap-6">
@@ -10,7 +18,7 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
           <div>{children}</div>
         </div>
         <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 lg:pl-6 h-full">
-          <GroupMemberList />
+          <GroupMemberList groupId={groupId} />
           <GroupSidbar />
         </div>
       </div>

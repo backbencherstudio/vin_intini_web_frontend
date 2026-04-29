@@ -6,18 +6,18 @@ function GroupSkleton() {
       <div className="flex items-center justify-between p-4 border-b border-gray-100">
         <div className="flex items-center space-x-4">
           <div className="grid grid-cols-2 gap-1 shrink-0">
-            <Skeleton className="h-16 w-16 rounded-sm" />
+            <Skeleton className="h-16 w-16 rounded-sm bg-gray-200" />
           </div>
 
           <div className="space-y-2">
-            <Skeleton className="h-5 w-45 md:w-62.5" />
+            <Skeleton className="h-5 w-45 md:w-62.5 bg-gray-200"  />
             <div className="flex items-center space-x-2">
-              <Skeleton className="h-3 w-3 rounded-sm" />
-              <Skeleton className="h-3 w-25" />
+                <Skeleton className="h-3 w-3 rounded-sm bg-gray-200" />
+                <Skeleton className="h-3 w-25 bg-gray-200" />
             </div>
           </div>
         </div>
-        <Skeleton className="h-9 w-17.5 rounded-full" />
+        <Skeleton className="h-9 w-17.5 rounded-full bg-gray-200" />
       </div>
     </div>
   );

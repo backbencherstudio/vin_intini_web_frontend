@@ -88,3 +88,39 @@ export type HospitalType = {
     created_at: string;
     updated_at: string;
 }
+
+
+export interface GroupMembershipPivotType {
+  user_id: number;
+  group_id: number;
+  role: "admin" | "member" | "moderator"; 
+  created_at: string;
+  updated_at: string;
+}
+
+
+export interface GroupDetailType {
+  id: number;
+  name: string;
+  description: string;
+  logo: string;
+  cover_photo: string;
+    total_member: number;
+  industry: string[];
+  location: string;
+  rules: string;
+  creator_id: number;
+  type: "public" | "private";
+  discoverability: "listed" | "unlisted";
+  allow_member_invites: boolean;
+  require_post_approval: boolean;
+  created_at: string;
+  updated_at: string;
+  members_count: number;
+  logo_url: string;
+  cover_photo_url: string;
+  
+  // Relations
+  creator: UserProfileType;
+  pivot?: GroupMembershipPivotType; 
+}

@@ -1,5 +1,4 @@
 "use client";
-import RootDialog from "@/components/reusable/RootDialog";
 import Search from "@/components/reusable/Search";
 import { useState } from "react";
 import CreateGroupForm from "./GroupCreateModal";
@@ -13,7 +12,7 @@ function GroupHeader() {
           Groups{" "}
         </h2>
         <div className="flex  items-center gap-3">
-          <div className="relative w-[300px] hidden md:block  max-w-full">
+          <div className="relative w-75 hidden md:block  max-w-full">
             <Search placeHolder="Search Group" />
           </div>
           <button
@@ -26,15 +25,11 @@ function GroupHeader() {
           </button>
         </div>
 
-        <div className="relative w-[300px] mx-auto md:hidden  max-w-full">
+        <div className="relative w-75 mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>
-      {isOpen && (
-        <RootDialog open={isOpen} setOpen={setIsOpen}>
-          <CreateGroupForm />
-        </RootDialog>
-      )}
+      {isOpen && <CreateGroupForm open={isOpen} setOpen={setIsOpen} />}
     </div>
   );
 }

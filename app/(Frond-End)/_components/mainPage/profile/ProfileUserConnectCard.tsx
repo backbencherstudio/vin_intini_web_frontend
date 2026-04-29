@@ -11,7 +11,7 @@ function ProfileUserConnectCard({ profile }: any) {
         <div className="flex items-start gap-3">
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
-              src="/profile.png"
+              src="/empty_user.jpg"
               alt={profile.name}
               width={148}
               height={148}
@@ -28,7 +28,7 @@ function ProfileUserConnectCard({ profile }: any) {
             </p>
             <div className="mt-2 flex items-center gap-1 text-[11px] text-descriptionColor">
               <Image
-                src="/profile.png"
+                src="/empty_user.jpg"
                 alt="mutual"
                 width={24}
                 height={24}
