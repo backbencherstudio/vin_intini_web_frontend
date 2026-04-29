@@ -2,7 +2,7 @@
 import { GroupCardSkeleton } from "@/components/reusable/All Skleton/GroupCardSkeleton";
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
-import { GroupType } from "@/lib/type";
+import { GroupDetailType } from "@/lib/type";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { ImageIcon } from "lucide-react";
@@ -22,7 +22,7 @@ function GroupSidbar() {
           Array.from({ length: 4 }).map((_, index) => (
             <GroupCardSkeleton key={index} />
           ))}
-        {data?.data.map((group: GroupType) => (
+        {data?.data.map((group: GroupDetailType) => (
           <div
             key={group.id}
             className="border-t border-borderColor py-4 first:pt-5"
