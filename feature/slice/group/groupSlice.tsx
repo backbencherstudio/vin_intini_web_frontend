@@ -78,7 +78,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
     }),
     groupInviteUser: builder.mutation({
       query: ({ groupId, payload }) => ({
-        url: `/group-invite-users/${groupId}`,
+        url: `/group-invite-user/${groupId}`,
         method: "POST",
         body: payload,
       }),

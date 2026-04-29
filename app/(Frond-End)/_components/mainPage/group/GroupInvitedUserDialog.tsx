@@ -34,7 +34,7 @@ function GroupInvitedUserDialog({
   setOpen: (value: boolean) => void;
   groupId: string;
 }) {
-  const [searchTerm, setSearchTerm] = useState("");
+
   const { data, isLoading, isError } = useGetInviteUsersGroupQuery({
     id: groupId,
   });

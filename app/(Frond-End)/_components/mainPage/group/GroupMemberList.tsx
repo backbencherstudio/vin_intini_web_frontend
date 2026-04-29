@@ -98,7 +98,7 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
                 {groupData?.creator?.first_name || "Unknown Creator"}
               </h4>
               <p className="text-sm text-descriptionColor line-clamp-2">
-                {groupData?.creator?.email || "No headline available."}
+                {groupData?.creator?.title || "No headline available."}
               </p>
             </div>
           </div>
