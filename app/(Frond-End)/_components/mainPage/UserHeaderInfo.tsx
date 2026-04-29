@@ -35,16 +35,16 @@ function UserHeaderInfo() {
 
           <div className="  relative sm:ml-0">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
-                    <div className=" w-7 h-7 lg:w-12 lg:h-12 rounded-md overflow-hidden">
+                    <div className=" w-7 h-7 lg:w-12 lg:h-12 rounded-full overflow-hidden">
                       <Image
-                        src={"/profile.png"}
+                        src={"/empty_user.jpg"}
                         alt="Admin Avatar"
                         width={40}
                         height={40}
-                        className="rounded-md w-full h-full"
+                        className="rounded-full w-full h-full"
                       />
                     </div>
                   </div>
@@ -60,7 +60,7 @@ function UserHeaderInfo() {
                   <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md overflow-hidden mb-2">
                       <Image
-                        src={"/profile.png"}
+                        src={"/empty_user.jpg"}
                         alt="Admin Avatar"
                         width={40}
                         height={40}

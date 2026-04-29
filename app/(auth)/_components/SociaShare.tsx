@@ -23,16 +23,16 @@ function SocialShare() {
       <div className="text-blackColor flex flex-col gap-3 text-sm  ">
         <button
           onClick={fetchGoogleLogin}
-          className="flex justify-center cursor-pointer font-semibold items-center gap-2  w-full border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full"
+          className="flex justify-center active:scale-95 cursor-pointer font-semibold items-center gap-2  w-full border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full"
         >
           <GoogleIcon />
           Sign in with Google
         </button>
-        <button className="flex justify-center text-[#1877F2] cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
+        <button className="flex active:scale-95 justify-center text-[#1877F2] cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
           <FacebookIcon />
           Sign in with Facebook
         </button>
-        <button className="flex justify-center cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
+        <button className="flex active:scale-95 justify-center cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
           <AppleIcon />
           Sign in with Apple
         </button>

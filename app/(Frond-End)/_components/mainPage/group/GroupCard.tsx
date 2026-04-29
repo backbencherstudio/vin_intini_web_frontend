@@ -32,7 +32,7 @@ function GroupCard({ group }: { group: GroupDetailType }) {
             <div className="mt-1.5 flex items-center gap-2 text-grayColor1">
               <GroupUserIcon />
               <span className="text-[13px] leading-5">
-                {group?.total_member || group?.total_member || 0} Group members
+                {group?.members_count || group?.total_member || 0} Group members
               </span>
             </div>
           </div>

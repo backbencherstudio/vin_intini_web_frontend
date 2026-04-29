@@ -42,7 +42,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           <div>
             <div className="-mt-10 h-18 w-18 overflow-hidden mx-auto rounded-full border-2 border-white bg-gray-100">
               <Image
-                src={user?.profile_image_url || "/profile.png"}
+                src={user?.profile_image_url || "/empty_user.jpg"}
                 alt={user?.name}
                 width={150}
                 height={150}
@@ -63,7 +63,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           {mutual_connections_count > 0 && (
             <div className="mt-4 flex items-center gap-1 text-[11px] text-descriptionColor">
               <Image
-                src="/profile.png"
+                src="/empty_user.jpg"
                 alt="mutual"
                 width={24}
                 height={24}

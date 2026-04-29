@@ -31,7 +31,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["group"],
     }),
-    getViewGroup: builder.query({
+    getViewByIdGroup: builder.query({
       query: ({ id }) => ({
         url: `/group-show/${id}`,
         method: "GET",
@@ -101,7 +101,7 @@ export const {
     useGetMyJoinedGroupsQuery,
     useGetMyGroupsQuery,
     useGetSuggestionGroupsQuery,
-    useGetViewGroupQuery,
+    useGetViewByIdGroupQuery,
     useJoinGroupMutation,
     useLeaveGroupMutation,
     useCreateGroupMutation,
