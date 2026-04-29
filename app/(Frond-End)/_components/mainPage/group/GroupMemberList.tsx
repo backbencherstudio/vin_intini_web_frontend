@@ -5,8 +5,11 @@ import { useGetViewByIdGroupQuery } from "@/feature/slice/group/groupSlice";
 import proImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import GroupInvitedUserDialog from "./GroupInvitedUserDialog";
 
 const GroupMemberList = ({ groupId }: { groupId: string }) => {
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { data, isLoading, isError } = useGetViewByIdGroupQuery({
     id: groupId,
   });
@@ -63,7 +66,11 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
         </div>
 
         {/* Action Button */}
-        <button className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-sm lg:text-base font-semibold text-white transition-all hover:bg-primaryColor active:scale-95">
+        <button
+          type="button"
+          onClick={() => setIsInviteOpen(true)}
+          className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-sm lg:text-base font-semibold text-white transition-all hover:bg-primaryColor active:scale-95"
+        >
           Invite a Connection
         </button>
       </div>
@@ -97,6 +104,11 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
           </div>
         </div>
       </div>
+      <GroupInvitedUserDialog
+        open={isInviteOpen}
+        setOpen={setIsInviteOpen}
+        groupId={groupId}
+      />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { use } from "react";
 import baseApiSlice from "../baseApi";
 
 const groupSlice = baseApiSlice.injectEndpoints({
@@ -38,6 +37,13 @@ const groupSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["group"],
     }),
+    getInviteUsersGroup: builder.query({
+      query: ({ id }) => ({
+        url: `/group-invite-users/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["group"],
+    }),
     joinGroup: builder.mutation({
       query: ({ groupId }) => ({
         url: `/group/join`,
@@ -70,6 +76,14 @@ const groupSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["group"],
     }),
+    groupInviteUser: builder.mutation({
+      query: ({ groupId, payload }) => ({
+        url: `/group-invite-users/${groupId}`,
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["group"],
+    }),
     groupLogoUpdate: builder.mutation({
       query: ({ groupId, payload }) => ({
         url: `/group-images/${groupId}`,
@@ -97,17 +111,18 @@ const groupSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
-    useGetMyCreatedGroupsQuery,
-    useGetMyJoinedGroupsQuery,
-    useGetMyGroupsQuery,
-    useGetSuggestionGroupsQuery,
-    useGetViewByIdGroupQuery,
-    useJoinGroupMutation,
-    useLeaveGroupMutation,
-    useCreateGroupMutation,
-    useGroupUpdateMutation,
-    useGroupLogoUpdateMutation,
-    useToggleGroupNotificationMutation,
-    useGroupBanUserMutation,
-    
-} = groupSlice
+  useGetMyCreatedGroupsQuery,
+  useGetMyJoinedGroupsQuery,
+  useGetMyGroupsQuery,
+  useGetSuggestionGroupsQuery,
+  useGetViewByIdGroupQuery,
+  useJoinGroupMutation,
+  useLeaveGroupMutation,
+  useCreateGroupMutation,
+  useGroupUpdateMutation,
+  useGroupLogoUpdateMutation,
+  useToggleGroupNotificationMutation,
+  useGroupBanUserMutation,
+  useGetInviteUsersGroupQuery,
+  useGroupInviteUserMutation,
+} = groupSlice;
