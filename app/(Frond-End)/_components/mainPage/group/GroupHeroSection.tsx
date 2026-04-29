@@ -121,7 +121,7 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
         className=" max-w-150!"
       >
         {isleaved ? (
-          <GroupLeaveDialog setIsNotify={setILeaved} />
+          <GroupLeaveDialog groupId={groupId} setIsNotify={setILeaved} />
         ) : (
           <GroupNotifySetting setIsNotify={setIsNotify} />
         )}
