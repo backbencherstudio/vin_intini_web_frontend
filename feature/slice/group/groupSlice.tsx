@@ -45,7 +45,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
       providesTags: ["group"],
     }),
     joinGroup: builder.mutation({
-      query: ({ groupId }) => ({
+      query: (groupId) => ({
         url: `/group/join`,
         method: "POST",
         body: groupId,

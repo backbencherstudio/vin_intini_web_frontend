@@ -1,15 +1,37 @@
 "use client";
 import { GroupCardSkeleton } from "@/components/reusable/All Skleton/GroupCardSkeleton";
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
+import Error from "@/components/reusable/Error";
+import {
+  useGetSuggestionGroupsQuery,
+  useJoinGroupMutation,
+} from "@/feature/slice/group/groupSlice";
 import { GroupDetailType } from "@/lib/type";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
+import { log } from "console";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
+import toast from "react-hot-toast";
+
 
 function GroupSidbar() {
   const { data, isLoading, isError } = useGetSuggestionGroupsQuery("");
+  const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
+  if (isError) {
+    return <Error />;
+  }
+  const handleJoinGroup = async (groupId: number) => {
+    try {
+   const response =   await joinGroup({ group_id: groupId }).unwrap();
+      toast.success( response.message || "Successfully joined the group!");
+    } catch (error) {
+      // Handle error (e.g., show an error message)
+      console.log(error);
+      toast.error(error?.data?.message || "Failed to join the group.");
+      
+    }
+  };
 
   return (
     <aside className="rounded-md ">
@@ -60,6 +82,8 @@ function GroupSidbar() {
               type="button"
               className={`py-0.5! px-4! border rounded-full!  ${!group.id ? "border-primaryColor! bg-primaryColor! text-whiteColor!" : "border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor! hover:text-primaryColor! hover:bg-primaryColor/10!"} mt-4!`}
               title={!group.id ? "Joined" : "Join"}
+              onClick={() => handleJoinGroup(group.id)}
+              disabled={isJoining}
             />
           </div>
         ))}
