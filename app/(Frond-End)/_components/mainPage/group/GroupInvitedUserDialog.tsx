@@ -34,16 +34,18 @@ function GroupInvitedUserDialog({
   setOpen: (value: boolean) => void;
   groupId: string;
 }) {
-
   const { data, isLoading, isError } = useGetInviteUsersGroupQuery({
     id: groupId,
   });
   const [groupInviteUser, { isLoading: isInviting }] =
     useGroupInviteUserMutation();
-
+  const [isInvitingGroupId, setIsInvitingGroupId] = useState<number | null>(
+    null,
+  );
   const inviteUsers: InviteUser[] = data?.data?.users || data?.data || [];
 
   const handleInvite = async (userId: number) => {
+    setIsInvitingGroupId(userId);
     try {
       const payload = { user_id: userId };
       const result = await groupInviteUser({ groupId, payload }).unwrap();
@@ -121,9 +123,9 @@ function GroupInvitedUserDialog({
 
                       <button
                         type="button"
-                        disabled={isInviting}
+                        disabled={isInviting && isInvitingGroupId === user.id}
                         onClick={() => handleInvite(user.id)}
-                        className="shrink-0 rounded-full border cursor-pointer disabled:bg-bgColor border-primaryColor px-5 py-2 text-sm font-semibold text-primaryColor transition-all hover:bg-primaryColor hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                        className="shrink-0 rounded-full disabled:border-borderColor border cursor-pointer disabled:bg-bgColor border-primaryColor px-5 py-2 text-sm font-semibold text-primaryColor transition-all hover:bg-primaryColor hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {isInviting
                           ? "Sending..."

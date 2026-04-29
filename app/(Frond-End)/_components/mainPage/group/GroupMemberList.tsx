@@ -59,9 +59,11 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
             </div>
 
             {/* Remaining Count Badge */}
+         {   data?.data?.mutual_members?.length > 5 && 
             <div className="z-10 -ml-3 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[12px] font-medium text-gray-600 shadow-sm">
               {data?.data?.mutual_members_count || 0}+
             </div>
+            }
           </div>
         </div>
 
@@ -95,7 +97,7 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
 
             <div className="flex-1">
               <h4 className="text-base md:text-lg font-semibold text-headerColor">
-                {groupData?.creator?.first_name || "Unknown Creator"}
+                {groupData?.creator?.first_name + " " + groupData?.creator?.last_name || "Unknown Creator"}
               </h4>
               <p className="text-sm text-descriptionColor line-clamp-2">
                 {groupData?.creator?.title || "No headline available."}

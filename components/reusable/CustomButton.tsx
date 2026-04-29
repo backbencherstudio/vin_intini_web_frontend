@@ -6,7 +6,7 @@ type ButtonProps = {
   disabled?: boolean;
   rightIcon?: any;
   loading?: boolean;
-  sendingMsg?: string;
+  sendingMsg?: any;
   type?: "button" | "submit" | "reset";
 };
 

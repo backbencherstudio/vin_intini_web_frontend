@@ -4,6 +4,7 @@ import { useGetViewByIdGroupQuery } from "@/feature/slice/group/groupSlice";
 import logoPreview from "@/public/images/company-logo-1.png";
 import coverPreview from "@/public/images/cover imager.png";
 import {
+  EditeIcon,
   GroupUserIcon,
   LogoutIcon,
   NotificationIcon,
@@ -11,6 +12,7 @@ import {
 
 import Error from "@/components/reusable/Error";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import Image from "next/image";
 import { useState } from "react";
 import GroupLeaveDialog from "./GroupLeaveDialog";
@@ -22,8 +24,10 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
   const { data, isLoading, isError } = useGetViewByIdGroupQuery({
     id: groupId,
   });
+  const { data: myData } = useGetUserProfileQuery("me");
   const groupData = data?.data?.group;
-  console.log(groupData, "dslkafksafdlk;");
+
+  const IsAdmin = groupData?.creator?.id === myData?.user?.id;
 
   if (isError) {
     return <Error />;
@@ -67,13 +71,23 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
             >
               <NotificationIcon />
             </button>
-            <button
-              aria-label="leave-open"
-              onClick={() => setILeaved(true)}
-              className="cursor-pointer"
-            >
-              <LogoutIcon />
-            </button>
+            {!IsAdmin ? (
+              <button
+                aria-label="leave-open"
+                onClick={() => setILeaved(true)}
+                className="cursor-pointer"
+              >
+                <LogoutIcon />
+              </button>
+            ) : (
+              <button
+                aria-label="leave-open"
+                onClick={() => setILeaved(true)}
+                className="cursor-pointer"
+              >
+                <EditeIcon />
+              </button>
+            )}
           </div>
         </div>
       </div>
