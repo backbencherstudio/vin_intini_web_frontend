@@ -54,3 +54,10 @@ export interface ConnectionRequestType {
   requested_at: string;
   responded_at: string | null;
 }
+
+export interface GroupType {
+  id: number;
+  name: string;
+  logo_url: string | null;
+  total_member: number;
+}
