@@ -72,3 +72,16 @@ export type USAMapType = {
   slug: string;
   total_resources: number;
 };
+
+export type InstitutionType = "university_hospital" | "state_institution" | "residency_program";
+
+export type HospitalType = {
+    id: number;
+    state_id: number;
+    name: string;
+    location: string;
+    type: InstitutionType;
+    university_id: number | null;
+    created_at: string;
+    updated_at: string;
+}

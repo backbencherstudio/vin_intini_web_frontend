@@ -42,7 +42,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         },
         {
             label: "Employment Opportunities",
-            href: `/mu/academia/${stateId}/employment-opportunities`,
+            href: `/mu/academia/${stateId}/employemnts`,
             Icon: JobSearchIcon,
             redirectKey: "employmentopportunities"
         }

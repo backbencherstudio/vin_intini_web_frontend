@@ -19,14 +19,15 @@ export default function StateDetails({ id }: PropType) {
     },[id])
 
     return (
-        <div className="p-6">
-            <Image
+        <div className="w-full h-full xl:pl-6 grid">
+            {/* <Image
                 src="/images/googlemap.png"
                 alt="Google Map"
                 width={800}
                 height={600}
                 className="w-full h-full rounded-2xl"
-            />
+            /> */}
+            <GoogleMap />
         </div>
     );
 }
