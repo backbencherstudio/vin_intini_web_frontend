@@ -4,7 +4,7 @@ import React from 'react';
 
 const MapSkeleton = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8FAFC] p-4">
+    <div className="flex flex-col items-center justify-center bg-[#F8FAFC] p-4 border">
       {/* Centered Title Bar Skeleton */}
       <div className="h-9 w-40 bg-gray-200 rounded-full mb-10 animate-pulse"></div>
 

@@ -20,7 +20,7 @@ export default function Navbar() {
           <Link href="/login" className="px-2 sm:px-4 py-0.5 sm:py-2 border border-[#07C3BB] rounded-lg sm:rounded-xl hover:rounded-md hover:bg-[#07C3BB] hover:text-white transition-all duration-300">
             Sign in
           </Link>
-          <Link href="/register" className="px-2 sm:px-4 py-0.5 sm:py-2 border border-[#07C3BB] bg-[#07C3BB] text-white rounded-lg sm:rounded-xl hover:rounded-md hover:bg-transparent hover:text-[#07C3BB] transition-all duration-300">
+          <Link href="/sign-up" className="px-2 sm:px-4 py-0.5 sm:py-2 border border-[#07C3BB] bg-[#07C3BB] text-white rounded-lg sm:rounded-xl hover:rounded-md hover:bg-transparent hover:text-[#07C3BB] transition-all duration-300">
             Join Now
           </Link>
         </div>
