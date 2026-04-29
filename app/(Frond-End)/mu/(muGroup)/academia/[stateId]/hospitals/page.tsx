@@ -70,9 +70,9 @@ export default function page() {
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-6">
-                {activeTab === "state_institution" && <StateInstitutionTable data={data.data}/>}
-                {activeTab === "university_hospital" && <HospitalTable data={data.data} />}
-                {activeTab === "va_facility" && <ResidencyTable data={data.data}/>}
+                {activeTab === "state_institution" && <StateInstitutionTable data={data?.data}/>}
+                {activeTab === "university_hospital" && <HospitalTable data={data?.data} />}
+                {activeTab === "va_facility" && <ResidencyTable data={data?.data}/>}
             </div>
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
