@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { USAMapType } from "@/lib/type";
 
 type MapPopupProps = {
     name: string;
@@ -80,11 +81,7 @@ const STATE_DATA = [
 type UsaMapProps = {
     redirect: string;
     className?: string;
-    data: {
-        id: string;
-        name: string;
-        value: number;
-    }[];
+    data: USAMapType[] | null;
 };
 
 export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
@@ -102,8 +99,8 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
     // Create a map for quick lookup
     const stateDataMap = useMemo(() => {
         const map = new Map();
-        data.forEach(state => {
-            map.set(state.id.toUpperCase(), state);
+        data?.forEach(state => {
+            map.set(state.code.toUpperCase(), state);
         });
         return map;
     }, [data]);
@@ -117,7 +114,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
     const getStateCount = (stateId: string): number => {
         // Get data from usaMapData instead of generating random
         const stateData = stateDataMap.get(stateId);
-        return stateData?.value ?? 0;
+        return stateData?.total_resources ?? 0;
     };
 
     const updatePopupPosition = (clientX: number, clientY: number) => {
@@ -178,7 +175,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
 
     const handleClick = (state: (typeof STATE_DATA)[0]) => {
         router.push(
-            `/mu/academia/${state.name}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.name}`
+            `/mu/academia/${state.id}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.id}:${state.name}`
         );
     };
 

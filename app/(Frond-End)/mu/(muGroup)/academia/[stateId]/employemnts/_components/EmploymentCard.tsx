@@ -1,4 +1,4 @@
-import { EmpOpportunityType } from "@/app/type";
+import { EmpOpportunityType } from "@/lib/type";
 
 type PropType = {
     data: EmpOpportunityType

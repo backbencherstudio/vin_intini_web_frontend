@@ -11,14 +11,14 @@ export const routes: Record<string, RouteConfig> = {
         href: "/mu/academia",
     },
     stateacademia: {
-        label: (stateName?: string) => {
+        label: (_id: string, stateName?: string) => {
             if (stateName) {
                 return `${stateName}`;
             }
             return "State Academia";
         },
         href: "/mu/state/",
-        buildHref: (stateName: string) => `/mu/academia/${stateName}`,
+        buildHref: (id: string, _stateName: string) => `/mu/academia/${id}`,
     },
     undergradgradprograms: {
         label: "Undergrad & Grad Programs",

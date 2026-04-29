@@ -2,9 +2,13 @@
 
 import DynamicTable from "@/components/reusable/DynamicTable";
 import { stateInstitutions } from "@/public/demoData/DemoData";
+import { HospitalType } from "@/lib/type";
 
+type PropType = {
+    data: HospitalType[]
+}
 
-export default function StateInstitutionTable() {
+export default function StateInstitutionTable({ data }: PropType) {
 
     const columns = [
         {
@@ -19,7 +23,7 @@ export default function StateInstitutionTable() {
         },
         {
             label: "State Institutions",
-            accessor: "stateInstitutionName",
+            accessor: "name",
             width: "300px",
             formatter: (accessor: string, row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
@@ -43,7 +47,7 @@ export default function StateInstitutionTable() {
         <div>
             <DynamicTable
                 columns={columns}
-                data={stateInstitutions}
+                data={data}
                 header={{
                     position: "justify-start",
                     padding: "8px 0px 8px 8px",

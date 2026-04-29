@@ -7,33 +7,8 @@ import { BrainIcon, UndergradCapIcon, HospitalIcon, JobSearchIcon } from "../../
 import Link from "next/link";
 import { IoMenu } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
+import { useParams } from "next/navigation";
 
-const navigationItems = [
-    {
-        label: "Undergrad & Grad Programs",
-        href: "/mu/academia/Texas/grad-undergrad-programs",
-        Icon: UndergradCapIcon,
-        redirectKey: "undergradgradprograms"
-    },
-    {
-        label: "Medical Residencies",
-        href: "/mu/academia/Texas/medical-residencies",
-        Icon: BrainIcon,
-        redirectKey: "medicalresidencies"
-    },
-    {
-        label: "Hospitals",
-        href: "/mu/academia/Texas/hospitals",
-        Icon: HospitalIcon,
-        redirectKey: "hospitals"
-    },
-    {
-        label: "Employment Opportunities",
-        href: "/mu/academia/Texas/employemnts",
-        Icon: JobSearchIcon,
-        redirectKey: "employmentopportunities"
-    }
-]
 
 type SidebarProps = {
     isOpen: boolean;
@@ -44,7 +19,34 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     const searchParams = useSearchParams();
     const redirectUrl = searchParams.get("redirect") || "";
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const { stateId } = useParams();
 
+    const navigationItems = [
+        {
+            label: "Undergrad & Grad Programs",
+            href: `/mu/academia/${stateId}/grad-undergrad-programs`,
+            Icon: UndergradCapIcon,
+            redirectKey: "undergradgradprograms"
+        },
+        {
+            label: "Medical Residencies",
+            href: `/mu/academia/${stateId}/medical-residencies`,
+            Icon: BrainIcon,
+            redirectKey: "medicalresidencies"
+        },
+        {
+            label: "Hospitals",
+            href: `/mu/academia/${stateId}/hospitals`,
+            Icon: HospitalIcon,
+            redirectKey: "hospitals"
+        },
+        {
+            label: "Employment Opportunities",
+            href: `/mu/academia/${stateId}/employemnts`,
+            Icon: JobSearchIcon,
+            redirectKey: "employmentopportunities"
+        }
+    ]
 
     const [currentState, setCurrentState] = useState<string>("");
 
@@ -67,7 +69,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     }, [redirectUrl]);
 
     return (
-        <div className={`${isOpen ? "w-full translate-x-0" : "w-fit -translate-x-82.5 xl:translate-x-0"} h-full grid absolute z-999 bg-[#0003] xl:bg-transparent backdrop-blur-xs xl:relative transition-all duration-300`} onClick={() => setIsOpen(false)}>
+        <div className={`${isOpen ? "w-full translate-x-0" : "w-fit -translate-x-92.5 xl:translate-x-0"} h-full grid absolute z-999 bg-[#0003] xl:bg-transparent backdrop-blur-xs xl:relative transition-all duration-300`} onClick={() => setIsOpen(false)}>
             <div className={`bg-[#F8FAFB] h-full grid grid-rows-[auto_1fr] w-70 sm:w-77.5 border-r border-[#D2D2D5] xl:rounded-l-2xl min-h-0`} onClick={(e) => e.stopPropagation()}>
                 <div className="relative border-b border-[#D2D2D5]">
                     <h2 className="p-4 sm:p-6 text-headerColor 
@@ -75,7 +77,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                  font-semibold leading-snug sm:leading-[130%]">
                         {currentState || "Unknown State"}
                     </h2>
-                    <button type="button" className="absolute top-0 right-0 p-1.5 cursor-pointer hover:bg-gray-200 rounded-full transition-colors duration-300" onClick={() => setIsOpen(false)}>
+                    <button type="button" className="xl:hidden absolute top-0 right-0 p-1.5 cursor-pointer hover:bg-gray-200 rounded-full transition-colors duration-300" onClick={() => setIsOpen(false)}>
                         <IoClose className="text-xl" />
                     </button>
                 </div>

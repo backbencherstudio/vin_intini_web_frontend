@@ -56,6 +56,39 @@ export interface ConnectionRequestType {
 }
 
 
+export type EmpOpportunityType = {
+  id: string;
+  title: string;
+  location: string;
+  company: string;
+  type: "Full Time" | "Part Time" | "Internship" | "Contract";
+  mode: "Remote" | "On-site" | "Hybrid";
+  salaryRange: string;
+  postedTime: string;
+}
+
+
+export type USAMapType = {
+  id: number;
+  name: string;
+  code: string;
+  slug: string;
+  total_resources: number;
+};
+
+export type InstitutionType = "university_hospital" | "state_institution" | "residency_program";
+
+export type HospitalType = {
+    id: number;
+    state_id: number;
+    name: string;
+    location: string;
+    type: InstitutionType;
+    university_id: number | null;
+    created_at: string;
+    updated_at: string;
+}
+
 
 export interface GroupMembershipPivotType {
   user_id: number;
