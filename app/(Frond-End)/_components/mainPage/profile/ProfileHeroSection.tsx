@@ -8,13 +8,19 @@ import { useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import ProfileUpdateForm from "./ProfileUpdateForm";
+import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
 
 function ProfileHeroSection({ userId }: { userId: string }) {
   const [isNotify, setIsNotify] = useState(false);
   const { data, isLoading, isError } = useGetProfileByIdQuery(userId);
   const profileData = data?.data;
-  console.log(data, "data for profile");
-
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <ProfileHeroSkeleton />
+      </div>
+    );
+  }
   return (
     <section>
       <div className=" h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
@@ -71,7 +77,10 @@ function ProfileHeroSection({ userId }: { userId: string }) {
           <div className="space-y-3 col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
-              <p>Betopia Group</p>
+              <p>
+                {profileData?.experiences?.[0]?.title ||
+                  "Software Engineer at Betopia Group"}
+              </p>
             </div>
             <div className="flex items-center text-descriptionColor font-semibold gap-1.5">
               <PiStudent size={24} className="" />

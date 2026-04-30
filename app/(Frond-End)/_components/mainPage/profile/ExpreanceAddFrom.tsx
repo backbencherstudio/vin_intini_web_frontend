@@ -4,21 +4,23 @@ import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSele
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
+import { useAddExperienceMutation } from "@/feature/slice/user/experienceSlice";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export type ExperienceFormValues = {
   title: string;
-  employmentType: string;
-  company: string;
-  startMonth: string;
-  startYear: string;
-  endMonth: string;
-  endYear: string;
-  isCurrent: boolean;
+  employment_type: string;
+  company_name: string;
+  start_month: string;
+  start_year: string;
+  end_month: string;
+  end_year: string;
+  is_current: boolean;
   location: string;
-  locationType: string;
+  location_type: string;
   description: string;
   skills: string[];
 };
@@ -32,15 +34,15 @@ type ExpreanceAddFromProps = {
 
 const defaultExperienceValues: ExperienceFormValues = {
   title: "",
-  employmentType: "",
-  company: "",
-  startMonth: "",
-  startYear: "",
-  endMonth: "",
-  endYear: "",
-  isCurrent: false,
+  employment_type: "",
+  company_name: "",
+  start_month: "",
+  start_year: "",
+  end_month: "",
+  end_year: "",
+  is_current: false,
   location: "",
-  locationType: "",
+  location_type: "",
   description: "",
   skills: [],
 };
@@ -97,7 +99,7 @@ function ExpreanceAddFrom({
   initialValues,
 }: ExpreanceAddFromProps) {
   const [showSkillsPicker, setShowSkillsPicker] = useState(false);
-
+  const [addExperience] = useAddExperienceMutation();
   const { control, register, handleSubmit, watch, reset } =
     useForm<ExperienceFormValues>({
       defaultValues: defaultExperienceValues,
@@ -128,8 +130,17 @@ function ExpreanceAddFrom({
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills = watch("skills") || [];
 
-  const onSubmit = (values: ExperienceFormValues) => {
-    onSubmitData?.(values);
+  const onSubmit = async(values: ExperienceFormValues) => {
+   try {
+    const response = await addExperience(values).unwrap();
+    console.log("Experience added successfully:", response);
+    toast.success(response.message ||
+      "Experience added successfully");
+   } catch (error) {
+     console.log(error, "An error occurs");
+     toast.error("An error occurred while adding the experience");
+   }
+
     console.log("Add Experience Form Values:", values);
     setOpen(false);
   };
@@ -160,7 +171,7 @@ function ExpreanceAddFrom({
               Employment type
             </label>
             <Controller
-              name="employmentType"
+              name="employment_type"
               control={control}
               render={({ field }) => (
                 <CreatableSelectField
@@ -179,7 +190,7 @@ function ExpreanceAddFrom({
             label="Company or Organization"
             placeholder="Company or Organization"
             required
-            {...register("company")}
+            {...register("company_name")}
             className="rounded-lg border-borderColor"
           />
 
@@ -189,7 +200,7 @@ function ExpreanceAddFrom({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="startMonth"
+                name="start_month"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -202,7 +213,7 @@ function ExpreanceAddFrom({
                 )}
               />
               <Controller
-                name="startYear"
+                name="start_year"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -223,7 +234,7 @@ function ExpreanceAddFrom({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="endMonth"
+                name="end_month"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -236,7 +247,7 @@ function ExpreanceAddFrom({
                 )}
               />
               <Controller
-                name="endYear"
+                name="end_year"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -255,7 +266,7 @@ function ExpreanceAddFrom({
             <label className="inline-flex cursor-pointer items-center gap-2 text-base text-descriptionColor">
               <input
                 type="checkbox"
-                {...register("isCurrent")}
+                {...register("is_current")}
                 className="h-4 w-4"
               />
               I&apos;m currently working in this position
@@ -276,7 +287,7 @@ function ExpreanceAddFrom({
               Location type
             </label>
             <Controller
-              name="locationType"
+              name="location_type"
               control={control}
               render={({ field }) => (
                 <CreatableSelectField
