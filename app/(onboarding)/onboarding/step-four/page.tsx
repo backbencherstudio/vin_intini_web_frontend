@@ -142,7 +142,6 @@ function page() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { data: institutionOptions } = useGetInstitutionQuery("");
-  console.log(institutionOptions);
 
   const router = useRouter();
   const {

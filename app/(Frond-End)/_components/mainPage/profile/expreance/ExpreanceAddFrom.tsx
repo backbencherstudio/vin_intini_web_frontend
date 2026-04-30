@@ -4,7 +4,10 @@ import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSele
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
-import { useAddExperienceMutation } from "@/feature/slice/user/experienceSlice";
+import {
+  useAddExperienceMutation,
+  useGetCompanySuggestionsQuery,
+} from "@/feature/slice/user/experienceSlice";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -104,7 +107,11 @@ function ExpreanceAddFrom({
     useForm<ExperienceFormValues>({
       defaultValues: defaultExperienceValues,
     });
-
+  const {
+    data: companyOptions,
+    isLoading,
+    isError,
+  } = useGetCompanySuggestionsQuery("company");
   useEffect(() => {
     if (!open) return;
 
@@ -130,16 +137,15 @@ function ExpreanceAddFrom({
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills = watch("skills") || [];
 
-  const onSubmit = async(values: ExperienceFormValues) => {
-   try {
-    const response = await addExperience(values).unwrap();
-    console.log("Experience added successfully:", response);
-    toast.success(response.message ||
-      "Experience added successfully");
-   } catch (error) {
-     console.log(error, "An error occurs");
-     toast.error("An error occurred while adding the experience");
-   }
+  const onSubmit = async (values: ExperienceFormValues) => {
+    try {
+      const response = await addExperience(values).unwrap();
+      console.log("Experience added successfully:", response);
+      toast.success(response.message || "Experience added successfully");
+    } catch (error) {
+      console.log(error, "An error occurs");
+      toast.error("An error occurred while adding the experience");
+    }
 
     console.log("Add Experience Form Values:", values);
     setOpen(false);
@@ -178,21 +184,35 @@ function ExpreanceAddFrom({
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={employmentTypeOptions}
+                   allowCustomInput
                   placeholder="Select Industry here..."
                   className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                 />
               )}
             />
           </div>
-
-          <ReusableInput
-            id="company"
-            label="Company or Organization"
-            placeholder="Company or Organization"
-            required
-            {...register("company_name")}
-            className="rounded-lg border-borderColor"
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
+              Company or Organization
+            </label>
+            <Controller
+              name="company_name"
+              control={control}
+              render={({ field }) => (
+                <CreatableSelectField
+                  placeholder="Select company or organization"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={companyOptions?.data?.map((inst: any) => ({
+                    value: inst.name,
+                    label: inst.name,
+                  }))}
+                  allowCustomInput
+                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                />
+              )}
+            />
+          </div>
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
@@ -207,6 +227,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
+                     allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -220,6 +241,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
+                     allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -241,6 +263,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
+                     allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -254,6 +277,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
+                     allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />

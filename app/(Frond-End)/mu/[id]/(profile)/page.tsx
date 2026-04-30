@@ -1,6 +1,6 @@
 import ProfileAbout from "@/app/(Frond-End)/_components/mainPage/profile/ProfileAbout";
 import ProfileEducationList from "@/app/(Frond-End)/_components/mainPage/profile/ProfileEducationList";
-import ProfileExpreance from "@/app/(Frond-End)/_components/mainPage/profile/ProfileExpreance";
+import ProfileExpreance from "@/app/(Frond-End)/_components/mainPage/profile/expreance/ProfileExpreance";
 import ProfileHeroSection from "@/app/(Frond-End)/_components/mainPage/profile/ProfileHeroSection";
 import ProfilePostList from "@/app/(Frond-End)/_components/mainPage/profile/ProfilePostList";
 
@@ -13,7 +13,7 @@ async function page(props: { params: Promise<{ id: string }> }) {
       <ProfileHeroSection userId={id} />
       <ProfileAbout userId={id} />
       <ProfilePostList />
-      <ProfileExpreance />
+      <ProfileExpreance userId={id} />
       <ProfileEducationList />
     </div>
   );
