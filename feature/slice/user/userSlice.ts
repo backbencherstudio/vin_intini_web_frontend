@@ -16,10 +16,25 @@ const userSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
+    getProfileById: builder.query({
+      query: (id) => ({
+        url: `/profile/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
     profileSetup: builder.mutation({
       query: (payload) => ({
         url: "/setup-profile",
         method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    profileAboutUpdate: builder.mutation({
+      query: (payload) => ({
+        url: "/profile/update",
+        method: "PUT",
         body: payload,
       }),
       invalidatesTags: ["User"],
@@ -30,5 +45,7 @@ const userSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetUserProfileQuery,
   useGetInstitutionQuery,
+  useGetProfileByIdQuery,
   useProfileSetupMutation,
+  useProfileAboutUpdateMutation,
 } = userSlice;
