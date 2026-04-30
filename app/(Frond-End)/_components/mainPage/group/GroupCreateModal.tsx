@@ -3,7 +3,11 @@
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
-import { useCreateGroupMutation } from "@/feature/slice/group/groupSlice";
+import {
+  useCreateGroupMutation,
+  useGroupUpdateMutation,
+} from "@/feature/slice/group/groupSlice";
+import { GroupDetailType } from "@/lib/type";
 import { ImageUploadIcon, UploadUPIcon } from "@/public/svgIcons/Icons";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -69,16 +73,26 @@ const industryOptions: IndustryOption[] = [
 export default function CreateGroupForm({
   open,
   setOpen,
+  groupData,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  groupData?: GroupDetailType;
 }) {
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  console.log(groupData?.id, "=============");
+
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    groupData?.logo_url || null,
+  );
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    groupData?.cover_photo_url || null,
+  );
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const logoRef = useRef<HTMLInputElement | null>(null);
   const coverRef = useRef<HTMLInputElement | null>(null);
-  const [createGroup, { isError, isLoading  }] = useCreateGroupMutation();
+  const [createGroup, { isError, isLoading }] = useCreateGroupMutation();
+  const [groupUpdate, { isError: isUpdateError, isLoading: isUpdateLoading }] =
+    useGroupUpdateMutation();
   const {
     register,
     handleSubmit,
@@ -87,15 +101,17 @@ export default function CreateGroupForm({
     formState: { errors },
   } = useForm<GroupFormValues>({
     defaultValues: {
-      industry: [],
-      type: "public",
-      discoverability: "listed",
-      allow_member_invites: true,
-      require_post_approval: true,
+      name: groupData?.name || "",
+      description: groupData?.description || "",
+      industry: groupData?.industry || [],
+      location: groupData?.location || "",
+      rules: groupData?.rules || "",
+      type: groupData?.type || "public",
+      discoverability: groupData?.discoverability || "listed",
+      allow_member_invites: groupData?.allow_member_invites ?? true,
+      require_post_approval: groupData?.require_post_approval ?? true,
     },
   });
-
-
 
   // Watch group type for conditional rendering
   const selectedType = watch("type");
@@ -147,6 +163,16 @@ export default function CreateGroupForm({
     }
 
     try {
+      if (groupData) {
+        const response = await groupUpdate({
+          id: groupData?.id,
+          data: formData,
+        }).unwrap();
+        console.log("Group updated successfully:", response);
+        toast.success(response.message || "Group updated successfully!");
+        setOpen(false);
+        return;
+      }
       const response = await createGroup(formData).unwrap();
       console.log("Group created successfully:", response);
       toast.success(response.message || "Group created successfully!");
@@ -195,18 +221,18 @@ export default function CreateGroupForm({
             </label>
 
             {/* Floating Logo Box */}
-            <div className="absolute -bottom-12 left-8 h-20 w-20 bg-bgLightColor rounded-xl flex items-center justify-center">
+            <div className="absolute -bottom-12 left-8 h-20 w-20 bg-bgLightColor rounded-sm flex items-center justify-center">
               {logoPreview ? (
                 <>
                   <Image
                     src={logoPreview}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover border border-bgColor rounded-sm "
                     alt="Logo"
                     fill
                   />
                   <button
                     onClick={() => setLogoPreview(null)}
-                    className="p-1 rounded-full birder bg-redColor/15 absolute -right-2 -top-2 hover:bg-redColor/20 transition-all"
+                    className="p-1 z-10 cursor-pointer rounded-full birder bg-redColor/15 absolute -right-2 -top-2 hover:bg-redColor/20 transition-all"
                   >
                     <X className="w-4 h-4  text-redColor" />
                   </button>
@@ -502,10 +528,16 @@ export default function CreateGroupForm({
             <div className="flex justify-center ">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isUpdateLoading}
                 className="bg-primaryColor disabled:cursor-not-allowed disabled:bg-bgColor disabled:shadow-transparent disabled:text-grayColor1 text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
               >
-                {isLoading ? "Creating..." : "Create Group"}
+                {isUpdateLoading
+                  ? "Updating..."
+                  : groupData
+                    ? "Update Group"
+                    : isUpdateLoading
+                      ? "Creating..."
+                      : "Create Group"}
               </button>
             </div>
           </div>
