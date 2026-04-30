@@ -14,10 +14,10 @@ export default function Features() {
                         <div className="grid grid-rows-[1fr_auto] gap-8 justify-between p-6 md:p-4 xl:p-6 bg-primaryColor/10 rounded-2xl md:rounded-lg xl:rounded-2xl">
                             <div className="space-y-3">
                                 <h2 className="text-primaryColor text-sm sm:text-base md:text-sm xl:text-xl font-semibold leading-[130%] tracking-[0.1px]">Features</h2>
-                                <h1 className="text-blackColor text-lg sm:text-3xl md:text-lg lg:text-3xl xl:text-5xl font-semibold leading-[130%] -tracking-[0.96px] max-w-[290px]">Why Choose Mind Unite?</h1>
-                                <p className="text-[#404040] text-xs sm:text-base md:text-xs xl:text-sm font-normal leading-[160%] -tracking-[0.5px] max-w-[290px]">Everything you need to build your career in the mind sciences, all in one platform.</p>
+                                <h1 className="text-blackColor text-lg sm:text-3xl md:text-lg lg:text-3xl xl:text-5xl font-semibold leading-[130%] tracking-[-0.96px] max-w-72.5">Why Choose Mind Unite?</h1>
+                                <p className="text-[#404040] text-xs sm:text-base md:text-xs xl:text-sm font-normal leading-[160%] tracking-[-0.5px] max-w-72.5">Everything you need to build your career in the mind sciences, all in one platform.</p>
                             </div>
-                            <JoinButton title="Join Now"/>
+                            <JoinButton title="Join Now" redirectUrl="/sign-up"/>
                         </div>
                         <div className="">
                             <Image
