@@ -132,7 +132,11 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
         {isleaved ? (
           <GroupLeaveDialog groupId={groupId} setIsNotify={setILeaved} />
         ) : (
-          <GroupNotifySetting setIsNotify={setIsNotify} />
+          <GroupNotifySetting
+            groupId={groupId}
+            groupNotification={data?.data?.notification_status}
+            setIsNotify={setIsNotify}
+          />
         )}
       </RootDialog>
     </section>

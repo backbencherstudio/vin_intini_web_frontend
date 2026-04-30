@@ -1,25 +1,53 @@
 "use client";
 
+import { useToggleGroupNotificationMutation } from "@/feature/slice/group/groupSlice";
 import {
   NotificationOffIcon,
   NotificationOnIcon,
 } from "@/public/svgIcons/Icons";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type NotificationForm = {
-  notificationType: "all" | "off";
+  notificationType: "true" | "false";
 };
 
-export default function GroupNotifySetting({setIsNotify}: {setIsNotify: (value: boolean) => void}) {
+export default function GroupNotifySetting({
+  setIsNotify,
+  groupId,
+  groupNotification,
+}: {
+  setIsNotify: (value: boolean) => void;
+  groupId: string;
+  groupNotification?: boolean | undefined;
+}) {
   const { register, handleSubmit } = useForm<NotificationForm>({
     defaultValues: {
-      notificationType: "all",
+      notificationType: groupNotification ? "true" : "false",
     },
   });
+  const [toggleGroupNotification, { isLoading }] =
+    useToggleGroupNotificationMutation();
 
-  const onSubmit = (data: NotificationForm) => {
-    console.log("Selected Notification Value:", data.notificationType);
-    setIsNotify(false);
+  const onSubmit = async (data: NotificationForm) => {
+    try {
+      const payload = {
+        notification_status: data.notificationType === "true",
+      };
+      const response = await toggleGroupNotification({
+        groupId,
+        payload,
+      }).unwrap();
+      toast.success(
+        response?.message || "Notification setting updated successfully!",
+      );
+      setIsNotify(false);
+    } catch (error) {
+      toast.error(
+        error?.data?.message || "Failed to update notification setting.",
+      );
+      console.log(error);
+    }
   };
 
   return (
@@ -42,7 +70,7 @@ export default function GroupNotifySetting({setIsNotify}: {setIsNotify: (value: 
             </div>
             <input
               type="radio"
-              value="all"
+              value="true"
               {...register("notificationType")}
               className="w-5 h-5 accent-primaryColor cursor-pointer"
             />
@@ -58,7 +86,7 @@ export default function GroupNotifySetting({setIsNotify}: {setIsNotify: (value: 
             </div>
             <input
               type="radio"
-              value="off"
+              value="false"
               {...register("notificationType")}
               className="w-5 h-5 accent-primaryColor cursor-pointer"
             />
@@ -69,11 +97,12 @@ export default function GroupNotifySetting({setIsNotify}: {setIsNotify: (value: 
         <div className="flex justify-end mt-4">
           <button
             type="submit"
+            disabled={isLoading}
             className="bg-primaryColor
-            cursor-pointer text-white px-10 py-2.5 rounded-full font-semibold text-[16px] hover:bg-[#008c99] transition-all tracking-wide 
+            cursor-pointer text-white disabled:text-grayColor1 disabled:bg-bgColor disabled:cursor-not-allowed  px-10 py-2.5 rounded-full font-semibold text-[16px] hover:bg-[#008c99] transition-all tracking-wide 
              active:scale-95 shadow-sm"
           >
-            Save
+            {isLoading ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
