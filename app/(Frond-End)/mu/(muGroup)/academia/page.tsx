@@ -27,7 +27,7 @@ export default function page() {
 
   return (
     <div
-      className="space-y-4 md:space-y-6 xl:space-y-10 py-10 px-4 sm:px-8 md:px-16 lg:px-32 xl:px-40 sm:py-12 md:py-16 lg:py-20 rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl"
+      className="h-fit space-y-4 md:space-y-6 xl:space-y-10 py-10 px-4 sm:px-8 md:px-16 lg:px-32 xl:px-40 sm:py-12 md:py-16 lg:py-20 rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl"
       style={{
         background:
           "linear-gradient(179deg, rgba(253, 253, 253, 0.10) -63.29%, rgba(1, 120, 242, 0.10) 98.84%)",

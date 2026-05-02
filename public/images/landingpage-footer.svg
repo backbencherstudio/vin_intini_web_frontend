@@ -19,22 +19,22 @@
 <path d="M879 201C879 156.265 915.265 120 960 120C1004.74 120 1041 156.265 1041 201C1041 245.735 1004.74 282 960 282C915.265 282 879 245.735 879 201Z" fill="url(#paint2_linear_5108_39080)" fill-opacity="0.2"/>
 <path d="M960 120.5C1004.46 120.5 1040.5 156.541 1040.5 201C1040.5 245.459 1004.46 281.5 960 281.5C915.541 281.5 879.5 245.459 879.5 201C879.5 156.541 915.541 120.5 960 120.5Z" stroke="url(#paint3_linear_5108_39080)" stroke-opacity="0.2"/>
 </g>
-<path d="M967 172V143C967 134.163 974.163 127 983 127H1102" stroke="url(#paint4_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
-<path d="M967 245V216C967 207.163 974.163 200 983 200H1087" stroke="url(#paint5_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
-<path d="M967 228L967 257C967 265.837 974.163 273 983 273L1102 273" stroke="url(#paint6_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
+<path d="M967 172V143C967 134.163 974.163 127 983 127H1102" stroke="url(#paint4_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
+<path d="M967 245V216C967 207.163 974.163 200 983 200H1087" stroke="url(#paint5_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
+<path d="M967 228L967 257C967 265.837 974.163 273 983 273L1102 273" stroke="url(#paint6_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
 <rect x="1098" y="106" width="47" height="47" rx="23.5" fill="url(#pattern1_5108_39080)"/>
 <rect x="1058" y="177" width="47" height="47" rx="23.5" fill="url(#pattern2_5108_39080)"/>
 <rect x="1098" y="248" width="47" height="47" rx="23.5" fill="url(#pattern3_5108_39080)"/>
-<path d="M951 172V143C951 134.163 943.837 127 935 127H816" stroke="url(#paint7_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
-<path d="M951 228L951 257C951 265.837 943.837 273 935 273L816 273" stroke="url(#paint8_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
-<path d="M951 245V216C951 207.163 943.837 200 935 200H831" stroke="url(#paint9_radial_5108_39080)" stroke-opacity="0.8" stroke-width="3"/>
+<path d="M951 172V143C951 134.163 943.837 127 935 127H816" stroke="url(#paint7_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
+<path d="M951 228L951 257C951 265.837 943.837 273 935 273L816 273" stroke="url(#paint8_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
+<path d="M951 245V216C951 207.163 943.837 200 935 200H831" stroke="url(#paint9_radial_5108_39080)" stroke-opacity="0.8" strokeWidth="3"/>
 <rect x="775" y="106" width="47" height="47" rx="23.5" fill="url(#pattern4_5108_39080)"/>
 <rect x="815" y="177" width="47" height="47" rx="23.5" fill="url(#pattern5_5108_39080)"/>
 <rect x="775" y="248" width="47" height="47" rx="23.5" fill="url(#pattern6_5108_39080)"/>
 <foreignObject x="901.949" y="142.449" width="116.102" height="116.103"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(3.31px);clip-path:url(#bgblur_3_5108_39080_clip_path);height:100%;width:100%"></div></foreignObject><g data-figma-bg-blur-radius="6.61538">
 <path d="M908.564 200.5C908.564 172.093 931.593 149.064 960 149.064C988.407 149.064 1011.44 172.093 1011.44 200.5C1011.44 228.908 988.407 251.936 960 251.936C931.593 251.936 908.564 228.908 908.564 200.5Z" fill="url(#paint10_linear_5108_39080)" fill-opacity="0.1"/>
 <path d="M908.564 200.5C908.564 172.093 931.593 149.064 960 149.064C988.407 149.064 1011.44 172.093 1011.44 200.5C1011.44 228.908 988.407 251.936 960 251.936C931.593 251.936 908.564 228.908 908.564 200.5Z" fill="url(#paint11_linear_5108_39080)" fill-opacity="0.1"/>
-<path d="M960 149.616C988.102 149.616 1010.88 172.397 1010.88 200.5C1010.88 228.603 988.102 251.385 960 251.385C931.897 251.385 909.116 228.603 909.116 200.5C909.116 172.397 931.897 149.616 960 149.616Z" stroke="url(#paint12_linear_5108_39080)" stroke-opacity="0.15" stroke-width="1.10256"/>
+<path d="M960 149.616C988.102 149.616 1010.88 172.397 1010.88 200.5C1010.88 228.603 988.102 251.385 960 251.385C931.897 251.385 909.116 228.603 909.116 200.5C909.116 172.397 931.897 149.616 960 149.616Z" stroke="url(#paint12_linear_5108_39080)" stroke-opacity="0.15" strokeWidth="1.10256"/>
 <rect x="924" y="164.5" width="72" height="72" rx="36" fill="url(#pattern7_5108_39080)"/>
 </g>
 <g filter="url(#filter5_f_5108_39080)">
