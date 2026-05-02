@@ -32,8 +32,8 @@ export default function HospitalTable({ data }: PropType) {
             ),
         },
         {
-            label: "University ",
-            accessor: "university_id",
+            label: "Location ",
+            accessor: "location",
             width: "170px",
             formatter: (accessor: string, row: any) => (
                 <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">

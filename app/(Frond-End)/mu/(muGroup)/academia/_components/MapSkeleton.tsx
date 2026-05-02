@@ -3,31 +3,31 @@
 import React from 'react';
 
 const MapSkeleton = () => {
+  // Polygon points as a single string for CSS clip-path
+  const clipPathPolygon = `polygon(
+    13% 13%, 15% 17%, 15% 12%, 29% 17%, 39% 19%, 51% 20%, 58% 23%, 54% 28%, 59% 26%,
+    61% 23%, 62% 27%, 66% 26%, 62% 29%, 62% 38%, 63% 41%, 64% 39%, 63% 34%, 65% 29%,
+    68% 29%, 68% 41%, 71% 40%, 74% 36%, 78% 31%, 79% 26%, 84% 25%, 90% 22%, 86% 29%,
+    87% 34%, 82% 38%, 81% 49%, 82% 56%, 77% 64%, 74% 72%, 78% 82%, 78% 89%, 74% 85%,
+    73% 80%, 71% 75%, 68% 76%, 67% 75%, 64% 75%, 61% 76%, 62% 79%, 60% 79%, 57% 78%,
+    53% 78%, 48% 84%, 47% 90%, 44% 87%, 41% 77%, 39% 77%, 37% 79%, 34% 74%, 32% 70%,
+    29% 70%, 29% 72%, 22% 68%, 18% 64%, 15% 64%, 15% 61%, 12% 56%, 10% 54%, 9% 46%,
+    8% 36%, 10% 31%, 12% 20%
+  )`;
+
   return (
-    <div className="flex flex-col items-center justify-center bg-[#F8FAFC] p-4 border">
+    <div className="flex flex-col items-center justify-center bg-[#F8FAFC] p-4">
       {/* Centered Title Bar Skeleton */}
-      <div className="h-9 w-40 bg-gray-200 rounded-full mb-10 animate-pulse"></div>
 
       {/* Main Map Container */}
-      <div className="relative w-full max-w-[960px] aspect-[959/593] bg-white rounded-[40px] shadow-[0_0_50px_rgba(186,215,255,0.3)] border border-blue-50 flex items-center justify-center overflow-hidden p-8 md:p-16">
-        
-        {/* The SVG Silhouette */}
-        <svg 
-          viewBox="0 0 959 593" 
-          className="w-full h-full text-gray-100 fill-current animate-pulse"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Contiguous United States Silhouette (Mainland) */}
-          <path d="M165,183 L245,141 L300,138 L355,143 L360,60 L465,68 L555,180 L610,145 L660,210 L685,210 L740,225 L825,190 L845,155 L860,100 L875,130 L900,175 L875,180 L840,225 L835,265 L830,300 L770,350 L760,415 L750,445 L690,450 L640,465 L625,470 L600,470 L585,365 L570,415 L500,400 L285,430 L255,310 L140,385 L70,365 L30,150 L95,165 Z" />
-          
-          {/* Alaska Placeholder (Simplified) */}
-          <path d="M50,480 L170,480 L170,560 L50,560 Z" opacity="0.6" />
-          
-          {/* Hawaii Placeholders (Dots) */}
-          <circle cx="280" cy="530" r="12" opacity="0.6" />
-          <circle cx="310" cy="550" r="10" opacity="0.6" />
-          <circle cx="340" cy="565" r="14" opacity="0.6" />
-        </svg>
+      <div className="relative w-full max-w-[960px] aspect-[959/593] bg-white rounded-xl shadow-[0_0_50px_rgba(186,215,255,0.3)] border border-blue-50 flex flex-col items-center justify-center overflow-hidden p-8 md:p-16">
+
+        <div className="h-9 w-40 bg-gray-200 rounded-full mb-10 animate-pulse"></div>
+        {/* Clipped Silhouette Div */}
+        <div
+          className="w-full h-full bg-gray-200 animate-pulse"
+          style={{ clipPath: clipPathPolygon }}
+        />
 
         {/* Shimmer Overlay: Moving light effect across the map */}
         <div className="absolute inset-0 pointer-events-none">
