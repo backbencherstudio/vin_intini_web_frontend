@@ -17,17 +17,26 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// Custom icons
 const hospitalIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/822/822586.png',
-  iconSize: [20, 20],
+  // Hospital Building Icon
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448513.png',
+  iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 });
 
 const universityIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/5404/5404967.png',
-  iconSize: [20, 20],
+  // University Location Icon
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/16344/16344440.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+
+const residentialIcon = new L.Icon({
+  // Residential Area Icon
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/17573/17573474.png',
+  iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 });
@@ -120,9 +129,13 @@ interface LeafLetMapProps {
   areaName?: string;
   zoomLevel?: number;
   onFinishZoom?: () => void;
+  data: any;
 }
 
-const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom }: LeafLetMapProps) => {
+const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLetMapProps) => {
+
+  console.log("Map received data:", data?.universities); // Debug log to verify data structure
+
   return (
     <MapContainer
       center={[39.8283, -98.5795]}
@@ -139,23 +152,72 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom }: LeafLetMapPro
       <AreaHighlighter areaName={areaName || ""} zoomLevel={zoomLevel || 4} onComplete={onFinishZoom} />
 
       <MarkerClusterGroup>
-        {hospitalData.map((hospital) => (
-          <Marker key={`hospital-${hospital.id}`} position={[hospital.lat, hospital.lng]} icon={hospitalIcon}>
-            <Popup>
-              <strong>{hospital.name}</strong><br />
-              🎓 {hospital.degrees}<br />
-              🕒 Next Session: {hospital.nextSession}<br />
-              🌐 <a href={hospital.website} target="_blank" rel="noopener noreferrer">Website</a>
+        {data?.facilities?.map((hospital) => (
+          <Marker key={`hospital-${hospital.id}`} position={[Number(hospital.latitude), Number(hospital.longitude)]} icon={hospitalIcon}>
+              <Popup autoPan={false} closeButton={false}>
+              <div className="text-xs p-1">
+                <strong className="text-red-600 block mb-1">{hospital.name}</strong>
+                <p className="flex items-center gap-1">
+                  📍 <span>{hospital.location}</span>
+                </p>
+              </div>
             </Popup>
           </Marker>
         ))}
-        {universityData.map((university) => (
-          <Marker key={`university-${university.id}`} position={[university.lat, university.lng]} icon={universityIcon}>
-            <Popup>
-              <strong>{university.name}</strong><br />
-              🎓 {university.degrees}<br />
-              🕒 Next Session: {university.nextSession}<br />
-              🌐 <a href={university.website} target="_blank" rel="noopener noreferrer">Website</a>
+        {data?.universities?.map((university) => {
+          console.log("Rendering university marker:", university); // Debug log for each university
+          return (
+            <Marker key={`university-${university.id}`} position={[Number(university.latitude), Number(university.longitude)]} icon={universityIcon}>
+              <Popup autoPan={false} closeButton={false}>
+                <div className="text-xs p-1">
+                  {/* University Name */}
+                  <strong className="text-indigo-700 block mb-1">
+                    {university.name}
+                  </strong>
+
+                  {/* Psychology Degrees */}
+                  {university.psychology_degrees?.length > 0 && (
+                    <p className="mb-1">
+                      🧠 <strong>Psychology:</strong> {university.psychology_degrees.join(", ")}
+                    </p>
+                  )}
+
+                  {/* Neuroscience Degrees */}
+                  {university.neuroscience_degrees?.length > 0 && (
+                    <p className="mb-1">
+                      🔬 <strong>Neuroscience:</strong> {university.neuroscience_degrees.join(", ")}
+                    </p>
+                  )}
+
+                  {/* Fallback if no degrees are listed yet */}
+                  {university.psychology_degrees?.length === 0 && university.neuroscience_degrees?.length === 0 && (
+                    <p className="text-gray-500 italic">No specific degrees listed</p>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          )
+        })}
+        {data?.residencies?.map((residency) => (
+          <Marker key={`residency-${residency.id}`} position={[Number(residency.latitude), Number(residency.longitude)]} icon={residentialIcon}>
+              <Popup autoPan={false} closeButton={false}>
+              <div className="text-xs p-1">
+                {/* Mapping program_name based on your JSON snippet */}
+                <strong className="text-green-700 block mb-1">
+                  {residency.program_name}
+                </strong>
+
+                {/* Handling degree_types array */}
+                {residency.degree_types?.length > 0 && (
+                  <p className="mb-1">
+                    🎓 <strong>Degrees:</strong> {residency.degree_types.join(", ")}
+                  </p>
+                )}
+
+                <p className="flex items-center gap-1">
+                  📍 <span>{residency.location}</span>
+                </p>
+              </div>
             </Popup>
           </Marker>
         ))}
