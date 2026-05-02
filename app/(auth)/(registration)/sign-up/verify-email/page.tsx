@@ -142,7 +142,7 @@ export default function page() {
         </div>
 
         <div
-          className={`mt-10 flex  ${isError ? "border-redColor " : ""} rounded-md border max-w-[193px] mx-auto border-grayColor1 `}
+          className={`mt-10 flex  ${isError ? "border-redColor " : ""} rounded-md border max-w-48.25 mx-auto border-grayColor1 `}
         >
           {otp.map((digit, index) => (
             <input
@@ -173,7 +173,7 @@ export default function page() {
             type="button"
             onClick={handleResendClick}
             disabled={isRegSendOTPLoading}
-            className=" text-sm font-medium   text-primaryColor! hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
+            className=" text-sm font-medium active:scale-95 text-primaryColor! hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
             {isRegSendOTPLoading ? "Sending..." : "Resend"}
           </button>

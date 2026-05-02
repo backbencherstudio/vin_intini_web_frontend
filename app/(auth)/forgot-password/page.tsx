@@ -51,7 +51,7 @@ export default function page() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3.5 disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer rounded-lg bg-primaryColor text-white font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
+            className="w-full py-3.5 disabled:bg-gray-400 active:scale-95 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer rounded-lg bg-primaryColor text-white font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
           >
             {isLoading ? "Sending..." : "Next"}
           </button>

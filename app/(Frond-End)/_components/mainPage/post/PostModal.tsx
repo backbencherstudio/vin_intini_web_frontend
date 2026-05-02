@@ -111,7 +111,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
         <div className="flex items-start gap-3">
           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
             <Image
-              src="/profile.png"
+              src="/empty_user.jpg"
               alt="Vin Intiny"
               width={40}
               height={40}
@@ -141,9 +141,9 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
         onChange={(event) => setPostText(event.target.value)}
         placeholder="What’s in you mind today?"
         rows={3}
-        className="min-h-[100px] w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"
+        className="min-h-25 w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"
       />
-      <div className="h-[150px]  ">
+      <div className="h-37.5  ">
         {previewUrls.length > 0 && (
           <div
             className={`mb-3 grid ${selectedMedia.length == 1 ? "grid-cols-1" : selectedMedia.length == 2 ? "grid-cols-2" : "grid-cols-3"} gap-1 mt-2 space-y-2`}
@@ -161,7 +161,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
                   <video
                     src={url}
                     controls
-                    className="h-[150px] w-full bg-black object-cover"
+                    className="h-37.5 w-full bg-black object-cover"
                   />
                   {showOverlay && (
                     <div className="absolute inset-0 w-full text-center leading-[100%] flex items-center justify-center bg-black/50 text-sm font-semibold text-whiteColor">
@@ -180,7 +180,7 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
               ) : (
                 <div
                   key={`media-${index}`}
-                  className="relative overflow-hidden h-[150px] rounded-md border border-borderColor"
+                  className="relative overflow-hidden h-37.5 rounded-md border border-borderColor"
                 >
                   <Image
                     src={url}
