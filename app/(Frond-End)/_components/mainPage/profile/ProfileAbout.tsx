@@ -5,7 +5,7 @@ import { EditeIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
 import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 
-function ProfileAbout({ userId }: { userId: string }) {
+function ProfileAbout({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
   const { data, isLoading, isError } = useGetProfileByIdQuery(userId);
   if (isLoading) {

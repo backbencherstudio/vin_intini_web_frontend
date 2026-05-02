@@ -6,7 +6,7 @@ import { MdWorkOutline } from "react-icons/md";
 import ExpreanceAddFrom from "./ExpreanceAddFrom";
 import ProfileExpreanceCard from "./ProfileExpreanceCard";
 
-function ProfileExpreance({ userId }: { userId: string }) {
+function ProfileExpreance({ userId }: { userId?: string }) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const { data, isLoading, isError } = useGetExperienceQuery(userId);
   const profileData = data?.data || [];

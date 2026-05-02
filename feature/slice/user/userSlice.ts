@@ -2,6 +2,14 @@ import baseApiSlice from "../baseApi";
 
 const userSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    
+    getMyProfile: builder.query({
+      query: () => ({
+        url: "/profile",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
     getUserProfile: builder.query({
       query: () => ({
         url: "/me",
@@ -44,6 +52,7 @@ const userSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetUserProfileQuery,
+  useGetMyProfileQuery,
   useGetInstitutionQuery,
   useGetProfileByIdQuery,
   useProfileSetupMutation,

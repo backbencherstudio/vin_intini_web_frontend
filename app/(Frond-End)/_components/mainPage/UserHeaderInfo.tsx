@@ -80,14 +80,14 @@ function UserHeaderInfo() {
                 </div>
                 <div className="py-3 space-y-2">
                   <Link
-                    href={`/mu/${data?.user?.id || 1}`}
+                    href={`/mu/profile`}
                     className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
                   >
                     <UserCircleIcon className="w-5 h-5 text-grayColor1" />
                     Profile
                   </Link>
                   <Link
-                    href={`/mu/${data?.user?.id || 1}`}
+                    href={`/mu/profile`}
                     className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
                   >
                     <SettingIcon className="w-5 h-5 text-grayColor1  " />

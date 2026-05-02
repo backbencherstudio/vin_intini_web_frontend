@@ -1,5 +1,9 @@
 "use client";
-import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
+import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
+import {
+  useGetMyProfileQuery,
+  useGetProfileByIdQuery,
+} from "@/feature/slice/user/userSlice";
 import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
 import { EditeIcon, GroupUserIcon } from "@/public/svgIcons/Icons";
@@ -8,12 +12,14 @@ import { useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import ProfileUpdateForm from "./ProfileUpdateForm";
-import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
 
-function ProfileHeroSection({ userId }: { userId: string }) {
+function ProfileHeroSection({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
-  const { data, isLoading, isError } = useGetProfileByIdQuery(userId);
-  const profileData = data?.data;
+  const { data, isLoading, isError } = userId
+    ? useGetProfileByIdQuery(userId)
+    : useGetMyProfileQuery("profile");
+  const profileData = data?.data || {};
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -43,15 +49,17 @@ function ProfileHeroSection({ userId }: { userId: string }) {
               height={80}
             />
           </div>
-          <div className="flex gap-6 ">
-            <button
-              aria-label="notify-open"
-              onClick={() => setIsNotify(true)}
-              className="cursor-pointer"
-            >
-              <EditeIcon />
-            </button>
-          </div>
+          {!userId && (
+            <div className="flex gap-6 ">
+              <button
+                aria-label="notify-open"
+                onClick={() => setIsNotify(true)}
+                className="cursor-pointer"
+              >
+                <EditeIcon />
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div className="mt-12 border-b border-borderColor pb-4">
@@ -93,7 +101,13 @@ function ProfileHeroSection({ userId }: { userId: string }) {
         </div>
       </div>
 
-      {isNotify && <ProfileUpdateForm open={isNotify} setOpen={setIsNotify} />}
+      {isNotify && (
+        <ProfileUpdateForm
+          open={isNotify}
+          setOpen={setIsNotify}
+          profileData={profileData}
+        />
+      )}
     </section>
   );
 }

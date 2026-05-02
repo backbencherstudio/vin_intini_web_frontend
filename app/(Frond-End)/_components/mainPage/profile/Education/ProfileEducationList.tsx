@@ -3,14 +3,12 @@
 import ProfileEducationSkeleton from "@/components/reusable/All Skleton/ProfileEducationSkeleton";
 import { useGetStudyQuery } from "@/feature/slice/user/studySlice";
 import { EducationType } from "@/lib/type";
-import { profileEducations } from "@/public/demoData/DemoData";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import ProfileEducationCard from "./ProfileEducationCard";
 import ProfileEducationForm from "./ProfileEducationForm";
 
-
-function ProfileEducationList({ userId }: { userId: string }) {
+function ProfileEducationList({ userId }: { userId?: string }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { data, isLoading } = useGetStudyQuery(userId);
   const educationItems: EducationType[] = data?.data || [];
