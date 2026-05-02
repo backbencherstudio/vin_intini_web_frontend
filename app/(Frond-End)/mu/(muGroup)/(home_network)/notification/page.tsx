@@ -75,7 +75,7 @@ function NotificationPage() {
             <div className="flex  items-start gap-3 md:gap-4">
               <div className="h-10 w-10 shrink-0 rounded-full ">
                 <Image
-                  src={"/profile.png"}
+                  src={"/empty_user.jpg"}
                   alt="User Avatar"
                   width={40}
                   height={40}
@@ -90,7 +90,7 @@ function NotificationPage() {
                 </p>
 
                 {item.description ? (
-                  <p className="mt-1 text-xs leading-[1.25] text-descriptionColor ">
+                  <p className="mt-1 text-xs leading-tight text-descriptionColor ">
                     {item.description}
                   </p>
                 ) : null}

@@ -1,13 +1,14 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
-import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
-import { ConnectionRequestType } from "@/lib/type";
-import ConnectionNotFound from "./ConnectionNotFound";
-import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
-  const { data, isLoading, isError } = useGetConnectionsQuery("");
+import { useGetMyFollowersQuery } from "@/feature/slice/connect/followSlice";
+import { ConnectionRequestType } from "@/lib/type";
+import ConnectionNotFound from "../network/connectionRequests/ConnectionNotFound";
+import ConnectionRequestCard from "../network/connectionRequests/ConnectionRequestCard";
+
+function FollowerList({ isNetwork }: { isNetwork?: boolean }) {
+  const { data, isLoading, isError } = useGetMyFollowersQuery("");
 
   if (isError) {
     return <Error />;
@@ -15,7 +16,10 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
 
   return (
     <div>
-      <div className="">
+      <p className="text-sm  text-grayColor1 mt-1">
+        You are following {data?.total || 0} people out of your network
+      </p>
+      <div className="mt-6">
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
@@ -30,4 +34,4 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
   );
 }
 
-export default ConnectionRequestList;
+export default FollowerList;

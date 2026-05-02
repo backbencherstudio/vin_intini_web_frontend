@@ -86,7 +86,7 @@ export default function MainNavbar() {
     return pathname.startsWith(href);
   };
   return (
-    <header className="py-2.5 px-4 shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)]">
+    <header className="py-2.5 px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)]">
       <div className="container mx-auto flex items-center justify-between">
         <div>
           <Image src={mainLogo} alt="Logo" width={50} height={50} />

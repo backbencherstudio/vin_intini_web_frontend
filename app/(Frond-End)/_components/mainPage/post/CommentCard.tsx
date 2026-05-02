@@ -17,7 +17,7 @@ export default function CommentRow({
       <div className="flex items-start gap-2.5">
         <div className="h-8 w-8  overflow-hidden rounded-full">
           <Image
-            src="/profile.png"
+            src="/empty_user.jpg"
             alt="Profile"
             width={32}
             height={32}

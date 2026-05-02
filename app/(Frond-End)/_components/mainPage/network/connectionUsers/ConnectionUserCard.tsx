@@ -1,12 +1,14 @@
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import Image from "next/image";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
-  const { user, mutual_connections_count, mutual_connections } = profile;
-  console.log(user.id);
-
+  const { user, mutual_connections_count, is_connectable, action_label } =
+    profile;
+  console.log(profile, "profile");
+  const [requestSent, setRequestSent] = useState();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
   const handleConnect = async () => {
     console.log("check==========");
@@ -17,10 +19,10 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
     console.log(payload);
 
     try {
-      const result = await sendRequest(payload).unwrap();
+      const result = await sendRequest({ payload }).unwrap();
       console.log(result, "result");
-
       toast.success(result.message || "Connection request sent!");
+      setRequestSent(result.data);
     } catch (error) {
       console.error("Error sending connection request:", error);
       toast.error("Failed to send connection request.");
@@ -40,7 +42,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           <div>
             <div className="-mt-10 h-18 w-18 overflow-hidden mx-auto rounded-full border-2 border-white bg-gray-100">
               <Image
-                src={user?.profile_image_url || "/profile.png"}
+                src={user?.profile_image_url || "/empty_user.jpg"}
                 alt={user?.name}
                 width={150}
                 height={150}
@@ -61,7 +63,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           {mutual_connections_count > 0 && (
             <div className="mt-4 flex items-center gap-1 text-[11px] text-descriptionColor">
               <Image
-                src="/profile.png"
+                src="/empty_user.jpg"
                 alt="mutual"
                 width={24}
                 height={24}
@@ -77,10 +79,14 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
             <button
               type="button"
               onClick={handleConnect}
-              disabled={isLoading}
-              className="mt-3 px-8 py-1 disabled:bg-bgColor disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
+              disabled={isLoading || !is_connectable}
+              className="mt-3 px-8 py-1 disabled:bg-bgColor disabled:border-borderColor disabled:text-grayColor1 disabled:shadow-transparent disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
             >
-              {isLoading ? "Sending..." : "Connect"}
+              {!is_connectable
+                ? action_label
+                : isLoading
+                  ? "Sending..."
+                  : "Connect"}
             </button>
           </div>
         </div>

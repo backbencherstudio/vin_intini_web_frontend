@@ -35,7 +35,7 @@ function PostComment() {
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image
-            src="/profile.png"
+            src="/empty_user.jpg"
             alt="Current user"
             width={40}
             height={40}
@@ -52,7 +52,7 @@ function PostComment() {
           {mainComment.map((item) => (
             <AccordionItem
               value="replies"
-              className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-[1px] after:bg-borderColor"
+              className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-px after:bg-borderColor"
               key={item?.id}
             >
               <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">

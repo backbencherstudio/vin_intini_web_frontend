@@ -55,7 +55,7 @@ function PostCard({ post }: PostCardProps) {
         <div className="flex items-start gap-2.5 min-w-0">
           <div className="w-10 h-10 rounded-full">
             <Image
-              src={"/profile.png"}
+              src={"/empty_user.jpg"}
               alt="Profile"
               width={40}
               height={40}

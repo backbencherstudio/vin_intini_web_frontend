@@ -85,7 +85,7 @@ export default function page() {
                 aria-label={
                   isShowingPassword ? "Hide password" : "Show password"
                 }
-                className="absolute right-3 top-1/2 cursor-pointer -translate-y-1/2 text-[#4A4C56]"
+                className="absolute right-3 top-1/2 active:scale-95 cursor-pointer  -translate-y-1/2 text-[#4A4C56]"
               >
                 {isShowingPassword ? <FiEyeOff size={18} /> : <OpenEyeIcon />}
               </button>
@@ -122,7 +122,7 @@ export default function page() {
                 aria-label={
                   isShowingConfirmPassword ? "Hide password" : "Show password"
                 }
-                className="absolute right-3 top-1/2 cursor-pointer -translate-y-1/2 text-[#4A4C56]"
+                className="absolute right-3 top-1/2 active:scale-95 cursor-pointer -translate-y-1/2 text-[#4A4C56]"
               >
                 {isShowingConfirmPassword ? (
                   <FiEyeOff size={18} />

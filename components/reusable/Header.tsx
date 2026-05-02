@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
   sidebarOpen,
 }: HeaderProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   return (
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
                 <MdNotifications className="text-gray-700" size={24} />
               </PopoverTrigger>
 
-              <PopoverContent className="w-70 md:w-[267px] mt-4 p-0 max-h-[500px] flex flex-col">
+              <PopoverContent className="w-70 md:w-66.75 mt-4 p-0 max-h-125 flex flex-col">
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
                   <h4 className="text-base font-bold md:text-lg text-headerColor">
@@ -77,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({
 
                   <button
                     onClick={() => setPopoverOpen(false)}
-                    className="text-[#455468] bg-bgColor w-[35px] h-[35px] shadow-sm rounded-full cursor-pointer text-lg font-bold flex items-center justify-center"
+                    className="text-[#455468] bg-bgColor w-8.75 h-8.75 shadow-sm rounded-full cursor-pointer text-lg font-bold flex items-center justify-center"
                   >
                     <X className="" />
                   </button>
@@ -101,13 +101,13 @@ const Header: React.FC<HeaderProps> = ({
                         boxShadow: "2px 2px 7px 2px rgba(0, 0, 0, 0.1)",
                       }}
                     >
-                      <div className=" w-6 h-6 lg:w-8 lg:h-8 rounded-md overflow-hidden">
+                      <div className=" w-6 h-6 lg:w-8 lg:h-8 rounded-full overflow-hidden">
                         <Image
-                          src={"/profile.png"}
+                          src={"/empty_user.jpg"}
                           alt="Admin Avatar"
                           width={40}
                           height={40}
-                          className="rounded-md w-full h-full"
+                          className="rounded-full w-full h-full"
                         />
                       </div>
                     </div>

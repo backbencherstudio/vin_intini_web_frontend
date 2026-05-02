@@ -98,7 +98,7 @@ function LoginForm() {
               type="button"
               onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 top-1/2 cursor-pointer -translate-y-1/2 text-[#4A4C56] hover:text-primaryColor transition-colors"
+              className="absolute right-3 top-1/2 active:scale-95 cursor-pointer -translate-y-1/2 text-[#4A4C56] hover:text-primaryColor transition-colors"
             >
               {showPassword ? <FiEyeOff size={18} /> : <OpenEyeIcon />}
             </button>
@@ -117,7 +117,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full h-12 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white font-medium hover:opacity-90 transition-opacity"
+          className="w-full h-12 cursor-pointer  disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white  active:scale-95 font-medium hover:opacity-90 transition-opacity"
         >
           {isLoading ? "Connecting..." : "Sign in"}
         </button>

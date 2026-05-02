@@ -138,7 +138,7 @@ export default function page() {
         </div>
 
         <div
-          className={`mt-10 flex  ${isError ? "border-redColor " : ""} rounded-md border max-w-[193px] mx-auto border-grayColor1 `}
+          className={`mt-10 flex  ${isError ? "border-redColor " : ""} rounded-md border max-w-48.25 mx-auto border-grayColor1 `}
         >
           {otp.map((digit, index) => (
             <input

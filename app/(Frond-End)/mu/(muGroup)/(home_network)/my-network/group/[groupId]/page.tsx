@@ -3,12 +3,14 @@ import GroupMemberList from "@/app/(Frond-End)/_components/mainPage/group/GroupM
 import GroupPostCreateSection from "@/app/(Frond-End)/_components/mainPage/group/GroupPostCreate";
 import GroupPostList from "@/app/(Frond-End)/_components/mainPage/group/GroupPostList";
 
-function page() {
+async function page(props: { params: Promise<{ groupId: string }> }) {
+  const { groupId } = await props.params;
+
   return (
     <div>
-      <GroupHeroSection />
+      <GroupHeroSection groupId={groupId} />
       <div className="md:hidden mt-4">
-        <GroupMemberList />
+        <GroupMemberList groupId={groupId} />
       </div>
       <div className="mt-6">
         <GroupPostCreateSection />
