@@ -10,7 +10,6 @@ function ProfileExpreance({ userId }: { userId: string }) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const { data, isLoading, isError } = useGetExperienceQuery(userId);
   const profileData = data?.data || [];
-  console.log(profileData, "===========");
 
   return (
     <section className=" pb-4">

@@ -7,6 +7,7 @@ import RootDialog from "@/components/reusable/RootDialog";
 import {
   useAddExperienceMutation,
   useGetCompanySuggestionsQuery,
+  useUpdateExperienceMutation,
 } from "@/feature/slice/user/experienceSlice";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -26,13 +27,14 @@ export type ExperienceFormValues = {
   location_type: string;
   description: string;
   skills: string[];
+  skills_data?: string[];
 };
 
 type ExpreanceAddFromProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  onSubmitData?: (values: ExperienceFormValues) => void;
-  initialValues?: Partial<ExperienceFormValues>;
+  onSubmitData?: (values: any) => void;
+  initialValues?: Partial<any>;
 };
 
 const defaultExperienceValues: ExperienceFormValues = {
@@ -95,6 +97,88 @@ const skillOptions = [
   { value: "User Behavior", label: "User Behavior" },
 ];
 
+const monthAliasMap: Record<string, string> = {
+  jan: "January",
+  january: "January",
+  feb: "February",
+  february: "February",
+  mar: "March",
+  march: "March",
+  apr: "April",
+  april: "April",
+  may: "May",
+  jun: "June",
+  june: "June",
+  jul: "July",
+  july: "July",
+  aug: "August",
+  august: "August",
+  sep: "September",
+  sept: "September",
+  september: "September",
+  oct: "October",
+  october: "October",
+  nov: "November",
+  november: "November",
+  dec: "December",
+  december: "December",
+};
+
+function normalizeSkillsList(skills?: unknown): string[] {
+  if (!Array.isArray(skills)) return [];
+
+  return skills
+    .map((skill) => {
+      if (typeof skill === "string") return skill;
+
+      if (skill && typeof skill === "object") {
+        const typedSkill = skill as Record<string, unknown>;
+        const value =
+          typedSkill.value ??
+          typedSkill.label ??
+          typedSkill.name ??
+          typedSkill.skill_name ??
+          typedSkill.title;
+
+        return typeof value === "string" ? value : "";
+      }
+
+      return "";
+    })
+    .filter(Boolean);
+}
+
+function normalizeExperienceValues(
+  values?: Partial<ExperienceFormValues> & {
+    start_date?: string;
+    end_date?: string;
+  },
+): ExperienceFormValues {
+  const [startMonthRaw = "", startYearRaw = ""] =
+    values?.start_date?.trim().split(/\s+/) ?? [];
+  const [endMonthRaw = "", endYearRaw = ""] =
+    values?.end_date?.trim().split(/\s+/) ?? [];
+
+  const startMonth =
+    values?.start_month ||
+    monthAliasMap[startMonthRaw.toLowerCase()] ||
+    startMonthRaw;
+  const endMonth =
+    values?.end_month ||
+    monthAliasMap[endMonthRaw.toLowerCase()] ||
+    endMonthRaw;
+
+  return {
+    ...defaultExperienceValues,
+    ...values,
+    start_month: startMonth,
+    start_year: values?.start_year || startYearRaw,
+    end_month: endMonth,
+    end_year: values?.end_year || endYearRaw,
+    skills: normalizeSkillsList(values?.skills ?? values?.skills_data),
+  };
+}
+
 function ExpreanceAddFrom({
   open,
   setOpen,
@@ -102,24 +186,21 @@ function ExpreanceAddFrom({
   initialValues,
 }: ExpreanceAddFromProps) {
   const [showSkillsPicker, setShowSkillsPicker] = useState(false);
-  const [addExperience] = useAddExperienceMutation();
+  const [addExperience, { isLoading }] = useAddExperienceMutation();
   const { control, register, handleSubmit, watch, reset } =
     useForm<ExperienceFormValues>({
       defaultValues: defaultExperienceValues,
     });
-  const {
-    data: companyOptions,
-    isLoading,
-    isError,
-  } = useGetCompanySuggestionsQuery("company");
+  const { data: companyOptions } = useGetCompanySuggestionsQuery("company");
+  const [
+    updateExperience,
+    { isLoading: isCompanyLoading, isError: isCompanyError },
+  ] = useUpdateExperienceMutation();
+
   useEffect(() => {
     if (!open) return;
 
-    const mergedValues: ExperienceFormValues = {
-      ...defaultExperienceValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    };
+    const mergedValues = normalizeExperienceValues(initialValues);
 
     setShowSkillsPicker(mergedValues.skills.length > 0);
   }, [open, initialValues]);
@@ -127,11 +208,14 @@ function ExpreanceAddFrom({
   useEffect(() => {
     if (!open) return;
 
-    reset({
-      ...defaultExperienceValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    });
+    reset(
+      normalizeExperienceValues({
+        ...initialValues,
+        skills: normalizeSkillsList(
+          initialValues?.skills_data || initialValues?.skills,
+        ),
+      }),
+    );
   }, [open, initialValues, reset]);
 
   const descriptionCount = watch("description")?.length || 0;
@@ -139,7 +223,12 @@ function ExpreanceAddFrom({
 
   const onSubmit = async (values: ExperienceFormValues) => {
     try {
-      const response = await addExperience(values).unwrap();
+      const response = initialValues
+        ? await updateExperience({
+            id: initialValues.id,
+            payload: values,
+          }).unwrap()
+        : await addExperience(values).unwrap();
       console.log("Experience added successfully:", response);
       toast.success(response.message || "Experience added successfully");
     } catch (error) {
@@ -184,7 +273,7 @@ function ExpreanceAddFrom({
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={employmentTypeOptions}
-                   allowCustomInput
+                  allowCustomInput
                   placeholder="Select Industry here..."
                   className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                 />
@@ -227,7 +316,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
-                     allowCustomInput
+                    allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -241,7 +330,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
-                     allowCustomInput
+                    allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -263,7 +352,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
-                     allowCustomInput
+                    allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -277,7 +366,7 @@ function ExpreanceAddFrom({
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
-                     allowCustomInput
+                    allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -382,10 +471,15 @@ function ExpreanceAddFrom({
           <div className="border-t border-borderColor pt-5">
             <div className="flex justify-center">
               <button
+                disabled={isLoading || isCompanyLoading}
                 type="submit"
-                className="min-w-28 cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
+                className="min-w-28 disabled:cursor-not-allowed disabled:bg-bgColor disabled:text-grayColor1  cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
               >
-                Save
+                {isLoading || isCompanyLoading
+                  ? "Saving..."
+                  : initialValues
+                    ? "Update Experience"
+                    : "Add Experience"}
               </button>
             </div>
           </div>

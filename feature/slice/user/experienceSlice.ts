@@ -40,9 +40,9 @@ const experienceSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["experience"],
     }),
     updateExperience: builder.mutation({
-      query: ({ id, ...payload }) => ({
+      query: ({ id, payload }) => ({
         url: `/experience/update/${id}`,
-        method: "PUT",
+        method: "POST",
         body: payload,
       }),
       invalidatesTags: ["experience"],
