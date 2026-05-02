@@ -8,6 +8,12 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getAcademiaByState: builder.query({
+      query: (id) => ({
+        url: `/states/${id}`,
+        method: "GET",
+      }),
+    }),
     getUndergradGradPrograms: builder.query({
       query: ({id,limit,page}) => ({
         url: `/states/${id}/universities?limit=${limit}&page=${page}`,
@@ -29,4 +35,4 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetAcademiaQuery, useGetUndergradGradProgramsQuery, useGetResidenciesQuery, useGetHospitalsQuery } = acadamiaSlice;
+export const { useGetAcademiaQuery, useGetUndergradGradProgramsQuery, useGetResidenciesQuery, useGetHospitalsQuery, useGetAcademiaByStateQuery } = acadamiaSlice;
