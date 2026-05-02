@@ -197,7 +197,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
               }
               .borders { 
                 stroke: #FFFFFF; 
-                stroke-width: 1; 
+                strokeWidth: 1; 
                 fill: none;
               }
               .dccircle { 
@@ -205,7 +205,7 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
               }
               .separator1 { 
                 stroke: #B0B0B0; 
-                stroke-width: 2; 
+                strokeWidth: 2; 
                 fill: none;
               }
               .state-label {

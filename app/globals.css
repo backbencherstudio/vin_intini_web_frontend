@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import 'leaflet/dist/leaflet.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -284,6 +287,10 @@ body {
 }
 .ant-select-content-item {
   font-size: 12px !important;
+}
+
+.QUIbkc{
+  display: none !important;
 }
 
 
