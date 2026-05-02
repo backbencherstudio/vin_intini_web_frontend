@@ -5,7 +5,8 @@ const HospitalLoading = () => {
   const rows = Array.from({ length: 10 });
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 space-y-6 animate-pulse">
+    // <div className="w-full max-w-5xl mx-auto p-4 space-y-6 animate-pulse">
+    <div className="w-full overflow-hidden animate-pulse">
       {/* Title Placeholder */}
       <div className="h-9 w-72 bg-slate-200 rounded-lg mb-6" />
 
@@ -28,13 +29,13 @@ const HospitalLoading = () => {
         {/* Table Body Rows */}
         <div className="divide-y divide-slate-50">
           {rows.map((_, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`flex items-center px-6 py-4 gap-4 ${index % 2 === 1 ? 'bg-[#F8FAFC]/60' : 'bg-white'}`}
             >
               {/* SL Column */}
               <div className="w-8 h-4 bg-slate-200 rounded" />
-              
+
               {/* Hospital Name Column */}
               <div className="w-1/3 h-4 bg-slate-200 rounded-md" />
 
