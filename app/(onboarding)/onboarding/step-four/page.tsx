@@ -7,7 +7,7 @@ import {
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
-import type { SelectProps } from "antd";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -138,7 +138,7 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   },
 ];
 
-const yearOptions: SelectProps["options"] = Array.from(
+const yearOptions: any = Array.from(
   { length: 18 },
   (_, index) => {
     const year = 2010 + index;

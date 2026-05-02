@@ -3,7 +3,7 @@
 import Header from "@/components/reusable/Header";
 import Sidebar from "@/components/reusable/Sidebar";
 import React, { useState } from "react";
-import { ToastContainer } from "react-toastify";
+
 
 function AdminMenu({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -41,7 +41,7 @@ function AdminMenu({ children }: { children: React.ReactNode }) {
           {/* Main content area */}
           <main className="flex-1 overflow-y-auto overflow-x-hidden text-headerColor p-6">
             {children}
-            <ToastContainer />
+            
           </main>
         </div>
       </div>
