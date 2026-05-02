@@ -2,8 +2,8 @@
 import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
 import Error from "@/components/reusable/Error";
 import { useGetMyConnectionSuggestionsQuery } from "@/feature/slice/connect/connectSlice";
-import ConnectionUserCard from "./ConnectionUserCard";
 import { ConnectionRequestType } from "@/lib/type";
+import ConnectionUserCard from "./ConnectionUserCard";
 
 function SuggestConnectionList() {
   const { data, isLoading, isError } = useGetMyConnectionSuggestionsQuery("");
@@ -21,8 +21,11 @@ function SuggestConnectionList() {
                 key={`suggested-profile-skeleton-${index}`}
               />
             ))
-          : data?.data?.map((profile :ConnectionRequestType) => (
-              <ConnectionUserCard profile={profile} key={profile.id} />
+          : data?.data?.map((profile: ConnectionRequestType, index: number) => (
+              <ConnectionUserCard
+                profile={profile}
+                key={profile?.id || `profile-${index}`}
+              />
             ))}
       </div>
     </div>

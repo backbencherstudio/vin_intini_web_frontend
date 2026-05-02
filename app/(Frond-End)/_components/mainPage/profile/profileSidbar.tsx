@@ -1,14 +1,13 @@
 "use client";
 import ProfileUserSkleton from "@/components/reusable/All Skleton/ProfileUserSkleton";
-import { suggestedProfiles } from "@/public/demoData/DemoData";
-import { useEffect, useState } from "react";
-import ProfileUserConnectCard from "./ProfileUserConnectCard";
 import { useGetMyConnectionSuggestionsQuery } from "@/feature/slice/connect/connectSlice";
+import ProfileUserConnectCard from "./ProfileUserConnectCard";
 
 function ProfileSidebar() {
-  const {data ,isLoading} = useGetMyConnectionSuggestionsQuery("my-connection-suggestions");
+  const { data, isLoading } = useGetMyConnectionSuggestionsQuery(
+    "my-connection-suggestions",
+  );
   const peopleYouMayKnow = data?.data?.slice(0, 6);
-  
 
   return (
     <aside className="w-full  bg-white  py-3">
@@ -20,12 +19,13 @@ function ProfileSidebar() {
 
       <div>
         {isLoading
-          ? Array.from({ length: 6 }, (_, i) => <ProfileUserSkleton key={i} />)
-          : peopleYouMayKnow.map((profile, index) => (
+          ? Array.from({ length: 6 }, (_, i) => (
+              <ProfileUserSkleton key={`skeleton-${i}`} />
+            ))
+          : peopleYouMayKnow?.map((profile, index) => (
               <ProfileUserConnectCard
-                key={profile.id}
+                key={profile?.id || `profile-${index}`}
                 profile={profile}
-               
               />
             ))}
       </div>

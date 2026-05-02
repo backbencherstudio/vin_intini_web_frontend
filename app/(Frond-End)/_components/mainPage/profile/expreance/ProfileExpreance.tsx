@@ -39,7 +39,7 @@ function ProfileExpreance({ userId }: { userId?: string }) {
       <div>
         {profileData?.map((experience: any, index: number) => (
           <div
-            key={experience?.id}
+            key={experience?.id || `experience-${index}`}
             className="border-b border-borderColor py-4"
           >
             <div className="flex items-start gap-2.5">
@@ -56,20 +56,26 @@ function ProfileExpreance({ userId }: { userId?: string }) {
                     {experience?.company?.meta || "Company Meta Information"}
                   </p>
                 </div>
-                {experience?.experiences?.map((item: any, index: number) => {
-                  const isLast = index === experience.experiences.length - 1;
-                  const hasMultiple = experience.experiences.length > 1;
+                {experience?.experiences?.map(
+                  (item: any, itemIndex: number) => {
+                    const isLast =
+                      itemIndex === experience.experiences.length - 1;
+                    const hasMultiple = experience.experiences.length > 1;
 
-                  return (
-                    <div key={item.id} className="relative">
-                      {hasMultiple && !isLast && (
-                        <div className="h-[90%] w-0.5 absolute rounded-full -left-8.75 top-14.5 shrink-0 bg-liteDescriptionColor" />
-                      )}
+                    return (
+                      <div
+                        key={item.id || `item-${index}-${itemIndex}`}
+                        className="relative"
+                      >
+                        {hasMultiple && !isLast && (
+                          <div className="h-[90%] w-0.5 absolute rounded-full -left-8.75 top-14.5 shrink-0 bg-liteDescriptionColor" />
+                        )}
 
-                      <ProfileExpreanceCard item={item} borderb={false} />
-                    </div>
-                  );
-                })}
+                        <ProfileExpreanceCard item={item} borderb={false} />
+                      </div>
+                    );
+                  },
+                )}
               </div>
             </div>
           </div>
