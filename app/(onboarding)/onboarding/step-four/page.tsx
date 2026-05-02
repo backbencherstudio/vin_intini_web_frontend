@@ -7,7 +7,7 @@ import {
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
-import type { SelectProps } from "antd";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -20,8 +20,17 @@ interface StepFourData {
   institution: string;
   graduation_year: string;
 }
+interface OptionType {
+  value: string;
+  label: string;
+ 
+}
+interface GroupedOptionType {
+  label: string;
+  options: OptionType[];
+}
 
-const degreeOptions: SelectProps["options"] = [
+const degreeOptions: OptionType[] = [
   { value: "High School", label: "High School" },
   { value: "Associates Degree", label: "Associates Degree" },
   { value: "Bachelor's Degree", label: "Bachelor's Degree" },
@@ -35,7 +44,7 @@ const degreeOptions: SelectProps["options"] = [
   { value: "Other", label: "Other" },
 ];
 
-const fieldOfStudyOptions: SelectProps["options"] = [
+const fieldOfStudyOptions: GroupedOptionType[] = [
   {
     label: "Psychology",
     options: [
@@ -129,7 +138,7 @@ const fieldOfStudyOptions: SelectProps["options"] = [
   },
 ];
 
-const yearOptions: SelectProps["options"] = Array.from(
+const yearOptions: any = Array.from(
   { length: 18 },
   (_, index) => {
     const year = 2010 + index;
@@ -142,7 +151,6 @@ function page() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { data: institutionOptions } = useGetInstitutionQuery("");
-  console.log(institutionOptions);
 
   const router = useRouter();
   const {
@@ -192,7 +200,7 @@ function page() {
                   placeholder="Select degree"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={degreeOptions}
+                  options={degreeOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
@@ -218,7 +226,7 @@ function page() {
                   placeholder="Select field of study"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={fieldOfStudyOptions}
+                  options={fieldOfStudyOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
@@ -272,7 +280,7 @@ function page() {
                   placeholder="Select year"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={yearOptions}
+                  options={yearOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
                 />

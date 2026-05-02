@@ -31,7 +31,7 @@ export default function Opportunities() {
                     </div>
                     <div className="grid lg:grid-cols-2 gap-3 sm:gap-6">
                         {opportunities.map((opportunity, index) => (
-                            <div className="p-2 sm:p-4 lg:p-6 border border-[#D7F2F2] bg-white rounded-2xl grid grid-cols-[1fr_auto] gap-2 sm:gap-4">
+                            <div key={index} className="p-2 sm:p-4 lg:p-6 border  border-[#D7F2F2] bg-white rounded-2xl grid grid-cols-[1fr_auto] gap-2 sm:gap-4">
                                 <div className="grid grid-cols-[auto_1fr] gap-2 sm:gap-3">
                                     <Image
                                         src={opportunity?.company_logo}
@@ -39,6 +39,7 @@ export default function Opportunities() {
                                         width={100}
                                         height={100}
                                         className="w-10 sm:w-15 h-10 sm:h-15 rounded-lg object-cover"
+                                        priority
                                     />
                                     <div className="grid grid-cols-1 space-y-4 sm:space-y-5">
                                         <div className="space-y-2 sm:space-y-3">

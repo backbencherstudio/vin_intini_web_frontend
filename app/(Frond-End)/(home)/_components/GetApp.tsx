@@ -29,7 +29,8 @@ export default function GetApp() {
                                 alt="App Store Badge"
                                 width={150}
                                 height={50}
-                                className="w-[120px] h-full sm:w-[150px] lg:w-[180px] cursor-pointer"
+                                className="w-[120px] h-auto sm:w-[150px] lg:w-[180px] cursor-pointer"
+                                priority
                             />
                         </Link>
                         <Link href="/" className="">
@@ -38,7 +39,8 @@ export default function GetApp() {
                                 alt="App Store Badge"
                                 width={150}
                                 height={50}
-                                className="w-[120px] sm:w-[150px] lg:w-[180px] cursor-pointer"
+                                className="w-[120px] h-auto sm:w-[150px] lg:w-[180px] cursor-pointer"
+                                priority
                             />
                         </Link>
                     </div>
@@ -49,7 +51,8 @@ export default function GetApp() {
                         alt="QR code for app download"
                         width={400}
                         height={400}
-                        className="w-full sm:w-[200px] lg:w-[310px] xl:w-[400px]"
+                        className="w-full h-auto sm:w-[200px] lg:w-[310px] xl:w-[400px]"
+                        priority
                     />
                 </div>
             </div>

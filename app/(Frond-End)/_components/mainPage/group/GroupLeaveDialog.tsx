@@ -1,7 +1,28 @@
+import { useLeaveGroupMutation } from "@/feature/slice/group/groupSlice";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-function GroupLeaveDialog({ setIsNotify }: { setIsNotify: (value: boolean) => void }) {
-
+function GroupLeaveDialog({
+  groupId,
+  setIsNotify,
+}: {
+  groupId: string;
+  setIsNotify: (value: boolean) => void;
+}) {
+  const [leaveGroup, { isLoading, isError }] = useLeaveGroupMutation();
+  const router = useRouter();
+  const handleLeaveGroup = async () => {
+    try {
+      const result = await leaveGroup({ group_id: groupId }).unwrap();
+      toast.success(result.data?.message || "Successfully left the group.");
+      router.push("/mu/my-network/groups");
+      setIsNotify(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || "Failed to leave the group.");
+    }
+  };
   return (
     <div>
       <div className="md:p-6 p-4">
@@ -19,11 +40,18 @@ function GroupLeaveDialog({ setIsNotify }: { setIsNotify: (value: boolean) => vo
             </p>
           </div>
           <div className="flex mt-6 items-center justify-center gap-3">
-            <button className="px-6 rounded-full py-2 cursor-pointer  text-base font-semibold text-descriptionColor transition-all hover:bg-lightGreenColor active:scale-95" onClick={() => setIsNotify(false)}>
+            <button
+              className="px-6 rounded-full py-2 cursor-pointer  text-base font-semibold text-descriptionColor transition-all hover:bg-lightGreenColor active:scale-95"
+              onClick={() => setIsNotify(false)}
+            >
               Cancel
             </button>
-            <button className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-base font-semibold text-white transition-all hover:bg-[#008c99] active:scale-95">
-              Leave Group
+            <button
+              onClick={handleLeaveGroup}
+              disabled={isLoading}
+              className="px-6 rounded-full disabled:text-descriptionColor disabled:bg-bgColor disabled:cursor-not-allowed bg-primaryColor py-2 cursor-pointer  text-base font-semibold text-white transition-all hover:bg-[#008c99] active:scale-95"
+            >
+              {isLoading ? "Leaving..." : "Leave Group"}
             </button>
           </div>
         </div>

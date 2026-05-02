@@ -11,8 +11,6 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const [requestSent, setRequestSent] = useState();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
   const handleConnect = async () => {
-    console.log("check==========");
-
     const payload = {
       user_id: user.id,
     };

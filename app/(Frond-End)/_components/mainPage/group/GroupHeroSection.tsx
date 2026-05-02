@@ -15,12 +15,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import Image from "next/image";
 import { useState } from "react";
+import CreateGroupForm from "./GroupCreateModal";
 import GroupLeaveDialog from "./GroupLeaveDialog";
 import GroupNotifySetting from "./GroupNotifySetting";
 
 function GroupHeroSection({ groupId }: { groupId: string }) {
   const [isleaved, setILeaved] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
+  const [isEdite, setIsEdite] = useState(false);
   const { data, isLoading, isError } = useGetViewByIdGroupQuery({
     id: groupId,
   });
@@ -82,7 +84,7 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
             ) : (
               <button
                 aria-label="leave-open"
-                onClick={() => setILeaved(true)}
+                onClick={() => setIsEdite(true)}
                 className="cursor-pointer"
               >
                 <EditeIcon />
@@ -115,15 +117,26 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
           </>
         )}
       </div>
+      {isEdite && (
+        <CreateGroupForm
+          open={isEdite}
+          setOpen={setIsEdite}
+          groupData={groupData}
+        />
+      )}
       <RootDialog
         open={isleaved || isNotify}
         setOpen={isleaved ? setILeaved : setIsNotify}
         className=" max-w-150!"
       >
         {isleaved ? (
-          <GroupLeaveDialog setIsNotify={setILeaved} />
+          <GroupLeaveDialog groupId={groupId} setIsNotify={setILeaved} />
         ) : (
-          <GroupNotifySetting setIsNotify={setIsNotify} />
+          <GroupNotifySetting
+            groupId={groupId}
+            groupNotification={data?.data?.notification_status}
+            setIsNotify={setIsNotify}
+          />
         )}
       </RootDialog>
     </section>

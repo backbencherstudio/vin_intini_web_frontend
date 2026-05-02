@@ -1,94 +1,119 @@
 "use client";
 
-import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
+import CommonSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
+import {
+  useAddExperienceMutation,
+  useGetCompanySuggestionsQuery,
+  useGetSkillSuggestionsQuery,
+  useUpdateExperienceMutation,
+} from "@/feature/slice/user/experienceSlice";
+import {
+  employmentTypeOptions,
+  locationTypeOptions,
+  monthAliasMap,
+  monthOptions,
+  yearOptions,
+} from "@/public/demoData/RealData";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export type ExperienceFormValues = {
   title: string;
-  employmentType: string;
-  company: string;
-  startMonth: string;
-  startYear: string;
-  endMonth: string;
-  endYear: string;
-  isCurrent: boolean;
+  employment_type: string;
+  company_name: string;
+  start_month: string;
+  start_year: string;
+  end_month: string;
+  end_year: string;
+  is_current: boolean;
   location: string;
-  locationType: string;
+  location_type: string;
   description: string;
   skills: string[];
+  skills_data?: string[];
 };
 
 type ExpreanceAddFromProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  onSubmitData?: (values: ExperienceFormValues) => void;
-  initialValues?: Partial<ExperienceFormValues>;
+  onSubmitData?: (values: any) => void;
+  initialValues?: Partial<any>;
 };
 
 const defaultExperienceValues: ExperienceFormValues = {
   title: "",
-  employmentType: "",
-  company: "",
-  startMonth: "",
-  startYear: "",
-  endMonth: "",
-  endYear: "",
-  isCurrent: false,
+  employment_type: "",
+  company_name: "",
+  start_month: "",
+  start_year: "",
+  end_month: "",
+  end_year: "",
+  is_current: false,
   location: "",
-  locationType: "",
+  location_type: "",
   description: "",
   skills: [],
 };
 
-const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
-];
+function normalizeSkillsList(skills?: unknown): string[] {
+  if (!Array.isArray(skills)) return [];
 
-const monthOptions = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-].map((month) => ({ value: month, label: month }));
+  return skills
+    .map((skill) => {
+      if (typeof skill === "string") return skill;
 
-const yearOptions = ["2026", "2025", "2024", "2023", "2022", "2021"].map(
-  (year) => ({ value: year, label: year }),
-);
+      if (skill && typeof skill === "object") {
+        const typedSkill = skill as Record<string, unknown>;
+        const value =
+          typedSkill.value ??
+          typedSkill.label ??
+          typedSkill.name ??
+          typedSkill.skill_name ??
+          typedSkill.title;
 
-const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
-];
+        return typeof value === "string" ? value : "";
+      }
 
-const skillOptions = [
-  { value: "User Experience", label: "User Experience" },
-  { value: "User Experience Design", label: "User Experience Design" },
-  { value: "User Interface", label: "User Interface" },
-  { value: "User Interface Design", label: "User Interface Design" },
-  { value: "User Analytics", label: "User Analytics" },
-  { value: "User Behavior", label: "User Behavior" },
-];
+      return "";
+    })
+    .filter(Boolean);
+}
+
+function normalizeExperienceValues(
+  values?: Partial<ExperienceFormValues> & {
+    start_date?: string;
+    end_date?: string;
+  },
+): ExperienceFormValues {
+  const [startMonthRaw = "", startYearRaw = ""] =
+    values?.start_date?.trim().split(/\s+/) ?? [];
+  const [endMonthRaw = "", endYearRaw = ""] =
+    values?.end_date?.trim().split(/\s+/) ?? [];
+
+  const startMonth =
+    values?.start_month ||
+    monthAliasMap[startMonthRaw.toLowerCase()] ||
+    startMonthRaw;
+  const endMonth =
+    values?.end_month ||
+    monthAliasMap[endMonthRaw.toLowerCase()] ||
+    endMonthRaw;
+
+  return {
+    ...defaultExperienceValues,
+    ...values,
+    start_month: startMonth,
+    start_year: values?.start_year || startYearRaw,
+    end_month: endMonth,
+    end_year: values?.end_year || endYearRaw,
+    skills: normalizeSkillsList(values?.skills ?? values?.skills_data),
+  };
+}
 
 function ExpreanceAddFrom({
   open,
@@ -97,20 +122,22 @@ function ExpreanceAddFrom({
   initialValues,
 }: ExpreanceAddFromProps) {
   const [showSkillsPicker, setShowSkillsPicker] = useState(false);
-
+  const [addExperience, { isLoading }] = useAddExperienceMutation();
   const { control, register, handleSubmit, watch, reset } =
     useForm<ExperienceFormValues>({
       defaultValues: defaultExperienceValues,
     });
+  const { data: companyOptions } = useGetCompanySuggestionsQuery("company");
+  const { data: skillsData } = useGetSkillSuggestionsQuery("skill-suggestions");
+  const [
+    updateExperience,
+    { isLoading: isCompanyLoading, isError: isCompanyError },
+  ] = useUpdateExperienceMutation();
 
   useEffect(() => {
     if (!open) return;
 
-    const mergedValues: ExperienceFormValues = {
-      ...defaultExperienceValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    };
+    const mergedValues = normalizeExperienceValues(initialValues);
 
     setShowSkillsPicker(mergedValues.skills.length > 0);
   }, [open, initialValues]);
@@ -118,18 +145,34 @@ function ExpreanceAddFrom({
   useEffect(() => {
     if (!open) return;
 
-    reset({
-      ...defaultExperienceValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    });
+    reset(
+      normalizeExperienceValues({
+        ...initialValues,
+        skills: normalizeSkillsList(
+          initialValues?.skills_data || initialValues?.skills,
+        ),
+      }),
+    );
   }, [open, initialValues, reset]);
 
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills = watch("skills") || [];
 
-  const onSubmit = (values: ExperienceFormValues) => {
-    onSubmitData?.(values);
+  const onSubmit = async (values: ExperienceFormValues) => {
+    try {
+      const response = initialValues
+        ? await updateExperience({
+            id: initialValues.id,
+            payload: values,
+          }).unwrap()
+        : await addExperience(values).unwrap();
+      console.log("Experience added successfully:", response);
+      toast.success(response.message || "Experience added successfully");
+    } catch (error) {
+      console.log(error, "An error occurs");
+      toast.error("An error occurred while adding the experience");
+    }
+
     console.log("Add Experience Form Values:", values);
     setOpen(false);
   };
@@ -160,28 +203,42 @@ function ExpreanceAddFrom({
               Employment type
             </label>
             <Controller
-              name="employmentType"
+              name="employment_type"
               control={control}
               render={({ field }) => (
-                <CreatableSelectField
+                <CommonSelectField
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={employmentTypeOptions}
+                  allowCustomInput
                   placeholder="Select Industry here..."
                   className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                 />
               )}
             />
           </div>
-
-          <ReusableInput
-            id="company"
-            label="Company or Organization"
-            placeholder="Company or Organization"
-            required
-            {...register("company")}
-            className="rounded-lg border-borderColor"
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
+              Company or Organization
+            </label>
+            <Controller
+              name="company_name"
+              control={control}
+              render={({ field }) => (
+                <CommonSelectField
+                  placeholder="Select company or organization"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={companyOptions?.data?.map((inst: any) => ({
+                    value: inst.name,
+                    label: inst.name,
+                  }))}
+                  allowCustomInput
+                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                />
+              )}
+            />
+          </div>
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
@@ -189,26 +246,28 @@ function ExpreanceAddFrom({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="startMonth"
+                name="start_month"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
+                    allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
               />
               <Controller
-                name="startYear"
+                name="start_year"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
+                    allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -223,26 +282,28 @@ function ExpreanceAddFrom({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="endMonth"
+                name="end_month"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
+                    allowCustomInput
                     placeholder="Month"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
               />
               <Controller
-                name="endYear"
+                name="end_year"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
+                    allowCustomInput
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
@@ -255,7 +316,7 @@ function ExpreanceAddFrom({
             <label className="inline-flex cursor-pointer items-center gap-2 text-base text-descriptionColor">
               <input
                 type="checkbox"
-                {...register("isCurrent")}
+                {...register("is_current")}
                 className="h-4 w-4"
               />
               I&apos;m currently working in this position
@@ -276,10 +337,10 @@ function ExpreanceAddFrom({
               Location type
             </label>
             <Controller
-              name="locationType"
+              name="location_type"
               control={control}
               render={({ field }) => (
-                <CreatableSelectField
+                <CommonSelectField
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={locationTypeOptions}
@@ -319,13 +380,18 @@ function ExpreanceAddFrom({
                 name="skills"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     isMulti
                     allowCustomInput
                     maxCount={5}
                     values={field.value || []}
                     onChangeValues={field.onChange}
-                    options={skillOptions}
+                    options={
+                      skillsData?.data?.map((skill: { name: string }) => ({
+                        value: skill.name,
+                        label: skill.name,
+                      })) || []
+                    }
                     placeholder="Select skill here..."
                     className="mb-2.5 w-full  [&_.ant-select-selector]:min-h-13! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                   />
@@ -347,10 +413,15 @@ function ExpreanceAddFrom({
           <div className="border-t border-borderColor pt-5">
             <div className="flex justify-center">
               <button
+                disabled={isLoading || isCompanyLoading}
                 type="submit"
-                className="min-w-28 cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
+                className="min-w-28 disabled:cursor-not-allowed disabled:bg-bgColor disabled:text-grayColor1  cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
               >
-                Save
+                {isLoading || isCompanyLoading
+                  ? "Saving..."
+                  : initialValues
+                    ? "Update Experience"
+                    : "Add Experience"}
               </button>
             </div>
           </div>
