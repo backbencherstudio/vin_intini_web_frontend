@@ -3,18 +3,12 @@ import ProfileUserSkleton from "@/components/reusable/All Skleton/ProfileUserSkl
 import { suggestedProfiles } from "@/public/demoData/DemoData";
 import { useEffect, useState } from "react";
 import ProfileUserConnectCard from "./ProfileUserConnectCard";
+import { useGetMyConnectionSuggestionsQuery } from "@/feature/slice/connect/connectSlice";
 
 function ProfileSidebar() {
-  const peopleYouMayKnow = suggestedProfiles.slice(0, 6);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const {data ,isLoading} = useGetMyConnectionSuggestionsQuery("my-connection-suggestions");
+  const peopleYouMayKnow = data?.data?.slice(0, 6);
+  
 
   return (
     <aside className="w-full  bg-white  py-3">
