@@ -11,22 +11,19 @@ const extractAccessToken = (payload: any): string | null => {
 };
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
   credentials: "include",
   prepareHeaders: async (headers) => {
-    if (typeof window !== "undefined") {
-      const token = await getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
+    const token = await getToken();
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
     }
     headers.set("accept", "application/json");
     return headers;
   },
 });
 
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<string | null> | null = null;
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
@@ -34,45 +31,57 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
-  const requestUrl = typeof args === "string" ? args : args.url;
-  const isRefreshRequest = requestUrl.includes("/refresh");
-  const isUnAuthorized = result.error && result.error.status === 401;
 
-  if (isUnAuthorized && !isRefreshRequest) {
+  if (result.error && result.error.status === 401) {
+    const requestUrl = typeof args === "string" ? args : args.url;
+    
+    if (requestUrl.includes("/refresh")) {
+      await clearToken();
+      return result;
+    }
+
     if (!refreshPromise) {
       refreshPromise = (async () => {
-        const refreshResult = await rawBaseQuery(
-          { url: "/refresh", method: "POST" },
-          api,
-          extraOptions,
-        );
-        const newToken = extractAccessToken(refreshResult.data);
-        if (newToken) {
-          await setToken(newToken);
-          return newToken;
-        }
+        try {
+          const refreshResult = await rawBaseQuery(
+            { url: "/refresh", method: "POST" },
+            api,
+            extraOptions
+          );
 
-        await clearToken();
-        return null;
-      })().finally(() => {
-        refreshPromise = null;
-      });
+          const newToken = extractAccessToken(refreshResult.data);
+          
+          if (newToken) {
+            await setToken(newToken);
+            return newToken;
+          }
+
+          await clearToken();
+          return null;
+        } catch {
+          await clearToken();
+          return null;
+        } finally {
+          refreshPromise = null;
+        }
+      })();
     }
-    const newToken = await refreshPromise;
-    if (newToken) {
+
+    const tokenFromPromise = await refreshPromise;
+
+    if (tokenFromPromise) {
       result = await rawBaseQuery(args, api, extraOptions);
-    } else {
-      await clearToken();
     }
   }
+
   return result;
 };
 
-const baseApiSlice = createApi({
+export const baseApiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: ["User", "experience", "study", "Discussion","connect", "follow", "group"],
+  tagTypes: ["User", "experience", "study", "Discussion", "connect", "follow", "group"],
 });
 
 export default baseApiSlice;
