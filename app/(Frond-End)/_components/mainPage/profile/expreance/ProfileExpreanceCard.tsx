@@ -4,16 +4,7 @@ import { useState } from "react";
 import ExpreanceAddFrom from "./ExpreanceAddFrom";
 import ExpreanceDataDelete from "./ExpreanceDataDelete";
 
-type ProfileExperienceItem = {
-  id: number;
-  companyName: string;
-  companyMeta: string;
-  jobTitle: string;
-  jobMeta: string;
-  location: string;
-  description?: string;
-  skills: string[];
-};
+
 
 function ProfileExpreanceCard({
   item,
@@ -57,11 +48,12 @@ function ProfileExpreanceCard({
                 </button>
               </div>
             </div>
-            <p className="mt-1 flex items-center text-sm text-descriptionColor">
+            <p className="mt-1 flex items-center gap- text-sm text-descriptionColor">
               {item.starting_date}
               <Dot />
-              <span> {item.is_current ? " Still working" : ""}</span>
-              <span>{item.ending_date}</span>
+              <span> {item.is_current ? " Still working" : " "}</span>
+              <Dot />
+              <span>{item.end_date}</span>
             </p>
             <p className="mt-0.5 capitalize text-sm text-descriptionColor">
               {item.location || "Location"}

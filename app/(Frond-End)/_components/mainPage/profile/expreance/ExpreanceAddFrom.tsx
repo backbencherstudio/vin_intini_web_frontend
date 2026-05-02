@@ -7,8 +7,16 @@ import RootDialog from "@/components/reusable/RootDialog";
 import {
   useAddExperienceMutation,
   useGetCompanySuggestionsQuery,
+  useGetSkillSuggestionsQuery,
   useUpdateExperienceMutation,
 } from "@/feature/slice/user/experienceSlice";
+import {
+  employmentTypeOptions,
+  locationTypeOptions,
+  monthAliasMap,
+  monthOptions,
+  yearOptions,
+} from "@/public/demoData/RealData";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -50,78 +58,6 @@ const defaultExperienceValues: ExperienceFormValues = {
   location_type: "",
   description: "",
   skills: [],
-};
-
-const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
-];
-
-const monthOptions = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-].map((month) => ({ value: month, label: month }));
-
-const yearOptions = ["2026", "2025", "2024", "2023", "2022", "2021"].map(
-  (year) => ({ value: year, label: year }),
-);
-
-const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
-];
-
-const skillOptions = [
-  { value: "User Experience", label: "User Experience" },
-  { value: "User Experience Design", label: "User Experience Design" },
-  { value: "User Interface", label: "User Interface" },
-  { value: "User Interface Design", label: "User Interface Design" },
-  { value: "User Analytics", label: "User Analytics" },
-  { value: "User Behavior", label: "User Behavior" },
-];
-
-const monthAliasMap: Record<string, string> = {
-  jan: "January",
-  january: "January",
-  feb: "February",
-  february: "February",
-  mar: "March",
-  march: "March",
-  apr: "April",
-  april: "April",
-  may: "May",
-  jun: "June",
-  june: "June",
-  jul: "July",
-  july: "July",
-  aug: "August",
-  august: "August",
-  sep: "September",
-  sept: "September",
-  september: "September",
-  oct: "October",
-  october: "October",
-  nov: "November",
-  november: "November",
-  dec: "December",
-  december: "December",
 };
 
 function normalizeSkillsList(skills?: unknown): string[] {
@@ -192,6 +128,7 @@ function ExpreanceAddFrom({
       defaultValues: defaultExperienceValues,
     });
   const { data: companyOptions } = useGetCompanySuggestionsQuery("company");
+  const { data: skillsData } = useGetSkillSuggestionsQuery("skill-suggestions");
   const [
     updateExperience,
     { isLoading: isCompanyLoading, isError: isCompanyError },
@@ -449,7 +386,12 @@ function ExpreanceAddFrom({
                     maxCount={5}
                     values={field.value || []}
                     onChangeValues={field.onChange}
-                    options={skillOptions}
+                    options={
+                      skillsData?.data?.map((skill: { name: string }) => ({
+                        value: skill.name,
+                        label: skill.name,
+                      })) || []
+                    }
                     placeholder="Select skill here..."
                     className="mb-2.5 w-full  [&_.ant-select-selector]:min-h-13! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                   />

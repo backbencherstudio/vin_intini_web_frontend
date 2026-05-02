@@ -124,3 +124,30 @@ export interface GroupDetailType {
   creator: UserProfileType;
   pivot?: GroupMembershipPivotType; 
 }
+
+export interface Institution {
+  id: number;
+  name: string;
+}
+
+export interface EducationType {
+  id: number;
+  user_id: number;
+  institution_id: number;
+  degree: string;
+  field_study: string;
+  start_month: string;
+  start_year: string;
+  end_month: string | null;
+  end_year: string | null;
+  grade: string | null;
+  description: string | null;
+  activities: string | null;
+  is_current: boolean;
+  skills_id: number[];
+  created_at: string;
+  updated_at: string;
+  skills_data: any[]; 
+  status: "Complete" | "Ongoing" | "Incomplete"; 
+  institution: Institution;
+}

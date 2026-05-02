@@ -1,43 +1,28 @@
 "use client";
 
 import ProfileEducationSkeleton from "@/components/reusable/All Skleton/ProfileEducationSkeleton";
+import { useGetStudyQuery } from "@/feature/slice/user/studySlice";
+import { EducationType } from "@/lib/type";
 import { profileEducations } from "@/public/demoData/DemoData";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProfileEducationCard from "./ProfileEducationCard";
-import ProfileEducationForm, {
-  type EducationFormValues,
-} from "./ProfileEducationForm";
-
-type ProfileEducationItem = (typeof profileEducations)[number];
+import ProfileEducationForm from "./ProfileEducationForm";
 
 
-
-
-function ProfileEducationList() {
-  const [isLoading, setIsLoading] = useState(true);
+function ProfileEducationList({ userId }: { userId: string }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const { data, isLoading } = useGetStudyQuery(userId);
+  const educationItems: EducationType[] = data?.data || [];
 
-  const [educationItems, setEducationItems] = useState<ProfileEducationItem[]>(
-    profileEducations as ProfileEducationItem[],
-  );
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, []);
+  console.log(data, "check study data");
 
   const openCreateForm = () => {
     setIsFormOpen(true);
   };
 
-
-
   return (
-    <section className="border-b border-borderColor pb-4">
+    <section className=" pb-4">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
           Education
@@ -58,19 +43,12 @@ function ProfileEducationList() {
               <ProfileEducationSkeleton key={`education-skeleton-${index}`} />
             ))
           : educationItems.map((item, index) => (
-              <ProfileEducationCard
-                key={item.id}
-                item={item}
-                borderb={index !== educationItems.length - 1}
-              />
+              <ProfileEducationCard key={item.id} item={item} />
             ))}
       </div>
 
       {isFormOpen && (
-        <ProfileEducationForm
-          open={isFormOpen}
-          setOpen={setIsFormOpen}
-        />
+        <ProfileEducationForm open={isFormOpen} setOpen={setIsFormOpen} />
       )}
     </section>
   );
