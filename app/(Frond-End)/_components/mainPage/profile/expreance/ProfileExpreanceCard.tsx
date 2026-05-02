@@ -4,8 +4,6 @@ import { useState } from "react";
 import ExpreanceAddFrom from "./ExpreanceAddFrom";
 import ExpreanceDataDelete from "./ExpreanceDataDelete";
 
-
-
 function ProfileExpreanceCard({
   item,
   borderb,
@@ -52,7 +50,7 @@ function ProfileExpreanceCard({
               {item.starting_date}
               <Dot />
               <span> {item.is_current ? " Still working" : " "}</span>
-              <Dot />
+              {item.is_current && <Dot />}
               <span>{item.end_date}</span>
             </p>
             <p className="mt-0.5 capitalize text-sm text-descriptionColor">

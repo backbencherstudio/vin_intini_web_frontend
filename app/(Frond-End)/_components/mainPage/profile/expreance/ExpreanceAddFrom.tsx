@@ -1,6 +1,6 @@
 "use client";
 
-import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
+import CommonSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
@@ -206,7 +206,7 @@ function ExpreanceAddFrom({
               name="employment_type"
               control={control}
               render={({ field }) => (
-                <CreatableSelectField
+                <CommonSelectField
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={employmentTypeOptions}
@@ -225,7 +225,7 @@ function ExpreanceAddFrom({
               name="company_name"
               control={control}
               render={({ field }) => (
-                <CreatableSelectField
+                <CommonSelectField
                   placeholder="Select company or organization"
                   value={field.value || undefined}
                   onChange={field.onChange}
@@ -249,7 +249,7 @@ function ExpreanceAddFrom({
                 name="start_month"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
@@ -263,7 +263,7 @@ function ExpreanceAddFrom({
                 name="start_year"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
@@ -285,7 +285,7 @@ function ExpreanceAddFrom({
                 name="end_month"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={monthOptions}
@@ -299,7 +299,7 @@ function ExpreanceAddFrom({
                 name="end_year"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
                     options={yearOptions}
@@ -340,7 +340,7 @@ function ExpreanceAddFrom({
               name="location_type"
               control={control}
               render={({ field }) => (
-                <CreatableSelectField
+                <CommonSelectField
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={locationTypeOptions}
@@ -380,7 +380,7 @@ function ExpreanceAddFrom({
                 name="skills"
                 control={control}
                 render={({ field }) => (
-                  <CreatableSelectField
+                  <CommonSelectField
                     isMulti
                     allowCustomInput
                     maxCount={5}

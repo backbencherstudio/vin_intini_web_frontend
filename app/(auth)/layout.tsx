@@ -13,7 +13,14 @@ function layout({ children }: { children: React.ReactNode }) {
         >
           <div className="container py-4! grid grid-cols-[auto_auto] items-center justify-between gap-4">
             <Link href="/">
-              <Image src={balckImage} alt="Logo" width={256} height={50} />
+              <Image
+                src={balckImage}
+                alt="Logo"
+                width={256}
+                height={50}
+                className="w-full h-auto "
+                priority
+              />
             </Link>
             <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-base">
               <Link

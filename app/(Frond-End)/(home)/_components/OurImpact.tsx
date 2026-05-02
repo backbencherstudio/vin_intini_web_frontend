@@ -42,7 +42,8 @@ export default function OurImpact() {
                                     key={index}
                                     width={60}
                                     height={60}
-                                    className="w-9 h-9 lg:w-15 lg:h-15 object-cover rounded-full"
+                                    className="w-9 h-9  lg:w-15 lg:h-15 object-cover rounded-full"
+                                    priority
                                 />
                             ))}
                         </div>

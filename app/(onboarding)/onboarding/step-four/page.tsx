@@ -20,8 +20,17 @@ interface StepFourData {
   institution: string;
   graduation_year: string;
 }
+interface OptionType {
+  value: string;
+  label: string;
+ 
+}
+interface GroupedOptionType {
+  label: string;
+  options: OptionType[];
+}
 
-const degreeOptions: SelectProps["options"] = [
+const degreeOptions: OptionType[] = [
   { value: "High School", label: "High School" },
   { value: "Associates Degree", label: "Associates Degree" },
   { value: "Bachelor's Degree", label: "Bachelor's Degree" },
@@ -35,7 +44,7 @@ const degreeOptions: SelectProps["options"] = [
   { value: "Other", label: "Other" },
 ];
 
-const fieldOfStudyOptions: SelectProps["options"] = [
+const fieldOfStudyOptions: GroupedOptionType[] = [
   {
     label: "Psychology",
     options: [
@@ -191,7 +200,7 @@ function page() {
                   placeholder="Select degree"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={degreeOptions}
+                  options={degreeOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
@@ -217,7 +226,7 @@ function page() {
                   placeholder="Select field of study"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={fieldOfStudyOptions}
+                  options={fieldOfStudyOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! rounded-md"
                 />
@@ -271,7 +280,7 @@ function page() {
                   placeholder="Select year"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  options={yearOptions}
+                  options={yearOptions as any}
                   allowCustomInput
                   className="w-full h-12! md:h-13! focus:ring-2 focus:ring-primaryColor! focus:outline-none rounded-md"
                 />

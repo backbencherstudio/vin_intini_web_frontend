@@ -1,5 +1,6 @@
 "use client";
 
+import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
@@ -14,12 +15,6 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Select, { type MultiValue, type StylesConfig } from "react-select";
-
-type IndustryOption = {
-  value: string;
-  label: string;
-};
 
 type GroupFormValues = {
   name: string;
@@ -35,34 +30,7 @@ type GroupFormValues = {
   cover_photo: FileList;
 };
 
-const industrySelectStyles: StylesConfig<IndustryOption, true> = {
-  control: (base, state) => ({
-    ...base,
-    minHeight: "52px",
-    borderRadius: "0.5rem",
-    borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
-    boxShadow: state.isFocused ? "0 0 0 2px #D9F4F7" : "none",
-    "&:hover": {
-      borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
-    },
-  }),
-  valueContainer: (base) => ({
-    ...base,
-    minHeight: "52px",
-    paddingTop: "2px",
-    paddingBottom: "2px",
-  }),
-  indicatorsContainer: (base) => ({
-    ...base,
-    minHeight: "52px",
-  }),
-  menu: (base) => ({
-    ...base,
-    zIndex: 30,
-  }),
-};
-
-const industryOptions: IndustryOption[] = [
+const industryOptions = [
   { value: "Technology", label: "Technology" },
   { value: "Design", label: "Design" },
   { value: "Development", label: "Development" },
@@ -87,7 +55,6 @@ export default function CreateGroupForm({
   const [coverPreview, setCoverPreview] = useState<string | null>(
     groupData?.cover_photo_url || null,
   );
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const logoRef = useRef<HTMLInputElement | null>(null);
   const coverRef = useRef<HTMLInputElement | null>(null);
   const [createGroup, { isError, isLoading }] = useCreateGroupMutation();
@@ -330,28 +297,14 @@ export default function CreateGroupForm({
                 control={control}
                 name="industry"
                 render={({ field }) => (
-                  <Select
+                  <CreatableSelectField
                     placeholder="Select industry here..."
-                    value={industryOptions.filter((option) =>
-                      (selectedIndustries.length
-                        ? selectedIndustries
-                        : field.value || []
-                      ).includes(option.value),
-                    )}
-                    onChange={(selectedOptions: MultiValue<IndustryOption>) => {
-                      const values = selectedOptions
-                        .map((option) => option.value)
-                        .slice(0, 3);
-
-                      setSelectedIndustries(values);
-                      field.onChange(values);
-                    }}
+                    values={field.value || []}
+                    onChangeValues={field.onChange}
                     options={industryOptions}
                     isMulti
-                    isSearchable
-                    closeMenuOnSelect={false}
-                    styles={industrySelectStyles}
-                    className="h-13!"
+                    maxCount={3}
+                    className="w-full"
                   />
                 )}
               />

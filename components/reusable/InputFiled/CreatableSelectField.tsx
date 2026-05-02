@@ -1,8 +1,14 @@
 "use client";
 
-import type { SelectProps } from "antd";
-import { Select } from "antd";
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
+import type {
+  GroupBase,
+  MultiValue,
+  SingleValue,
+  StylesConfig,
+} from "react-select";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 type CreatableSelectFieldProps = {
   value?: string;
@@ -11,29 +17,52 @@ type CreatableSelectFieldProps = {
   onChangeValues?: (values: string[]) => void;
   isMulti?: boolean;
   maxCount?: number;
-  options: SelectProps["options"];
+  options: Array<{ value: string; label: string }>;
   placeholder: string;
   className?: string;
   allowCustomInput?: boolean;
+  isDisabled?: boolean;
 };
 
 type FlatOption = { value: string; label: string };
 
-function flattenOptions(option: any): FlatOption[] {
-  if (!option) return [];
-
-  if (Array.isArray(option.options)) {
-    return option.options.flatMap((nestedOption: any) =>
-      flattenOptions(nestedOption),
-    );
-  }
-
-  return [
-    {
-      value: String(option.value ?? ""),
-      label: String(option.label ?? option.value ?? ""),
+const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: "48px",
+    borderRadius: "0.5rem",
+    borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
+    boxShadow: state.isFocused ? "0 0 0 2px #D9F4F7" : "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
     },
-  ];
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    paddingTop: "2px",
+    paddingBottom: "2px",
+  }),
+  menu: (base) => ({
+    ...base,
+    zIndex: 30,
+  }),
+  multiValue: (base) => ({
+    ...base,
+    borderRadius: "9999px",
+  }),
+};
+
+function flattenOptions(options: Array<{ value: string; label: string }> = []) {
+  return options.map((option) => ({
+    value: String(option.value ?? ""),
+    label: String(option.label ?? option.value ?? ""),
+  }));
+}
+
+function toOption(value: string, options: FlatOption[]) {
+  const normalizedValue = String(value ?? "");
+  const matched = options.find((option) => option.value === normalizedValue);
+  return matched ?? { value: normalizedValue, label: normalizedValue };
 }
 
 function CreatableSelectField({
@@ -47,101 +76,65 @@ function CreatableSelectField({
   placeholder,
   className,
   allowCustomInput = false,
+  isDisabled = false,
 }: CreatableSelectFieldProps) {
-  const [searchText, setSearchText] = useState("");
-  const selectedFromMenuRef = useRef(false);
-
   const flatOptions = useMemo(() => {
     if (!options) return [];
-    return options.flatMap((option: any) => flattenOptions(option));
+    return flattenOptions(options);
   }, [options]);
 
   const mergedOptions = useMemo(() => {
-    if (!allowCustomInput) return options;
+    return flatOptions;
+  }, [flatOptions]);
 
-    const typedValue = searchText.trim();
-    if (!typedValue) return options;
+  const selectedValue = useMemo(() => {
+    if (isMulti) {
+      return (values || []).map((item) => toOption(item, flatOptions));
+    }
 
-    const typedLower = typedValue.toLowerCase();
-    const exists = flatOptions.some((option) => {
-      return (
-        option.label.toLowerCase() === typedLower ||
-        option.value.toLowerCase() === typedLower
-      );
-    });
+    if (value === undefined || value === null || value === "") {
+      return null;
+    }
 
-    if (exists) return options;
+    return toOption(value, flatOptions);
+  }, [flatOptions, isMulti, value, values]);
 
-    return [...(options || []), { value: typedValue, label: typedValue }];
-  }, [allowCustomInput, searchText, flatOptions, options]);
+  const handleChange = (
+    nextValue: MultiValue<FlatOption> | SingleValue<FlatOption>,
+  ) => {
+    if (isMulti) {
+      const nextArray = Array.isArray(nextValue)
+        ? nextValue
+            .slice(0, maxCount || nextValue.length)
+            .map((item) => item.value)
+        : [];
+      onChangeValues?.(nextArray);
+      return;
+    }
 
-  const commitTypedValue = () => {
-    if (isMulti) return;
-    if (!allowCustomInput) return;
-    if (!onChange) return;
-
-    const typedValue = searchText.trim();
-    if (!typedValue) return;
-
-    const typedLower = typedValue.toLowerCase();
-    const matched = flatOptions.find((option) => {
-      return (
-        option.label.toLowerCase() === typedLower ||
-        option.value.toLowerCase() === typedLower
-      );
-    });
-
-    onChange(matched ? matched.value : typedValue);
-    setSearchText("");
+    onChange?.((nextValue as FlatOption | null)?.value || "");
   };
 
-  return (
-    <Select
-      mode={isMulti ? (allowCustomInput ? "tags" : "multiple") : undefined}
-      showSearch
-      optionFilterProp="label"
-      placeholder={placeholder}
-      value={isMulti ? values || [] : value || undefined}
-      options={mergedOptions}
-      size="large"
-      maxCount={isMulti ? maxCount : undefined}
-      className={className}
-      filterOption={(input, option) => {
-        const label = String(option?.label ?? "").toLowerCase();
-        const optionValue = String(option?.value ?? "").toLowerCase();
-        const query = input.toLowerCase();
+  const SelectComponent = allowCustomInput ? CreatableSelect : Select;
 
-        return label.includes(query) || optionValue.includes(query);
-      }}
-      onSearch={setSearchText}
-      onSelect={() => {
-        selectedFromMenuRef.current = true;
-      }}
-      onChange={(nextValue) => {
-        if (isMulti) {
-          const nextArray = Array.isArray(nextValue)
-            ? nextValue.map((item) => String(item))
-            : [];
-          onChangeValues?.(nextArray);
-        } else {
-          onChange?.(String(nextValue));
-        }
-        setSearchText("");
-      }}
-      onBlur={() => {
-        if (isMulti) return;
-        // Delay blur commit so click selection in dropdown wins first.
-        setTimeout(() => {
-          if (selectedFromMenuRef.current) {
-            selectedFromMenuRef.current = false;
-            return;
-          }
-          commitTypedValue();
-        }, 0);
-      }}
-      getPopupContainer={(triggerNode) =>
-        triggerNode.parentElement || document.body
+  return (
+    <SelectComponent
+      placeholder={placeholder}
+      isMulti={isMulti}
+      isDisabled={isDisabled}
+      isClearable
+      isSearchable
+      isOptionDisabled={() =>
+        Boolean(isMulti && maxCount && (values?.length || 0) >= maxCount)
       }
+      options={mergedOptions}
+      value={selectedValue as any}
+      onChange={handleChange}
+      className={className}
+      classNamePrefix="common-select"
+      styles={selectStyles}
+      formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
+      noOptionsMessage={() => "No options"}
     />
   );
 }

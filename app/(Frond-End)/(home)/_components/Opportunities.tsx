@@ -39,6 +39,7 @@ export default function Opportunities() {
                                         width={100}
                                         height={100}
                                         className="w-10 sm:w-15 h-10 sm:h-15 rounded-lg object-cover"
+                                        priority
                                     />
                                     <div className="grid grid-cols-1 space-y-4 sm:space-y-5">
                                         <div className="space-y-2 sm:space-y-3">
