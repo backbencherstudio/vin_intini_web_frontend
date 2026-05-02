@@ -152,21 +152,22 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
       <AreaHighlighter areaName={areaName || ""} zoomLevel={zoomLevel || 4} onComplete={onFinishZoom} />
 
       <MarkerClusterGroup>
-        {data?.facilities?.map((hospital) => (
-          <Marker key={`hospital-${hospital.id}`} position={[Number(hospital.latitude), Number(hospital.longitude)]} icon={hospitalIcon}>
+        {data?.facilities?.map((hospital: any) =>
+          (hospital?.latitude && hospital?.longitude) ? (
+            <Marker key={`hospital-${hospital.id}`} position={[Number(hospital.latitude), Number(hospital.longitude)]} icon={hospitalIcon}>
               <Popup autoPan={false} closeButton={false}>
-              <div className="text-xs p-1">
-                <strong className="text-red-600 block mb-1">{hospital.name}</strong>
-                <p className="flex items-center gap-1">
-                  📍 <span>{hospital.location}</span>
-                </p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-        {data?.universities?.map((university) => {
-          console.log("Rendering university marker:", university); // Debug log for each university
-          return (
+                <div className="text-xs p-1">
+                  <strong className="text-red-600 block mb-1">{hospital.name}</strong>
+                  <p className="flex items-center gap-1">
+                    📍 <span>{hospital.location}</span>
+                  </p>
+                </div>
+              </Popup>
+            </Marker>
+          ) : null
+        )}
+        {data?.universities?.map((university) =>
+          (university?.latitude && university?.longitude) ? (
             <Marker key={`university-${university.id}`} position={[Number(university.latitude), Number(university.longitude)]} icon={universityIcon}>
               <Popup autoPan={false} closeButton={false}>
                 <div className="text-xs p-1">
@@ -196,31 +197,33 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
                 </div>
               </Popup>
             </Marker>
-          )
-        })}
-        {data?.residencies?.map((residency) => (
-          <Marker key={`residency-${residency.id}`} position={[Number(residency.latitude), Number(residency.longitude)]} icon={residentialIcon}>
+          ) : null
+        )}
+        {data?.residencies?.map((residency) =>
+          (residency?.latitude && residency?.longitude) ? (
+            <Marker key={`residency-${residency.id}`} position={[Number(residency.latitude), Number(residency.longitude)]} icon={residentialIcon}>
               <Popup autoPan={false} closeButton={false}>
-              <div className="text-xs p-1">
-                {/* Mapping program_name based on your JSON snippet */}
-                <strong className="text-green-700 block mb-1">
-                  {residency.program_name}
-                </strong>
+                <div className="text-xs p-1">
+                  {/* Mapping program_name based on your JSON snippet */}
+                  <strong className="text-green-700 block mb-1">
+                    {residency.program_name}
+                  </strong>
 
-                {/* Handling degree_types array */}
-                {residency.degree_types?.length > 0 && (
-                  <p className="mb-1">
-                    🎓 <strong>Degrees:</strong> {residency.degree_types.join(", ")}
+                  {/* Handling degree_types array */}
+                  {residency.degree_types?.length > 0 && (
+                    <p className="mb-1">
+                      🎓 <strong>Degrees:</strong> {residency.degree_types.join(", ")}
+                    </p>
+                  )}
+
+                  <p className="flex items-center gap-1">
+                    📍 <span>{residency.location}</span>
                   </p>
-                )}
-
-                <p className="flex items-center gap-1">
-                  📍 <span>{residency.location}</span>
-                </p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+                </div>
+              </Popup>
+            </Marker>
+          ) : null
+        )}
       </MarkerClusterGroup>
     </MapContainer>
   );

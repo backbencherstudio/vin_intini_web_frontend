@@ -20,7 +20,7 @@ const MapSkeleton = () => {
       {/* Centered Title Bar Skeleton */}
 
       {/* Main Map Container */}
-      <div className="relative w-full max-w-[960px] aspect-[959/593] bg-white rounded-xl shadow-[0_0_50px_rgba(186,215,255,0.3)] border border-blue-50 flex flex-col items-center justify-center overflow-hidden p-8 md:p-16">
+      <div className="relative w-full aspect-959/593 bg-white rounded-xl border border-blue-50 flex flex-col items-center justify-center overflow-hidden p-8 md:p-16">
 
         <div className="h-9 w-40 bg-gray-200 rounded-full mb-10 animate-pulse"></div>
         {/* Clipped Silhouette Div */}
@@ -31,7 +31,7 @@ const MapSkeleton = () => {
 
         {/* Shimmer Overlay: Moving light effect across the map */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="h-full w-[20%] bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12 animate-[shimmer_2s_infinite]"></div>
+          <div className="h-full w-[20%] bg-linear-to-r from-transparent via-white/40 to-transparent -skew-x-12 animate-[shimmer_2s_infinite]"></div>
         </div>
       </div>
     </div>
