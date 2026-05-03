@@ -2,7 +2,6 @@
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
-import CommonSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import RootDialog from "@/components/reusable/RootDialog";
 import {
   useGetExperienceQuery,
@@ -52,8 +51,8 @@ function ProfileUpdateForm({
         lastName: profileData?.last_name || "Intini",
         title: profileData?.title || "CEO at MindUnite",
         location: profileData?.country || "United States",
-        current_position_id: profileData?.current_position?.title || "",
-        current_institute_id: profileData?.current_institute?.name || "",
+        current_position_id: profileData?.current_position?.id || "",
+        current_institute_id: profileData?.current_institute?.id || "",
         skills: normalizeSkillsList(profileData?.skills) || [],
       },
     });
@@ -66,8 +65,8 @@ function ProfileUpdateForm({
       lastName: profileData?.last_name || "",
       title: profileData?.title || "",
       location: profileData?.country || "",
-      current_position_id: profileData?.current_position?.company_name,
-      current_institute_id: profileData?.current_institute?.name,
+      current_position_id: profileData?.current_position?.id || "",
+      current_institute_id: profileData?.current_institute?.id || "",
       skills: normalizeSkillsList(profileData?.skills) || [],
     });
 
@@ -167,7 +166,7 @@ function ProfileUpdateForm({
                   }
                   placeholder="Select Role here..."
                   allowCustomInput
-                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                
                 />
               )}
             />
@@ -195,13 +194,13 @@ function ProfileUpdateForm({
                   onChange={field.onChange}
                   options={
                     institutionData?.data?.map((institution: any) => ({
-                      value: institution.institution?.id,
+                      value: institution.institution_id,
                       label: institution.institution?.name,
                     })) || []
                   }
                   placeholder="Select Role here..."
                   allowCustomInput
-                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                 
                 />
               )}
             />
@@ -263,9 +262,10 @@ function ProfileUpdateForm({
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="min-w-28 cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
+                disabled={isProfileAboutUpdating}
+                className="min-w-28 disabled:bg-bgColor disabled:text-grayColor1 disabled:cursor-not-allowed cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
               >
-                Save
+                {isProfileAboutUpdating ? "Updating..." : "Update Profile"}
               </button>
             </div>
           </div>
