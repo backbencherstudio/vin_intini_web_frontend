@@ -13,8 +13,6 @@ function ProfileEducationList({ userId }: { userId?: string }) {
   const { data, isLoading } = useGetStudyQuery(userId);
   const educationItems: EducationType[] = data?.data || [];
 
-  console.log(data, "check study data");
-
   const openCreateForm = () => {
     setIsFormOpen(true);
   };

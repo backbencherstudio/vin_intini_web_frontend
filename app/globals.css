@@ -298,5 +298,14 @@ body {
 
 .css-d7l1ni-option {
   background-color: var(--color-lightGreenColor) !important;
-  
+}
+
+.css-qr46ko {
+  max-height: 169px !important;
+  overflow-y: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  box-sizing: border-box;
 }
