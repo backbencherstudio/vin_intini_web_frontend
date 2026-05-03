@@ -1,6 +1,7 @@
 "use client";
 
 import { setSelectedGroupIds } from "@/feature/slice/postCompose/postComposeSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,7 +40,7 @@ function PostGroupListModal({
   ]);
   const dispatch = useDispatch();
   const { selectedGroupIds } = useSelector((state: any) => state.postCompose);
-
+  
   const handleToggleGroup = (id: number) => {
     setLocalSelectedGroupIds((previous) => {
       if (previous.includes(id)) {
@@ -55,7 +56,7 @@ function PostGroupListModal({
   };
 
   return (
-    <section className="bg-whiteColor">
+    <section className="">
       <div className="border-b border-borderColor px-4 py-3">
         <button
           type="button"
@@ -66,7 +67,7 @@ function PostGroupListModal({
         </button>
       </div>
 
-      <div className="max-h-[510px] overflow-y-auto px-4 py-4">
+      <div className="max-h-127.5 overflow-y-auto px-4 py-4">
         <div className="space-y-3">
           {groupItems.map((group) => {
             const isSelected = localSelectedGroupIds.includes(group.id);
@@ -79,7 +80,7 @@ function PostGroupListModal({
                 className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-md py-2 text-left"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-[72px] w-[72px] items-center justify-center rounded-lg bg-[#f1f3f5]">
+                  <div className="flex h-18 w-18 items-center justify-center rounded-lg bg-[#f1f3f5]">
                     <FigmaMark />
                   </div>
 

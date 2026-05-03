@@ -57,105 +57,106 @@ function PostAccessModal({
   };
 
   return (
-    <section className="bg-whiteColor">
-      <div className="border-b border-borderColor px-4 py-3">
+    <section className=" flex flex-col max-h-[90vh] py-4 ">
+      <div className="border-b border-borderColor px-4 pb-2">
         <h3 className="text-lg   leading-12 font-semibold text-descriptionColor">
           Post Setting
         </h3>
       </div>
+      <div className=" flex-1 h-full overflow-y-auto">
+        <div className="px-4 pb-4 pt-5">
+          <h4 className="text-sm font-semibold text-descriptionColor">
+            Select who can see your posts
+          </h4>
 
-      <div className="px-4 pb-4 pt-5">
-        <h4 className="text-sm font-semibold text-descriptionColor">
-          Select who can see your posts
-        </h4>
+          <div className="mt-4 space-y-1">
+            {postVisibilityOptions.map((option) => {
+              const isActive = postVisibility === option.value;
 
-        <div className="mt-4 space-y-1">
-          {postVisibilityOptions.map((option) => {
-            const isActive = postVisibility === option.value;
-
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handlePostVisibilityChange(option.value)}
-                className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
-                    <option.icon className="h-5 w-5" />
-                  </div>
-                  <span className="text-lg  font-semibold text-descriptionColor">
-                    {option.label}
-                  </span>
-                </div>
-
-                <span
-                  className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
-                    isActive ? "border-primaryColor" : "border-grayColor1"
-                  }`}
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handlePostVisibilityChange(option.value)}
+                  className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
                 >
-                  {isActive && (
-                    <span className="h-2 w-2 rounded-full bg-primaryColor" />
-                  )}
-                </span>
-              </button>
-            );
-          })}
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
+                      <option.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-lg  font-semibold text-descriptionColor">
+                      {option.label}
+                    </span>
+                  </div>
+
+                  <span
+                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
+                      isActive ? "border-primaryColor" : "border-grayColor1"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="h-2 w-2 rounded-full bg-primaryColor" />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="border-t border-borderColor px-4 pb-4 pt-5">
+          <h4 className="text-sm font-semibold text-descriptionColor">
+            Comment Control
+          </h4>
+
+          <div className="mt-4 space-y-1">
+            {commentControlOptions.map((option) => {
+              const isActive = commentControl === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleCommentControlChange(option.value)}
+                  className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
+                      <option.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-lg  font-semibold text-descriptionColor">
+                      {option.label}
+                    </span>
+                  </div>
+
+                  <span
+                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
+                      isActive ? "border-primaryColor" : "border-grayColor1"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="h-2 w-2 rounded-full bg-primaryColor" />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
-
-      <div className="border-t border-borderColor px-4 pb-4 pt-5">
-        <h4 className="text-sm font-semibold text-descriptionColor">
-          Comment Control
-        </h4>
-
-        <div className="mt-4 space-y-1">
-          {commentControlOptions.map((option) => {
-            const isActive = commentControl === option.value;
-
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleCommentControlChange(option.value)}
-                className="flex w-full cursor-pointer items-center justify-between rounded-md py-2 text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f3f5] text-descriptionColor">
-                    <option.icon className="h-5 w-5" />
-                  </div>
-                  <span className="text-lg  font-semibold text-descriptionColor">
-                    {option.label}
-                  </span>
-                </div>
-
-                <span
-                  className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
-                    isActive ? "border-primaryColor" : "border-grayColor1"
-                  }`}
-                >
-                  {isActive && (
-                    <span className="h-2 w-2 rounded-full bg-primaryColor" />
-                  )}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <div className="mt-6 flex justify-end gap-4">
-          <button
-            onClick={() => setPostType("Post_write")}
-            className="rounded-md bg-bgLightColor px-4 hover:shadow-lg cursor-pointer py-2 text-descriptionColor hover:bg-bgColor"
-          >
-            Back
-          </button>
-          <button
-            onClick={() => setPostType("Post_write")}
-            className="rounded-md cursor-pointer hover:shadow-lg bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
-          >
-            Done
-          </button>
-        </div>
+      <div className="mt-6 flex justify-end gap-4 px-4">
+        <button
+          onClick={() => setPostType("Post_write")}
+          className="rounded-md bg-bgLightColor px-4 hover:shadow-lg cursor-pointer py-2 text-descriptionColor hover:bg-bgColor"
+        >
+          Back
+        </button>
+        <button
+          onClick={() => setPostType("Post_write")}
+          className="rounded-md cursor-pointer hover:shadow-lg bg-buttonColor px-4 py-2 text-whiteColor hover:bg-buttonHover"
+        >
+          Done
+        </button>
       </div>
     </section>
   );

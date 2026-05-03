@@ -2,6 +2,7 @@
 
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import { Button } from "@/components/ui/button";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   MenueArrowDownIcon,
   PlayIcon,
@@ -21,6 +22,7 @@ type SubmitPayload = {
 function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
   const [postText, setPostText] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
+  const { data } = useGetUserProfileQuery("user");
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
@@ -109,19 +111,21 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
 
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
+          <div className="h-13 w-13 border border-borderColor shrink-0 overflow-hidden rounded-full">
             <Image
-              src="/empty_user.jpg"
+              src={data?.user?.profile_image_url || "/empty_user.jpg"}
               alt="Vin Intiny"
-              width={40}
-              height={40}
+              width={150}
+              height={140}
               className="h-full w-full object-cover"
+              priority
             />
           </div>
 
           <div>
-            <h3 className="text-[20px] font-semibold leading-6 text-descriptionColor">
-              Vin Intiny
+            <h3 className="text-lg font-semibold leading-6 text-descriptionColor">
+              {data?.user?.first_name + " " + data?.user?.last_name ||
+                "Vin Intiny"}
             </h3>
 
             <button
