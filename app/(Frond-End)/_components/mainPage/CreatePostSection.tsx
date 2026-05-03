@@ -91,7 +91,7 @@ function CreatePostSection() {
       {isOpen && (
         <RootDialog open={isOpen} setOpen={setIsOpen}>
           {postType == "Post_write" ? (
-            <PostModal setPostType={handleSetPostType} />
+            <PostModal setOpen={setIsOpen} setPostType={handleSetPostType} />
           ) : postType == "post_access" ? (
             <PostAccessModal setPostType={handleSetPostType} />
           ) : (

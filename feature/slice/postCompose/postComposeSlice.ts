@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type PostType = "Post_write" | "post_access" | "post_group";
-export type PostVisibility = "anyone" | "connections" | "group";
+export type PostVisibility = "public" | "connections" | "group";
 export type CommentControl = "anyone" | "connections" | "no_one";
 
 interface PostComposeState {
@@ -13,7 +13,7 @@ interface PostComposeState {
 
 const initialState: PostComposeState = {
   postType: "Post_write",
-  postVisibility: "anyone",
+  postVisibility: "public",
   commentControl: "anyone",
   selectedGroupIds: [],
 };

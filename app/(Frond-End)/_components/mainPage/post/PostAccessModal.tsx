@@ -12,7 +12,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import { useDispatch, useSelector } from "react-redux";
 
-type PostVisibility = "anyone" | "connections" | "group" | "no_one";
+type PostVisibility = "public" | "connections" | "group" | "no_one" | "anyone";
 
 interface postAccessType {
   value: PostVisibility;
@@ -21,7 +21,7 @@ interface postAccessType {
 }
 
 const postVisibilityOptions: postAccessType[] = [
-  { value: "anyone", label: "Anyone", icon: GlobalIcon },
+  { value: "public", label: "Anyone", icon: GlobalIcon },
   { value: "connections", label: "Connections only", icon: MultiUserIcon },
   { value: "group", label: "Group", icon: GroupUserIcon },
 ];
@@ -57,6 +57,7 @@ function PostAccessModal({
   };
 
   return (
+    
     <section className=" flex flex-col max-h-[90vh] py-4 ">
       <div className="border-b border-borderColor px-4 pb-2">
         <h3 className="text-lg   leading-12 font-semibold text-descriptionColor">
