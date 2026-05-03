@@ -151,3 +151,30 @@ export interface EducationType {
   status: "Complete" | "Ongoing" | "Incomplete"; 
   institution: Institution;
 }
+
+export interface PostMediaType {
+  id: number;
+  post_id: number;
+  file_path: string;
+  type: "image" | "video";
+  order: number;
+  created_at: string;
+  updated_at: string;
+  url: string;
+}
+
+export interface PostFeedType {
+  id: number;
+  user: UserProfileType;
+  description: string;
+  visibility: "public" | "private" | "connections";
+  who_can_comment: "anyone" | "connections" | "no_one";
+  total_like: number;
+  liked_by_me: boolean;
+  is_connected: boolean;
+  media: PostMediaType[];
+  groups: any[]; 
+  created_at: string;
+  can_edit: boolean;
+  can_delete: boolean;
+}
