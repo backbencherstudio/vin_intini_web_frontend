@@ -5,14 +5,19 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { useGetAllCommentListByPostIdQuery, useGetReplyListByCommentIdQuery } from "@/feature/slice/post/commentSlice";
+import {
+  useGetAllCommentListByPostIdQuery,
+  useGetReplyListByCommentIdQuery,
+} from "@/feature/slice/post/commentSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import Image from "next/image";
 import { useState } from "react";
+
+import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
+import { useReplyLikeListQuery } from "@/feature/slice/post/likeSlice";
 import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
-import { useReplyLikeListQuery } from "@/feature/slice/post/likeslice";
 
 type CommentItem = {
   id: number;
@@ -47,7 +52,8 @@ const mainComment: CommentItem[] = [
 
 function PostComment({ post }: { post?: PostFeedType }) {
   const { data } = useGetUserProfileQuery("user");
-  const { data: commentData } = useGetAllCommentListByPostIdQuery(post?.id);
+  const { data: commentData, isLoading: isCommentLoading } =
+    useGetAllCommentListByPostIdQuery(post?.id);
   const { data: replyData } = useGetReplyListByCommentIdQuery(post?.id);
   const { data: replyLikeData } = useReplyLikeListQuery(post?.id);
   console.log(commentData, "comment data check");
@@ -73,24 +79,35 @@ function PostComment({ post }: { post?: PostFeedType }) {
 
       <div className="mt-4 space-y-4 ">
         <Accordion type="single" collapsible defaultValue="replies">
-          {commentData?.data?.map((item) => (
-            <AccordionItem
-              value="replies"
-              className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-px after:bg-borderColor"
-              key={item?.id}
-            >
-              <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
-                <CommentRow item={item} depth={0} />
-              </AccordionTrigger>
-              <AccordionContent className="pb-0">
-                {/* <div className="space-y-5 relative">
+          {isCommentLoading ? (
+            <div className="w-full space-y-3">
+              {[...Array(3)].map((_, index) => (
+                <div className="border-b ">
+
+                  <CommentRowSkeleton  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            commentData?.data?.map((item) => (
+              <AccordionItem
+                value="replies"
+                className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-px after:bg-borderColor"
+                key={item?.id}
+              >
+                <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
+                  <CommentRow item={item} depth={0} />
+                </AccordionTrigger>
+                <AccordionContent className="pb-0">
+                  {/* <div className="space-y-5 relative">
                   {item?.replyComments.map((reply) => (
                     <CommentRow key={reply.id} item={reply} depth={1} />
                   ))}
                 </div> */}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                </AccordionContent>
+              </AccordionItem>
+            ))
+          )}
         </Accordion>
       </div>
 

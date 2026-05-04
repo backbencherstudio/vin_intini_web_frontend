@@ -7,7 +7,8 @@ import { useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
-import { usePostToggleLikeMutation } from "@/feature/slice/post/likeslice";
+import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
+
 
 type PostCardProps = {
   post?: PostFeedType;

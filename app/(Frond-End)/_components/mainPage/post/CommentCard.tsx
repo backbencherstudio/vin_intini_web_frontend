@@ -1,3 +1,4 @@
+import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
 import Image from "next/image";
 
 export default function CommentRow({
@@ -9,6 +10,17 @@ export default function CommentRow({
   showReply?: boolean;
   item: any;
 }) {
+  const [postToggleLike] = usePostToggleLikeMutation();
+  const handleLikeComment = async () => {
+    try {
+      const response = await postToggleLike({ postId: item?.id });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleReplyLikeComment = () => {
+    // Implement like comment functionality here
+  };
   return (
     <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
       {depth > 0 && (
@@ -43,15 +55,16 @@ export default function CommentRow({
         {item?.comment || "This is a sample comment."}
       </p>
 
-      <div className="mt-2 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
-        <button
-          type="button"
-          className="cursor-pointer text-descriptionColor hover:opacity-80"
-        >
-          Like • 100
-        </button>
+      {depth == 0 ? (
+        <div className="mt-2 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
+          <button
+            type="button"
+            onClick={handleLikeComment}
+            className="cursor-pointer text-descriptionColor hover:opacity-80"
+          >
+            Like • 100
+          </button>
 
-        {depth == 0 && (
           <>
             <span className="text-headerColor/45">|</span>
 
@@ -62,8 +75,16 @@ export default function CommentRow({
               Reply • 100
             </button>
           </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={handleReplyLikeComment}
+          className="cursor-pointer text-descriptionColor hover:opacity-80"
+        >
+          Like • 100
+        </button>
+      )}
     </div>
   );
 }

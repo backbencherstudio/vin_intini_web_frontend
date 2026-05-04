@@ -1,6 +1,6 @@
 import baseApiSlice from "../baseApi";
 
-export const likeApi = baseApiSlice.injectEndpoints({
+export const likeSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getLikeList: builder.query({
       query: (postId) => ({
@@ -68,4 +68,4 @@ export const {
   usePostToggleLikeMutation,
   useCommentLikePostMutation,
   useReplyToggleLikeByIdMutation,
-} = likeApi;
+} = likeSlice;
