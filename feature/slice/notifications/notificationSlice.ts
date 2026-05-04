@@ -6,24 +6,28 @@ const notificationSlice = baseApiSlice.injectEndpoints({
       query: () => ({
         url: `/notifications`,
         method: "GET",
-        providesTags: ['Notifications'],
       }),
+      providesTags: ['Notifications'], 
     }),
     getNotificationCount: builder.query({
       query: () => ({
         url: `/notifications/unread-count`,
         method: "GET",
-        providesTags: ['Notifications'],
       }),
+      providesTags: ['Notifications'],
     }),
     updateNotificationReadStatus: builder.mutation({
       query: () => ({
         url: `/notifications/mark-all-as-read`,
         method: "POST",
-        invalidatesTags: ['Notifications'],
       }),
+      invalidatesTags: ['Notifications'],
     }),
   }),
 });
 
-export const { useGetNotificationsQuery, useGetNotificationCountQuery, useUpdateNotificationReadStatusMutation } = notificationSlice;
+export const { 
+  useGetNotificationsQuery, 
+  useGetNotificationCountQuery, 
+  useUpdateNotificationReadStatusMutation 
+} = notificationSlice;

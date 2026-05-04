@@ -10,19 +10,17 @@ export const useRealtimeNotifications = (
 
   useEffect(() => {
     if (!userId) return;
-    const channel = echo.private(`App.Models.User.${userId}`);
-    console.log(`Subscribed to channel: App.Models.User: `, userId);
+    const channelName = `App.Models.User.${userId}`;
+    const channel = echo.private(channelName);
 
-    channel.listen(
-      ".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated",
-      (data: any) => {
-        console.log("GOT IT! Raw notification arrived:", data);
-        dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
-      },
-    );
+    channel.notification((data: any) => {
+      console.log("🔥 Notification Received:", data);
+      dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
+    });
 
     return () => {
-      echo.leave(`App.Models.User.${userId}`);
+      console.log(`🛑 Unsubscribing from: ${channelName}`);
+      echo.leave(channelName);
     };
   }, [userId, dispatch]);
 };
