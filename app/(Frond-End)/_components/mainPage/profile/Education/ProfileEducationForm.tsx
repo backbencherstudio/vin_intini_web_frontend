@@ -4,19 +4,32 @@ import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSele
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
+import { useGetSkillSuggestionsQuery } from "@/feature/slice/user/experienceSlice";
+import {
+  useAddStudyMutation,
+  useGetInstitutionSuggestionsQuery,
+  useUpdateStudyMutation,
+} from "@/feature/slice/user/studySlice";
+import { EducationType } from "@/lib/type";
+import {
+  degreeOptions,
+  monthOptions,
+  yearOptions,
+} from "@/public/demoData/RealData";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export type EducationFormValues = {
-  school: string;
+  institution: string;
   degree: string;
-  fieldOfStudy: string;
-  startMonth: string;
-  startYear: string;
-  endMonth: string;
-  endYear: string;
-  isCurrent: boolean;
+  field_study: string;
+  start_month: string;
+  start_year: string;
+  end_month: string;
+  end_year: string;
+  is_current: boolean;
   grade: string;
   activities: string;
   description: string;
@@ -26,103 +39,85 @@ export type EducationFormValues = {
 type ProfileEducationFormProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  initialValues?: Partial<EducationFormValues>;
+  initialValues?: EducationType;
 };
 
-const defaultEducationValues: EducationFormValues = {
-  school: "",
-  degree: "",
-  fieldOfStudy: "",
-  startMonth: "",
-  startYear: "",
-  endMonth: "",
-  endYear: "",
-  isCurrent: false,
-  grade: "",
-  activities: "",
-  description: "",
-  skills: [],
-};
+function normalizeSkillsList(skills?: unknown): string[] {
+  if (!Array.isArray(skills)) return [];
 
-const degreeOptions = [
-  { value: "High School", label: "High School" },
-  { value: "Associates Degree", label: "Associates Degree" },
-  { value: "Bachelor's Degree", label: "Bachelor's Degree" },
-  { value: "Master's Degree", label: "Master's Degree" },
-  { value: "PsyD", label: "PsyD" },
-  { value: "PhD", label: "PhD" },
-  { value: "DO", label: "DO" },
-  { value: "MD", label: "MD" },
-  { value: "MD-DO", label: "MD-DO" },
-  { value: "MD-PhD", label: "MD-PhD" },
-  { value: "Other", label: "Other" },
-];
+  return skills
+    .map((skill) => {
+      if (typeof skill === "string") return skill;
 
-const monthOptions = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-].map((month) => ({ value: month, label: month }));
+      if (skill && typeof skill === "object") {
+        const typedSkill = skill as Record<string, unknown>;
+        const value =
+          typedSkill.value ??
+          typedSkill.label ??
+          typedSkill.name ??
+          typedSkill.skill_name ??
+          typedSkill.title;
 
-const yearOptions = [
-  "2027",
-  "2026",
-  "2025",
-  "2024",
-  "2023",
-  "2022",
-  "2021",
-].map((year) => ({ value: year, label: year }));
+        return typeof value === "string" ? value : "";
+      }
 
-const skillOptions = [
-  { value: "User Interface Design", label: "User Interface Design" },
-  { value: "User Experience Design", label: "User Experience Design" },
-  { value: "Research", label: "Research" },
-  { value: "Academic Writing", label: "Academic Writing" },
-  { value: "Data Analysis", label: "Data Analysis" },
-  { value: "Team Leadership", label: "Team Leadership" },
-];
+      return "";
+    })
+    .filter(Boolean);
+}
 
 function ProfileEducationForm({
   open,
   setOpen,
   initialValues,
 }: ProfileEducationFormProps) {
-  const [showSkillsPicker, setShowSkillsPicker] = useState(false);
-
+  const [showSkillsPicker, setShowSkillsPicker] = useState(
+    initialValues ? true : false,
+  );
+  const { data: skillsData } = useGetSkillSuggestionsQuery("skill-suggestions");
+  const { data: schoolData } =
+    useGetInstitutionSuggestionsQuery("school-suggestions");
+  const [addStudy, { isLoading }] = useAddStudyMutation();
+  const [updateStudy, { isLoading: isUpdating }] = useUpdateStudyMutation();
   const { control, register, handleSubmit, watch, reset } =
     useForm<EducationFormValues>({
-      defaultValues: defaultEducationValues,
+      defaultValues: {
+        institution: initialValues?.institution?.name || "",
+        degree: initialValues?.degree || "",
+        field_study: initialValues?.field_study || "",
+        start_month: initialValues?.start_month || "",
+        start_year: initialValues?.start_year || "",
+        end_month: initialValues?.end_month || "",
+        end_year: initialValues?.end_year || "",
+        is_current: initialValues?.is_current || false,
+        grade: initialValues?.grade || "",
+        activities: initialValues?.activities || "",
+        description: initialValues?.description || "",
+        skills: normalizeSkillsList(initialValues?.skills_data),
+      },
     });
 
-  useEffect(() => {
-    if (!open) return;
-
-    const mergedValues: EducationFormValues = {
-      ...defaultEducationValues,
-      ...initialValues,
-      skills: initialValues?.skills || [],
-    };
-
-    reset(mergedValues);
-    setShowSkillsPicker(mergedValues.skills.length > 0);
-  }, [open, initialValues, reset]);
-
   const descriptionCount = watch("description")?.length || 0;
-  const selectedSkills = watch("skills") || [];
+  const selectedSkills =
+    watch("skills") || normalizeSkillsList(initialValues?.skills_data);
 
-  const onSubmit = (values: EducationFormValues) => {
-    console.log("Education Form Values:", values);
-    setOpen(false);
+  const onSubmit = async (values: EducationFormValues) => {
+    try {
+      const response = initialValues
+        ? await updateStudy({ id: initialValues.id, payload: values }).unwrap()
+        : await addStudy(values).unwrap();
+      toast.success(
+        response?.message || initialValues
+          ? "Education updated successfully."
+          : "Education saved successfully.",
+      );
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.data?.message || "Failed to save education. Please try again.",
+      );
+    }
   };
 
   return (
@@ -137,14 +132,30 @@ function ProfileEducationForm({
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
-          <ReusableInput
-            id="school"
-            label="School"
-            placeholder="School"
-            required
-            {...register("school")}
-            className="rounded-lg border-borderColor"
-          />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
+              Institution <span className="text-redColor">*</span>
+            </label>
+            <Controller
+              name="institution"
+              control={control}
+              render={({ field }) => (
+                <CreatableSelectField
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  options={
+                    schoolData?.data?.map((school: { name: string }) => ({
+                      value: school.name,
+                      label: school.name,
+                    })) || []
+                  }
+                  placeholder="Select school here..."
+                  allowCustomInput
+                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
+                />
+              )}
+            />
+          </div>
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
@@ -167,22 +178,13 @@ function ProfileEducationForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
-              Field of study <span className="text-redColor">*</span>
-            </label>
-            <Controller
-              name="fieldOfStudy"
-              control={control}
-              render={({ field }) => (
-                <CreatableSelectField
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                  options={skillOptions}
-                  placeholder="Select field here..."
-                  allowCustomInput
-                  className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
-                />
-              )}
+            <ReusableInput
+              id="field_study"
+              label="Field of Study"
+              placeholder="Field of Study"
+              required
+              {...register("field_study")}
+              className="rounded-lg border-borderColor"
             />
           </div>
 
@@ -192,7 +194,7 @@ function ProfileEducationForm({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="startMonth"
+                name="start_month"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -205,7 +207,7 @@ function ProfileEducationForm({
                 )}
               />
               <Controller
-                name="startYear"
+                name="start_year"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -226,7 +228,7 @@ function ProfileEducationForm({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Controller
-                name="endMonth"
+                name="end_month"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -239,7 +241,7 @@ function ProfileEducationForm({
                 )}
               />
               <Controller
-                name="endYear"
+                name="end_year"
                 control={control}
                 render={({ field }) => (
                   <CreatableSelectField
@@ -258,7 +260,7 @@ function ProfileEducationForm({
             <label className="inline-flex cursor-pointer items-center gap-2 text-base text-descriptionColor">
               <input
                 type="checkbox"
-                {...register("isCurrent")}
+                {...register("is_current")}
                 className="h-4 w-4"
               />
               I&apos;m currently studying here
@@ -316,7 +318,12 @@ function ProfileEducationForm({
                     maxCount={5}
                     values={field.value || []}
                     onChangeValues={field.onChange}
-                    options={skillOptions}
+                    options={
+                      skillsData?.data?.map((skill: { name: string }) => ({
+                        value: skill.name,
+                        label: skill.name,
+                      })) || []
+                    }
                     placeholder="Select skill here..."
                     className="mb-2.5 w-full [&_.ant-select-selector]:min-h-13! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                   />
@@ -338,10 +345,15 @@ function ProfileEducationForm({
           <div className="border-t border-borderColor pt-5">
             <div className="flex justify-center">
               <button
+                disabled={isLoading || isUpdating}
                 type="submit"
-                className="min-w-28 cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
+                className="min-w-28 disabled:cursor-not-allowed disabled:bg-bgColor disabled:text-grayColor1  cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
               >
-                Save
+                {isLoading || isUpdating
+                  ? "Saving..."
+                  : initialValues
+                    ? "Update Education"
+                    : "Add Education"}
               </button>
             </div>
           </div>

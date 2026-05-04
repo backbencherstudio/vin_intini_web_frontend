@@ -66,7 +66,8 @@ export default function TestSlide({ data }: PropType) {
                           alt={testimonial.review}
                           width={550}
                           height={150}
-                          className="w-full rounded-md object-cover md:max-w-[500px]"
+                          className="w-full h-auto rounded-md object-cover md:max-w-[500px]"
+                          priority
                         />
                         <div className="space-y-6">
                           <div className="w-full space-y-3">

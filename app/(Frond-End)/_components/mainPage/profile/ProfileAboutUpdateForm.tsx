@@ -2,14 +2,15 @@
 
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
+import { useProfileAboutUpdateMutation } from "@/feature/slice/user/userSlice";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type ProfileAboutUpdateFormProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   initialAbout?: string;
-  onSave?: (about: string) => void;
 };
 
 type AboutFormValues = {
@@ -20,13 +21,13 @@ function ProfileAboutUpdateForm({
   open,
   setOpen,
   initialAbout = "",
-  onSave,
 }: ProfileAboutUpdateFormProps) {
   const { register, handleSubmit, watch, reset } = useForm<AboutFormValues>({
     defaultValues: {
       about: initialAbout,
     },
   });
+  const [profileAboutUpdate, { isLoading }] = useProfileAboutUpdateMutation();
 
   useEffect(() => {
     if (open) {
@@ -36,9 +37,17 @@ function ProfileAboutUpdateForm({
 
   const aboutValue = watch("about") || "";
 
-  const onSubmit = (values: AboutFormValues) => {
-    onSave?.(values.about);
-    setOpen(false);
+  const onSubmit = async (values: AboutFormValues) => {
+    try {
+      const response = await profileAboutUpdate({
+        about: values.about,
+      }).unwrap();
+      toast.success(response.message || "Profile about updated successfully!");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error updating profile about:", error);
+      toast.error(error?.data?.message || "Failed to update profile about.");
+    }
   };
 
   return (
@@ -59,7 +68,7 @@ function ProfileAboutUpdateForm({
             placeholder="What is the purpose of the group?"
             maxLength={2500}
             {...register("about")}
-            className="min-h-44 w-full rounded-lg border border-borderColor bg-white px-3 py-2 text-base text-descriptionColor outline-none transition focus:ring-2! focus:ring-primaryColor/20!"
+            className="min-h-48 w-full rounded-lg border border-borderColor bg-white px-3 py-2 text-base text-descriptionColor outline-none transition focus:ring-2! focus:ring-primaryColor/20!"
           />
 
           <p className="-mt-2 text-sm text-descriptionColor">
@@ -70,9 +79,10 @@ function ProfileAboutUpdateForm({
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="min-w-28 cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
+                disabled={isLoading}
+                className="min-w-28 disabled:bg-bgColor disabled:text-grayColor1 disabled:cursor-not-allowed cursor-pointer rounded-full bg-primaryColor px-8 py-2 text-base font-semibold text-whiteColor transition-opacity hover:opacity-90"
               >
-                Save
+                {isLoading ? "Saving..." : "Save"}
               </button>
             </div>
           </div>

@@ -53,7 +53,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["group"],
     }),
     leaveGroup: builder.mutation({
-      query: ({ groupId }) => ({
+      query: (groupId) => ({
         url: `/group/leave`,
         method: "POST",
         body: groupId,
@@ -69,10 +69,10 @@ const groupSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["group"],
     }),
     groupUpdate: builder.mutation({
-      query: ({ groupId, payload }) => ({
-        url: `/group-update/${groupId}`,
+      query: ({ id, data }) => ({
+        url: `/group-update/${id}`,
         method: "POST",
-        body: payload,
+        body: data,
       }),
       invalidatesTags: ["group"],
     }),

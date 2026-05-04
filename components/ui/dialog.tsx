@@ -121,6 +121,11 @@ function DialogDescription({
   );
 }
 
+// Visually hidden component for accessibility
+function VisuallyHidden({ className, ...props }: React.ComponentProps<"div">) {
+  return <div className={cn("sr-only", className)} {...props} />;
+}
+
 export {
   Dialog,
   DialogClose,
@@ -132,4 +137,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  VisuallyHidden,
 };

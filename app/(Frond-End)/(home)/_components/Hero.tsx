@@ -41,6 +41,8 @@ export default function Hero() {
                             alt="Hero Image"
                             fill
                             className="w-full h-full object-contain"
+                            priority
+                            
                         />
                     </div>
                 </div>

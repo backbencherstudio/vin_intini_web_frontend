@@ -130,7 +130,7 @@ function page() {
             </label>
 
             <div className="flex items-center gap-3">
-              <div className="w-[74px] h-[74px] rounded-full bg-bgColor flex items-center justify-center overflow-hidden">
+              <div className="w-18 h-18 rounded-full bg-bgColor flex items-center justify-center overflow-hidden">
                 {photoPreview ? (
                   <Image
                     src={photoPreview}

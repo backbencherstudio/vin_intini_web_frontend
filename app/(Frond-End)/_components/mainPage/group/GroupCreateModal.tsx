@@ -1,21 +1,20 @@
 "use client";
 
+import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import RootDialog from "@/components/reusable/RootDialog";
-import { useCreateGroupMutation } from "@/feature/slice/group/groupSlice";
+import {
+  useCreateGroupMutation,
+  useGroupUpdateMutation,
+} from "@/feature/slice/group/groupSlice";
+import { GroupDetailType } from "@/lib/type";
 import { ImageUploadIcon, UploadUPIcon } from "@/public/svgIcons/Icons";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Select, { type MultiValue, type StylesConfig } from "react-select";
-
-type IndustryOption = {
-  value: string;
-  label: string;
-};
 
 type GroupFormValues = {
   name: string;
@@ -31,34 +30,7 @@ type GroupFormValues = {
   cover_photo: FileList;
 };
 
-const industrySelectStyles: StylesConfig<IndustryOption, true> = {
-  control: (base, state) => ({
-    ...base,
-    minHeight: "52px",
-    borderRadius: "0.5rem",
-    borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
-    boxShadow: state.isFocused ? "0 0 0 2px #D9F4F7" : "none",
-    "&:hover": {
-      borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
-    },
-  }),
-  valueContainer: (base) => ({
-    ...base,
-    minHeight: "52px",
-    paddingTop: "2px",
-    paddingBottom: "2px",
-  }),
-  indicatorsContainer: (base) => ({
-    ...base,
-    minHeight: "52px",
-  }),
-  menu: (base) => ({
-    ...base,
-    zIndex: 30,
-  }),
-};
-
-const industryOptions: IndustryOption[] = [
+const industryOptions = [
   { value: "Technology", label: "Technology" },
   { value: "Design", label: "Design" },
   { value: "Development", label: "Development" },
@@ -69,16 +41,25 @@ const industryOptions: IndustryOption[] = [
 export default function CreateGroupForm({
   open,
   setOpen,
+  groupData,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  groupData?: GroupDetailType;
 }) {
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  console.log(groupData?.id, "=============");
+
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    groupData?.logo_url || null,
+  );
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    groupData?.cover_photo_url || null,
+  );
   const logoRef = useRef<HTMLInputElement | null>(null);
   const coverRef = useRef<HTMLInputElement | null>(null);
-  const [createGroup, { isError, isLoading  }] = useCreateGroupMutation();
+  const [createGroup, { isError, isLoading }] = useCreateGroupMutation();
+  const [groupUpdate, { isError: isUpdateError, isLoading: isUpdateLoading }] =
+    useGroupUpdateMutation();
   const {
     register,
     handleSubmit,
@@ -87,15 +68,17 @@ export default function CreateGroupForm({
     formState: { errors },
   } = useForm<GroupFormValues>({
     defaultValues: {
-      industry: [],
-      type: "public",
-      discoverability: "listed",
-      allow_member_invites: true,
-      require_post_approval: true,
+      name: groupData?.name || "",
+      description: groupData?.description || "",
+      industry: groupData?.industry || [],
+      location: groupData?.location || "",
+      rules: groupData?.rules || "",
+      type: groupData?.type || "public",
+      discoverability: groupData?.discoverability || "listed",
+      allow_member_invites: groupData?.allow_member_invites ?? true,
+      require_post_approval: groupData?.require_post_approval ?? true,
     },
   });
-
-
 
   // Watch group type for conditional rendering
   const selectedType = watch("type");
@@ -147,6 +130,16 @@ export default function CreateGroupForm({
     }
 
     try {
+      if (groupData) {
+        const response = await groupUpdate({
+          id: groupData?.id,
+          data: formData,
+        }).unwrap();
+        console.log("Group updated successfully:", response);
+        toast.success(response.message || "Group updated successfully!");
+        setOpen(false);
+        return;
+      }
       const response = await createGroup(formData).unwrap();
       console.log("Group created successfully:", response);
       toast.success(response.message || "Group created successfully!");
@@ -195,18 +188,18 @@ export default function CreateGroupForm({
             </label>
 
             {/* Floating Logo Box */}
-            <div className="absolute -bottom-12 left-8 h-20 w-20 bg-bgLightColor rounded-xl flex items-center justify-center">
+            <div className="absolute -bottom-12 left-8 h-20 w-20 bg-bgLightColor rounded-sm flex items-center justify-center">
               {logoPreview ? (
                 <>
                   <Image
                     src={logoPreview}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover border border-bgColor rounded-sm "
                     alt="Logo"
                     fill
                   />
                   <button
                     onClick={() => setLogoPreview(null)}
-                    className="p-1 rounded-full birder bg-redColor/15 absolute -right-2 -top-2 hover:bg-redColor/20 transition-all"
+                    className="p-1 z-10 cursor-pointer rounded-full birder bg-redColor/15 absolute -right-2 -top-2 hover:bg-redColor/20 transition-all"
                   >
                     <X className="w-4 h-4  text-redColor" />
                   </button>
@@ -304,28 +297,14 @@ export default function CreateGroupForm({
                 control={control}
                 name="industry"
                 render={({ field }) => (
-                  <Select
+                  <CreatableSelectField
                     placeholder="Select industry here..."
-                    value={industryOptions.filter((option) =>
-                      (selectedIndustries.length
-                        ? selectedIndustries
-                        : field.value || []
-                      ).includes(option.value),
-                    )}
-                    onChange={(selectedOptions: MultiValue<IndustryOption>) => {
-                      const values = selectedOptions
-                        .map((option) => option.value)
-                        .slice(0, 3);
-
-                      setSelectedIndustries(values);
-                      field.onChange(values);
-                    }}
+                    values={field.value || []}
+                    onChangeValues={field.onChange}
                     options={industryOptions}
                     isMulti
-                    isSearchable
-                    closeMenuOnSelect={false}
-                    styles={industrySelectStyles}
-                    className="h-13!"
+                    maxCount={3}
+                    className="w-full"
                   />
                 )}
               />
@@ -502,10 +481,16 @@ export default function CreateGroupForm({
             <div className="flex justify-center ">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isUpdateLoading}
                 className="bg-primaryColor disabled:cursor-not-allowed disabled:bg-bgColor disabled:shadow-transparent disabled:text-grayColor1 text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
               >
-                {isLoading ? "Creating..." : "Create Group"}
+                {isUpdateLoading
+                  ? "Updating..."
+                  : groupData
+                    ? "Update Group"
+                    : isUpdateLoading
+                      ? "Creating..."
+                      : "Create Group"}
               </button>
             </div>
           </div>
