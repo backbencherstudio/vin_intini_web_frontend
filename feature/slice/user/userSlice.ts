@@ -2,7 +2,6 @@ import baseApiSlice from "../baseApi";
 
 const userSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
     getMyProfile: builder.query({
       query: () => ({
         url: "/profile",

@@ -8,7 +8,6 @@ function ProfileUserConnectCard({ profile }: any) {
   const { user, mutual_connections_count } = profile;
   const [sendRequest, { isLoading }] = useSendRequestMutation();
   const [requestSentId, setRequestSentId] = useState();
-  console.log(requestSentId, "requestSentId=====");
 
   const handleConnect = async (id) => {
     const payload = {

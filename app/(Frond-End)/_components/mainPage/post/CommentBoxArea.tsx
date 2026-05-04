@@ -1,34 +1,46 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import { useCommentPostByIdMutation } from "@/feature/slice/post/commentSlice";
+
 import { EmojiIcon, ImageUploadIcon } from "@/public/svgIcons/Icons";
 import EmojiPicker, {
   Categories,
   type EmojiClickData,
 } from "emoji-picker-react";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 type SubmitPayload = {
   text: string;
-  images: File[];
+  image: File | null;
 };
 
-function CommentBoxArea() {
+function CommentBoxArea({
+  postId,
+  parentId,
+}: {
+  postId?: number;
+  parentId?: number | null;
+}) {
   const [commentText, setCommentText] = useState("");
+  const [commentPostById, { isLoading }] = useCommentPostByIdMutation();
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return () => {
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
     };
-  }, [previewUrls]);
+  }, [previewUrl]);
 
   useEffect(() => {
     if (!isEmojiOpen) return;
@@ -65,66 +77,73 @@ function CommentBoxArea() {
   };
 
   const handleImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []).filter((file) =>
+    const file = Array.from(event.target.files || []).find((file) =>
       file.type.startsWith("image/"),
     );
 
-    if (files.length === 0) {
+    if (!file) {
+      event.target.value = "";
       return;
     }
 
-    setSelectedImages((previous) => {
-      const nextFiles = [...previous, ...files];
+    setSelectedImage((previous) => {
+      if (previous && previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      return file;
+    });
 
-      setPreviewUrls((previousUrls) => {
-        previousUrls.forEach((url) => URL.revokeObjectURL(url));
-        return nextFiles.map((file) => URL.createObjectURL(file));
-      });
-
-      return nextFiles;
+    setPreviewUrl((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return URL.createObjectURL(file);
     });
 
     event.target.value = "";
   };
 
-  const handleRemoveImage = (indexToRemove: number) => {
-    setSelectedImages((previous) =>
-      previous.filter((_, index) => index !== indexToRemove),
-    );
-
-    setPreviewUrls((previous) => {
-      const next = previous.filter((_, index) => index !== indexToRemove);
-      const removed = previous[indexToRemove];
-      if (removed) {
-        URL.revokeObjectURL(removed);
-      }
-      return next;
-    });
+  const handleRemoveImage = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setSelectedImage(null);
+    setPreviewUrl(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedText = commentText.trim();
-    if (!trimmedText && selectedImages.length === 0) {
+    if (!postId) {
+      console.error("Missing postId for comment submission");
+      return;
+    }
+
+    if (!trimmedText && !selectedImage) {
       return;
     }
 
     const formData = new FormData();
     formData.append("comment", trimmedText);
-    selectedImages.forEach((image) => {
-      formData.append("images", image);
-    });
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+    if (parentId) {
+      formData.append("parent_id", parentId.toString());
+    }
 
-    const payload: SubmitPayload = {
-      text: trimmedText,
-      images: selectedImages,
-    };
-    console.log(payload);
-
-    previewUrls.forEach((url) => URL.revokeObjectURL(url));
-    setCommentText("");
-    setSelectedImages([]);
-    setPreviewUrls([]);
-    setIsEmojiOpen(false);
+    try {
+      const response = await commentPostById({
+        postData: formData,
+        postId,
+      }).unwrap();
+      toast.success(response?.message || "Comment posted successfully!");
+      setCommentText("");
+      setSelectedImage(null);
+      setPreviewUrl(null);
+      setIsEmojiOpen(false);
+    } catch (error) {
+      console.error("Failed to submit comment:", error);
+    }
   };
 
   return (
@@ -133,7 +152,6 @@ function CommentBoxArea() {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        multiple
         className="hidden"
         onChange={handleImagesChange}
       />
@@ -147,43 +165,24 @@ function CommentBoxArea() {
           className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none"
         />
 
-        {previewUrls.length > 0 && (
-          <div className="mb-1 flex items-center gap-2">
-            {previewUrls.slice(0, 3).map((url, index) => {
-              const hiddenCount = previewUrls.length - 3;
-              const showOverlay = index === 2 && hiddenCount > 0;
-
-              return (
-                <div
-                  key={`${url}-${index}`}
-                  className="relative w-10 h-10 overflow-hidden rounded-md border border-borderColor"
-                >
-                  <Image
-                    src={url}
-                    alt={`Preview ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-
-                  {showOverlay && (
-                    <div className="absolute inset-0 w-full text-center leading-[100%] flex items-center justify-center bg-black/50 text-xs font-semibold text-whiteColor">
-                      +{hiddenCount} more
-                    </div>
-                  )}
-
-                  {!showOverlay && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute right-0 top-0 cursor-pointer rounded-full bg-redColor/55 h-4 w-4 leading-0 flex justify-center items-center  text-xs text-whiteColor"
-                      aria-label="Remove image"
-                    >
-                      <X size={10} />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
+        {previewUrl && (
+          <div className="mb-2">
+            <div className="relative w-24 h-20 overflow-hidden rounded-md border border-borderColor">
+              <Image
+                src={previewUrl}
+                alt="Preview"
+                fill
+                className="object-cover w-full h-fullf"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute right-1 top-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-redColor/70 text-xs text-whiteColor"
+                aria-label="Remove image"
+              >
+                <X size={10} />
+              </button>
+            </div>
           </div>
         )}
 
@@ -212,7 +211,9 @@ function CommentBoxArea() {
             title="Comment"
             type="button"
             onClick={handleSubmit}
-            disabled={!commentText.trim() && selectedImages.length === 0}
+            loading={isLoading}
+            sendingMsg={<Loader className="animate-spin w-4 h-4" />}
+            disabled={(!commentText.trim() && !selectedImage) || isLoading}
             className="py-1! leading-[140%]! rounded-full! bg-buttonColor px-5 text-[14px]! font-semibold text-whiteColor hover:opacity-90 cursor-pointer"
           />
         </div>

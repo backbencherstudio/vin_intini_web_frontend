@@ -1,28 +1,40 @@
 "use client";
 
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
-import { Button } from "@/components/ui/button";
+import { useCreatePostMutation } from "@/feature/slice/post/postSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   MenueArrowDownIcon,
   PlayIcon,
   SendIcon,
 } from "@/public/svgIcons/Icons";
+import { useDispatch, useSelector } from "react-redux";
 
+import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSlice";
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
-type SubmitPayload = {
-  text: string;
-  media: File[];
-};
-
-function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
+function PostModal({
+  setOpen,
+  setPostType,
+}: {
+  setOpen: (open: boolean) => void;
+  setPostType: (type: string) => void;
+}) {
   const [postText, setPostText] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
+  const { data } = useGetUserProfileQuery("user");
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
+  const dispatch = useDispatch();
+  const [createPost, { isLoading }] = useCreatePostMutation();
+  const { postVisibility, commentControl, selectedGroupIds } = useSelector(
+    (state: any) => state.postCompose,
+  );
+
   useEffect(() => {
     return () => {
       previewUrls.forEach((url) => URL.revokeObjectURL(url));
@@ -72,31 +84,46 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedText = postText.trim();
     if (!trimmedText && selectedMedia.length === 0) {
       return;
     }
 
     const formData = new FormData();
-    formData.append("comment", trimmedText);
+    formData.append("description", trimmedText);
+    formData.append(
+      "visibility",
+      postVisibility === "group" ? "groups" : postVisibility,
+    );
+    formData.append("who_can_comment", commentControl);
+
+    if (selectedGroupIds.length > 0) {
+      selectedGroupIds.forEach((groupId) => {
+        formData.append("group_ids[]", String(groupId));
+      });
+    }
+
     selectedMedia.forEach((media) => {
-      formData.append("media", media);
+      formData.append("media[]", media);
     });
 
-    const payload: SubmitPayload = {
-      text: trimmedText,
-      media: selectedMedia,
-    };
-    console.log(payload);
-
-    previewUrls.forEach((url) => URL.revokeObjectURL(url));
-    setPostText("");
-    setSelectedMedia([]);
-    setPreviewUrls([]);
+    try {
+      const response = await createPost(formData).unwrap();
+      toast.success(response.message || "Post created successfully");
+      dispatch(resetPostComposeState());
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      setPostText("");
+      setSelectedMedia([]);
+      setPreviewUrls([]);
+      setOpen(false);
+    } catch (error) {
+      console.error("Failed to create post", error);
+    }
   };
 
   return (
+    
     <section className="relative  px-4 pb-4 pt-4 md:px-5 md:pb-5 md:pt-4">
       <input
         ref={mediaInputRef}
@@ -109,19 +136,21 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
 
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
+          <div className="h-13 w-13 border border-borderColor shrink-0 overflow-hidden rounded-full">
             <Image
-              src="/empty_user.jpg"
+              src={data?.user?.profile_image_url || "/empty_user.jpg"}
               alt="Vin Intiny"
-              width={40}
-              height={40}
+              width={150}
+              height={140}
               className="h-full w-full object-cover"
+              priority
             />
           </div>
 
           <div>
-            <h3 className="text-[20px] font-semibold leading-6 text-descriptionColor">
-              Vin Intiny
+            <h3 className="text-lg font-semibold leading-6 text-descriptionColor">
+              {data?.user?.first_name + " " + data?.user?.last_name ||
+                "Vin Intiny"}
             </h3>
 
             <button
@@ -238,15 +267,21 @@ function PostModal({ setPostType }: { setPostType: (type: string) => void }) {
             </button>
           </div>
 
-          <Button
+          <button
             type="button"
             onClick={handleSubmit}
-            disabled={!postText.trim() && selectedMedia.length === 0}
-            className=" h-8  rounded-full disabled:cursor-not-allowed disabled:bg-grayColor1 cursor-pointer leading-[160%] bg-buttonColor px-5 text-[14px] font-semibold text-whiteColor  hover:bg-buttonColor/90 hover:shadow-xl"
+            disabled={
+              (!postText.trim() && selectedMedia.length === 0) || isLoading
+            }
+            className=" h-8 disabled:cursor-not-allowed gap-2 rounded-full disabled:bg-grayColor1 cursor-pointer leading-[140%] bg-buttonColor px-4 text-[14px] font-semibold text-whiteColor flex items-center hover:bg-buttonColor/90 hover:shadow-xl"
           >
-            <SendIcon className="mr-1 h-2.5 w-3.5" />
+            {isLoading ? (
+              <Loader className=" animate-spin h-4 w-4" />
+            ) : (
+              <SendIcon className=" h-4 w-4" />
+            )}
             Post
-          </Button>
+          </button>
         </div>
       </div>
     </section>

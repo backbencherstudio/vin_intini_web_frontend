@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, is_connectable, action_label } =
     profile;
-  console.log(profile, "profile");
+
   const [requestSent, setRequestSent] = useState();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
   const handleConnect = async () => {

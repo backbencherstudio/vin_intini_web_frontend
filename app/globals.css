@@ -1,8 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import 'leaflet/dist/leaflet.css';
-@import 'leaflet.markercluster/dist/MarkerCluster.css';
-@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+@import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -289,25 +289,23 @@ body {
   font-size: 12px !important;
 }
 
-.QUIbkc{
+.QUIbkc {
   display: none !important;
 }
-
-
-
-
-/* Focused State */
-:where(.css-dev-only-do-not-override-xogyor).ant-select.ant-select-outlined:not(
-    .ant-select-disabled
-  ).ant-select-focused
-  .ant-select-selector {
-  border-color: var(--primaryColor) !important;
-  /* This creates a 2px ring using box-shadow (0 offset, 0 blur, 2px spread) */
-  box-shadow: 0 0 0 3px var(--primaryColor) !important;
-  outline: none !important;
+.css-tr4s17-option {
+  background-color: var(--primaryColor) !important;
 }
 
-:where(.css-dev-only-do-not-override-xogyor).ant-select.ant-select-outlined:not(.ant-select-disabled):hover {
-    --ant-select-border-color: var(--color-borderColor) !important;
-    --ant-select-background-color: var(--ant-select-selector-bg);
+.css-d7l1ni-option {
+  background-color: var(--color-lightGreenColor) !important;
+}
+
+.css-qr46ko {
+  max-height: 169px !important;
+  overflow-y: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  box-sizing: border-box;
 }

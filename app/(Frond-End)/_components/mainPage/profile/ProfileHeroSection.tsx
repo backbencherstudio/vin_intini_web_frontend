@@ -86,15 +86,14 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
               <p>
-                {profileData?.experiences?.[0]?.title ||
+                {profileData?.current_position?.name ||
                   "Software Engineer at Betopia Group"}
               </p>
             </div>
             <div className="flex items-center text-descriptionColor font-semibold gap-1.5">
               <PiStudent size={24} className="" />
               <p>
-                {profileData?.educations?.[0]?.institution?.name ||
-                  "Dhaka University"}
+                {profileData?.current_institute?.name || "Dhaka University"}
               </p>
             </div>
           </div>

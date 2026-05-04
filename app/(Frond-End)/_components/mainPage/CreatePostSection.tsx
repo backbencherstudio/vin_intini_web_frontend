@@ -1,6 +1,7 @@
 "use client";
 import RootDialog from "@/components/reusable/RootDialog";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   EmojiIcon,
   ImageUploadIcon,
@@ -17,6 +18,7 @@ import PostModal from "./post/PostModal";
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
+  const { data } = useGetUserProfileQuery("user");
   const { postType } = useSelector((state: any) => state.postCompose);
   const [postText, setPostText] = useState("");
 
@@ -29,17 +31,19 @@ function CreatePostSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src="/empty_user.jpg"
+            src={data?.user?.profile_image_url || "/empty_user.jpg"}
             alt="User avatar"
             width={32}
             height={32}
             className="h-full w-full object-cover"
+            priority
           />
         </div>
 
         <textarea
           placeholder="Type your post..."
           rows={2}
+          onClick={() => setIsOpen(true)}
           className="w-full resize-none bg-transparent text-sm text-headerColor placeholder:text-grayColor1 focus:outline-none"
           value={postText}
           onChange={(e) => setPostText(e.target.value)}
@@ -87,7 +91,7 @@ function CreatePostSection() {
       {isOpen && (
         <RootDialog open={isOpen} setOpen={setIsOpen}>
           {postType == "Post_write" ? (
-            <PostModal setPostType={handleSetPostType} />
+            <PostModal setOpen={setIsOpen} setPostType={handleSetPostType} />
           ) : postType == "post_access" ? (
             <PostAccessModal setPostType={handleSetPostType} />
           ) : (
