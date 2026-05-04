@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-
+import dayjs from "@/lib/dayjs";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -28,3 +28,15 @@ export function normalizeSkillsList(skills?: unknown): string[] {
     })
     .filter(Boolean);
 }
+
+ export const formatPostDate = (date: string) => {
+    const postDate = dayjs(date);
+    const now = dayjs();
+    const diffDays = now.diff(postDate, "day");
+
+    if (diffDays >= 7) {
+      return postDate.format("YYYY-MM-DD HH:mm:ss");
+    }
+
+    return postDate.fromNow();
+  };

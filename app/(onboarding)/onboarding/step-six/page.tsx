@@ -3,7 +3,7 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
-import { useProfileSetupMutation } from "@/feature/slice/auth/authSlice";
+import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import { UploadIcon, UploadUserIcon } from "@/public/svgIcons/Icons";
 
 import {

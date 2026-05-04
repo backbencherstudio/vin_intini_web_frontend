@@ -2,10 +2,10 @@
 
 import postImage from "@/public/images/testimonial/banner1.png";
 import { useEffect, useState } from "react";
-import PostCard, { PostCardData } from "../post/PostCard";
+import PostCard from "../post/PostCard";
 import PostCardSkleton from "../post/PostCardSkleton";
 
-const postItems: PostCardData[] = [
+const postItems: any[] = [
   {
     id: 1,
     authorName: "Profile Name",
