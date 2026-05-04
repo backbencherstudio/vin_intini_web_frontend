@@ -19,7 +19,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 
 function UserHeaderInfo() {
-  const { data, isLoading, isError } = useGetUserProfileQuery("user");
+  const { data : userProfileData, isLoading : userProfileLoading, isError : userProfileError } = useGetUserProfileQuery("user");
 
   const router = useRouter();
   const { data, isLoading, error } = useGetNotificationCountQuery("");
@@ -46,7 +46,7 @@ function UserHeaderInfo() {
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div className=" w-7 h-7 lg:w-12 border border-primaryColor lg:h-12 rounded-full overflow-hidden">
                       <Image
-                        src={data?.user?.profile_image_url || "/empty_user.jpg"}
+                        src={userProfileData?.user?.profile_image_url || "/empty_user.jpg"}
                         alt="Admin Avatar"
                         width={40}
                         height={40}
@@ -66,7 +66,7 @@ function UserHeaderInfo() {
                   <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
                       <Image
-                        src={data?.user?.profile_image_url || "/empty_user.jpg"}
+                        src={userProfileData?.user?.profile_image_url || "/empty_user.jpg"}
                         alt="Admin Avatar"
                         width={40}
                         height={40}
@@ -75,11 +75,11 @@ function UserHeaderInfo() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-headerColor">
-                        {data?.user?.first_name + " " + data?.user?.last_name ||
+                        {userProfileData?.user?.first_name + " " + userProfileData?.user?.last_name ||
                           "Vin Intini"}
                       </p>
                       <p className="text-sm  text-grayColor1 line-clamp-1">
-                        {data?.user?.title || "CEO & Founder, MindUnite"}
+                        {userProfileData?.user?.title || "CEO & Founder, MindUnite"}
                       </p>
                     </div>
                   </div>

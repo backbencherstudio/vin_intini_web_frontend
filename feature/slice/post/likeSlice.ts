@@ -41,12 +41,11 @@ export const likeSlice = baseApiSlice.injectEndpoints({
     }),
 
     commentLikePost: builder.mutation({
-      query: ({ postData, commentId }) => ({
+      query: ({ commentId }) => ({
         url: `/comment-toggle-like/${commentId}`,
         method: "POST",
-        body: postData,
       }),
-      invalidatesTags: ["Like", "Post"],
+      invalidatesTags: ["Comment"],
     }),
 
     replyToggleLikeById: builder.mutation({

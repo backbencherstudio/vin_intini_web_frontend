@@ -21,9 +21,13 @@ type SubmitPayload = {
 function CommentBoxArea({
   postId,
   parentId,
+  replyingToUserName,
+  onCancelReply,
 }: {
   postId?: number;
   parentId?: number | null;
+  replyingToUserName?: string | null;
+  onCancelReply?: () => void;
 }) {
   const [commentText, setCommentText] = useState("");
   const [commentPostById, { isLoading }] = useCommentPostByIdMutation();
@@ -33,6 +37,13 @@ function CommentBoxArea({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (replyingToUserName && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [replyingToUserName]);
 
   useEffect(() => {
     return () => {
@@ -141,6 +152,7 @@ function CommentBoxArea({
       setSelectedImage(null);
       setPreviewUrl(null);
       setIsEmojiOpen(false);
+      onCancelReply?.();
     } catch (error) {
       console.error("Failed to submit comment:", error);
     }
@@ -157,7 +169,24 @@ function CommentBoxArea({
       />
 
       <div className="w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3">
+        {replyingToUserName && (
+          <div className="mb-2 flex items-center justify-between bg-blue-50 rounded-lg p-2 px-3">
+            <span className="text-sm text-headerColor">
+              Replying to{" "}
+              <span className="font-semibold">{replyingToUserName}</span>
+            </span>
+            <button
+              type="button"
+              onClick={onCancelReply}
+              className="text-sm text-descriptionColor hover:text-headerColor"
+              aria-label="Cancel reply"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <textarea
+          ref={textareaRef}
           placeholder="type..."
           rows={2}
           value={commentText}

@@ -1,23 +1,15 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import {} from "@/components/ui/accordion";
 
-import {
-  useGetAllCommentListByPostIdQuery,
-  useGetReplyListByCommentIdQuery,
-} from "@/feature/slice/post/commentSlice";
+import { useGetAllCommentListByPostIdQuery } from "@/feature/slice/post/commentSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import Image from "next/image";
-import { useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
-import { useReplyLikeListQuery } from "@/feature/slice/post/likeSlice";
 import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
+import { CommentReplyList } from "./CommentReplyList";
 
 type CommentItem = {
   id: number;
@@ -27,38 +19,64 @@ type CommentItem = {
   replyComments?: CommentItem[];
 };
 
-const mainComment: CommentItem[] = [
-  {
-    id: 1,
-    showReply: true,
-    message: "This is a sample comment.",
-    replyComments: [
-      { id: 2, message: "This is a sample comment reply one." },
-      { id: 3, message: "This is a sample comment reply two." },
-      { id: 4, message: "This is a sample comment reply three." },
-    ],
-  },
-  {
-    id: 2,
-    showReply: true,
-    message: "This is a sample comment.",
-    replyComments: [
-      { id: 2, message: "This is a sample comment reply one." },
-      { id: 3, message: "This is a sample comment reply two." },
-      { id: 4, message: "This is a sample comment reply three." },
-    ],
-  },
-];
-
 function PostComment({ post }: { post?: PostFeedType }) {
+  const CONNECTOR_START_OFFSET = 44;
   const { data } = useGetUserProfileQuery("user");
   const { data: commentData, isLoading: isCommentLoading } =
     useGetAllCommentListByPostIdQuery(post?.id);
-  const { data: replyData } = useGetReplyListByCommentIdQuery(post?.id);
-  const { data: replyLikeData } = useReplyLikeListQuery(post?.id);
-  console.log(commentData, "comment data check");
-
+  const commentContainerRefs = useRef<Record<number, HTMLDivElement | null>>(
+    {},
+  );
   const [parentId, setParentId] = useState<number | null>(null);
+  const [openReplyCommentId, setOpenReplyCommentId] = useState<number | null>(
+    null,
+  );
+  const [replyLineHeights, setReplyLineHeights] = useState<
+    Record<number, number>
+  >({});
+  const [replyingToUserName, setReplyingToUserName] = useState<string | null>(
+    null,
+  );
+
+  const handleReply = (commentId: number, userName: string) => {
+    setParentId(commentId);
+    setReplyingToUserName(userName);
+    setOpenReplyCommentId(commentId);
+  };
+
+  const handleToggleReplies = (commentId: number) => {
+    setOpenReplyCommentId((previous) =>
+      previous === commentId ? null : commentId,
+    );
+  };
+
+  const handleCancelReply = () => {
+    setParentId(null);
+    setReplyingToUserName(null);
+  };
+
+  const handleLastReplyTopChange = (
+    commentId: number,
+    lastTopInViewport: number | null,
+  ) => {
+    const commentContainer = commentContainerRefs.current[commentId];
+
+    if (!commentContainer || lastTopInViewport === null) {
+      setReplyLineHeights((previous) => ({ ...previous, [commentId]: 0 }));
+      return;
+    }
+
+    const commentTop = commentContainer.getBoundingClientRect().top;
+    const nextHeight = Math.max(
+      lastTopInViewport - commentTop - CONNECTOR_START_OFFSET,
+      0,
+    );
+
+    setReplyLineHeights((previous) => ({
+      ...previous,
+      [commentId]: nextHeight,
+    }));
+  };
 
   return (
     <section className=" border-t border-borderColor comment-section py-4 md:py-4">
@@ -73,42 +91,58 @@ function PostComment({ post }: { post?: PostFeedType }) {
           />
         </div>
         <div className="flex-1">
-          <CommentBoxArea postId={post?.id} parentId={parentId} />
+          <CommentBoxArea
+            postId={post?.id}
+            parentId={parentId}
+            replyingToUserName={replyingToUserName}
+            onCancelReply={handleCancelReply}
+          />
         </div>
       </div>
 
-      <div className="mt-4 space-y-4 ">
-        <Accordion type="single" collapsible defaultValue="replies">
-          {isCommentLoading ? (
-            <div className="w-full space-y-3">
-              {[...Array(3)].map((_, index) => (
-                <div className="border-b ">
-
-                  <CommentRowSkeleton  />
+      <div className="mt-4 space-y-4 lg:space-y-6 ">
+        {isCommentLoading ? (
+          <div className="w-full space-y-3">
+            {[...Array(3)].map((_, index) => (
+              <div className="border-b " key={index}>
+                <CommentRowSkeleton />
+              </div>
+            ))}
+          </div>
+        ) : (
+          commentData?.data?.map((item) => (
+            <div
+              key={item?.id}
+              ref={(element) => {
+                commentContainerRefs.current[item.id] = element;
+              }}
+              style={
+                {
+                  "--reply-line-height": `${replyLineHeights[item.id] || 0}px`,
+                } as CSSProperties
+              }
+              className={`relative border-b-0 after:absolute after:left-3.5 after:top-11 after:w-px after:bg-borderColor after:content-[''] ${openReplyCommentId === item.id ? "after:h-(--reply-line-height)" : "after:h-0"}`}
+            >
+              <CommentRow
+                item={item}
+                depth={0}
+                onReply={handleReply}
+                onToggleReplies={handleToggleReplies}
+                isRepliesOpen={openReplyCommentId === item.id}
+              />
+              {openReplyCommentId === item.id && (
+                <div className="">
+                  <CommentReplyList
+                    commentId={item.id}
+                    onLastReplyTopChange={(lastTopInViewport) =>
+                      handleLastReplyTopChange(item.id, lastTopInViewport)
+                    }
+                  />
                 </div>
-              ))}
+              )}
             </div>
-          ) : (
-            commentData?.data?.map((item) => (
-              <AccordionItem
-                value="replies"
-                className="border-b-0 relative after:content-[''] after:absolute after:top-11 after:bottom-23 after:left-3.5 after:w-px after:bg-borderColor"
-                key={item?.id}
-              >
-                <AccordionTrigger className="py-3 pb-6  text-[15px] cursor-pointer font-semibold text-headerColor hover:no-underline">
-                  <CommentRow item={item} depth={0} />
-                </AccordionTrigger>
-                <AccordionContent className="pb-0">
-                  {/* <div className="space-y-5 relative">
-                  {item?.replyComments.map((reply) => (
-                    <CommentRow key={reply.id} item={reply} depth={1} />
-                  ))}
-                </div> */}
-                </AccordionContent>
-              </AccordionItem>
-            ))
-          )}
-        </Accordion>
+          ))
+        )}
       </div>
 
       <button
