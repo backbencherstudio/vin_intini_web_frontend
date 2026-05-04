@@ -35,7 +35,7 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
 
       <div
         className={cn(
-          "fixed top-0 left-0 z-50 h-screen w-full bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
+          "fixed top-0 left-0 z-999 h-screen w-full bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
           menuOpen ? "translate-x-0 opacity-100" : "-translate-x-full",
         )}
       >
