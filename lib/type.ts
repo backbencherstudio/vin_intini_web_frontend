@@ -171,6 +171,7 @@ export interface PostFeedType {
   who_can_comment: "anyone" | "connections" | "no_one";
   total_like: number;
   liked_by_me: boolean;
+  total_comment: number;
   is_connected: boolean;
   media: PostMediaType[];
   groups: any[]; 

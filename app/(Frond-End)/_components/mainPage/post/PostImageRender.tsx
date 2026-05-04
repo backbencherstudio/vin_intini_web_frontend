@@ -20,7 +20,7 @@ function PostImageRender({ mediaItems }: any) {
         width={10000}
         height={10000}
         sizes="(max-width: 768px) 100vw, 50vw"
-        className="object-fill h-full w-full bg-black/5"
+        className=" object-cover w-full h-full  bg-black/5"
       />
     </div>
   );
@@ -39,12 +39,12 @@ function PostImageRender({ mediaItems }: any) {
         key={item.id ?? `${item.url}-${index}`}
         type="button"
         onClick={() => openMediaViewer(index)}
-        className={`relative overflow-hidden bg-[#eff1f4] ${className}`}
+        className={`relative cursor-pointer overflow-hidden  ${className}`}
       >
         {renderMedia(item)}
 
         {showOverlay && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/55 text-lg font-semibold text-whiteColor">
+          <div className="absolute  inset-0 flex items-center justify-center bg-black/55 text-lg font-semibold text-whiteColor">
             +{hiddenCount} more
           </div>
         )}
@@ -55,7 +55,7 @@ function PostImageRender({ mediaItems }: any) {
     <div>
       {mediaItems.length > 0 && (
         <div
-          className={`mt-4 overflow-hidden border border-borderColor bg-[#eff1f4] ${
+          className={`mt-4 overflow-hidden h-full   ${
             mediaItems.length === 1 ? "rounded-md" : "rounded-xl"
           }`}
         >
@@ -74,14 +74,14 @@ function PostImageRender({ mediaItems }: any) {
                   key={item.id}
                   type="button"
                   onClick={() => openMediaViewer(index)}
-                  className="relative aspect-square overflow-hidden rounded-md bg-[#eff1f4]"
+                  className="relative  overflow-hidden rounded-md bg-[#eff1f4]"
                 >
                   {renderMedia(item)}
                 </button>
               ))}
             </div>
           ) : (
-            <div className="grid h-75 grid-cols-[1.25fr_0.75fr] gap-1 bg-whiteColor p-1">
+            <div className="grid grid-cols-[1.25fr_0.75fr] gap-1 bg-whiteColor p-1">
               <button
                 type="button"
                 onClick={() => openMediaViewer(0)}
@@ -90,7 +90,7 @@ function PostImageRender({ mediaItems }: any) {
                 {renderMedia(mediaItems[0])}
               </button>
 
-              <div className="flex h-full flex-col gap-1">
+              <div className="flex h-full  flex-col gap-1">
                 {mediaItems
                   .slice(1, 4)
                   .map((item, index) =>
@@ -98,7 +98,7 @@ function PostImageRender({ mediaItems }: any) {
                       item,
                       index + 1,
                       mediaItems.length,
-                      "relative flex-1 overflow-hidden rounded-md bg-[#eff1f4]",
+                      "rounded-md!",
                     ),
                   )}
               </div>

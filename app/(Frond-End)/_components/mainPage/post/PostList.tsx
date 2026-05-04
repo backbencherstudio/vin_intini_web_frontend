@@ -8,7 +8,7 @@ import PostCard from "./PostCard";
 function PostList() {
   const { data, isLoading } = useGetNewsfeedQuery("newsfeed");
   const posts = data?.data || [];
-  console.log(posts, "========data");
+ 
 
   return (
     <section className="space-y-4">

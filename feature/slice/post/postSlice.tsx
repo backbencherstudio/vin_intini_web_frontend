@@ -126,6 +126,14 @@ const postSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["post"],
     }),
+    postToggleLike: builder.mutation({
+      query: ({postId }) => ({
+        url: `/toggle-like/${postId}`,
+        method: "POST",
+        
+      }),
+      invalidatesTags: ["post"],
+    }),
     updatePost: builder.mutation({
       query: (postData) => ({
         url: `/profile/posts/${postData.id}`,
@@ -187,6 +195,7 @@ export const {
   useGetGroupPostByIDQuery,
   useCreatePostMutation,
   useLikePostMutation,
+  usePostToggleLikeMutation,
   useCommentLikePostMutation,
   useCommentPostByIdMutation,
   useReplyToggleLikeByIdMutation,

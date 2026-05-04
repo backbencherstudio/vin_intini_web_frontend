@@ -60,11 +60,11 @@ function PostImageShowDialog({
     <RootDialog
       open={open}
       setOpen={setOpen}
-      className="max-w-6xl border-0 bg-black p-0"
+      className="max-w-6xl border-0  p-0"
       ariaLabel="Post image preview"
       ariaDescription="Preview post images with slider controls"
     >
-      <div className="relative w-full bg-black p-2 sm:p-4">
+      <div className="relative w-full  p-2 sm:p-4">
         {mediaItems.length > 1 && (
           <button
             type="button"
@@ -76,20 +76,21 @@ function PostImageShowDialog({
           </button>
         )}
 
-        <div className="relative w-full overflow-hidden rounded-xl bg-black">
+        <div className="relative w-full overflow-hidden rounded-xl ">
           <div
             className="flex transition-transform duration-300 ease-out"
             style={{ transform: `translateX(-${activeMediaIndex * 100}%)` }}
           >
             {mediaItems.map((item) => (
-              <div key={item.id} className="relative min-w-full bg-black">
+              <div key={item.id} className="relative min-w-full ">
                 <div className="relative h-[70vh] w-full">
                   <Image
                     src={item.url || "/post_placeholder.png"}
                     alt="Post image preview"
-                    fill
+                    width={1000}
+                    height={1000}
                     sizes="100vw"
-                    className="object-contain"
+                    className="w-full h-full object-contain bg-black/5"
                   />
                 </div>
               </div>
