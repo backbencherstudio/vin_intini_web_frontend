@@ -17,7 +17,7 @@ export default function CommentRow({
       <div className="flex items-start gap-2.5">
         <div className="h-8 w-8  overflow-hidden rounded-full">
           <Image
-            src="/empty_user.jpg"
+            src={item?.user?.profile_image || "/empty_user.jpg"}
             alt="Profile"
             width={32}
             height={32}
@@ -27,10 +27,10 @@ export default function CommentRow({
 
         <div className="min-w-0 flex-1">
           <h4 className="text-sm leading-[140%] font-semibold text-headerColor">
-            {item?.name || "Profile Name"}
+            {item?.user?.name || "Profile Name"}
           </h4>
           <p className=" line-clamp-1 text-[13px] wf font-normal text-descriptionColor">
-            {item?.title ||
+            {item?.user?.title ||
               "Title (whether its a concise or long title, all the text will be in single line. Truncate the sentence i...)"}
           </p>
         </div>
@@ -40,7 +40,7 @@ export default function CommentRow({
       </div>
 
       <p className="mt-2 pl-10 text-base font-normal leading-[150%] text-descriptionColor">
-        {item?.message || "This is a sample comment."}
+        {item?.comment || "This is a sample comment."}
       </p>
 
       <div className="mt-2 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">

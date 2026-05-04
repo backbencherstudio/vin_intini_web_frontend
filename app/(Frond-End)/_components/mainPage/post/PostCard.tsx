@@ -1,4 +1,4 @@
-import { usePostToggleLikeMutation } from "@/feature/slice/post/postSlice";
+
 import { PostFeedType } from "@/lib/type";
 import { formatPostDate } from "@/lib/utils";
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
@@ -7,6 +7,7 @@ import { useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
+import { usePostToggleLikeMutation } from "@/feature/slice/post/likeslice";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -43,13 +44,13 @@ function PostCard({ post }: PostCardProps) {
     <article className="rounded-xl border border-borderColor p-2.5 md:p-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
-          <div className="h-10 w-10 rounded-full">
+          <div className="h-10  w-10 rounded-full">
             <Image
-              src="/empty_user.jpg"
+              src={user?.profile_image_url || "/empty_user.jpg"}
               alt="Profile"
-              width={40}
-              height={40}
-              className="rounded-full"
+              width={80}
+              height={80}
+              className="rounded-full w-full h-full object-cover"
             />
           </div>
           <div>
@@ -103,7 +104,7 @@ function PostCard({ post }: PostCardProps) {
         </button>
       </div>
 
-      <div className="mt-2">{isCommented && <PostComment />}</div>
+      <div className="mt-2">{isCommented && <PostComment post={post} />}</div>
     </article>
   );
 }

@@ -11,7 +11,8 @@ const extractAccessToken = (payload: any): string | null => {
 };
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
+  baseUrl:
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
   credentials: "include",
   prepareHeaders: async (headers) => {
     const token = await getToken();
@@ -34,7 +35,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
   if (result.error && result.error.status === 401) {
     const requestUrl = typeof args === "string" ? args : args.url;
-    
+
     if (requestUrl.includes("/refresh")) {
       await clearToken();
       return result;
@@ -46,11 +47,11 @@ const baseQueryWithReauth: BaseQueryFn<
           const refreshResult = await rawBaseQuery(
             { url: "/refresh", method: "POST" },
             api,
-            extraOptions
+            extraOptions,
           );
 
           const newToken = extractAccessToken(refreshResult.data);
-          
+
           if (newToken) {
             await setToken(newToken);
             return newToken;
@@ -81,7 +82,17 @@ export const baseApiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: ["User", "experience", "study", "post", "connect", "follow", "group"],
+  tagTypes: [
+    "User",
+    "experience",
+    "study",
+    "Post",
+    "Comment",
+    "Like",
+    "connect",
+    "follow",
+    "group",
+  ],
 });
 
 export default baseApiSlice;
