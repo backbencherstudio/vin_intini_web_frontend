@@ -92,6 +92,7 @@ export const baseApiSlice = createApi({
     "connect",
     "follow",
     "group",
+    "Notifications",
   ],
 });
 
