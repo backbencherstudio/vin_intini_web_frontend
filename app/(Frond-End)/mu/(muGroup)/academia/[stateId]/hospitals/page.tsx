@@ -40,7 +40,6 @@ export default function page() {
     const handleTabChange = (tabValue: string) => {
         setActiveTab(tabValue);
     }
-
     
     if (isLoading) {
         return (

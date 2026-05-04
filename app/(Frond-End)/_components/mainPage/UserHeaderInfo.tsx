@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,11 +16,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 
 function UserHeaderInfo() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data, isLoading, error } = useGetNotificationCountQuery("");
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -27,9 +31,11 @@ function UserHeaderInfo() {
             href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
-            <span className="absolute -top-2 -right-2 flex justify-center items-center text-xs w-4 h-4 text-whiteColor rounded-full bg-redColor">
-              2
-            </span>
+            {data?.data?.unread_count > 0 &&
+              <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
+                {data?.data.unread_count > 99 ? "99+" : data?.data.unread_count}
+              </span>
+            }
             <NotificationIcon />
           </Link>
 
