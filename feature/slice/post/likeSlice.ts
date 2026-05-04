@@ -6,21 +6,21 @@ export const likeSlice = baseApiSlice.injectEndpoints({
       query: (postId) => ({
         url: `/liked-list/${postId}`,
       }),
-      providesTags: ["Post", "Like"],
+      providesTags: ["Post", "Comment"],
     }),
 
     replyLikeList: builder.query({
       query: (commentId) => ({
         url: `/reply-liked-list/${commentId}`,
       }),
-      providesTags: ["Post", "Like"],
+      providesTags: ["Post", "Comment"],
     }),
 
     getCommentLikeListByPostId: builder.query({
       query: (postId) => ({
         url: `/comment-liked-list/${postId}`,
       }),
-      providesTags: ["Post", "Like"],
+      providesTags: ["Post", "Comment"],
     }),
 
     likePost: builder.mutation({
@@ -29,7 +29,7 @@ export const likeSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: postData,
       }),
-      invalidatesTags: ["Like", "Post"],
+      invalidatesTags: ["Comment", "Post"],
     }),
 
     postToggleLike: builder.mutation({
@@ -37,7 +37,7 @@ export const likeSlice = baseApiSlice.injectEndpoints({
         url: `/toggle-like/${postId}`,
         method: "POST",
       }),
-      invalidatesTags: ["Like", "Post"],
+      invalidatesTags: ["Comment", "Post"],
     }),
 
     commentLikePost: builder.mutation({
@@ -49,12 +49,11 @@ export const likeSlice = baseApiSlice.injectEndpoints({
     }),
 
     replyToggleLikeById: builder.mutation({
-      query: ({ postData, commentId }) => ({
+      query: ({ commentId }) => ({
         url: `/reply-toggle-like/${commentId}`,
         method: "POST",
-        body: postData,
       }),
-      invalidatesTags: ["Post", "Like"],
+      invalidatesTags: ["Comment"],
     }),
   }),
 });

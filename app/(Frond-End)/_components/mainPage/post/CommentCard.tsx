@@ -1,5 +1,10 @@
-import { useCommentLikePostMutation } from "@/feature/slice/post/likeSlice";
+import {
+  useCommentLikePostMutation,
+  useReplyToggleLikeByIdMutation,
+} from "@/feature/slice/post/likeSlice";
+import { formatPostDate } from "@/lib/utils";
 import Image from "next/image";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function CommentRow({
@@ -18,13 +23,16 @@ export default function CommentRow({
   isRepliesOpen?: boolean;
 }) {
   const [commentLikePost] = useCommentLikePostMutation();
-  //   const [isLiked, setIsLiked] = useState(Boolean(item?.like_count));
-  //   const likedByMe = Boolean(item?.liked_by_me);
-  // const likesCount = Math.max(
-  //   0,
-  //   (item?.total_like || 0) + (isLiked === likedByMe ? 0 : isLiked ? 1 : -1),
-  // );
+  const [replyToggleLikeById] = useReplyToggleLikeByIdMutation();
+  const [isLiked, setIsLiked] = useState(Boolean(item?.liked_by_me));
+  const likedByMe = Boolean(item?.liked_by_me);
+  const likesCount = Math.max(
+    0,
+    (item?.like_count || 0) + (isLiked === likedByMe ? 0 : isLiked ? 1 : -1),
+  );
   const handleLikeComment = async () => {
+    const newLikedStatus = !isLiked;
+    setIsLiked(newLikedStatus);
     try {
       const response = await commentLikePost({ commentId: item?.id });
       toast.success(
@@ -35,8 +43,19 @@ export default function CommentRow({
       toast.error("Failed to like the comment. Please try again.");
     }
   };
-  const handleReplyLikeComment = () => {
-    // Implement like comment functionality here
+  const handleReplyLikeComment = async () => {
+    const newLikedStatus = !isLiked;
+    setIsLiked(newLikedStatus);
+    try {
+      const response = await replyToggleLikeById({ commentId: item?.id });
+      toast.success(
+        response?.data?.message || "Reply like toggled successfully",
+      );
+    } catch (error) {
+      setIsLiked(!newLikedStatus);
+      console.log(error);
+      toast.error("Failed to like the reply. Please try again.");
+    }
   };
   return (
     <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
@@ -64,7 +83,7 @@ export default function CommentRow({
           </p>
         </div>
         <p className="ml-auto shrink-0 font-semibold w-fit text-[14px] leading-5 text-descriptionColor">
-          1h ago
+          {formatPostDate(item?.comment_time || item?.reply_time || new Date().toISOString())}
         </p>
       </div>
 
@@ -77,9 +96,9 @@ export default function CommentRow({
           <button
             type="button"
             onClick={handleLikeComment}
-            className="cursor-pointer text-descriptionColor hover:opacity-80"
+            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor hover:opacity-80`}
           >
-            Like • {item?.like_count || 0}
+            Like • {likesCount || 0}
           </button>
 
           <>
@@ -99,9 +118,9 @@ export default function CommentRow({
         <button
           type="button"
           onClick={handleReplyLikeComment}
-          className="cursor-pointer text-descriptionColor mt-4 font-semibold text-sm pl-10 hover:opacity-80"
+          className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor mt-4 font-semibold text-sm pl-10 hover:opacity-80`}
         >
-          Like • 100
+          Like • {likesCount || 0}
         </button>
       )}
     </div>
