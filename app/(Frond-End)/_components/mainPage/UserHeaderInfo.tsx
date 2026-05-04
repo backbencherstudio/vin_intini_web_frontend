@@ -22,7 +22,7 @@ function UserHeaderInfo() {
   const { data, isLoading, isError } = useGetUserProfileQuery("user");
 
   const router = useRouter();
-  const { data, isLoading, error } = useGetNotificationCountQuery("");
+  const { data: notificationCountData, isLoading: notificationCountLoading, error } = useGetNotificationCountQuery("notificationCount");
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -31,9 +31,9 @@ function UserHeaderInfo() {
             href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
-            {data?.data?.unread_count > 0 &&
+            {notificationCountData?.unread_count > 0 &&
               <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
-                {data?.data.unread_count > 99 ? "99+" : data?.data.unread_count}
+                {notificationCountData?.unread_count > 99 ? "99+" : notificationCountData?.unread_count}
               </span>
             }
             <NotificationIcon />
