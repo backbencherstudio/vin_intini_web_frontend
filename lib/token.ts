@@ -3,16 +3,14 @@ import nookies from "nookies";
 const ACCESS_TOKEN_KEY = "accessToken";
 const ACCESS_TOKEN_ISSUED_AT_KEY = "accessTokenIssuedAt";
 
-export async function setToken(token: string, maxAge = 60 * 60) {
+export async function setToken(token: string) {
   const now = Date.now().toString();
 
   nookies.set(null, ACCESS_TOKEN_KEY, token, {
-    maxAge,
     path: "/",
   });
 
   nookies.set(null, ACCESS_TOKEN_ISSUED_AT_KEY, now, {
-    maxAge,
     path: "/",
   });
 }
