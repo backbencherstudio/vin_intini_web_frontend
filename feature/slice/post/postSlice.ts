@@ -18,7 +18,7 @@ export const postApi = baseApiSlice.injectEndpoints({
       providesTags: ["Post"],
     }),
 
-    getTimeline: builder.query({
+    getProfileTimeline: builder.query({
       query: (id) => ({ url: `/timeline/${id}` }),
       providesTags: ["Post"],
     }),
@@ -87,7 +87,7 @@ export const postApi = baseApiSlice.injectEndpoints({
 
 export const {
   useGetPostQuery,
-  useGetTimelineQuery,
+  useGetProfileTimelineQuery,
   useGetGroupListQuery,
   useGetNewsfeedQuery,
   useGetPostProfileByIdQuery,

@@ -22,7 +22,7 @@ function PostCardSkleton() {
           <Skeleton className="h-3 w-3" />
         </div>
 
-        <Skeleton className="mt-4 h-[290px] w-full rounded-none" />
+        <Skeleton className="mt-4 h-73 w-full rounded-none" />
 
         <div className="mt-2 grid grid-cols-2 gap-2 pt-2">
           <Skeleton className="h-8 w-full rounded-md" />
