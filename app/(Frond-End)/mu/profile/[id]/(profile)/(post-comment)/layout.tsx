@@ -1,17 +1,18 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React from "react";
 
 function layout({ children }: { children: React.ReactNode }) {
+  const params = useParams();
   const profileFilter = [
-    { id: 1, name: "Post", pathName: "/mu/1/posts" },
-    { id: 2, name: "Comments", pathName: "/mu/1/comments" },
+    { id: 1, name: "Post", pathName: `/mu/profile/${params.id}/posts` },
+    { id: 2, name: "Comments", pathName: `/mu/profile/${params.id}/comments` },
   ];
   const pathName = usePathname();
   const isActive = (href: string): boolean => {
-    if (href === "/mu/2/home") {
-      return pathName === "/mu/2/home";
+    if (href === `/mu/profile/${params.id}/posts`) {
+      return pathName === `/mu/profile/${params.id}/posts`;
     }
     return pathName.startsWith(href);
   };

@@ -1,25 +1,17 @@
 "use client";
 
 import CommentSkleton from "@/components/reusable/All Skleton/CommentSkleton";
-import { useEffect, useState } from "react";
-
-const commentActivities = Array.from({ length: 7 }).map((_, index) => ({
-  id: index + 1,
-  activity: "You commented on a post",
-  time: "6d",
-  comment: "This is comment",
-}));
+import { useGetAllCommentListByPostIdQuery } from "@/feature/slice/post/commentSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { formatPostDate } from "@/lib/utils";
 
 function ProfileComment() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: userProfile } = useGetUserProfileQuery("user");
+  const { data, isLoading } = useGetAllCommentListByPostIdQuery(
+    userProfile?.user?.id ?? 0,
+  );
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 900);
-
-    return () => clearTimeout(timeout);
-  }, []);
+  const commentList = data?.data || [];
 
   return (
     <div className="space-y-2">
@@ -27,18 +19,18 @@ function ProfileComment() {
         ? Array.from({ length: 7 }).map((_, index) => (
             <CommentSkleton key={`profile-comment-skeleton-${index}`} />
           ))
-        : commentActivities.map((item) => (
+        : commentList.map((item) => (
             <article key={item.id} className="border-b border-borderColor py-3">
               <p className="text-sm font-normal leading-[1.35] text-descriptionColor">
-                <span>{item.activity}</span>
+                <span>{item?.user?.name}</span>
                 <span className="mx-1">•</span>
-                <span>{item.time}</span>
+                <span>{formatPostDate(item?.comment_time)}</span>
               </p>
               <p
                 className="mt-1 text-base md:text-lg
                font-normal leading-[1.35] text-headerColor"
               >
-                {item.comment}
+                {item?.comment}
               </p>
             </article>
           ))}

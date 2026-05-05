@@ -31,6 +31,7 @@ export interface UserProfileType {
   profile_image: string | null;
   profile_image_url: string | null;
   cover_image: string | null;
+  user: any;
   cover_image_url: string | null;
 }
 
@@ -55,7 +56,6 @@ export interface ConnectionRequestType {
   responded_at: string | null;
 }
 
-
 export type EmpOpportunityType = {
   id: string;
   title: string;
@@ -65,8 +65,7 @@ export type EmpOpportunityType = {
   mode: "Remote" | "On-site" | "Hybrid";
   salaryRange: string;
   postedTime: string;
-}
-
+};
 
 export type USAMapType = {
   id: number;
@@ -76,28 +75,29 @@ export type USAMapType = {
   total_resources: number;
 };
 
-export type InstitutionType = "university_hospital" | "state_institution" | "residency_program";
+export type InstitutionType =
+  | "university_hospital"
+  | "state_institution"
+  | "residency_program";
 
 export type HospitalType = {
-    id: number;
-    state_id: number;
-    name: string;
-    location: string;
-    type: InstitutionType;
-    university_id: number | null;
-    created_at: string;
-    updated_at: string;
-}
-
+  id: number;
+  state_id: number;
+  name: string;
+  location: string;
+  type: InstitutionType;
+  university_id: number | null;
+  created_at: string;
+  updated_at: string;
+};
 
 export interface GroupMembershipPivotType {
   user_id: number;
   group_id: number;
-  role: "admin" | "member" | "moderator"; 
+  role: "admin" | "member" | "moderator";
   created_at: string;
   updated_at: string;
 }
-
 
 export interface GroupDetailType {
   id: number;
@@ -105,7 +105,7 @@ export interface GroupDetailType {
   description: string;
   logo: string;
   cover_photo: string;
-    total_member: number;
+  total_member: number;
   industry: string[];
   location: string;
   rules: string;
@@ -119,10 +119,10 @@ export interface GroupDetailType {
   members_count: number;
   logo_url: string;
   cover_photo_url: string;
-  
+
   // Relations
   creator: UserProfileType;
-  pivot?: GroupMembershipPivotType; 
+  pivot?: GroupMembershipPivotType;
 }
 
 export interface Institution {
@@ -147,8 +147,8 @@ export interface EducationType {
   skills_id: number[];
   created_at: string;
   updated_at: string;
-  skills_data: any[]; 
-  status: "Complete" | "Ongoing" | "Incomplete"; 
+  skills_data: any[];
+  status: "Complete" | "Ongoing" | "Incomplete";
   institution: Institution;
 }
 
@@ -174,7 +174,7 @@ export interface PostFeedType {
   total_comment: number;
   is_connected: boolean;
   media: PostMediaType[];
-  groups: any[]; 
+  groups: any[];
   created_at: string;
   can_edit: boolean;
   can_delete: boolean;

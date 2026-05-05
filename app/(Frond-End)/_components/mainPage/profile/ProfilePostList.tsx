@@ -1,4 +1,5 @@
 "use client";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import Link from "next/link";
 import { useState } from "react";
 import ProfileAllPost from "./ProfileAllPost";
@@ -19,6 +20,7 @@ function ProfilePostList() {
       setActiveFilter(selectedFilter.name);
     }
   };
+  const { data: userProfile } = useGetUserProfileQuery("user");
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -27,7 +29,7 @@ function ProfilePostList() {
         </h2>
 
         <Link
-          href={`/mu/1/posts`}
+          href={`/mu/profile/${userProfile?.user?.id}/posts`}
           className="cursor-pointer text-base font-semibold text-descriptionColor hover:text-primaryColor transition-colors"
         >
           See all posts
@@ -43,7 +45,7 @@ function ProfilePostList() {
       <div className="mt-3">
         {activeFilter === "Post" ? (
           <div>
-            <ProfileAllPost />
+            <ProfileAllPost userProfile={userProfile} />
           </div>
         ) : (
           <div>
