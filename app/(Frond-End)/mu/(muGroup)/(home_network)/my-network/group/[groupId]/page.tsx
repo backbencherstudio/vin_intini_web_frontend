@@ -16,7 +16,7 @@ async function page(props: { params: Promise<{ groupId: string }> }) {
         <GroupPostCreateSection />
       </div>
       <div className="mt-6">
-        <GroupPostList />
+        <GroupPostList groupId={groupId} />
       </div>
     </div>
   );

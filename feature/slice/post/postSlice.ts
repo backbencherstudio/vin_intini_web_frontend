@@ -92,6 +92,7 @@ export const {
   useGetNewsfeedQuery,
   useGetPostProfileByIdQuery,
   useGetGroupPostByIDQuery,
+  useGetGroupTimelineQuery,
   useCreatePostMutation,
   useUpdatePostMutation,
   useUpdateGroupPostMutation,
