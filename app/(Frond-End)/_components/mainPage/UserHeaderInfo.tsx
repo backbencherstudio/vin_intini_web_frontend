@@ -5,7 +5,9 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { clearToken } from "@/lib/token";
 import {
   LogoutIcon,
   NotificationIcon,
@@ -16,13 +18,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IoIosArrowDown } from "react-icons/io";
-import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 
 function UserHeaderInfo() {
-  const { data : userProfileData, isLoading : userProfileLoading, isError : userProfileError } = useGetUserProfileQuery("user");
+  const {
+    data: userProfileData,
+    isLoading: userProfileLoading,
+    isError: userProfileError,
+  } = useGetUserProfileQuery("user");
 
   const router = useRouter();
-  const { data, isLoading, error } = useGetNotificationCountQuery("");
+  const {
+    data: notificationCountData,
+    isLoading: notificationCountLoading,
+    error,
+  } = useGetNotificationCountQuery("notificationCount");
+  const handleLogout = async () => {
+    // Clear the access token cookie
+    await clearToken();
+    // Redirect to the login page
+    router.push("/login");
+  };
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -31,11 +46,13 @@ function UserHeaderInfo() {
             href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
-            {data?.data?.unread_count > 0 &&
+            {notificationCountData?.unread_count > 0 && (
               <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
-                {data?.data.unread_count > 99 ? "99+" : data?.data.unread_count}
+                {notificationCountData?.unread_count > 99
+                  ? "99+"
+                  : notificationCountData?.unread_count}
               </span>
-            }
+            )}
             <NotificationIcon />
           </Link>
 
@@ -46,7 +63,10 @@ function UserHeaderInfo() {
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div className=" w-7 h-7 lg:w-12 border border-primaryColor lg:h-12 rounded-full overflow-hidden">
                       <Image
-                        src={userProfileData?.user?.profile_image_url || "/empty_user.jpg"}
+                        src={
+                          userProfileData?.user?.profile_image_url ||
+                          "/empty_user.jpg"
+                        }
                         alt="Admin Avatar"
                         width={40}
                         height={40}
@@ -66,7 +86,10 @@ function UserHeaderInfo() {
                   <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
                       <Image
-                        src={userProfileData?.user?.profile_image_url || "/empty_user.jpg"}
+                        src={
+                          userProfileData?.user?.profile_image_url ||
+                          "/empty_user.jpg"
+                        }
                         alt="Admin Avatar"
                         width={40}
                         height={40}
@@ -75,11 +98,13 @@ function UserHeaderInfo() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-headerColor">
-                        {userProfileData?.user?.first_name + " " + userProfileData?.user?.last_name ||
-                          "Vin Intini"}
+                        {userProfileData?.user?.first_name +
+                          " " +
+                          userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <p className="text-sm  text-grayColor1 line-clamp-1">
-                        {userProfileData?.user?.title || "CEO & Founder, MindUnite"}
+                        {userProfileData?.user?.title ||
+                          "CEO & Founder, MindUnite"}
                       </p>
                     </div>
                   </div>
@@ -102,9 +127,7 @@ function UserHeaderInfo() {
                 </div>
                 <div className="pt-3  border-t border-borderColor">
                   <button
-                    onClick={() => {
-                      router.push("/login");
-                    }}
+                    onClick={handleLogout}
                     className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
                   >
                     <LogoutIcon className="w-4 h-4 group-hover:text-redColor group-hover:fill-redColor" />
