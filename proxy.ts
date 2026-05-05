@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip middleware for public pages (auth-related, API routes, and onboarding)
