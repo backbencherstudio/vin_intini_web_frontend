@@ -42,13 +42,13 @@ export default function StateDetails({ id }: PropType) {
 
     return (
         <div className="w-full h-full xl:pl-6 grid relative">
-            {/* <USAMapWithPointers
+            <USAMapWithPointers
                 areaName={usaStateKeyToNameMap[id] || id}
                 zoomLevel={GOOGLE_MAP_ZOOM_LEVEL[id] || 6}
                 onFinishZoom={()=>setIsLoading(false)}
                 data={data?.data || []}
-            /> */}
-            <GoogleMap />
+            />
+            {/* <GoogleMap /> */}
         </div>
     );
 }

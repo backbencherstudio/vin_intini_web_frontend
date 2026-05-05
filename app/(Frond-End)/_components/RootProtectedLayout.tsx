@@ -11,17 +11,15 @@ export default function RootProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const token = searchParams.get("auth");
-
-  useEffect(() => {
-    if (token) {
-      // console.log("token", token);
-      CookieHelper.set({ key: "accessToken", value: token });
-      router.push("/mu/home");
-    }
-  }, [token]);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const token = searchParams.get("auth");
+    useEffect(()=>{
+      if(token){
+        CookieHelper.set({key: "accessToken", value: JSON.parse(atob(token || "")).token});
+        router.push("/mu/home")
+      }
+    },[token])
 
   return (
     <div className=" grid grid-rows-[auto_1fr_auto] min-h-screen">
