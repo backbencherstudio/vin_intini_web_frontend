@@ -69,7 +69,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     }, [redirectUrl]);
 
     return (
-        <div className={`${isOpen ? "w-full translate-x-0" : "w-fit -translate-x-92.5 xl:translate-x-0"} h-full grid absolute z-999 bg-[#0003] xl:bg-transparent backdrop-blur-xs xl:relative transition-all duration-300`} onClick={() => setIsOpen(false)}>
+        <div className={`${isOpen ? "w-full translate-x-0" : "w-fit -translate-x-92.5 xl:translate-x-0"} h-full grid absolute z-9 bg-[#0003] xl:bg-transparent backdrop-blur-xs xl:relative transition-all duration-300`} onClick={() => setIsOpen(false)}>
             <div className={`bg-[#F8FAFB] h-full grid grid-rows-[auto_1fr] w-70 sm:w-77.5 border-r border-[#D2D2D5] xl:rounded-l-2xl min-h-0`} onClick={(e) => e.stopPropagation()}>
                 <div className="relative border-b border-[#D2D2D5]">
                     <h2 className="p-4 sm:p-6 text-headerColor 
