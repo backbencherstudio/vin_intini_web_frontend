@@ -16,11 +16,9 @@ export default function RootProtectedLayout({
     const searchParams = useSearchParams();
     const router = useRouter();
     const token = searchParams.get("auth");
-
     useEffect(()=>{
       if(token){
-        // console.log("token", token);
-        CookieHelper.set({key: "accessToken", value: token});
+        CookieHelper.set({key: "accessToken", value: JSON.parse(atob(token || "")).token});
         router.push("/mu/home")
       }
     },[token])
