@@ -17,7 +17,6 @@ function PostAction({ post }: PostCardProps) {
   const { can_edit, media, is_connected } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  console.log(is_connected);
 
   const [isBanUser, setIsBanUser] = useState(false);
   return (
