@@ -10,8 +10,6 @@ const extractAccessToken = (payload: any): string | null => {
   return payload?.token || payload?.data?.token || null;
 };
 
-const REFRESH_INTERVAL_MS = 20 * 60 * 1000;
-
 const rawBaseQuery = fetchBaseQuery({
   baseUrl:
     process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
@@ -33,15 +31,13 @@ const isRefreshRequest = (args: string | FetchArgs) => {
   return requestUrl.includes("/refresh");
 };
 
-const shouldRefreshToken = async () => {
-  const token = await getToken();
-  const issuedAt = await getTokenIssuedAt();
-
-  if (!token || !issuedAt) {
-    return false;
-  }
-
-  return Date.now() - issuedAt >= REFRESH_INTERVAL_MS;
+const isUnauthorizedResponse = (data: any): boolean => {
+  return (
+    data &&
+    typeof data === "object" &&
+    data.success === false &&
+    data.message === "Unauthorized"
+  );
 };
 
 const refreshAccessToken = async (
@@ -51,11 +47,33 @@ const refreshAccessToken = async (
   if (!refreshPromise) {
     refreshPromise = (async () => {
       try {
+        const currentToken = await getToken();
+
+        const refreshArgs: FetchArgs = {
+          url: "/refresh",
+          method: "POST",
+          headers: {
+            ...(currentToken
+              ? { Authorization: `Bearer ${currentToken}` }
+              : {}),
+            accept: "application/json",
+          },
+        };
+
         const refreshResult = await rawBaseQuery(
-          { url: "/refresh", method: "POST" },
+          refreshArgs,
           api,
           extraOptions,
         );
+
+        if (refreshResult.error) {
+          // on any refresh error, clear token and redirect to login
+          await clearToken();
+          // if (typeof window !== "undefined") {
+          //   window.location.href = "/login";
+          // }
+          return null;
+        }
 
         const newToken = extractAccessToken(refreshResult.data);
 
@@ -64,10 +82,8 @@ const refreshAccessToken = async (
           return newToken;
         }
 
-        await clearToken();
         return null;
       } catch {
-        await clearToken();
         return null;
       } finally {
         refreshPromise = null;
@@ -83,13 +99,13 @@ const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  if (!isRefreshRequest(args) && (await shouldRefreshToken())) {
-    await refreshAccessToken(api, extraOptions);
-  }
-
   let result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error && result.error.status === 401) {
+  const isUnauthorized =
+    (result.error && result.error.status === 401) ||
+    isUnauthorizedResponse(result.data);
+
+  if (isUnauthorized) {
     if (isRefreshRequest(args)) {
       await clearToken();
       return result;
@@ -99,11 +115,13 @@ const baseQueryWithReauth: BaseQueryFn<
 
     if (tokenFromPromise) {
       result = await rawBaseQuery(args, api, extraOptions);
+    } else {
+      await clearToken();
     }
   }
 
   return result;
-};
+}
 
 export const baseApiSlice = createApi({
   reducerPath: "api",
