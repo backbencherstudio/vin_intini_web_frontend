@@ -1,6 +1,8 @@
 import { EmpOpportunityType } from "@/lib/type";
 import { Testimonial } from "@/lib/type";
-
+import image1 from "@/public/images/testimonial/user1.png"
+import image2 from "@/public/images/testimonial/user2.png"
+import image3 from "@/public/images/testimonial/user3.jpg"
 export const demoData = [
   {
     id: "1",
@@ -224,7 +226,7 @@ export const testimonials: Testimonial[] = [
       name: "Alice Johnson",
       occupation: "Software Engineer",
       location: "New York, USA",
-      avatarUrl: "/images/testimonial/user1.png",
+      avatarUrl: image1,
     },
   },
   {
@@ -237,7 +239,7 @@ export const testimonials: Testimonial[] = [
       name: "Brian Lee",
       occupation: "Marketing Specialist",
       location: "London, UK",
-      avatarUrl: "/images/testimonial/user2.png",
+      avatarUrl: image2,
     },
   },
   {
@@ -250,7 +252,7 @@ export const testimonials: Testimonial[] = [
       name: "Carla Mendes",
       occupation: "Neuroscientist",
       location: "Lisbon, Portugal",
-      avatarUrl: "/images/testimonial/user3.jpg",
+      avatarUrl: image3,
     },
   },
 ];

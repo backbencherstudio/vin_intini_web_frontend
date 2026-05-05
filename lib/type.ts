@@ -7,7 +7,7 @@ export type Testimonial = {
     name: string;
     occupation: string;
     location: string;
-    avatarUrl: string;
+    avatarUrl: any;
   };
 };
 
