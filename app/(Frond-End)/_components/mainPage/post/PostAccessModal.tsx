@@ -12,7 +12,8 @@ import {
 } from "@/public/svgIcons/Icons";
 import { useDispatch, useSelector } from "react-redux";
 
-type PostVisibility = "public" | "connections" | "group" | "no_one" | "anyone";
+type PostVisibility = "public" | "connections" | "group";
+type CommentVisibility = "anyone" | "connections" | "no_one";
 
 interface postAccessType {
   value: PostVisibility;
@@ -26,7 +27,11 @@ const postVisibilityOptions: postAccessType[] = [
   { value: "group", label: "Group", icon: GroupUserIcon },
 ];
 
-const commentControlOptions: postAccessType[] = [
+const commentControlOptions: Array<{
+  value: CommentVisibility;
+  label: string;
+  icon: postAccessType["icon"];
+}> = [
   { value: "anyone", label: "Anyone", icon: GlobalIcon },
   { value: "connections", label: "Connections only", icon: MultiUserIcon },
   { value: "no_one", label: "No one", icon: BanIcon },
@@ -42,22 +47,22 @@ function PostAccessModal({
     (state: any) => state.postCompose,
   );
 
-  const handlePostVisibilityChange = (value) => {
-    if (value !== "group") {
-      dispatch(setPostVisibility(value));
-    }
+  const handlePostVisibilityChange = (value: PostVisibility) => {
+    dispatch(setPostVisibility(value));
 
     if (value === "group") {
       setPostType("post_group");
+      return;
     }
+
+    setPostType("Post_write");
   };
 
-  const handleCommentControlChange = (value) => {
+  const handleCommentControlChange = (value: CommentVisibility) => {
     dispatch(setCommentControl(value));
   };
 
   return (
-    
     <section className=" flex flex-col max-h-[90vh] py-4 ">
       <div className="border-b border-borderColor px-4 pb-2">
         <h3 className="text-lg   leading-12 font-semibold text-descriptionColor">
