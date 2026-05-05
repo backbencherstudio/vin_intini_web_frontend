@@ -46,12 +46,39 @@ function CommentBoxArea({
   }, [replyingToUserName]);
 
   useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = "auto";
+
+    // Set the height based on scrollHeight, with max height of 80px (max-h-20)
+    const scrollHeight = textarea.scrollHeight;
+    const maxHeight = 80; // max-h-20 in pixels
+
+    if (scrollHeight <= maxHeight) {
+      textarea.style.height = scrollHeight + "px";
+      textarea.style.overflowY = "hidden";
+    } else {
+      textarea.style.height = maxHeight + "px";
+      textarea.style.overflowY = "auto";
+    }
+  }, [commentText]);
+
+  useEffect(() => {
     return () => {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
     };
   }, [previewUrl]);
+
+  // Set initial height on mount
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "40px"; // h-10 = 40px
+    }
+  }, []);
 
   useEffect(() => {
     if (!isEmojiOpen) return;
@@ -170,15 +197,15 @@ function CommentBoxArea({
 
       <div className="w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3">
         {replyingToUserName && (
-          <div className="mb-2 flex items-center justify-between bg-blue-50 rounded-lg p-2 px-3">
-            <span className="text-sm text-headerColor">
+          <div className="mb-1 flex items-center justify-between bg-blue-50 rounded-lg p-1 px-3">
+            <span className="text-[13px] text-headerColor">
               Replying to{" "}
               <span className="font-semibold">{replyingToUserName}</span>
             </span>
             <button
               type="button"
               onClick={onCancelReply}
-              className="text-sm text-descriptionColor hover:text-headerColor"
+              className="text-[13px] bg-red-100 cursor-pointer px-0.75 rounded-full text-descriptionColor hover:text-headerColor"
               aria-label="Cancel reply"
             >
               ✕
@@ -188,10 +215,9 @@ function CommentBoxArea({
         <textarea
           ref={textareaRef}
           placeholder="type..."
-          rows={2}
           value={commentText}
           onChange={(event) => setCommentText(event.target.value)}
-          className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none"
+          className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
         />
 
         {previewUrl && (

@@ -46,14 +46,6 @@ export function CommentReplyList({
     };
   }, [isLoading, replyData, onLastReplyTopChange]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-3 pl-6">
-        <CommentRowSkeleton />
-      </div>
-    );
-  }
-
   const replies = replyData?.data || [];
 
   if (!replies.length) {
@@ -62,11 +54,19 @@ export function CommentReplyList({
 
   return (
     <div ref={listRef} className="relative mt-6 space-y-5">
-      {replies.map((reply: any) => (
-        <div key={reply.id} data-reply-row>
-          <CommentRow item={reply} depth={1} />
+      {isLoading ? (
+        <div className="space-y-3">
+          {[1, 2].map((i) => (
+            <CommentRowSkeleton key={i} />
+          ))}
         </div>
-      ))}
+      ) : (
+        replies.map((reply: any) => (
+          <div key={reply.id} data-reply-row>
+            <CommentRow item={reply} depth={1} />
+          </div>
+        ))
+      )}
     </div>
   );
 }
