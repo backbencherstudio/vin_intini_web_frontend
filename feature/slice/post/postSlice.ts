@@ -18,7 +18,10 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     getProfileTimeline: builder.query({
-      query: (id) => ({ url: `/timeline/${id}`, method: "GET" }),
+      query: ({ userId, query }) => ({
+        url: `/timeline/${userId}?${query}`,
+        method: "GET",
+      }),
       providesTags: ["Post"],
     }),
 
@@ -28,7 +31,7 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     getPostProfileById: builder.query({
-      query: (id) => ({ url: `/profile/posts/${id}`, method: "GET" }),
+      query: ({ id }) => ({ url: `/profile/posts/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
