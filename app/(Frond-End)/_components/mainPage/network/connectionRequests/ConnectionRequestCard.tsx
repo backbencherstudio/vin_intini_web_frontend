@@ -2,7 +2,7 @@ import { ConnectionRequestType } from "@/lib/type";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
-
+import emptyImage from "@/public/empty_user.jpg";
 function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
   return (
     <div>
@@ -13,7 +13,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
             ) : (
               <Image
-                src={item?.user?.profile_image_url || "/empty_user.jpg"}
+                src={item?.user?.profile_image_url || emptyImage  }
                 alt={item?.user?.name}
                 width={150}
                 height={150}
@@ -37,7 +37,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                   <Image
                     src={
                       item?.mutual_connections[0]?.profile_image_url ||
-                      "/empty_user.jpg"
+                      emptyImage
                     }
                     alt="mutual"
                     width={24}

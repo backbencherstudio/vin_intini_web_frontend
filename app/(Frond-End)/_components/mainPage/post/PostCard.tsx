@@ -8,7 +8,7 @@ import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
 import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
-
+import emptyImage from "@/public/empty_user.jpg";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -47,7 +47,7 @@ function PostCard({ post }: PostCardProps) {
         <div className="flex min-w-0 items-start gap-2.5">
           <div className="h-10  w-10 rounded-full">
             <Image
-              src={user?.profile_image_url || "/empty_user.jpg"}
+              src={user?.profile_image_url || emptyImage}
               alt="Profile"
               width={80}
               height={80}

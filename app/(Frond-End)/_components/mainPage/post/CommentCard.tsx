@@ -6,7 +6,7 @@ import { formatPostDate } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
+import emptyImage from "@/public/empty_user.jpg";
 export default function CommentRow({
   depth = 0,
   showReply = false,
@@ -65,7 +65,7 @@ export default function CommentRow({
       <div className="flex items-start  gap-2.5">
         <div className="h-8 w-8 border  overflow-hidden rounded-full">
           <Image
-            src={item?.user?.profile_image || "/empty_user.jpg"}
+            src={item?.user?.profile_image || emptyImage}
             alt="Profile"
             width={32}
             height={32}
