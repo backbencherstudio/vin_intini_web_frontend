@@ -3,14 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for auth-related pages and API routes
+  // Skip middleware for public pages (auth-related, API routes, and onboarding)
   if (
+    pathname === "/" ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/sign-up") ||
     pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/onboarding") ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/public")
@@ -46,12 +48,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Skip onboarding check for onboarding page itself
-  if (pathname.startsWith("/onboarding")) {
-    return response;
-  }
-
-  // Check onboarding status
+  // Check onboarding status by calling /me API
   if (currentToken) {
     try {
       const userResponse = await fetch(`${API_BASE_URL}/me`, {
@@ -62,17 +59,21 @@ export async function middleware(request: NextRequest) {
         },
         credentials: "include",
       });
+      const userData = await userResponse.json();
+     
 
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
+      if (userData.success) {
+        // If onboarding is incomplete (is_onboarding === false), redirect to onboarding
 
-        // If onboarding is incomplete, redirect to onboarding page
-        if (!userData?.data?.is_onboarding) {
+        if (!userData?.is_onboarding) {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
+      } else if (userResponse.status === 401) {
+        // Token expired or invalid
+        return NextResponse.redirect(new URL("/login", request.url));
       }
     } catch (error) {
-      // If API call fails, continue (don't block)
+      // If API call fails, log and continue
       console.error("Failed to fetch user profile in middleware:", error);
     }
   }
