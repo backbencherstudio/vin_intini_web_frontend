@@ -1,3 +1,4 @@
+import balckImage from "@/public/black_Logo.png";
 import {
   FaceBookIcon,
   InstagramIcon,
@@ -39,10 +40,12 @@ function MainFooter() {
             <div className="flex items-center gap-2">
               <Link href="/">
                 <Image
-                  src="/black_Logo.png"
+                  src={balckImage}
                   alt="Logo"
                   width={256}
                   height={50}
+                  className="w-[256px] h-auto"
+                  priority
                 />
               </Link>
             </div>

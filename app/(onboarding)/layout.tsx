@@ -1,4 +1,5 @@
 import MainFooter from "@/components/reusable/MainFooter";
+import balckImage from "@/public/black_Logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -12,7 +13,14 @@ function OnboardingLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="container py-4! flex justify-center ">
             <Link href="/">
-              <Image src="/black_Logo.png" alt="Logo" width={256} height={50} />
+              <Image
+                src={balckImage}
+                alt="Logo"
+                width={256}
+                height={50}
+                className="w-[256px] h-auto"
+                priority
+              />
             </Link>
           </div>
         </header>
