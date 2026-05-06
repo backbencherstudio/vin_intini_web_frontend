@@ -8,6 +8,7 @@ import { usaStateKeyToNameMap } from "@/public/staticData";
 import GoogleMap from "./GoogleMap";
 import { useGetAcademiaByStateQuery } from "@/feature/slice/academia/academiaSlice";
 import { Activity } from "react";
+import MapPopup from "@/components/reusable/MapPopup";
 
 type PropType = {
     id: string;
@@ -42,6 +43,7 @@ export default function StateDetails({ id }: PropType) {
 
     return (
         <div className="w-full h-full xl:pl-6 grid relative">
+            {/* <MapPopup /> */}
             <USAMapWithPointers
                 areaName={usaStateKeyToNameMap[id] || id}
                 zoomLevel={GOOGLE_MAP_ZOOM_LEVEL[id] || 6}

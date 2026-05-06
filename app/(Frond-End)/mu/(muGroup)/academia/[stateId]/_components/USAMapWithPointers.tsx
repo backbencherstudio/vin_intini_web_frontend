@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { hospitalData, universityData } from '@/public/staticData';
+import MapPopup from '@/components/reusable/MapPopup';
 
 // Fix default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -142,7 +143,7 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
       zoom={zoomLevel || 4}
       minZoom={3}
       maxZoom={10}
-      style={{ height: "50vh", width: "100%" }}
+      style={{ height: "50vh", width: "100%", zIndex: 1 }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -156,70 +157,42 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
           (hospital?.latitude && hospital?.longitude) ? (
             <Marker key={`hospital-${hospital.id}`} position={[Number(hospital.latitude), Number(hospital.longitude)]} icon={hospitalIcon}>
               <Popup autoPan={false} closeButton={false}>
-                <div className="text-xs p-1">
-                  <strong className="text-red-600 block mb-1">{hospital.name}</strong>
-                  <p className="flex items-center gap-1">
-                    📍 <span>{hospital.location}</span>
-                  </p>
-                </div>
+                {/* <MapPopup
+                  title={hospital.name}
+                  titleColor="text-red-600"
+                  location={hospital.location}
+                /> */}
               </Popup>
             </Marker>
           ) : null
         )}
-        {data?.universities?.map((university) =>
+        {data?.universities?.map((university: any) =>
           (university?.latitude && university?.longitude) ? (
             <Marker key={`university-${university.id}`} position={[Number(university.latitude), Number(university.longitude)]} icon={universityIcon}>
               <Popup autoPan={false} closeButton={false}>
-                <div className="text-xs p-1">
-                  {/* University Name */}
-                  <strong className="text-indigo-700 block mb-1">
-                    {university.name}
-                  </strong>
-
-                  {/* Psychology Degrees */}
-                  {university.psychology_degrees?.length > 0 && (
-                    <p className="mb-1">
-                      🧠 <strong>Psychology:</strong> {university.psychology_degrees.join(", ")}
-                    </p>
-                  )}
-
-                  {/* Neuroscience Degrees */}
-                  {university.neuroscience_degrees?.length > 0 && (
-                    <p className="mb-1">
-                      🔬 <strong>Neuroscience:</strong> {university.neuroscience_degrees.join(", ")}
-                    </p>
-                  )}
-
-                  {/* Fallback if no degrees are listed yet */}
-                  {university.psychology_degrees?.length === 0 && university.neuroscience_degrees?.length === 0 && (
-                    <p className="text-gray-500 italic">No specific degrees listed</p>
-                  )}
-                </div>
+                <MapPopup
+                  name={university.name}
+                  psychologyDegrees={university.psychology_degrees}
+                  counselingDegrees={university.counseling_degrees}
+                  neuroscienceDegrees={university.neuroscience_degrees}
+                  address={university.address}
+                  phone={university.phone}
+                  website={university.website}
+                />
               </Popup>
             </Marker>
           ) : null
         )}
-        {data?.residencies?.map((residency) =>
+        {data?.residencies?.map((residency: any) =>
           (residency?.latitude && residency?.longitude) ? (
             <Marker key={`residency-${residency.id}`} position={[Number(residency.latitude), Number(residency.longitude)]} icon={residentialIcon}>
               <Popup autoPan={false} closeButton={false}>
-                <div className="text-xs p-1">
-                  {/* Mapping program_name based on your JSON snippet */}
-                  <strong className="text-green-700 block mb-1">
-                    {residency.program_name}
-                  </strong>
-
-                  {/* Handling degree_types array */}
-                  {residency.degree_types?.length > 0 && (
-                    <p className="mb-1">
-                      🎓 <strong>Degrees:</strong> {residency.degree_types.join(", ")}
-                    </p>
-                  )}
-
-                  <p className="flex items-center gap-1">
-                    📍 <span>{residency.location}</span>
-                  </p>
-                </div>
+                {/* <MapPopup
+                  title={residency.program_name}
+                  titleColor="text-green-700"
+                  rows={residency.degree_types?.length > 0 ? [{ icon: '🎓', label: 'Degrees:', value: residency.degree_types.join(', ') }] : []}
+                  location={residency.location}
+                /> */}
               </Popup>
             </Marker>
           ) : null
