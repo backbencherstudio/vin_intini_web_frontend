@@ -10,6 +10,9 @@ import type {
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
+type FlatOption = { value: string; label: string };
+type GroupedOption = { label: string; options: FlatOption[] };
+
 type CreatableSelectFieldProps = {
   value?: string;
   onChange?: (value: string) => void;
@@ -17,14 +20,33 @@ type CreatableSelectFieldProps = {
   onChangeValues?: (values: string[]) => void;
   isMulti?: boolean;
   maxCount?: number;
-  options: Array<{ value: string; label: string }>;
+  options: Array<FlatOption | GroupedOption>;
   placeholder: string;
   className?: string;
   allowCustomInput?: boolean;
   isDisabled?: boolean;
 };
 
-type FlatOption = { value: string; label: string };
+function isGroupedOption(option: any): option is GroupedOption {
+  return option.options && Array.isArray(option.options) && !option.value;
+}
+
+function flattenAllOptions(
+  options: Array<FlatOption | GroupedOption> = [],
+): FlatOption[] {
+  return options.flatMap((option) => {
+    if (isGroupedOption(option)) {
+      return option.options;
+    }
+    return option as FlatOption;
+  });
+}
+
+function toOption(value: string, options: FlatOption[]) {
+  const normalizedValue = String(value ?? "");
+  const matched = options.find((option) => option.value === normalizedValue);
+  return matched ?? { value: normalizedValue, label: normalizedValue };
+}
 
 const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
   control: (base, state) => ({
@@ -52,19 +74,6 @@ const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
   }),
 };
 
-function flattenOptions(options: Array<{ value: string; label: string }> = []) {
-  return options.map((option) => ({
-    value: String(option.value ?? ""),
-    label: String(option.label ?? option.value ?? ""),
-  }));
-}
-
-function toOption(value: string, options: FlatOption[]) {
-  const normalizedValue = String(value ?? "");
-  const matched = options.find((option) => option.value === normalizedValue);
-  return matched ?? { value: normalizedValue, label: normalizedValue };
-}
-
 function CreatableSelectField({
   value,
   onChange,
@@ -80,12 +89,8 @@ function CreatableSelectField({
 }: CreatableSelectFieldProps) {
   const flatOptions = useMemo(() => {
     if (!options) return [];
-    return flattenOptions(options);
+    return flattenAllOptions(options);
   }, [options]);
-
-  const mergedOptions = useMemo(() => {
-    return flatOptions;
-  }, [flatOptions]);
 
   const selectedValue = useMemo(() => {
     if (isMulti) {
@@ -127,7 +132,7 @@ function CreatableSelectField({
       isOptionDisabled={() =>
         Boolean(isMulti && maxCount && (values?.length || 0) >= maxCount)
       }
-      options={mergedOptions}
+      options={options as any}
       value={selectedValue as any}
       onChange={handleChange}
       className={className}

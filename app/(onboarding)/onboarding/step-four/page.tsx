@@ -23,7 +23,6 @@ interface StepFourData {
 interface OptionType {
   value: string;
   label: string;
- 
 }
 interface GroupedOptionType {
   label: string;
@@ -138,13 +137,10 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   },
 ];
 
-const yearOptions: any = Array.from(
-  { length: 18 },
-  (_, index) => {
-    const year = 2010 + index;
-    return { value: String(year), label: String(year) };
-  },
-);
+const yearOptions: any = Array.from({ length: 18 }, (_, index) => {
+  const year = 2010 + index;
+  return { value: String(year), label: String(year) };
+});
 
 function page() {
   const stepFourData = useSelector((state: any) => state.onboarding.formData);
