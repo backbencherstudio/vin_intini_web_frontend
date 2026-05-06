@@ -171,13 +171,13 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
             <Marker key={`university-${university.id}`} position={[Number(university.latitude), Number(university.longitude)]} icon={universityIcon}>
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
-                  title={university.name}
-                  titleColor="text-indigo-700"
-                  rows={[
-                    ...(university.psychology_degrees?.length > 0 ? [{ icon: '🧠', label: 'Psychology:', value: university.psychology_degrees.join(', ') }] : []),
-                    ...(university.neuroscience_degrees?.length > 0 ? [{ icon: '🔬', label: 'Neuroscience:', value: university.neuroscience_degrees.join(', ') }] : []),
-                  ]}
-                  noDataText="No specific degrees listed"
+                  name={university.name}
+                  psychologyDegrees={university.psychology_degrees}
+                  counselingDegrees={university.counseling_degrees}
+                  neuroscienceDegrees={university.neuroscience_degrees}
+                  address={university.address}
+                  phone={university.phone}
+                  website={university.website}
                 />
               </Popup>
             </Marker>

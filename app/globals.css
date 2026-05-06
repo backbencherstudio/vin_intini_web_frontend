@@ -309,3 +309,8 @@ body {
   padding-top: 4px;
   box-sizing: border-box;
 }
+
+
+.leaflet-popup-content{
+  margin: 0 !important;
+}
