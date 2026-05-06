@@ -8,18 +8,20 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import emptyImage from "@/public/empty_user.jpg";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PostAccessModal from "../post/PostAccessModal";
 import PostGroupListModal from "../post/PostGroupListModal";
 import PostModal from "../post/PostModal";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 function GroupPostCreateSection() {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
   const [postText, setPostText] = useState("");
-
+  const {data} =useGetUserProfileQuery("user")
   const handleSetPostType = (type: string) => {
     dispatch(setPostType(type as any));
   };
@@ -29,7 +31,7 @@ function GroupPostCreateSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src="/empty_user.jpg"
+            src={data?.user?.profile_image_url || emptyImage}
             alt="User avatar"
             width={32}
             height={32}

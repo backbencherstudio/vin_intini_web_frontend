@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import emptyImage from "@/public/empty_user.jpg";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import Search from "./Search";
 
@@ -103,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({
                     >
                       <div className=" w-6 h-6 lg:w-8 lg:h-8 rounded-full overflow-hidden">
                         <Image
-                          src={"/empty_user.jpg"}
+                          src={emptyImage}
                           alt="Admin Avatar"
                           width={40}
                           height={40}

@@ -3,7 +3,7 @@ import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
+import emptyImage from "@/public/empty_user.jpg";
 function ProfileUserConnectCard({ profile }: any) {
   const { user, mutual_connections_count } = profile;
   const [sendRequest, { isLoading }] = useSendRequestMutation();
@@ -32,7 +32,7 @@ function ProfileUserConnectCard({ profile }: any) {
         <div className="flex items-start gap-3">
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
-              src={user?.profile_image_url || "/empty_user.jpg"}
+              src={user?.profile_image_url || emptyImage}
               alt={user?.name}
               width={148}
               height={148}
@@ -50,7 +50,7 @@ function ProfileUserConnectCard({ profile }: any) {
             {mutual_connections_count > 0 && (
               <div className="mt-4 mb-3 flex items-center gap-1 text-[11px] text-descriptionColor">
                 <Image
-                  src="/empty_user.jpg"
+                  src={emptyImage}
                   alt="mutual"
                   width={24}
                   height={24}

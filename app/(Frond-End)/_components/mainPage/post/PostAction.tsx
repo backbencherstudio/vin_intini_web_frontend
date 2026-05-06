@@ -19,6 +19,7 @@ function PostAction({ post }: PostCardProps) {
   const [isDeleted, setIsDeleted] = useState(false);
 
   const [isBanUser, setIsBanUser] = useState(false);
+
   return (
     <div>
       <div className="flex items-center gap-1.5">
@@ -49,9 +50,10 @@ function PostAction({ post }: PostCardProps) {
                   setMenuOpen(false);
                   setIsDeleted(true);
                 }}
-                className="cursor-pointer"
+                className={"cursor-pointer "}
               >
-                <DeleteIcon /> Delete post
+                <DeleteIcon />
+                Delete post
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={(event) => {
@@ -70,7 +72,13 @@ function PostAction({ post }: PostCardProps) {
       {isBanUser && (
         <GroupUserBanDialog open={isBanUser} setOpen={setIsBanUser} />
       )}
-      {isDeleted && <DeleteGroup open={isDeleted} setOpen={setIsDeleted} />}
+      {isDeleted && (
+        <DeleteGroup
+          open={isDeleted}
+          setOpen={setIsDeleted}
+          postId={post?.id}
+        />
+      )}
     </div>
   );
 }

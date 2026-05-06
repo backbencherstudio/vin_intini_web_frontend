@@ -2,7 +2,6 @@ import baseApiSlice from "../baseApi";
 
 export const postApi = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-
     getPost: builder.query({
       query: () => ({ url: "/posts", method: "GET" }),
       providesTags: ["Post"],
@@ -14,28 +13,29 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     getGroupTimeline: builder.query({
-      query: (id) => ({ url: `/group-posts/${id}` }),
+      query: (id) => ({ url: `/group-posts/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
     getProfileTimeline: builder.query({
-      query: (id) => ({ url: `/timeline/${id}` }),
+      query: (id) => ({ url: `/timeline/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
     getNewsfeed: builder.query({
-      query: () => ({ url: "/newsfeed" }),
+      query: ({ query }) => ({ url: `/newsfeed?${query}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
     getPostProfileById: builder.query({
-      query: (id) => ({ url: `/profile/posts/${id}` }),
+      query: (id) => ({ url: `/profile/posts/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
     getGroupPostByID: builder.query({
       query: ({ id, groupId }) => ({
         url: `/groups/${groupId}/posts/${id}`,
+        method: "GET",
       }),
       providesTags: ["Post"],
     }),

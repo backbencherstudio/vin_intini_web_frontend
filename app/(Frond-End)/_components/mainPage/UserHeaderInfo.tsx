@@ -17,6 +17,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import emptyImage from "@/public/empty_user.jpg";
 import { IoIosArrowDown } from "react-icons/io";
 
 function UserHeaderInfo() {
@@ -65,7 +66,7 @@ function UserHeaderInfo() {
                       <Image
                         src={
                           userProfileData?.user?.profile_image_url ||
-                          "/empty_user.jpg"
+                         emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}
@@ -88,7 +89,7 @@ function UserHeaderInfo() {
                       <Image
                         src={
                           userProfileData?.user?.profile_image_url ||
-                          "/empty_user.jpg"
+                          emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}

@@ -1,13 +1,28 @@
 import RootDialog from "@/components/reusable/RootDialog";
+import { useDeletePostMutation } from "@/feature/slice/post/postSlice";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
+import toast from "react-hot-toast";
 
 function DeleteGroup({
   open,
   setOpen,
+  postId,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
+  postId?: number ;
 }) {
+  const [deletePost, { isLoading }] = useDeletePostMutation();
+  const handleDeletePost = async () => {
+    try {
+      const response = await deletePost(postId ?? "").unwrap();
+      toast.success(response?.message || "Post deleted successfully");
+      setOpen(false);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      toast.error(error?.data?.message || "Failed to delete post");
+    }
+  };
   return (
     <RootDialog open={open} setOpen={setOpen}>
       <div className="md:p-6 p-4">
@@ -31,8 +46,12 @@ function DeleteGroup({
             >
               Cancel
             </button>
-            <button className="px-6 rounded-full bg-redColor py-2 cursor-pointer  text-base font-semibold text-white transition-all hover:bg-red-600 active:scale-95">
-              Delete
+            <button
+              className="px-6 rounded-full bg-redColor py-2 cursor-pointer disabled:bg-bgColor disabled:cursor-not-allowed disabled:text-grayColor1 text-base font-semibold text-white transition-all hover:bg-red-600 active:scale-95"
+              onClick={handleDeletePost}
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>

@@ -9,6 +9,7 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import emptyImage from "@/public/empty_user.jpg";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PostAccessModal from "./post/PostAccessModal";
@@ -31,7 +32,7 @@ function CreatePostSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src={data?.user?.profile_image_url || "/empty_user.jpg"}
+            src={data?.user?.profile_image_url || emptyImage}
             alt="User avatar"
             width={32}
             height={32}

@@ -5,7 +5,7 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import Image from "next/image";
 import { type CSSProperties, useRef, useState } from "react";
-
+import emptyImage from "@/public/empty_user.jpg";
 import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
 import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
@@ -83,7 +83,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image
-            src={data?.user?.profile_image_url || "/empty_user.jpg"}
+            src={data?.user?.profile_image_url || emptyImage}
             alt="Current user"
             width={40}
             height={40}

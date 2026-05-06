@@ -1,11 +1,13 @@
 "use client";
 
-
-import { useGetNotificationCountQuery, useGetNotificationsQuery, useUpdateNotificationReadStatusMutation } from "@/feature/slice/notifications/notificationSlice";
+import {
+  useGetNotificationsQuery,
+  useUpdateNotificationReadStatusMutation,
+} from "@/feature/slice/notifications/notificationSlice";
 import Image from "next/image";
-import NotificationSkeleton from "./_components/NotificationSkeleton";
-import { calculateTime } from "./_components/CalculateTime";
 import { useEffect } from "react";
+import { calculateTime } from "./_components/CalculateTime";
+import NotificationSkeleton from "./_components/NotificationSkeleton";
 
 type NotificationDataType = {
   connection_request_id: number;
@@ -15,7 +17,7 @@ type NotificationDataType = {
   message: string;
   type: string;
   requested_at: string;
-}
+};
 
 type NotificationItem = {
   id: string;
@@ -27,7 +29,6 @@ type NotificationItem = {
 };
 
 function NotificationPage() {
-
   const { data, isLoading, error } = useGetNotificationsQuery("notifications");
   const [markAsRead] = useUpdateNotificationReadStatusMutation();
 
@@ -36,11 +37,8 @@ function NotificationPage() {
   }, [markAsRead]);
 
   if (isLoading) {
-    return (
-      <NotificationSkeleton />
-    )
+    return <NotificationSkeleton />;
   }
-
 
   return (
     <section className="w-full bg-white px-3 pb-12 pt-4 md:px-4">
@@ -60,9 +58,9 @@ function NotificationPage() {
 
             <div className="flex  items-center gap-3 md:gap-4">
               <div className="h-10 w-10 shrink-0 rounded-full ">
-                {item.data.sender_profile_image_url ? (
+                {item?.data?.sender_profile_image_url || item?.data?.acceptor_profile_image_url ? (
                   <Image
-                    src={item.data.sender_profile_image_url}
+                    src={item?.data?.sender_profile_image_url || item?.data?.acceptor_profile_image_url}
                     alt="User Avatar"
                     width={40}
                     height={40}
@@ -70,20 +68,22 @@ function NotificationPage() {
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-primaryColor flex items-center justify-center text-white font-bold text-sm">
-                    {item?.data.sender_name.slice(0, 2).toUpperCase()}
+                    {item?.data?.sender_name?.slice(0, 2).toUpperCase() || item?.data?.acceptor_name?.slice(0, 2).toUpperCase()}
                   </div>
                 )}
               </div>
 
               <div className="">
                 <p className="text-sm leading-[1.2] text-headerColor ">
-                  <span className="font-bold">{item.data.sender_name}</span>{" "}
-                  <span className="font-normal">{item.data.message}</span>
+                  <span className="font-bold">
+                    {item?.data?.sender_name || item?.data?.acceptor_name}
+                  </span>{" "}
+                  <span className="font-normal">{item?.data?.message}</span>
                 </p>
 
                 {item?.data?.description && (
                   <p className="mt-1 text-xs leading-tight text-descriptionColor ">
-                    {item.data?.description}
+                    {item?.data?.description}
                   </p>
                 )}
               </div>
