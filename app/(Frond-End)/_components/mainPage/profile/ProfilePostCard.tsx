@@ -5,7 +5,7 @@ import Image from "next/image";
 import emptyImage from "@/public/empty_user.jpg";
 import Link from "next/link";
 import PostAction from "../post/PostAction";
-import PostImageRender from "../post/PostImageRender";
+import ProfileImagRender from "./ProfileImagRender";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -51,7 +51,7 @@ function PostCard({ post, userId }: PostCardProps) {
         </p>
       </div>
       <div>
-        <PostImageRender mediaItems={mediaItems} />
+        <ProfileImagRender mediaItems={mediaItems} />
       </div>
 
       <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">

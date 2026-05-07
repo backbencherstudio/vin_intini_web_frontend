@@ -2,27 +2,21 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Switch } from "@/components/ui/switch";
+import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
 import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import {
-  ClinicalIcon,
   EmailIcon,
-  PhsychologicalIcon,
+  GroupUserIcon,
   PremiumIcon,
   ProgramIcon,
   PublicationIcon,
 } from "@/public/svgIcons/Icons";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
-
-interface FollowOption {
-  id: number;
-  title: string;
-  subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
 
 const notificationLabels: Array<{
   key: string;
@@ -51,45 +45,12 @@ const notificationLabels: Array<{
   },
 ];
 
-const followOptions: FollowOption[] = [
-  {
-    id: 1,
-    title: "American Psychological Association",
-    subtitle: "Organization",
-    icon: PhsychologicalIcon,
-  },
-  {
-    id: 2,
-    title: "Psychological Review",
-    subtitle: "Journal",
-    icon: PhsychologicalIcon,
-  },
-  {
-    id: 3,
-    title: "Neuroscience Today",
-    subtitle: "Publication",
-    icon: ClinicalIcon,
-  },
-  {
-    id: 4,
-    title: "Pfizer Neuroscience",
-    subtitle: "Industry Partner",
-    icon: ClinicalIcon,
-  },
-  {
-    id: 5,
-    title: "Clinical Psychology Network",
-    subtitle: "Community",
-    icon: PhsychologicalIcon,
-  },
-];
-
 function page() {
   const router = useRouter();
   const dispatch = useDispatch();
   const stepSevenData = useSelector((state: any) => state.onboarding.formData);
-  const [isLoading, setIsLoading] = useState(false);
-  const { data } = useGetUserProfileQuery("profile-data");
+  const { data: groupData } = useGetSuggestionGroupsQuery("group-suggestions");
+  const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const defaultPreferences = useMemo(
     () => ({
       new_jobs: stepSevenData?.notification_preferences?.new_jobs ?? true,
@@ -112,7 +73,7 @@ function page() {
       return []; // Return empty array if values is not an array
     }
 
-    return followOptions
+    return groupData?.data
       .filter((item) => values.includes(item.title))
       .map((item) => item.id);
   }, [stepSevenData]);
@@ -129,17 +90,12 @@ function page() {
     });
   };
 
-  const handleFinish = () => {
-    setIsLoading(true);
-
-    router.push(`/mu/${data?.user?.id}/home`);
-    setTimeout(() => {
+  const handleFinish = async () => {
+    try {
+      router.push(`/mu/home`);
       dispatch(onboardingReset());
-      setIsLoading(false);
-    }, 500);
+    } catch (error) {}
   };
-
-  console.log("Step Seven Data from Redux:", data); // Debugging log
 
   return (
     <div>
@@ -189,10 +145,9 @@ function page() {
             </h3>
 
             <div className="mt-3 flex flex-col gap-3 ">
-              {followOptions.map((option) => {
+              {groupData?.data.map((option) => {
                 const isSelected = selectedFollowIds.includes(option.id);
-                const Icon = option.icon;
-
+              
                 return (
                   <button
                     key={option.id}
@@ -206,12 +161,22 @@ function page() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#dff4f4] text-buttonColor">
-                        <Icon className="h-4 w-4" />
+                        {option?.logo_url ? (
+                          <Image
+                            src={option?.logo_url}
+                            alt={option.name}
+                            width={48}
+                            height={48}
+                            className="rounded-md w-full h-full object-cover"
+                          />
+                        ) : (
+                          <GroupUserIcon className="h-6 w-6" />
+                        )}
                       </div>
 
                       <div>
                         <p className="text-sm font-semibold text-headerColor ">
-                          {option.title}
+                          {option.name}
                         </p>
                         <p className="text-xs text-grayColor1 mt-1 ">
                           {option.subtitle}

@@ -8,22 +8,51 @@ type PostMediaItem = NonNullable<PostFeedType["media"]>[number];
 function PostImageRender({ mediaItems }: any) {
   const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
+  const isVideo = (item: PostMediaItem): boolean => {
+    const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi", ".mkv"];
+    const url = item.url || item.file_path || "";
+    const type = item.type?.toLowerCase() || "";
+    return (
+      type === "video" ||
+      videoExtensions.some((ext) => url.toLowerCase().includes(ext))
+    );
+  };
+
   const openMediaViewer = (index: number) => {
     setActiveMediaIndex(index);
     setIsMediaViewerOpen(true);
   };
-  const renderMedia = (item: PostMediaItem) => (
-    <div className="relative h-full w-full overflow-hidden bg-black/5">
-      <Image
-        src={item.url || "/post_placeholder.png"}
-        alt="Post media"
-        width={10000}
-        height={10000}
-        sizes="(max-width: 768px) 100vw, 50vw"
-        className=" object-cover w-full h-full  bg-black/5"
-      />
-    </div>
-  );
+
+  const renderMedia = (item: PostMediaItem) => {
+    const mediaUrl = item.url || item.file_path || "/post_placeholder.png";
+
+    if (isVideo(item)) {
+      return (
+        <div className="relative h-full w-full overflow-hidden bg-black/5">
+          <video
+            src={mediaUrl}
+            controls
+            className="w-full h-full object-cover bg-black/5"
+            preload="metadata"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-black/5">
+        <Image
+          src={mediaUrl}
+          alt="Post media"
+          width={10000}
+          height={10000}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover w-full h-full bg-black/5"
+        />
+      </div>
+    );
+  };
 
   const renderMediaTile = (
     item: PostMediaItem,
