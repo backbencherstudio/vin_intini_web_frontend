@@ -8,14 +8,18 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import GroupCard from "./GroupCard";
 import CreateGroupForm from "./GroupCreateModal";
+import { useSearchParams } from "next/navigation";
 
 function CreateMyGroupList() {
-  const { data, isLoading, isError } = useGetMyCreatedGroupsQuery("");
+   const params = useSearchParams();
+  
+    const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
+  const { data, isLoading, isFetching, isError } = useGetMyCreatedGroupsQuery(searchQuery);
   const [isCreating, setIsCreating] = useState(false);
   const createdGroups = data?.data || [];
   return (
     <div>
-      {isLoading ? (
+      {isLoading || isFetching ? (
         Array.from({ length: 6 }).map((_, index) => (
           <GroupSkleton key={index} />
         ))

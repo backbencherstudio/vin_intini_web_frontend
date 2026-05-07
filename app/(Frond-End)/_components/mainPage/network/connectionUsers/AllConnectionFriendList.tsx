@@ -19,7 +19,7 @@ function AllConnectionFriendList() {
 
     return filtered;
   };
-  const { data, isLoading, isError } = useGetMyConnectionsQuery(
+  const { data, isFetching, isError } = useGetMyConnectionsQuery(
     filterCustomers().toString(),
   );
   if (isError) {
@@ -30,7 +30,7 @@ function AllConnectionFriendList() {
     <div>
       <ConnectionListHeader data={data} />
       <div className="">
-        {isLoading ? (
+        {isFetching ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
           ))

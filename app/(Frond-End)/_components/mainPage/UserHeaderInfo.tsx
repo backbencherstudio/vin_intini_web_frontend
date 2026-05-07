@@ -19,26 +19,23 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
 function UserHeaderInfo() {
-  const {
-    data: userProfileData,
-    isLoading: userProfileLoading,
-    isError: userProfileError,
-  } = useGetUserProfileQuery("user");
+  const { data: userProfileData } = useGetUserProfileQuery("user");
   const dispatch = useDispatch();
-  if (userProfileData?.success) {
-    dispatch(onboardingReset());
-  }
+
+  useEffect(() => {
+    if (userProfileData?.success) {
+      dispatch(onboardingReset());
+    }
+  }, [userProfileData?.success, dispatch]);
 
   const router = useRouter();
-  const {
-    data: notificationCountData,
-    isLoading: notificationCountLoading,
-    error,
-  } = useGetNotificationCountQuery("notificationCount");
+  const { data: notificationCountData } =
+    useGetNotificationCountQuery("notificationCount");
   const handleLogout = async () => {
     // Clear the access token cookie
     await clearToken();
