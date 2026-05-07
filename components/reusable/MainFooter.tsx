@@ -11,18 +11,18 @@ import Link from "next/link";
 function MainFooter() {
   const year = new Date().getFullYear();
   const socialLinks = [
+    // {
+    //   href: "#",
+    //   label: "Facebook",
+    //   icon: <FaceBookIcon className="h-4 w-4" />,
+    // },
     {
-      href: "#",
-      label: "Facebook",
-      icon: <FaceBookIcon className="h-4 w-4" />,
-    },
-    {
-      href: "#",
+      href: "https://www.instagram.com/mindunitellc",
       label: "Instagram",
       icon: <InstagramIcon className="h-4 w-4" />,
     },
     {
-      href: "#",
+      href: "https://www.linkedin.com/company/mind-unite",
       label: "LinkedIn",
       icon: <LinkedInIcon className="h-4 w-4" />,
     },
@@ -69,6 +69,7 @@ function MainFooter() {
                     key={link.label}
                     href={link.href}
                     aria-label={link.label}
+                    target="_blank"
                     className=" rounded-full p-2 hover:bg-lightGreenColor/60 transition-all duration-200 hover:shadow-md shadow-lightGreenColor"
                   >
                     {link.icon}

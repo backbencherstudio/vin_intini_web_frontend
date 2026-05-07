@@ -88,26 +88,28 @@ export default function Footer() {
         <div className="md:col-span-6 lg:col-span-3">
           <h3 className="text-lg font-semibold mb-4">Follow Us on</h3>
           <div className="flex space-x-4">
-            <Link
+            {/* <Link
               href="#"
               className="bg-white text-[#000F75] rounded-full p-2 hover:bg-yellow-400"
             >
               <FaFacebookF className="text-blackColor" />
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               href="#"
               className="bg-white text-[#000F75] rounded-full p-2 hover:bg-yellow-400"
             >
               <FaYoutube className="text-blackColor" />
-            </Link>
+            </Link> */}
             <Link
-              href="#"
+              href="https://www.linkedin.com/company/mind-unite"
+              target="_blank"
               className="bg-white text-[#000F75] rounded-full p-2 hover:bg-yellow-400"
             >
               <FaLinkedinIn className="text-blackColor" />
             </Link>
             <Link
-              href="#"
+              href="https://x.com/mindUnite"
+              target="_blank"
               className="bg-white text-[#000F75] rounded-full p-2 hover:bg-yellow-400"
             >
               <FaXTwitter className="text-blackColor" />

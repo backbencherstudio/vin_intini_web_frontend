@@ -141,12 +141,12 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
     <MapContainer
       center={[39.8283, -98.5795]}
       zoom={zoomLevel || 4}
-      minZoom={3}
-      maxZoom={10}
+      minZoom={4}
       style={{ height: "50vh", width: "100%", zIndex: 1 }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        minZoom={4}
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
@@ -157,11 +157,11 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
           (hospital?.latitude && hospital?.longitude) ? (
             <Marker key={`hospital-${hospital.id}`} position={[Number(hospital.latitude), Number(hospital.longitude)]} icon={hospitalIcon}>
               <Popup autoPan={false} closeButton={false}>
-                {/* <MapPopup
-                  title={hospital.name}
-                  titleColor="text-red-600"
-                  location={hospital.location}
-                /> */}
+                <MapPopup
+                  name={hospital?.name}
+                  address={hospital?.location}
+                  website={hospital?.website}
+                />
               </Popup>
             </Marker>
           ) : null
@@ -171,13 +171,13 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
             <Marker key={`university-${university.id}`} position={[Number(university.latitude), Number(university.longitude)]} icon={universityIcon}>
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
-                  name={university.name}
-                  psychologyDegrees={university.psychology_degrees}
-                  counselingDegrees={university.counseling_degrees}
-                  neuroscienceDegrees={university.neuroscience_degrees}
-                  address={university.address}
-                  phone={university.phone}
-                  website={university.website}
+                  name={university?.name}
+                  psychologyDegrees={university?.psychology_degrees}
+                  counselingDegrees={university?.counseling_degrees}
+                  neuroscienceDegrees={university?.neuroscience_degrees}
+                  address={university?.address}
+                  phone={university?.phone}
+                  website={university?.website}
                 />
               </Popup>
             </Marker>
@@ -187,12 +187,12 @@ const USAMapWithPointers = ({ areaName, zoomLevel, onFinishZoom, data }: LeafLet
           (residency?.latitude && residency?.longitude) ? (
             <Marker key={`residency-${residency.id}`} position={[Number(residency.latitude), Number(residency.longitude)]} icon={residentialIcon}>
               <Popup autoPan={false} closeButton={false}>
-                {/* <MapPopup
-                  title={residency.program_name}
-                  titleColor="text-green-700"
-                  rows={residency.degree_types?.length > 0 ? [{ icon: '🎓', label: 'Degrees:', value: residency.degree_types.join(', ') }] : []}
-                  location={residency.location}
-                /> */}
+                <MapPopup
+                  name={residency.program_name}
+                  address={residency.location}
+                  website={residency.website}
+                  degree={residency.degree_types}
+                />
               </Popup>
             </Marker>
           ) : null
