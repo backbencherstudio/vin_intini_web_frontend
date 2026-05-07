@@ -44,7 +44,9 @@ function flattenAllOptions(
 
 function toOption(value: string, options: FlatOption[]) {
   const normalizedValue = String(value ?? "");
-  const matched = options.find((option) => option.value === normalizedValue);
+  const matched = options.find(
+    (option) => String(option.value) === normalizedValue,
+  );
   return matched ?? { value: normalizedValue, label: normalizedValue };
 }
 

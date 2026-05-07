@@ -6,8 +6,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
+import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { clearToken } from "@/lib/token";
+import emptyImage from "@/public/empty_user.jpg";
 import {
   LogoutIcon,
   NotificationIcon,
@@ -17,8 +19,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import emptyImage from "@/public/empty_user.jpg";
 import { IoIosArrowDown } from "react-icons/io";
+import { useDispatch } from "react-redux";
 
 function UserHeaderInfo() {
   const {
@@ -26,6 +28,10 @@ function UserHeaderInfo() {
     isLoading: userProfileLoading,
     isError: userProfileError,
   } = useGetUserProfileQuery("user");
+  const dispatch = useDispatch();
+  if (userProfileData?.success) {
+    dispatch(onboardingReset());
+  }
 
   const router = useRouter();
   const {
@@ -65,8 +71,7 @@ function UserHeaderInfo() {
                     <div className=" w-7 h-7 lg:w-12 border border-primaryColor lg:h-12 rounded-full overflow-hidden">
                       <Image
                         src={
-                          userProfileData?.user?.profile_image_url ||
-                         emptyImage
+                          userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}
@@ -88,8 +93,7 @@ function UserHeaderInfo() {
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
                       <Image
                         src={
-                          userProfileData?.user?.profile_image_url ||
-                          emptyImage
+                          userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}

@@ -22,7 +22,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
   const goPrev = () => swiperRef.current?.slidePrev();
 
   return (
-    <div className="w-full relative h-full">
+    <div className="w-full relative grid  h-full">
       <button onClick={goPrev}>
         <div className=" z-10 flex top-[50%] left-2 absolute -translate-y-1/2 items-center group justify-center cursor-pointer w-10 h-10 rounded-full bg-white/20 border border-primaryColor hover:bg-primaryColor shadow shadow-stone-300 transition-all backdrop-blur-[5px]">
           <FaLongArrowAltLeft className="text-primaryColor group-hover:text-whiteColor" />
@@ -53,7 +53,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
           }}
         >
           {posts.map((post) => (
-            <SwiperSlide key={post.id}>
+            <SwiperSlide className="" key={post.id}>
               <ProfilePostCard post={post} userId={userId} />
             </SwiperSlide>
           ))}

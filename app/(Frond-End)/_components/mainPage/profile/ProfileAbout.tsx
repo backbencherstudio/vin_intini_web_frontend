@@ -1,13 +1,18 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
+import { useGetProfileByIdQuery, useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { EditeIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
 import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 
 function ProfileAbout({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
-  const { data, isLoading, isError } = useGetProfileByIdQuery(userId);
+  const {data: profileData, } = useGetUserProfileQuery("user");
+  const { data, isLoading, isError } = useGetProfileByIdQuery(profileData?.user?.id || "", {
+    skip: !profileData?.user?.id,
+  });
+  console.log(data, "profile about");
+
   if (isLoading) {
     return (
       <div className="space-y-4">

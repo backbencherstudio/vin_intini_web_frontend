@@ -3,7 +3,6 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Switch } from "@/components/ui/switch";
 import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
-import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import {
   EmailIcon,
@@ -15,7 +14,8 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 const notificationLabels: Array<{
@@ -47,28 +47,29 @@ const notificationLabels: Array<{
 
 function page() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const stepSevenData = useSelector((state: any) => state.onboarding.formData);
+
+  const stepSixData = useSelector((state: any) => state.onboarding.formData);
+
   const { data: groupData } = useGetSuggestionGroupsQuery("group-suggestions");
   const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const defaultPreferences = useMemo(
     () => ({
-      new_jobs: stepSevenData?.notification_preferences?.new_jobs ?? true,
+      new_jobs: stepSixData?.notification_preferences?.new_jobs ?? true,
       publications_alerts:
-        stepSevenData?.notification_preferences?.publications_alerts ?? true,
+        stepSixData?.notification_preferences?.publications_alerts ?? true,
       program_updates:
-        stepSevenData?.notification_preferences?.program_updates ?? true,
+        stepSixData?.notification_preferences?.program_updates ?? true,
       premium_offers:
-        stepSevenData?.notification_preferences?.premium_offers ?? true,
+        stepSixData?.notification_preferences?.premium_offers ?? true,
     }),
-    [stepSevenData],
+    [stepSixData],
   );
 
   const [notificationPreferences, setNotificationPreferences] =
     useState(defaultPreferences);
 
   const defaultFollowedIds = useMemo(() => {
-    const values = stepSevenData?.followed_entities;
+    const values = stepSixData?.followed_entities;
     if (!Array.isArray(values)) {
       return []; // Return empty array if values is not an array
     }
@@ -76,7 +77,7 @@ function page() {
     return groupData?.data
       .filter((item) => values.includes(item.title))
       .map((item) => item.id);
-  }, [stepSevenData]);
+  }, [stepSixData, groupData]);
 
   const [selectedFollowIds, setSelectedFollowIds] =
     useState<number[]>(defaultFollowedIds);
@@ -92,9 +93,54 @@ function page() {
 
   const handleFinish = async () => {
     try {
+      const formData = new FormData();
+
+      Object.entries(stepSixData || {}).forEach(([key, value]) => {
+        if (key === "profile_image") return;
+        if (key === "notification_preferences") return;
+        if (key === "followed_entities") return;
+        if (value === undefined || value === null) return;
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+        if (typeof value === "object") {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+        formData.append(key, String(value));
+      });
+
+      formData.set("notify_jobs", String(notificationPreferences.new_jobs));
+      formData.set(
+        "notify_publications",
+        String(notificationPreferences.publications_alerts),
+      );
+      formData.set(
+        "notify_residency",
+        String(notificationPreferences.program_updates),
+      );
+      formData.set(
+        "notify_offers",
+        String(notificationPreferences.premium_offers),
+      );
+
+      if (selectedFollowIds.length > 0) {
+        formData.set(
+          "group_ids",
+          selectedFollowIds.length === 1
+            ? String(selectedFollowIds[0])
+            : JSON.stringify(selectedFollowIds),
+        );
+      }
+
+      await profileSetup(formData).unwrap();
+
       router.push(`/mu/home`);
-      dispatch(onboardingReset());
-    } catch (error) {}
+    } catch (error) {
+      console.error("Profile setup failed:", error);
+      toast.error("Failed to complete profile setup. Please try again.");
+    }
   };
 
   return (
@@ -147,7 +193,7 @@ function page() {
             <div className="mt-3 flex flex-col gap-3 ">
               {groupData?.data.map((option) => {
                 const isSelected = selectedFollowIds.includes(option.id);
-              
+
                 return (
                   <button
                     key={option.id}
