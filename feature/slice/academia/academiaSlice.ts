@@ -15,14 +15,14 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
       }),
     }),
     getUndergradGradPrograms: builder.query({
-      query: ({id,limit,page}) => ({
-        url: `/states/${id}/universities?limit=${limit}&page=${page}`,
+      query: ({id,limit,page, searchItem, degree}) => ({
+        url: `/states/${id}/universities?per_page=${limit}&page=${page}&search=${searchItem}${degree ? `&degree=${degree}` : ''}`,
         method: "GET",
       }),
     }),
     getResidencies: builder.query({
-      query: ({id,limit,page}) => ({
-        url: `/states/${id}/residencies?limit=${limit}&page=${page}`,
+      query: ({id,limit,page, searchItem}) => ({
+        url: `/states/${id}/residencies?limit=${limit}&page=${page}&search=${searchItem}`,
         method: "GET",
       }),
     }),

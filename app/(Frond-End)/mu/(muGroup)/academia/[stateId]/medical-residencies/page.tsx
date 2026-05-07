@@ -20,23 +20,25 @@ import TableLoading from "../grad-undergrad-programs/_components/TableLoading";
 export default function page(){
     const [limit, setLimit] = useState<number>(10);
     const [page, setPage] = useState<number>(1);
+    const [searchItem, setSearchItem] = useState<string>("");
     const { stateId } = useParams();
-    const { data, isLoading, error } = useGetResidenciesQuery({id: stateId, limit, page});
+    const { data, isLoading, isFetching, error } = useGetResidenciesQuery({id: stateId, limit, page, searchItem});
 
-    if(isLoading){
-        return(
-            <TableLoading />
-        )
-    }
+    const handleSearch = (query: string) => {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set("search", query);
+        setSearchItem(query);
+        console.log(searchParams.toString());
+    };
 
     return(
         <div className="xl:pl-6 space-y-6">
             <AcademiHeader 
                 title="Residency Programs"
-                onSearch={(query) => console.log("Search query:", query)}
+                onSearch={handleSearch}
                 searchPlaceHolder="Search Degree/ University..."
             />
-            <MedResidencyTable data={data?.data || []} />
+            {(isFetching || isLoading) ? <TableLoading /> : <MedResidencyTable data={data?.data || []} />}
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
                     page={page}

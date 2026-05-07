@@ -16,19 +16,28 @@ import { Limits } from "@/public/staticData";
 import { useGetUndergradGradProgramsQuery } from "@/feature/slice/academia/academiaSlice";
 import { useParams } from "next/navigation";
 import TableLoading from "./_components/TableLoading";
+import { useSearchParams } from "next/navigation";
 
 export default function page() {
     const [selectedDegree, setSelectedDegree] = useState<string>("all");
     const [limit, setLimit] = useState<number>(10);
     const [page, setPage] = useState<number>(1);
+    const [searchItem, setSearchItem] = useState<string>("");
     const params = useParams();
-    const { data, isLoading, error } = useGetUndergradGradProgramsQuery({id: params.stateId, limit, page});
+    const { data, isLoading, isFetching, error } = useGetUndergradGradProgramsQuery({id: params.stateId, limit, page, searchItem, degree: selectedDegree === "all" ? "" : selectedDegree});
 
-    if(isLoading){
-        return(
-            <TableLoading />
-        )
-    }
+    // if(isLoading){
+    //     return(
+    //         <TableLoading />
+    //     )
+    // }
+
+    const handleSearch = (query: string) => {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set("search", query);
+        setSearchItem(query);
+        console.log(searchParams.toString());
+    };
 
     return (
         <div className="xl:pl-6 space-y-6">
@@ -38,16 +47,18 @@ export default function page() {
                 selectedDegree={selectedDegree}
                 setSelectedDegree={setSelectedDegree}
                 filterData={[
-                    { key: "ba-bs", label: "BA/BS" },
-                    { key: "ma", label: "MA" },
-                    { key: "phd", label: "PhD" },
-                    { key: "ma-phd", label: "MA-PhD" },
+                    { key: "BA", label: "BA" },
+                    { key: "BS", label: "BS" },
+                    { key: "MA", label: "MA" },
+                    { key: "PhD", label: "PhD" },
+                    { key: "MS", label: "MS" },
+                    { key: "MS (OL)", label: "MS (OL)" },
                 ]}
-                onSearch={() => {}}
+                onSearch={handleSearch}
                 searchPlaceHolder="Search Degree/ University..."
             />
             
-            <GradProgramsTable data={data?.data || []} />
+            {(isFetching || isLoading) ? <TableLoading /> : <GradProgramsTable data={data?.data || []} />}
             <div className="flex items-center gap-4 justify-end">
                 <Pagination
                     page={page}

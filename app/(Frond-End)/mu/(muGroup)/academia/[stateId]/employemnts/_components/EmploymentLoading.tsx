@@ -10,7 +10,7 @@ const EmploymentLoading = () => {
       <div className="h-9 w-64 bg-slate-200 rounded-lg mb-8" />
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
         
         {/* Vertical Divider (Desktop Only) */}
         <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-slate-100" />
