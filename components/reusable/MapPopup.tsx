@@ -11,9 +11,10 @@ type MapPopupProps = {
     address?: string;
     phone?: string;
     website?: string;
+    degree?: string[];
 };
 
-const MapPopup = ({ name, psychologyDegrees, counselingDegrees, neuroscienceDegrees, address, phone, website }: MapPopupProps) => {
+const MapPopup = ({ name, psychologyDegrees, counselingDegrees, neuroscienceDegrees, address, phone, website, degree }: MapPopupProps) => {
     return (
         <div className="text-[13px] leading-relaxed p-2 text-gray-800 min-w-[220px]">
             <div>
@@ -28,7 +29,7 @@ const MapPopup = ({ name, psychologyDegrees, counselingDegrees, neuroscienceDegr
                         <h2 className='text-blackColor font-medium text-sm'>{name}</h2>
                     )}
                 </div>
-                {psychologyDegrees || counselingDegrees || neuroscienceDegrees ? (
+                {psychologyDegrees || counselingDegrees || neuroscienceDegrees || degree ? (
                     <div className="">
                         <label className='text-gray-500 text-[11px]'>degrees</label>
                         {psychologyDegrees && psychologyDegrees.length > 0 && (
@@ -41,6 +42,9 @@ const MapPopup = ({ name, psychologyDegrees, counselingDegrees, neuroscienceDegr
                         {neuroscienceDegrees && neuroscienceDegrees.length > 0 && (
                             <h3 className='text-blackColor font-medium text-[11px]'>{neuroscienceDegrees.join(', ')} in Neuroscience</h3>
 
+                        )}
+                        {degree && degree.length > 0 && (
+                            <h3 className='text-blackColor font-medium text-[11px]'>{degree.join(', ')} in {degree[0]}</h3>
                         )}
                     </div>) : (
                     <div>

@@ -4,24 +4,24 @@ import Link from "next/link";
 import { FaceBookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@/public/svgIcons/Icons";
 
 const socialMediaLinks = [
-  {
-    name: "Facebook",
-    url: "https://www.facebook.com",
-    Icon: FaceBookIcon
-  },
+  // {
+  //   name: "Facebook",
+  //   url: "https://www.facebook.com",
+  //   Icon: FaceBookIcon
+  // },
   {
     name: "Instagram",
-    url: "https://www.instagram.com",
+    url: "https://www.instagram.com/mindunitellc",
     Icon: InstagramIcon
   },
   {
     name: "LinkedIn",
-    url: "https://www.linkedin.com",
+    url: "https://www.linkedin.com/company/mind-unite",
     Icon: LinkedInIcon
   },
   {
     name: "Twitter",
-    url: "https://twitter.com",
+    url: "https://x.com/mindUnite",
     Icon: TwitterIcon
   }
 ]
