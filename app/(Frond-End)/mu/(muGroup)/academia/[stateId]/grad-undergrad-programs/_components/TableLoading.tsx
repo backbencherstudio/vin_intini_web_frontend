@@ -39,16 +39,6 @@ const TableLoading = () => {
           </div>
         ))}
       </div>
-
-      {/* Pagination Footer Placeholder */}
-      <div className="p-4 flex justify-end items-center gap-2 border-t border-gray-50">
-        <div className="w-20 h-8 bg-gray-100 rounded-md" /> {/* Previous */}
-        <div className="w-8 h-8 bg-blue-50 rounded-md border border-blue-100" />{" "}
-        {/* Active Page */}
-        <div className="w-20 h-8 bg-gray-100 rounded-md" /> {/* Next */}
-        <div className="w-16 h-8 bg-gray-100 rounded-md ml-2" />{" "}
-        {/* Limit Select */}
-      </div>
     </div>
   );
 };

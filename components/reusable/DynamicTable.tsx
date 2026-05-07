@@ -93,7 +93,7 @@ export default function DynamicTable({
       <div className="overflow-hidden h-full">
         <div className="overflow-x-auto">
           <table className={`w-full text-left ${rowStyle?.spaceing || ''}`}>
-            <thead className="sticky top-0 z-99">
+            <thead className="sticky top-0">
               <tr style={{borderRadius: '100%'}} className="text-center">
                 {columns.map((col, index) => (
                   <th
