@@ -1,14 +1,14 @@
-
+import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
+import { useTruncatedText } from "@/hooks/useTruncatedText";
 import { PostFeedType } from "@/lib/type";
 import { formatPostDate } from "@/lib/utils";
+import emptyImage from "@/public/empty_user.jpg";
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
-import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
-import emptyImage from "@/public/empty_user.jpg";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -19,6 +19,11 @@ function PostCard({ post }: PostCardProps) {
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
+
+  const { displayText, toggleExpanded, shouldShowButton } = useTruncatedText(
+    post?.description,
+    { maxLength: 200 },
+  );
 
   const [postToggleLike] = usePostToggleLikeMutation();
   const likedByMe = Boolean(post?.liked_by_me);
@@ -72,8 +77,17 @@ function PostCard({ post }: PostCardProps) {
 
       <div className="mt-4 space-y-1">
         <p className="wrap-break-word text-[16px] leading-7 text-headerColor/85">
-          {post?.description}
+          {displayText}
         </p>
+        {shouldShowButton && (
+          <button
+            type="button"
+            onClick={toggleExpanded}
+            className="text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
+          >
+            See more
+          </button>
+        )}
       </div>
       <div>
         <PostImageRender mediaItems={mediaItems} />

@@ -29,6 +29,7 @@ function PostModal({
   const { data } = useGetUserProfileQuery("user");
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
   const [createPost, { isLoading }] = useCreatePostMutation();
   const { postVisibility, commentControl, selectedGroupIds } = useSelector(
@@ -84,6 +85,26 @@ function PostModal({
     });
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      setPostText((prev) => prev + emoji);
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newText =
+      postText.substring(0, start) + emoji + postText.substring(end);
+    setPostText(newText);
+
+    // Focus textarea and set cursor after emoji
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+    }, 0);
+  };
+
   const handleSubmit = async () => {
     const trimmedText = postText.trim();
     if (!trimmedText && selectedMedia.length === 0) {
@@ -123,7 +144,6 @@ function PostModal({
   };
 
   return (
-    
     <section className="relative  px-4 pb-4 pt-4 md:px-5 md:pb-5 md:pt-4">
       <input
         ref={mediaInputRef}
@@ -166,6 +186,7 @@ function PostModal({
       </div>
 
       <textarea
+        ref={textareaRef}
         value={postText}
         onChange={(event) => setPostText(event.target.value)}
         placeholder="What’s in you mind today?"
@@ -238,9 +259,9 @@ function PostModal({
         )}
       </div>
 
-      <div className="relative inline-flex flex-col items-start">
+      <div className="mt-2 flex items-center gap-2">
         <SmartEmojiPicker
-          onEmojiSelect={(emoji) => setPostText((prev) => prev + emoji)}
+          onEmojiSelect={handleEmojiSelect}
           iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
           height={250}
         />

@@ -1,9 +1,9 @@
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
+import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import emptyImage from "@/public/empty_user.jpg";
 function ProfileUserConnectCard({ profile }: any) {
   const { user, mutual_connections_count } = profile;
   const [sendRequest, { isLoading }] = useSendRequestMutation();
@@ -30,7 +30,7 @@ function ProfileUserConnectCard({ profile }: any) {
         className={` py-4  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
-          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
+          <div className="xl:h-16 xl:w-16 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
               src={user?.profile_image_url || emptyImage}
               alt={user?.name}

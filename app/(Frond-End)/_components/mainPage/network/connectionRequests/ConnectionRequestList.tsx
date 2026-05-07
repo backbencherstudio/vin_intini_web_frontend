@@ -5,9 +5,13 @@ import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import ConnectionNotFound from "./ConnectionNotFound";
 import ConnectionRequestCard from "./ConnectionRequestCard";
+import { useSearchParams } from "next/navigation";
 
 function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
-  const { data, isLoading, isError } = useGetConnectionsQuery("");
+   const params = useSearchParams();
+
+  const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
+  const { data, isFetching, isError } = useGetConnectionsQuery(searchQuery);
 
   if (isError) {
     return <Error />;
@@ -16,7 +20,7 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
   return (
     <div>
       <div className="">
-        {isLoading
+        {isFetching
           ? Array.from({ length: 8 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))

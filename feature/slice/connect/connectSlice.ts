@@ -3,14 +3,14 @@ import baseApiSlice from "../baseApi";
 const connectSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getConnections: builder.query({
-      query: () => ({
-        url: "/connections/requests",
+      query: (searchQuery) => ({
+        url: `/connections/requests?search=${searchQuery}`,
         method: "GET",
       }),
     }),
     getMyConnections: builder.query({
-      query: (search) => ({
-        url: `/connections${search ? `?search=${search}` : ""}`,
+      query: (searchQuery) => ({
+        url: `/connections${searchQuery ? `?search=${searchQuery}` : ""}`,
         method: "GET",
       }),
       providesTags: ["connect"],
@@ -62,5 +62,4 @@ export const {
   useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
- 
 } = connectSlice;

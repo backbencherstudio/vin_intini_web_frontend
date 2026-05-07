@@ -8,7 +8,6 @@ import PostCardSkleton from "./PostCardSkleton";
 
 function PostList() {
   const limit = 10;
-  // We temporarily pass an empty query to initialize the hook
   const [tempPage, setTempPage] = useState(1);
 
   const { data, isFetching, isLoading } = useGetNewsfeedQuery({
@@ -42,6 +41,11 @@ function PostList() {
           <PostCardSkleton />
           <PostCardSkleton />
         </div>
+      )}
+      {!isLoading && combinedData.length === 0 && (
+        <p className="text-center  text-primaryColor font-semibold w-full mt-6 py-10 border border-dashed border-borderColor rounded-md">
+          No posts to display.
+        </p>
       )}
     </section>
   );
