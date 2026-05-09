@@ -3,8 +3,8 @@ import baseApiSlice from "../baseApi";
 export const likeSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getLikeList: builder.query({
-      query: (postId) => ({
-        url: `/liked-list/${postId}`,
+      query: ({query}) => ({
+        url: `/liked-list/${query}`,
       }),
       providesTags: ["Post", "Comment"],
     }),

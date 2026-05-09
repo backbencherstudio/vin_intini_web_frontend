@@ -13,7 +13,7 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     getGroupTimeline: builder.query({
-      query: (id) => ({ url: `/group-posts/${id}`, method: "GET" }),
+      query: ({ query }) => ({ url: `/group-posts/${query}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 

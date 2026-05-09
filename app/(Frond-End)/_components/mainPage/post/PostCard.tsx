@@ -9,17 +9,19 @@ import { useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
+import PostLikeList from "./PostLikeList";
 
 type PostCardProps = {
   post?: PostFeedType;
+  meta?: any; // Adjust the type as needed
 };
 
-function PostCard({ post }: PostCardProps) {
+function PostCard({ post, meta }: PostCardProps) {
   const { user, media, is_connected } = post || {};
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
-
+  const [likeList, setLikeList] = useState(false);
   const { displayText, toggleExpanded, shouldShowButton } = useTruncatedText(
     post?.description,
     { maxLength: 200 },
@@ -72,7 +74,7 @@ function PostCard({ post }: PostCardProps) {
           </div>
         </div>
 
-        <PostAction post={post} />
+        <PostAction post={post} meta={meta} />
       </div>
 
       <div className="mt-4 space-y-1">
@@ -94,7 +96,9 @@ function PostCard({ post }: PostCardProps) {
       </div>
 
       <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">
-        <p>{`${likesCount} likes`}</p>
+        <button onClick={() => setLikeList(true)} className="cursor-pointer">
+          {`${likesCount} likes`}
+        </button>
         <p>{`${post?.total_comment} comments`}</p>
       </div>
 
@@ -120,6 +124,9 @@ function PostCard({ post }: PostCardProps) {
       </div>
 
       <div className="mt-2">{isCommented && <PostComment post={post} />}</div>
+      {likeList && (
+        <PostLikeList postId={post?.id} open={likeList} setOpen={setLikeList} />
+      )}
     </article>
   );
 }

@@ -24,8 +24,9 @@ import PostGroupListModal from "./PostGroupListModal";
 import PostModal from "./PostModal";
 type PostCardProps = {
   post?: PostFeedType;
+  meta?: any;
 };
-function PostAction({ post }: PostCardProps) {
+function PostAction({ post, meta }: PostCardProps) {
   const { can_edit, media, is_connected } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -42,18 +43,17 @@ function PostAction({ post }: PostCardProps) {
   return (
     <div>
       <div className="flex items-center gap-1.5">
-        {!is_connected ||
-          (can_edit && (
-            <button
-              type="button"
-              className={`h-7  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+        {!is_connected && (
+          <button
+            type="button"
+            className={`h-7  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
-            >
-              {"Connect"}
-            </button>
-          ))}
+          >
+            {"Connect"}
+          </button>
+        )}
         {can_edit && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
@@ -100,7 +100,7 @@ function PostAction({ post }: PostCardProps) {
                   Edit post
                 </DropdownMenuItem>
               )}
-              {post?.visibility === "groups" && (
+              {post?.visibility === "groups" && meta?.is_creator && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
