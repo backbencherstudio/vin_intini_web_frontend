@@ -1,26 +1,27 @@
 import RootDialog from "@/components/reusable/RootDialog";
-import { useGetLikeListQuery } from "@/feature/slice/post/likeSlice";
+import { useGetCommentLikeListByPostIdQuery, useReplyLikeListQuery } from "@/feature/slice/post/likeSlice";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import LikeListSkleton from "@/components/reusable/All Skleton/LikeListSkleton";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useEffect, useState } from "react";
 import PostLikeListCard from "./PostLikeListCard";
-function PostLikeList({
+function CommentReplyLikeList({
   open,
   setOpen,
-  postId,
+  commentId,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  postId: string | number;
+  commentId: string | number;
 }) {
   const limit = 10;
   const [tempPage, setTempPage] = useState(1);
-  const groupTimelineArg = postId
-    ? { query: `${postId}?page=${tempPage}&per_page=${limit}` }
+  const groupTimelineArg = commentId
+    ? { query: `${commentId}?page=${tempPage}&per_page=${limit}` }
     : skipToken;
-  const { data, isLoading } = useGetLikeListQuery(groupTimelineArg);
+  const { data, isLoading } =
+    useReplyLikeListQuery(groupTimelineArg);
   const { combinedData, page, lastElementRef } = useInfiniteScroll(
     data,
     isLoading,
@@ -34,9 +35,9 @@ function PostLikeList({
     <RootDialog open={open} setOpen={setOpen}>
       <div className="p-4 flex flex-col h-[90vh] ">
         <div>
-          <h2 className="text-lg font-semibold ">Post Likes</h2>
+          <h2 className="text-lg font-semibold ">Reply Comment Likes</h2>
           <p className="text-grayColor1 text-sm">
-            This is a placeholder for the list of users who liked the post.
+            This is a placeholder for the list of users who liked the reply.
           </p>
         </div>
         <div className="mt-4 flex-1 h-full overflow-y-auto">
@@ -64,4 +65,4 @@ function PostLikeList({
   );
 }
 
-export default PostLikeList;
+export default CommentReplyLikeList;

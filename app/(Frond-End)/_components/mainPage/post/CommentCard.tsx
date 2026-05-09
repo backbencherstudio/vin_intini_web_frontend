@@ -7,6 +7,8 @@ import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import CommentReplyLikeList from "./CommentReplyLikeList";
+import CommentLikeList from "./ReplyLikeListDialog";
 export default function CommentRow({
   depth = 0,
   showReply = false,
@@ -23,6 +25,8 @@ export default function CommentRow({
   isRepliesOpen?: boolean;
 }) {
   const [commentLikePost] = useCommentLikePostMutation();
+  const [likeListOpen, setLikeListOpen] = useState(false);
+  const [replyLikeListOpen, setReplyLikeListOpen] = useState(false);
   const [replyToggleLikeById] = useReplyToggleLikeByIdMutation();
   const [isLiked, setIsLiked] = useState(Boolean(item?.liked_by_me));
   const likedByMe = Boolean(item?.liked_by_me);
@@ -109,13 +113,21 @@ export default function CommentRow({
 
       {depth == 0 ? (
         <div className="mt-4 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
-          <button
-            type="button"
-            onClick={handleLikeComment}
-            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor hover:opacity-80`}
-          >
-            Like • {likesCount || 0}
-          </button>
+          <div className=" text-descriptionColor  gap-1 flex items-center">
+            <button
+              type="button"
+              onClick={handleLikeComment}
+              className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer hover:opacity-80`}
+            >
+              Like •
+            </button>
+            <button
+              onClick={() => setLikeListOpen(true)}
+              className="cursor-pointer"
+            >
+              {likesCount || 0}
+            </button>
+          </div>
 
           <>
             <span className="text-headerColor/45">|</span>
@@ -131,13 +143,35 @@ export default function CommentRow({
           </>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={handleReplyLikeComment}
-          className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor mt-4 font-semibold text-sm pl-10 hover:opacity-80`}
-        >
-          Like • {likesCount || 0}
-        </button>
+        <div className=" text-descriptionColor  gap-1 flex items-center mt-4 ">
+          <button
+            type="button"
+            onClick={handleReplyLikeComment}
+            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor font-semibold text-sm pl-10 hover:opacity-80`}
+          >
+            Like •
+          </button>
+          <button
+            onClick={() => setReplyLikeListOpen(true)}
+            className="cursor-pointer"
+          >
+            {likesCount || 0}
+          </button>
+        </div>
+      )}
+      {likeListOpen && (
+        <CommentLikeList
+          open={likeListOpen}
+          setOpen={setLikeListOpen}
+          commentId={item?.id}
+        />
+      )}
+      {replyLikeListOpen && (
+        <CommentReplyLikeList
+          open={replyLikeListOpen}
+          setOpen={setReplyLikeListOpen}
+          commentId={item?.id}
+        />
       )}
     </div>
   );

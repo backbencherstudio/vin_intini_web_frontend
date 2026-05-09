@@ -10,15 +10,15 @@ export const likeSlice = baseApiSlice.injectEndpoints({
     }),
 
     replyLikeList: builder.query({
-      query: (commentId) => ({
-        url: `/reply-liked-list/${commentId}`,
+      query: ({query}) => ({
+        url: `/reply-liked-list/${query}`,
       }),
       providesTags: ["Post", "Comment"],
     }),
 
     getCommentLikeListByPostId: builder.query({
-      query: (postId) => ({
-        url: `/comment-liked-list/${postId}`,
+      query: ({query}) => ({
+        url: `/comment-liked-list/${query}`,
       }),
       providesTags: ["Post", "Comment"],
     }),
