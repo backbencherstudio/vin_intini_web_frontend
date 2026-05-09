@@ -17,6 +17,7 @@ import {
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteGroup from "../group/DeleteGroup";
+import GroupPostCreateDialog from "../group/GroupPostCreateDialog";
 import GroupUserBanDialog from "../group/GroupUserBanDialog";
 import PostAccessModal from "./PostAccessModal";
 import PostGroupListModal from "./PostGroupListModal";
@@ -28,6 +29,7 @@ function PostAction({ post }: PostCardProps) {
   const { can_edit, media, is_connected } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
+  const [isGroupEdited, setIsGroupEdited] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
@@ -40,17 +42,18 @@ function PostAction({ post }: PostCardProps) {
   return (
     <div>
       <div className="flex items-center gap-1.5">
-        {!is_connected && (
-          <button
-            type="button"
-            className={`h-7  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+        {!is_connected ||
+          (can_edit && (
+            <button
+              type="button"
+              className={`h-7  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
-          >
-            {"Connect"}
-          </button>
-        )}
+            >
+              {"Connect"}
+            </button>
+          ))}
         {can_edit && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
@@ -72,18 +75,31 @@ function PostAction({ post }: PostCardProps) {
                 <DeleteIcon />
                 Delete post
               </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onSelect={(event) => {
-                  event.preventDefault();
-                  setMenuOpen(false);
-                  setIsEdited(true);
-                }}
-                className={"cursor-pointer "}
-              >
-                <EditeIcon />
-                Edit post
-              </DropdownMenuItem>
+              {post?.visibility === "groups" ? (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsGroupEdited(true);
+                  }}
+                  className={"cursor-pointer "}
+                >
+                  <EditeIcon />
+                  Edit post
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsEdited(true);
+                  }}
+                  className={"cursor-pointer "}
+                >
+                  <EditeIcon />
+                  Edit post
+                </DropdownMenuItem>
+              )}
               {post?.visibility === "groups" && (
                 <DropdownMenuItem
                   onSelect={(event) => {
@@ -124,6 +140,14 @@ function PostAction({ post }: PostCardProps) {
             <PostGroupListModal setPostType={handleSetPostType} />
           )}
         </RootDialog>
+      )}
+      {isGroupEdited && (
+        <GroupPostCreateDialog
+          open={isGroupEdited}
+          groupId={post?.groups?.[0]?.id}
+          setOpen={setIsGroupEdited}
+          postData={post}
+        />
       )}
     </div>
   );

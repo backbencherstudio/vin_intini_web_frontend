@@ -62,10 +62,10 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     updateGroupPost: builder.mutation({
-      query: (postData) => ({
-        url: `/groups/${postData.groupId}/posts/${postData.id}`,
+      query: ({ id, groupId, body }) => ({
+        url: `/groups/${groupId}/posts/${id}`,
         method: "POST",
-        body: postData,
+        body,
       }),
       invalidatesTags: ["Post"],
     }),
