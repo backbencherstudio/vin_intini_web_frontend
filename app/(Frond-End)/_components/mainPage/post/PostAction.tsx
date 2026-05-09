@@ -1,3 +1,4 @@
+import RootDialog from "@/components/reusable/RootDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -5,19 +6,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { PostFeedType } from "@/lib/type";
-import { DeleteIcon, DotIcon, UserBanIcon } from "@/public/svgIcons/Icons";
+import {
+  DeleteIcon,
+  DotIcon,
+  EditeIcon,
+  UserBanIcon,
+} from "@/public/svgIcons/Icons";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteGroup from "../group/DeleteGroup";
 import GroupUserBanDialog from "../group/GroupUserBanDialog";
+import PostAccessModal from "./PostAccessModal";
+import PostGroupListModal from "./PostGroupListModal";
+import PostModal from "./PostModal";
 type PostCardProps = {
   post?: PostFeedType;
 };
 function PostAction({ post }: PostCardProps) {
   const { can_edit, media, is_connected } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const dispatch = useDispatch();
+  const { postType } = useSelector((state: any) => state.postCompose);
 
+  const handleSetPostType = (type: string) => {
+    dispatch(setPostType(type as any));
+  };
   const [isBanUser, setIsBanUser] = useState(false);
 
   return (
@@ -55,16 +72,30 @@ function PostAction({ post }: PostCardProps) {
                 <DeleteIcon />
                 Delete post
               </DropdownMenuItem>
+
               <DropdownMenuItem
                 onSelect={(event) => {
                   event.preventDefault();
                   setMenuOpen(false);
-                  setIsBanUser(true);
+                  setIsEdited(true);
                 }}
-                className="cursor-pointer"
+                className={"cursor-pointer "}
               >
-                <UserBanIcon /> Ban User
+                <EditeIcon />
+                Edit post
               </DropdownMenuItem>
+              {post?.visibility === "groups" && (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsBanUser(true);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <UserBanIcon /> Ban User
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -78,6 +109,21 @@ function PostAction({ post }: PostCardProps) {
           setOpen={setIsDeleted}
           postId={post?.id}
         />
+      )}
+      {isEdited && (
+        <RootDialog open={isEdited} setOpen={setIsEdited}>
+          {postType == "Post_write" ? (
+            <PostModal
+              setOpen={setIsEdited}
+              setPostType={handleSetPostType}
+              postData={post}
+            />
+          ) : postType == "post_access" ? (
+            <PostAccessModal setPostType={handleSetPostType} />
+          ) : (
+            <PostGroupListModal setPostType={handleSetPostType} />
+          )}
+        </RootDialog>
       )}
     </div>
   );

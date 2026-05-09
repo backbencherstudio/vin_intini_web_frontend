@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useInfiniteScroll(data, isFetching, isLoading) {
   const [page, setPage] = useState(1);
@@ -8,16 +8,31 @@ export function useInfiniteScroll(data, isFetching, isLoading) {
   useEffect(() => {
     if (data?.data) {
       setCombinedData((prev) => {
-        const newItems = data.data.filter(
-          (newItem) => !prev.some((oldItem) => oldItem.id === newItem.id)
-        );
-        return [...prev, ...newItems];
+        if (page === 1) {
+          return data.data;
+        }
+
+        const merged = [...prev];
+
+        data.data.forEach((newItem) => {
+          const existingIndex = merged.findIndex(
+            (oldItem) => oldItem.id === newItem.id,
+          );
+
+          if (existingIndex === -1) {
+            merged.push(newItem);
+          } else {
+            merged[existingIndex] = newItem;
+          }
+        });
+
+        return merged;
       });
     }
-  }, [data]);
+  }, [data, page]);
 
   const observer = useRef(null);
-  
+
   const lastElementRef = useCallback(
     (node) => {
       if (isLoading || isFetching) return;
@@ -32,7 +47,7 @@ export function useInfiniteScroll(data, isFetching, isLoading) {
 
       if (node) observer.current.observe(node);
     },
-    [isLoading, isFetching, data]
+    [isLoading, isFetching, data],
   );
 
   return { page, combinedData, lastElementRef };

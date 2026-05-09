@@ -53,10 +53,10 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     updatePost: builder.mutation({
-      query: (postData) => ({
-        url: `/profile/posts/${postData.id}`,
+      query: ({ id, body }) => ({
+        url: `/profile/posts/${id}`,
         method: "POST",
-        body: postData,
+        body,
       }),
       invalidatesTags: ["Post"],
     }),

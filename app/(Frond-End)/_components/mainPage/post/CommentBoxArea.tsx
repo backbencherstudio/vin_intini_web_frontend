@@ -161,7 +161,9 @@ function CommentBoxArea({
     }
 
     const formData = new FormData();
-    formData.append("comment", trimmedText);
+    if (trimmedText) {
+      formData.append("comment", trimmedText);
+    }
     if (selectedImage) {
       formData.append("image", selectedImage);
     }

@@ -3,10 +3,10 @@ import {
   useReplyToggleLikeByIdMutation,
 } from "@/feature/slice/post/likeSlice";
 import { formatPostDate } from "@/lib/utils";
+import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import emptyImage from "@/public/empty_user.jpg";
 export default function CommentRow({
   depth = 0,
   showReply = false,
@@ -57,6 +57,8 @@ export default function CommentRow({
       toast.error("Failed to like the reply. Please try again.");
     }
   };
+  console.log(item, "comment list");
+
   return (
     <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
       {depth > 0 && (
@@ -83,13 +85,27 @@ export default function CommentRow({
           </p>
         </div>
         <p className="ml-auto shrink-0 font-semibold w-fit text-[14px] leading-5 text-descriptionColor">
-          {formatPostDate(item?.comment_time || item?.reply_time || new Date().toISOString())}
+          {formatPostDate(
+            item?.comment_time || item?.reply_time || new Date().toISOString(),
+          )}
         </p>
       </div>
-
-      <p className="mt-4 pl-10 text-base font-normal leading-[150%] text-descriptionColor">
-        {item?.comment || item?.reply || "This is a sample comment."}
-      </p>
+      <div className="mt-4 pl-10">
+        <p className=" text-base font-normal leading-[150%] text-descriptionColor">
+          {item?.comment || item?.reply}
+        </p>
+        {item?.image_url && (
+          <div className="h-50 w-50 border  overflow-hidden rounded-sm">
+            <Image
+              src={item?.image_url || emptyImage}
+              alt="Profile"
+              width={132}
+              height={132}
+              className="h-full w-full  "
+            />
+          </div>
+        )}
+      </div>
 
       {depth == 0 ? (
         <div className="mt-4 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
