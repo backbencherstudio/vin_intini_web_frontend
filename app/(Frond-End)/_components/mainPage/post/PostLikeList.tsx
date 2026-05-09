@@ -32,7 +32,7 @@ function PostLikeList({
 
   return (
     <RootDialog open={open} setOpen={setOpen}>
-      <div className="p-4 flex flex-col h-[90vh] ">
+      <div className="p-4 flex flex-col max-h-[90vh] ">
         <div>
           <h2 className="text-lg font-semibold ">Post Likes</h2>
           <p className="text-grayColor1 text-sm">

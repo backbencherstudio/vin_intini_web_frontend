@@ -1,5 +1,5 @@
 import RootDialog from "@/components/reusable/RootDialog";
-import { useGetCommentLikeListByPostIdQuery, useReplyLikeListQuery } from "@/feature/slice/post/likeSlice";
+import { useReplyLikeListQuery } from "@/feature/slice/post/likeSlice";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import LikeListSkleton from "@/components/reusable/All Skleton/LikeListSkleton";
@@ -20,8 +20,7 @@ function CommentReplyLikeList({
   const groupTimelineArg = commentId
     ? { query: `${commentId}?page=${tempPage}&per_page=${limit}` }
     : skipToken;
-  const { data, isLoading } =
-    useReplyLikeListQuery(groupTimelineArg);
+  const { data, isLoading } = useReplyLikeListQuery(groupTimelineArg);
   const { combinedData, page, lastElementRef } = useInfiniteScroll(
     data,
     isLoading,
@@ -33,7 +32,7 @@ function CommentReplyLikeList({
 
   return (
     <RootDialog open={open} setOpen={setOpen}>
-      <div className="p-4 flex flex-col h-[90vh] ">
+      <div className="p-4 flex flex-col max-h-[90vh] ">
         <div>
           <h2 className="text-lg font-semibold ">Reply Comment Likes</h2>
           <p className="text-grayColor1 text-sm">
