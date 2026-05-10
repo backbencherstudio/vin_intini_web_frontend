@@ -1,17 +1,20 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetProfileByIdQuery, useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import {
+  useGetProfileByIdQuery,
+  useGetUserProfileQuery,
+} from "@/feature/slice/user/userSlice";
 import { EditeIcon } from "@/public/svgIcons/Icons";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 
 function ProfileAbout({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
-  const {data: profileData, } = useGetUserProfileQuery("user");
-  const { data, isLoading, isError } = useGetProfileByIdQuery(profileData?.user?.id || "", {
-    skip: !profileData?.user?.id,
+  const { data: profileData } = useGetUserProfileQuery("user");
+  const { data, isLoading, isError } = useGetProfileByIdQuery(userId || "", {
+    skip: !userId,
   });
-  console.log(data, "profile about");
 
   if (isLoading) {
     return (
@@ -36,14 +39,20 @@ function ProfileAbout({ userId }: { userId?: string }) {
         </button>
       </div>
       <p className="text-base text-descriptionColor leading-[150%]">
-        {data?.data?.about || "No about information available."}
+        {data?.data?.about ||
+          profileData?.user?.profile?.about ||
+          "No about information available."}
       </p>
 
       {isNotify && (
         <ProfileAboutUpdateForm
           open={isNotify}
           setOpen={setIsNotify}
-          initialAbout={data?.data?.about || "No about information available."}
+          initialAbout={
+            data?.data?.about ||
+            profileData?.user?.profile?.about ||
+            "No about information available."
+          }
         />
       )}
     </div>

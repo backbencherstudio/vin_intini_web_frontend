@@ -1,5 +1,6 @@
 "use client";
 import { useGetProfileTimelineQuery } from "@/feature/slice/post/postSlice";
+import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import "swiper/css";
@@ -9,9 +10,11 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProfilePostCard from "./ProfilePostCard";
 function ProfileTimelinePost({ userId }: { userId: string | number }) {
+  const params = useParams();
+  const { id } = params;
   const [currentIndex, setCurrentIndex] = useState(1);
   const { data, isLoading } = useGetProfileTimelineQuery({
-    userId: userId,
+    userId: id ? id : userId,
     query: `page=1&per_page=10`,
   });
 

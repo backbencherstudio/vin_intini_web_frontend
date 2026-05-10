@@ -19,6 +19,7 @@ import { PiStudent } from "react-icons/pi";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
+
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
@@ -121,16 +122,18 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           className="hidden"
           onChange={handleCoverImageChange}
         />
-        <button
-          onClick={() => coverImgRef.current?.click()}
-          className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
-        >
-          <EditeSquareIcon className="text-whiteColor" />
-        </button>
+        {profileData?.is_own_profile && (
+          <button
+            onClick={() => coverImgRef.current?.click()}
+            className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
+          >
+            <EditeSquareIcon className="text-whiteColor" />
+          </button>
+        )}
 
         {/* Floating Logo Box */}
         <div className="flex px-4 justify-between w-full">
-          <div className="-mt-11 relative  h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
+          <div className="-mt-11 relative  border-2 border-white h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
             <Image
               src={profileImage || logoPreview}
               className="w-full rounded-full h-full object-cover "
@@ -144,12 +147,14 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               className="hidden"
               onChange={handleProfileImageChange}
             />
-            <button
-              onClick={() => profileImgRef.current.click()}
-              className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
-            >
-              <EditeSquareIcon className="text-whiteColor" />
-            </button>
+            {profileData?.is_own_profile && (
+              <button
+                onClick={() => profileImgRef.current.click()}
+                className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
+              >
+                <EditeSquareIcon className="text-whiteColor" />
+              </button>
+            )}
           </div>
           {!userId && (
             <div className="flex gap-6 ">
