@@ -1,7 +1,10 @@
 "use client";
 
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
-import { useCreatePostMutation } from "@/feature/slice/post/postSlice";
+import {
+  useCreatePostMutation,
+  useUpdatePostMutation,
+} from "@/feature/slice/post/postSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   MenueArrowDownIcon,
@@ -17,30 +20,68 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
+type PreviewMedia = {
+  source: string;
+  type: "image" | "video";
+  file?: File;
+  isObjectUrl?: boolean;
+  id?: number;
+};
+
 function PostModal({
   setOpen,
   setPostType,
+  postData,
 }: {
   setOpen: (open: boolean) => void;
-  setPostType: (type: string) => void;
+  setPostType?: (type: string) => void;
+  postData?: any;
 }) {
+
   const [postText, setPostText] = useState("");
-  const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
+  const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
+  const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
   const [createPost, { isLoading }] = useCreatePostMutation();
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
   const { postVisibility, commentControl, selectedGroupIds } = useSelector(
     (state: any) => state.postCompose,
   );
 
   useEffect(() => {
+    setPostText(postData?.description || "");
+
+    setPreviewMedia((previous) => {
+      previous.forEach((item) => {
+        if (item.isObjectUrl) {
+          URL.revokeObjectURL(item.source);
+        }
+      });
+
+      return (
+        postData?.media?.map(
+          (media: { id: number; url: string; type: "image" | "video" }) => ({
+            id: media.id,
+            source: media.url,
+            type: media.type,
+          }),
+        ) || []
+      );
+    });
+  }, [postData]);
+
+  useEffect(() => {
     return () => {
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      previewMedia.forEach((item) => {
+        if (item.isObjectUrl) {
+          URL.revokeObjectURL(item.source);
+        }
+      });
     };
-  }, [previewUrls]);
+  }, [previewMedia]);
 
   const handleMediaButtonClick = () => {
     mediaInputRef.current?.click();
@@ -56,30 +97,35 @@ function PostModal({
       return;
     }
 
-    setSelectedMedia((previous) => {
-      const nextFiles = [...previous, ...files];
+    const nextMedia = files.map((file) => ({
+      source: URL.createObjectURL(file),
+      type: (file.type.startsWith("video/") ? "video" : "image") as
+        | "image"
+        | "video",
+      file,
+      isObjectUrl: true,
+    }));
 
-      setPreviewUrls((previousUrls) => {
-        previousUrls.forEach((url) => URL.revokeObjectURL(url));
-        return nextFiles.map((file) => URL.createObjectURL(file));
-      });
-
-      return nextFiles;
-    });
+    setPreviewMedia((previous) => [...previous, ...nextMedia]);
 
     event.target.value = "";
   };
 
   const handleRemoveMedia = (indexToRemove: number) => {
-    setSelectedMedia((previous) =>
-      previous.filter((_, index) => index !== indexToRemove),
-    );
-
-    setPreviewUrls((previous) => {
+    setPreviewMedia((previous) => {
       const next = previous.filter((_, index) => index !== indexToRemove);
       const removed = previous[indexToRemove];
-      if (removed) {
-        URL.revokeObjectURL(removed);
+      // If this media item is from server (has id) and we're editing, store its id
+      if (removed?.id) {
+        setRemovedMediaIds((prev) => {
+          // avoid duplicates
+          if (prev.includes(removed.id!)) return prev;
+          return [...prev, removed.id!];
+        });
+      }
+
+      if (removed?.isObjectUrl) {
+        URL.revokeObjectURL(removed.source);
       }
       return next;
     });
@@ -107,7 +153,7 @@ function PostModal({
 
   const handleSubmit = async () => {
     const trimmedText = postText.trim();
-    if (!trimmedText && selectedMedia.length === 0) {
+    if (!trimmedText && previewMedia.length === 0) {
       return;
     }
 
@@ -125,21 +171,44 @@ function PostModal({
       });
     }
 
-    selectedMedia.forEach((media) => {
-      formData.append("media[]", media);
+    previewMedia.forEach((media) => {
+      if (media.file) {
+        formData.append("media[]", media.file);
+      }
     });
 
+    // If editing an existing post, include any removed media ids
+    if (postData?.id && removedMediaIds.length > 0) {
+      removedMediaIds.forEach((id) => {
+        formData.append("remove_media_ids[]", String(id));
+      });
+    }
+
     try {
-      const response = await createPost(formData).unwrap();
-      toast.success(response.message || "Post created successfully");
+      const response = postData?.id
+        ? await updatePost({ id: postData.id, body: formData }).unwrap()
+        : await createPost(formData).unwrap();
+
+      toast.success(
+        response.message ||
+          (postData?.id
+            ? "Post updated successfully"
+            : "Post created successfully"),
+      );
       dispatch(resetPostComposeState());
-      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      previewMedia.forEach((item) => {
+        if (item.isObjectUrl) {
+          URL.revokeObjectURL(item.source);
+        }
+      });
       setPostText("");
-      setSelectedMedia([]);
-      setPreviewUrls([]);
+      setPreviewMedia([]);
       setOpen(false);
     } catch (error) {
-      console.error("Failed to create post", error);
+      console.error(
+        postData?.id ? "Failed to update post" : "Failed to create post",
+        error,
+      );
     }
   };
 
@@ -194,22 +263,20 @@ function PostModal({
         className="min-h-25 w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"
       />
       <div className="h-37.5  ">
-        {previewUrls.length > 0 && (
+        {previewMedia.length > 0 && (
           <div
-            className={`mb-3 grid ${selectedMedia.length == 1 ? "grid-cols-1" : selectedMedia.length == 2 ? "grid-cols-2" : "grid-cols-3"} gap-1 mt-2 space-y-2`}
+            className={`mb-3 grid ${previewMedia.length == 1 ? "grid-cols-1" : previewMedia.length == 2 ? "grid-cols-2" : "grid-cols-3"} gap-1 mt-2 space-y-2`}
           >
-            {selectedMedia.slice(0, 3).map((file, index) => {
-              const url = previewUrls[index];
-              const isVideo = file.type.startsWith("video/");
-              const hiddenCount = previewUrls.length - 3;
+            {previewMedia.slice(0, 3).map((media, index) => {
+              const hiddenCount = previewMedia.length - 3;
               const showOverlay = index === 2 && hiddenCount > 0;
-              return isVideo ? (
+              return media.type === "video" ? (
                 <div
                   key={`media-${index}`}
                   className="relative overflow-hidden rounded-md border border-borderColor"
                 >
                   <video
-                    src={url}
+                    src={media.source}
                     controls
                     className="h-37.5 w-full bg-black object-cover"
                   />
@@ -233,7 +300,7 @@ function PostModal({
                   className="relative overflow-hidden h-37.5 rounded-md border border-borderColor"
                 >
                   <Image
-                    src={url}
+                    src={media.source}
                     alt={`Selected media ${index + 1}`}
                     width={1200}
                     height={150}
@@ -292,11 +359,13 @@ function PostModal({
             type="button"
             onClick={handleSubmit}
             disabled={
-              (!postText.trim() && selectedMedia.length === 0) || isLoading
+              (!postText.trim() && previewMedia.length === 0) ||
+              isLoading ||
+              isUpdating
             }
             className=" h-8 disabled:cursor-not-allowed gap-2 rounded-full disabled:bg-grayColor1 cursor-pointer leading-[140%] bg-buttonColor px-4 text-[14px] font-semibold text-whiteColor flex items-center hover:bg-buttonColor/90 hover:shadow-xl"
           >
-            {isLoading ? (
+            {isLoading || isUpdating ? (
               <Loader className=" animate-spin h-4 w-4" />
             ) : (
               <SendIcon className=" h-4 w-4" />

@@ -1,3 +1,4 @@
+import RootDialog from "@/components/reusable/RootDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -5,19 +6,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { PostFeedType } from "@/lib/type";
-import { DeleteIcon, DotIcon, UserBanIcon } from "@/public/svgIcons/Icons";
+import {
+  DeleteIcon,
+  DotIcon,
+  EditeIcon,
+  UserBanIcon,
+} from "@/public/svgIcons/Icons";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteGroup from "../group/DeleteGroup";
+import GroupPostCreateDialog from "../group/GroupPostCreateDialog";
 import GroupUserBanDialog from "../group/GroupUserBanDialog";
+import PostAccessModal from "./PostAccessModal";
+import PostGroupListModal from "./PostGroupListModal";
+import PostModal from "./PostModal";
 type PostCardProps = {
   post?: PostFeedType;
+  meta?: any;
 };
-function PostAction({ post }: PostCardProps) {
+function PostAction({ post, meta }: PostCardProps) {
   const { can_edit, media, is_connected } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isGroupEdited, setIsGroupEdited] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const dispatch = useDispatch();
+  const { postType } = useSelector((state: any) => state.postCompose);
 
+  const handleSetPostType = (type: string) => {
+    dispatch(setPostType(type as any));
+  };
   const [isBanUser, setIsBanUser] = useState(false);
 
   return (
@@ -55,16 +75,43 @@ function PostAction({ post }: PostCardProps) {
                 <DeleteIcon />
                 Delete post
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(event) => {
-                  event.preventDefault();
-                  setMenuOpen(false);
-                  setIsBanUser(true);
-                }}
-                className="cursor-pointer"
-              >
-                <UserBanIcon /> Ban User
-              </DropdownMenuItem>
+              {post?.visibility === "groups" ? (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsGroupEdited(true);
+                  }}
+                  className={"cursor-pointer "}
+                >
+                  <EditeIcon />
+                  Edit post
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsEdited(true);
+                  }}
+                  className={"cursor-pointer "}
+                >
+                  <EditeIcon />
+                  Edit post
+                </DropdownMenuItem>
+              )}
+              {post?.visibility === "groups" && meta?.is_creator && (
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setMenuOpen(false);
+                    setIsBanUser(true);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <UserBanIcon /> Ban User
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -77,6 +124,29 @@ function PostAction({ post }: PostCardProps) {
           open={isDeleted}
           setOpen={setIsDeleted}
           postId={post?.id}
+        />
+      )}
+      {isEdited && (
+        <RootDialog open={isEdited} setOpen={setIsEdited}>
+          {postType == "Post_write" ? (
+            <PostModal
+              setOpen={setIsEdited}
+              setPostType={handleSetPostType}
+              postData={post}
+            />
+          ) : postType == "post_access" ? (
+            <PostAccessModal setPostType={handleSetPostType} />
+          ) : (
+            <PostGroupListModal setPostType={handleSetPostType} />
+          )}
+        </RootDialog>
+      )}
+      {isGroupEdited && (
+        <GroupPostCreateDialog
+          open={isGroupEdited}
+          groupId={post?.groups?.[0]?.id}
+          setOpen={setIsGroupEdited}
+          postData={post}
         />
       )}
     </div>

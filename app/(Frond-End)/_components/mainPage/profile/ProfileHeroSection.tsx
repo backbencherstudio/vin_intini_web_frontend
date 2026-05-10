@@ -3,22 +3,100 @@ import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSk
 import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
+  useProfileImageUpdateMutation,
 } from "@/feature/slice/user/userSlice";
 import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
-import { EditeIcon, GroupUserIcon } from "@/public/svgIcons/Icons";
+import {
+  EditeIcon,
+  EditeSquareIcon,
+  GroupUserIcon,
+} from "@/public/svgIcons/Icons";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
-  const [isNotify, setIsNotify] = useState(false);
-  const { data, isLoading, isError } = userId
+  const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
+  const [profileImageUpdate] = useProfileImageUpdateMutation();
   const profileData = data?.data || {};
+  const [isNotify, setIsNotify] = useState(false);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const coverImgRef = useRef<HTMLInputElement>(null);
+  const profileImgRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!coverImageFile) {
+      setCoverImage(profileData?.cover_image_url || null);
+    }
+  }, [profileData?.cover_image_url, coverImageFile]);
+
+  useEffect(() => {
+    if (!profileImageFile) {
+      setProfileImage(profileData?.profile_image_url || null);
+    }
+  }, [profileData?.profile_image_url, profileImageFile]);
+
+  useEffect(() => {
+    if (!coverImageFile && !profileImageFile) {
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      const formData = new FormData();
+
+      if (profileImageFile) {
+        formData.append("profile_image", profileImageFile);
+      }
+
+      if (coverImageFile) {
+        formData.append("cover_image", coverImageFile);
+      }
+
+      try {
+        await profileImageUpdate(formData).unwrap();
+        setProfileImageFile(null);
+        setCoverImageFile(null);
+      } catch (error) {
+        console.error("Profile image update failed", error);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [coverImageFile, profileImageFile, profileImageUpdate]);
+
+  const handleCoverImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setCoverImageFile(file);
+    setCoverImage(URL.createObjectURL(file));
+  };
+
+  const handleProfileImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setProfileImageFile(file);
+    setProfileImage(URL.createObjectURL(file));
+  };
 
   if (isLoading) {
     return (
@@ -29,25 +107,49 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   }
   return (
     <section>
-      <div className=" h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
+      <div className=" relative h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
         <Image
-          src={profileData?.cover_image_url || coverPreview}
+          src={coverImage || coverPreview}
           className="w-full h-full object-cover rounded-md"
           alt="Cover"
           width={1200}
           height={400}
         />
+        <input
+          type="file"
+          ref={coverImgRef}
+          className="hidden"
+          onChange={handleCoverImageChange}
+        />
+        <button
+          onClick={() => coverImgRef.current?.click()}
+          className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
+        >
+          <EditeSquareIcon className="text-whiteColor" />
+        </button>
 
         {/* Floating Logo Box */}
         <div className="flex px-4 justify-between w-full">
-          <div className="-mt-11  h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
+          <div className="-mt-11 relative  h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
             <Image
-              src={profileData?.profile_image_url || logoPreview}
+              src={profileImage || logoPreview}
               className="w-full rounded-full h-full object-cover "
               alt="Logo"
               width={80}
               height={80}
             />
+            <input
+              type="file"
+              ref={profileImgRef}
+              className="hidden"
+              onChange={handleProfileImageChange}
+            />
+            <button
+              onClick={() => profileImgRef.current.click()}
+              className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
+            >
+              <EditeSquareIcon className="text-whiteColor" />
+            </button>
           </div>
           {!userId && (
             <div className="flex gap-6 ">

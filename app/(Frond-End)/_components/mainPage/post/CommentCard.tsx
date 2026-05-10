@@ -3,10 +3,15 @@ import {
   useReplyToggleLikeByIdMutation,
 } from "@/feature/slice/post/likeSlice";
 import { formatPostDate } from "@/lib/utils";
+import emptyImage from "@/public/empty_user.jpg";
+import { DeleteIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import emptyImage from "@/public/empty_user.jpg";
+import CommentDeleteDialog from "./CommentDeleteDialog";
+import CommentReplyDeleteDialog from "./CommentReplyDelete";
+import CommentReplyLikeList from "./CommentReplyLikeList";
+import CommentLikeList from "./ReplyLikeListDialog";
 export default function CommentRow({
   depth = 0,
   showReply = false,
@@ -23,6 +28,10 @@ export default function CommentRow({
   isRepliesOpen?: boolean;
 }) {
   const [commentLikePost] = useCommentLikePostMutation();
+  const [likeListOpen, setLikeListOpen] = useState(false);
+  const [commentDeleteOpen, setCommentDeleteOpen] = useState(false);
+  const [commentReplyDeleteOpen, setCommentReplyDeleteOpen] = useState(false);
+  const [replyLikeListOpen, setReplyLikeListOpen] = useState(false);
   const [replyToggleLikeById] = useReplyToggleLikeByIdMutation();
   const [isLiked, setIsLiked] = useState(Boolean(item?.liked_by_me));
   const likedByMe = Boolean(item?.liked_by_me);
@@ -57,6 +66,8 @@ export default function CommentRow({
       toast.error("Failed to like the reply. Please try again.");
     }
   };
+  console.log(item, "comment list");
+
   return (
     <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
       {depth > 0 && (
@@ -83,23 +94,45 @@ export default function CommentRow({
           </p>
         </div>
         <p className="ml-auto shrink-0 font-semibold w-fit text-[14px] leading-5 text-descriptionColor">
-          {formatPostDate(item?.comment_time || item?.reply_time || new Date().toISOString())}
+          {formatPostDate(
+            item?.comment_time || item?.reply_time || new Date().toISOString(),
+          )}
         </p>
       </div>
-
-      <p className="mt-4 pl-10 text-base font-normal leading-[150%] text-descriptionColor">
-        {item?.comment || item?.reply || "This is a sample comment."}
-      </p>
+      <div className="mt-4 pl-10">
+        <p className=" text-base font-normal leading-[150%] text-descriptionColor">
+          {item?.comment || item?.reply}
+        </p>
+        {item?.image_url && (
+          <div className="h-50 w-50 border  overflow-hidden rounded-sm">
+            <Image
+              src={item?.image_url || emptyImage}
+              alt="Profile"
+              width={132}
+              height={132}
+              className="h-full w-full  "
+            />
+          </div>
+        )}
+      </div>
 
       {depth == 0 ? (
         <div className="mt-4 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
-          <button
-            type="button"
-            onClick={handleLikeComment}
-            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor hover:opacity-80`}
-          >
-            Like • {likesCount || 0}
-          </button>
+          <div className=" text-descriptionColor  gap-1 flex items-center">
+            <button
+              type="button"
+              onClick={handleLikeComment}
+              className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer hover:opacity-80`}
+            >
+              Like •
+            </button>
+            <button
+              onClick={() => setLikeListOpen(true)}
+              className="cursor-pointer"
+            >
+              {likesCount || 0}
+            </button>
+          </div>
 
           <>
             <span className="text-headerColor/45">|</span>
@@ -113,15 +146,73 @@ export default function CommentRow({
               Reply • {item?.replies_count || 0}
             </button>
           </>
+          {item?.can_delete && (
+            <>
+              <span className="text-headerColor/45">|</span>
+              <button
+                className="cursor-pointer "
+                onClick={() => setCommentDeleteOpen(true)}
+              >
+                <DeleteIcon className="text-redColor w-4 h-4 " />
+              </button>
+            </>
+          )}
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={handleReplyLikeComment}
-          className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor mt-4 font-semibold text-sm pl-10 hover:opacity-80`}
-        >
-          Like • {likesCount || 0}
-        </button>
+        <div className=" text-descriptionColor  gap-1 flex items-center mt-4 ">
+          <button
+            type="button"
+            onClick={handleReplyLikeComment}
+            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor font-semibold text-sm pl-10 hover:opacity-80`}
+          >
+            Like •
+          </button>
+          <button
+            onClick={() => setReplyLikeListOpen(true)}
+            className="cursor-pointer"
+          >
+            {likesCount || 0}
+          </button>
+          {item?.can_delete && (
+            <>
+              <span className="text-headerColor/45">|</span>
+              <button
+                className="cursor-pointer "
+                onClick={() => setCommentReplyDeleteOpen(true)}
+              >
+                <DeleteIcon className="text-redColor w-4 h-4 " />
+              </button>
+            </>
+          )}
+        </div>
+      )}
+      {likeListOpen && (
+        <CommentLikeList
+          open={likeListOpen}
+          setOpen={setLikeListOpen}
+          commentId={item?.id}
+        />
+      )}
+      {replyLikeListOpen && (
+        <CommentReplyLikeList
+          open={replyLikeListOpen}
+          setOpen={setReplyLikeListOpen}
+          commentId={item?.id}
+        />
+      )}
+      {commentDeleteOpen && (
+        <CommentDeleteDialog
+          open={commentDeleteOpen}
+          setOpen={setCommentDeleteOpen}
+          commentId={item?.id}
+        />
+      )}
+      {commentReplyDeleteOpen && (
+        <CommentReplyDeleteDialog
+          open={commentReplyDeleteOpen}
+          setOpen={setCommentReplyDeleteOpen}
+          commentId={item?.id}
+        />
       )}
     </div>
   );

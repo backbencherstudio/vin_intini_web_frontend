@@ -46,6 +46,14 @@ const userSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    profileImageUpdate: builder.mutation({
+      query: (payload) => ({
+        url: "/profile/images",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useGetProfileByIdQuery,
   useProfileSetupMutation,
   useProfileAboutUpdateMutation,
+  useProfileImageUpdateMutation,
 } = userSlice;

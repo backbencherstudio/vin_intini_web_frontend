@@ -7,7 +7,7 @@
 @custom-variant dark (&:is(.dark *));
 
 .container {
-  max-width: 1440px;
+  max-width: 1240px;
   padding: 0 16px;
   margin: 0 auto;
 }
