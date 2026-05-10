@@ -8,9 +8,10 @@ import { DeleteIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import CommentDeleteDialog from "./CommentDeleteDialog";
+import CommentReplyDeleteDialog from "./CommentReplyDelete";
 import CommentReplyLikeList from "./CommentReplyLikeList";
 import CommentLikeList from "./ReplyLikeListDialog";
-import CommentDeleteDialog from "./CommentDeleteDialog";
 export default function CommentRow({
   depth = 0,
   showReply = false,
@@ -29,6 +30,7 @@ export default function CommentRow({
   const [commentLikePost] = useCommentLikePostMutation();
   const [likeListOpen, setLikeListOpen] = useState(false);
   const [commentDeleteOpen, setCommentDeleteOpen] = useState(false);
+  const [commentReplyDeleteOpen, setCommentReplyDeleteOpen] = useState(false);
   const [replyLikeListOpen, setReplyLikeListOpen] = useState(false);
   const [replyToggleLikeById] = useReplyToggleLikeByIdMutation();
   const [isLiked, setIsLiked] = useState(Boolean(item?.liked_by_me));
@@ -144,12 +146,17 @@ export default function CommentRow({
               Reply • {item?.replies_count || 0}
             </button>
           </>
-          <>
-            <span className="text-headerColor/45">|</span>
-            <button className="cursor-pointer " onClick={() => setCommentDeleteOpen(true)}>
-              <DeleteIcon className="text-redColor w-4 h-4 " />
-            </button>
-          </>
+          {item?.can_delete && (
+            <>
+              <span className="text-headerColor/45">|</span>
+              <button
+                className="cursor-pointer "
+                onClick={() => setCommentDeleteOpen(true)}
+              >
+                <DeleteIcon className="text-redColor w-4 h-4 " />
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className=" text-descriptionColor  gap-1 flex items-center mt-4 ">
@@ -166,6 +173,17 @@ export default function CommentRow({
           >
             {likesCount || 0}
           </button>
+          {item?.can_delete && (
+            <>
+              <span className="text-headerColor/45">|</span>
+              <button
+                className="cursor-pointer "
+                onClick={() => setCommentReplyDeleteOpen(true)}
+              >
+                <DeleteIcon className="text-redColor w-4 h-4 " />
+              </button>
+            </>
+          )}
         </div>
       )}
       {likeListOpen && (
@@ -182,15 +200,20 @@ export default function CommentRow({
           commentId={item?.id}
         />
       )}
-      {
-        commentDeleteOpen && (
-          <CommentDeleteDialog
-            open={commentDeleteOpen}
-            setOpen={setCommentDeleteOpen}
-            commentId={item?.id}
-          />
-        )
-      }
+      {commentDeleteOpen && (
+        <CommentDeleteDialog
+          open={commentDeleteOpen}
+          setOpen={setCommentDeleteOpen}
+          commentId={item?.id}
+        />
+      )}
+      {commentReplyDeleteOpen && (
+        <CommentReplyDeleteDialog
+          open={commentReplyDeleteOpen}
+          setOpen={setCommentReplyDeleteOpen}
+          commentId={item?.id}
+        />
+      )}
     </div>
   );
 }

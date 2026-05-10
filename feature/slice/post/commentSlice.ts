@@ -2,12 +2,14 @@ import baseApiSlice from "../baseApi";
 
 export const commentApi = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-
     getAllCommentListByPostId: builder.query({
-      query: (postId) => ({
-        url: `/comment-list/${postId}`,
-        method: "GET",
-      }),
+      // Supports both legacy call `query(postId)` and object call `query({ postId, query })`.
+      query: ({ query }) => {
+        return {
+          url: `/comment-list/${query}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Comment"],
     }),
 
