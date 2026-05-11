@@ -11,6 +11,7 @@ import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { ImageIcon, Loader } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -51,7 +52,7 @@ function GroupSidbar() {
               className="border-t border-borderColor py-4 first:pt-5"
             >
               <div className="flex items-start gap-3">
-                <div className="flex xl:h-18 xl:w-18 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
+                <div className="flex xl:h-14 xl:w-14 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
                   {!group.logo_url ? (
                     <ImageIcon size={30} strokeWidth={1.8} />
                   ) : (
@@ -66,9 +67,12 @@ function GroupSidbar() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-base lg:text-lg leading-[150%]  font-semibold text-headerColor">
+                  <Link
+                    href={`/mu/my-network/group/${group?.id}`}
+                    className="text-base  leading-[150%]  font-semibold text-headerColor"
+                  >
                     {group.name}
-                  </p>
+                  </Link>
 
                   <div className="mt-1.5 flex items-center gap-2 text-grayColor1">
                     <GroupUserIcon />
@@ -78,7 +82,6 @@ function GroupSidbar() {
                   </div>
                 </div>
               </div>
-
               <ButtonReuseable
                 type="button"
                 className={`py-0.5! px-4! border rounded-full! disabled:bg-bgColor!  disabled:py-1! disabled:text-descriptionColor! disabled:border-none! disabled:border-borderColor!  ${!group.id ? "border-primaryColor! bg-primaryColor! text-whiteColor!" : "border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor!  hover:text-primaryColor! hover:bg-primaryColor/10!"} mt-4!`}

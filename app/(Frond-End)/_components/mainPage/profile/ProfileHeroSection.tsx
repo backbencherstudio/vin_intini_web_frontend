@@ -1,5 +1,6 @@
 "use client";
 import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
+import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
@@ -12,17 +13,22 @@ import {
   EditeSquareIcon,
   GroupUserIcon,
 } from "@/public/svgIcons/Icons";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
+import ProfileEducationForm from "./Education/ProfileEducationForm";
 import ProfileUpdateForm from "./ProfileUpdateForm";
+import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
   const [profileImageUpdate] = useProfileImageUpdateMutation();
+  const [openEducationForm, setOpenEducationForm] = useState(false);
+  const [openExperienceForm, setOpenExperienceForm] = useState(false);
   const profileData = data?.data || {};
   const [isNotify, setIsNotify] = useState(false);
   const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -98,6 +104,8 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
     setProfileImage(URL.createObjectURL(file));
   };
 
+  console.log(data, "data");
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -121,16 +129,18 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           className="hidden"
           onChange={handleCoverImageChange}
         />
-        <button
-          onClick={() => coverImgRef.current?.click()}
-          className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
-        >
-          <EditeSquareIcon className="text-whiteColor" />
-        </button>
+        {profileData?.is_own_profile && (
+          <button
+            onClick={() => coverImgRef.current?.click()}
+            className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
+          >
+            <EditeSquareIcon className="text-whiteColor" />
+          </button>
+        )}
 
         {/* Floating Logo Box */}
         <div className="flex px-4 justify-between w-full">
-          <div className="-mt-11 relative  h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
+          <div className="-mt-11 relative  border-2 border-white h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
             <Image
               src={profileImage || logoPreview}
               className="w-full rounded-full h-full object-cover "
@@ -144,12 +154,14 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               className="hidden"
               onChange={handleProfileImageChange}
             />
-            <button
-              onClick={() => profileImgRef.current.click()}
-              className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
-            >
-              <EditeSquareIcon className="text-whiteColor" />
-            </button>
+            {profileData?.is_own_profile && (
+              <button
+                onClick={() => profileImgRef.current.click()}
+                className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
+              >
+                <EditeSquareIcon className="text-whiteColor" />
+              </button>
+            )}
           </div>
           {!userId && (
             <div className="flex gap-6 ">
@@ -183,20 +195,46 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
                 {profileData?.total_connections || 0} Connection
               </p>
             </div>
+            <div>
+              {/* {
+                !profileData?.connection_status?.is_connected 
+              } */}
+            </div>
           </div>
           <div className="space-y-3 col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
-              <p>
-                {profileData?.current_position?.name ||
-                  "Software Engineer at Betopia Group"}
-              </p>
+              {profileData?.current_position?.name ? (
+                <p>
+                  {profileData?.current_position?.name ||
+                    "Software Engineer at Betopia Group"}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenExperienceForm(true)}
+                  className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Experience
+                </button>
+              )}
             </div>
             <div className="flex items-center text-descriptionColor font-semibold gap-1.5">
               <PiStudent size={24} className="" />
-              <p>
-                {profileData?.current_institute?.name || "Dhaka University"}
-              </p>
+
+              {profileData?.current_institute?.name ? (
+                <p>{profileData?.current_institute?.name}</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenEducationForm(true)}
+                  className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Institute
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -207,6 +245,18 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           open={isNotify}
           setOpen={setIsNotify}
           profileData={profileData}
+        />
+      )}
+      {openEducationForm && (
+        <ProfileEducationForm
+          open={openEducationForm}
+          setOpen={setOpenEducationForm}
+        />
+      )}
+      {openExperienceForm && (
+        <ExpreanceAddFrom
+          open={openExperienceForm}
+          setOpen={setOpenExperienceForm}
         />
       )}
     </section>

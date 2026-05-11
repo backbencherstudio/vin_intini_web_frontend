@@ -2,6 +2,7 @@ import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 function ProfileUserConnectCard({ profile }: any) {
@@ -30,7 +31,7 @@ function ProfileUserConnectCard({ profile }: any) {
         className={` py-4  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
-          <div className="xl:h-16 xl:w-16 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
+          <div className="xl:h-14 xl:w-14 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
               src={user?.profile_image_url || emptyImage}
               alt={user?.name}
@@ -41,9 +42,12 @@ function ProfileUserConnectCard({ profile }: any) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h4 className="truncate text-base  font-semibold leading-[1.2] text-headerColor">
+            <Link
+              href={`/mu/profile/${user?.id}`}
+              className="truncate text-base  font-semibold leading-[1.2] text-headerColor"
+            >
               {user?.name}
-            </h4>
+            </Link>
             <p className="mt-1 line-clamp-1 text-sm leading-[1.35] text-descriptionColor">
               {user?.title}
             </p>
@@ -69,7 +73,7 @@ function ProfileUserConnectCard({ profile }: any) {
             type="button"
             disabled={isLoading}
             onClick={() => handleConnect(user?.id)}
-            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-4`}
+            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-2`}
           >
             {isLoading
               ? "Sending..."

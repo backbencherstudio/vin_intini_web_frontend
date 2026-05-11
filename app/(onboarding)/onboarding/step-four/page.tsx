@@ -274,6 +274,7 @@ function page() {
               render={({ field }) => (
                 <CreatableSelectField
                   placeholder="Select year"
+                  type="number"
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={yearOptions as any}
