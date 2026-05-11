@@ -84,8 +84,6 @@ export default function MainNavbar() {
 
   const user = useGetUserProfileQuery("userProfile").data;
 
-  // console.log("User Profile Data in Navbar:", user.user.id);
-
   useRealtimeNotifications(user?.user.id);
 
   const isActive = (href: string): boolean => {
