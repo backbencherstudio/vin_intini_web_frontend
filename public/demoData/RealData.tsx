@@ -27,15 +27,15 @@ export const monthOptions = [
   "December",
 ].map((month) => ({ value: month, label: month }));
 
-export const yearOptions = [
-  "2027",
-  "2026",
-  "2025",
-  "2024",
-  "2023",
-  "2022",
-  "2021",
-].map((year) => ({ value: year, label: year }));
+const currentYear = new Date().getFullYear();
+
+export const yearOptions = Array.from(
+  { length: currentYear - 1900 + 6 },
+  (_, index) => {
+    const year = currentYear + 5 - index;
+    return { value: String(year), label: String(year) };
+  },
+);
 
 export const employmentTypeOptions = [
   { value: "Full-time", label: "Full-time" },
@@ -48,15 +48,11 @@ export const employmentTypeOptions = [
   { value: "Seasonal", label: "Seasonal" },
 ];
 
-
-
 export const locationTypeOptions = [
   { value: "On-site", label: "On-site" },
   { value: "Hybrid", label: "Hybrid" },
   { value: "Remote", label: "Remote" },
 ];
-
-
 
 export const monthAliasMap: Record<string, string> = {
   jan: "January",

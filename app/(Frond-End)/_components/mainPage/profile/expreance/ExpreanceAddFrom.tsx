@@ -265,6 +265,7 @@ function ExpreanceAddFrom({
                 render={({ field }) => (
                   <CommonSelectField
                     value={field.value || undefined}
+                    type="number"
                     onChange={field.onChange}
                     options={yearOptions}
                     allowCustomInput
@@ -302,6 +303,7 @@ function ExpreanceAddFrom({
                   <CommonSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
+                    type="number"
                     options={yearOptions}
                     allowCustomInput
                     placeholder="Year"

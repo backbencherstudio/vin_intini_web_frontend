@@ -1,5 +1,6 @@
 "use client";
 import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
+import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
@@ -12,17 +13,22 @@ import {
   EditeSquareIcon,
   GroupUserIcon,
 } from "@/public/svgIcons/Icons";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
+import ProfileEducationForm from "./Education/ProfileEducationForm";
 import ProfileUpdateForm from "./ProfileUpdateForm";
+import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
   const [profileImageUpdate] = useProfileImageUpdateMutation();
+  const [openEducationForm, setOpenEducationForm] = useState(false);
+  const [openExperienceForm, setOpenExperienceForm] = useState(false);
   const profileData = data?.data || {};
   const [isNotify, setIsNotify] = useState(false);
   const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -198,16 +204,37 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           <div className="space-y-3 col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
-              <p>
-                {profileData?.current_position?.name ||
-                  "Software Engineer at Betopia Group"}
-              </p>
+              {profileData?.current_position?.name ? (
+                <p>
+                  {profileData?.current_position?.name ||
+                    "Software Engineer at Betopia Group"}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenExperienceForm(true)}
+                  className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Experience
+                </button>
+              )}
             </div>
             <div className="flex items-center text-descriptionColor font-semibold gap-1.5">
               <PiStudent size={24} className="" />
-              <p>
-                {profileData?.current_institute?.name || "Dhaka University"}
-              </p>
+
+              {profileData?.current_institute?.name ? (
+                <p>{profileData?.current_institute?.name}</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenEducationForm(true)}
+                  className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Institute
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -218,6 +245,18 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           open={isNotify}
           setOpen={setIsNotify}
           profileData={profileData}
+        />
+      )}
+      {openEducationForm && (
+        <ProfileEducationForm
+          open={openEducationForm}
+          setOpen={setOpenEducationForm}
+        />
+      )}
+      {openExperienceForm && (
+        <ExpreanceAddFrom
+          open={openExperienceForm}
+          setOpen={setOpenExperienceForm}
         />
       )}
     </section>

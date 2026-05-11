@@ -213,6 +213,7 @@ function ProfileEducationForm({
                   <CreatableSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
+                    type="number"
                     options={yearOptions}
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
@@ -247,6 +248,7 @@ function ProfileEducationForm({
                   <CreatableSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
+                     type="number"
                     options={yearOptions}
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
