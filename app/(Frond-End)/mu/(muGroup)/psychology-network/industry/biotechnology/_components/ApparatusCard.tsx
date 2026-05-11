@@ -48,6 +48,7 @@ export const ApparatusCard = ({ card }: ApparatusCardProps) => {
         </span>
         <ChevronRight className="h-4 w-4" />
       </button>
+      
     </div>
   );
 };
