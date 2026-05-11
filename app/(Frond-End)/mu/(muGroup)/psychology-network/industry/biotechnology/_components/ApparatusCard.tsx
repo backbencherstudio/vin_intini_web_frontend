@@ -16,8 +16,10 @@ export const ApparatusCard = ({ card }: ApparatusCardProps) => {
         <Image
           src={card.image}
           alt={card.title}
-          fill
-          className="object-cover"
+          width={400}
+          height={300}
+          className="h-full w-full object-cover"
+          unoptimized
         />
       </div>
 
@@ -48,7 +50,6 @@ export const ApparatusCard = ({ card }: ApparatusCardProps) => {
         </span>
         <ChevronRight className="h-4 w-4" />
       </button>
-      
     </div>
   );
 };
