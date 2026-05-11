@@ -9,7 +9,7 @@ export const useRealtimeNotifications = (
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !echo) return;
     const channelName = `App.Models.User.${userId}`;
     const channel = echo.private(channelName);
 
@@ -20,7 +20,7 @@ export const useRealtimeNotifications = (
 
     return () => {
       console.log(`🛑 Unsubscribing from: ${channelName}`);
-      echo.leave(channelName);
+      echo?.leave(channelName);
     };
   }, [userId, dispatch]);
 };

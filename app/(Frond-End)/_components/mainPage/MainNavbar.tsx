@@ -20,7 +20,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
@@ -76,6 +76,10 @@ const menuItems: MenuItem[] = [
 
 export default function MainNavbar() {
   const pathname = usePathname();
+  const params = useParams();
+  const muId = params.id as string;
+  const baseUrl = muId ? `/mu/${muId}` : "/mu";
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
   const [openMobileDropdownSlug, setOpenMobileDropdownSlug] = useState<
@@ -84,13 +88,51 @@ export default function MainNavbar() {
 
   const user = useGetUserProfileQuery("userProfile").data;
 
-  // console.log("User Profile Data in Navbar:", user.user.id);
-
   useRealtimeNotifications(user?.user.id);
 
+  const menuItems: MenuItem[] = [
+    { label: "Home", slug: `${baseUrl}/home`, icon: HomeIcon },
+    { label: "Academia", slug: `${baseUrl}/academia?redirect=home`, icon: GlobalIcon },
+    { label: "My Network", slug: `${baseUrl}/my-network`, icon: MultiUserIcon },
+    {
+      label: "Psychology Network",
+      slug: `${baseUrl}/psychology-network`,
+      icon: PsychologyMenuIcon,
+      isDropdown: true,
+      dropdownItems: [
+        { label: "Psychology Fields", slug: `${baseUrl}/psychology-network/fields` },
+        {
+          label: "Psychology Careers",
+          slug: `${baseUrl}/psychology-network/careers`,
+        },
+        { label: "Industry", slug: `${baseUrl}/psychology-network/industry` },
+        { label: "Jobs", slug: `${baseUrl}/psychology-network/jobs` },
+      ],
+    },
+    {
+      label: "Neuroscience Network",
+      slug: `${baseUrl}/neuroscience-network`,
+      icon: ClinicalIcon,
+      isDropdown: true,
+      dropdownItems: [
+        {
+          label: "Neuroscience Fields",
+          slug: `${baseUrl}/neuroscience-network/fields`,
+        },
+        {
+          label: "Neuroscience Careers",
+          slug: `${baseUrl}/neuroscience-network/careers`,
+        },
+        { label: "Industry", slug: `${baseUrl}/neuroscience-network/industry` },
+        { label: "Jobs", slug: `${baseUrl}/neuroscience-network/jobs` },
+      ],
+    },
+    { label: "Jobs", slug: `${baseUrl}/jobs`, icon: JobsIcon },
+  ];
+
   const isActive = (href: string): boolean => {
-    if (href === "/mu/home") {
-      return pathname === "/mu/home";
+    if (href === `${baseUrl}/home`) {
+      return pathname === `${baseUrl}/home`;
     }
     return pathname.startsWith(href);
   };

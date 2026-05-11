@@ -16,21 +16,22 @@ export const IndustrySidebar = () => {
   const params = useParams();
   const pathname = usePathname();
   const muId = params.id as string;
+  const baseUrl = muId ? `/mu/${muId}` : "/mu";
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
     {
-      href: `/mu/${muId}/neuroscience-network/industry/biotechnology`,
+      href: `${baseUrl}/psychology-network/industry/biotechnology`,
       icon: <BiotechnologyIcon />,
       label: "Biotechnology",
     },
     {
-      href: `/mu/${muId}/neuroscience-network/industry/psychopharmacology`,
+      href: `${baseUrl}/psychology-network/industry/psychopharmacology`,
       icon: <PsychopharmacologyIcon />,
       label: "Psychopharmacology",
     },
     {
-      href: `/mu/${muId}/neuroscience-network/industry/publications`,
+      href: `${baseUrl}/psychology-network/industry/publications`,
       icon: <PublicationsIcon />,
       label: "Publications",
     },
