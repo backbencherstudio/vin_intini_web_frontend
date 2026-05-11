@@ -2,6 +2,7 @@ import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 function ProfileUserConnectCard({ profile }: any) {
@@ -41,9 +42,12 @@ function ProfileUserConnectCard({ profile }: any) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h4 className="truncate text-base  font-semibold leading-[1.2] text-headerColor">
+            <Link
+              href={`/mu/profile/${user?.id}`}
+              className="truncate text-base  font-semibold leading-[1.2] text-headerColor"
+            >
               {user?.name}
-            </h4>
+            </Link>
             <p className="mt-1 line-clamp-1 text-sm leading-[1.35] text-descriptionColor">
               {user?.title}
             </p>

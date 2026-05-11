@@ -11,6 +11,7 @@ import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { ImageIcon, Loader } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -66,9 +67,12 @@ function GroupSidbar() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-base lg:text-lg leading-[150%]  font-semibold text-headerColor">
+                  <Link
+                    href={`/mu/my-network/group/${group?.id}`}
+                    className="text-base lg:text-lg leading-[150%]  font-semibold text-headerColor"
+                  >
                     {group.name}
-                  </p>
+                  </Link>
 
                   <div className="mt-1.5 flex items-center gap-2 text-grayColor1">
                     <GroupUserIcon />

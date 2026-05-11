@@ -7,9 +7,11 @@ import ExpreanceDataDelete from "./ExpreanceDataDelete";
 function ProfileExpreanceCard({
   item,
   borderb,
+  is_own_experience,
 }: {
   item: any;
   borderb: boolean;
+  is_own_experience?: boolean;
 }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -30,20 +32,24 @@ function ProfileExpreanceCard({
                   {item?.title || "Job Title"}
                 </h3>
 
-                <button
-                  onClick={() => setIsEditOpen(true)}
-                  type="button"
-                  className="cursor-pointer"
-                >
-                  <EditeIcon className="h-4 w-4 text-descriptionColor" />
-                </button>
-                <button
-                  onClick={() => setIsDeleteOpen(true)}
-                  type="button"
-                  className="cursor-pointer"
-                >
-                  <DeleteIcon className="h-4 w-4 text-redColor" />
-                </button>
+                {is_own_experience && (
+                  <button
+                    onClick={() => setIsEditOpen(true)}
+                    type="button"
+                    className="cursor-pointer"
+                  >
+                    <EditeIcon className="h-4 w-4 text-descriptionColor" />
+                  </button>
+                )}
+                {is_own_experience && (
+                  <button
+                    onClick={() => setIsDeleteOpen(true)}
+                    type="button"
+                    className="cursor-pointer"
+                  >
+                    <DeleteIcon className="h-4 w-4 text-redColor" />
+                  </button>
+                )}
               </div>
             </div>
             <p className="mt-1 flex items-center gap- text-sm text-descriptionColor">

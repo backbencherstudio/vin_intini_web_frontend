@@ -1,5 +1,8 @@
 "use client";
-import { useGetExperienceQuery } from "@/feature/slice/user/experienceSlice";
+import {
+  useGetExperienceListByIdQuery,
+  useGetExperienceQuery,
+} from "@/feature/slice/user/experienceSlice";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { MdWorkOutline } from "react-icons/md";
@@ -8,8 +11,11 @@ import ProfileExpreanceCard from "./ProfileExpreanceCard";
 
 function ProfileExpreance({ userId }: { userId?: string }) {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const { data, isLoading, isError } = useGetExperienceQuery(userId);
+  const { data, isLoading, isError } = userId
+    ? useGetExperienceListByIdQuery(userId)
+    : useGetExperienceQuery("experience");
   const profileData = data?.data || [];
+  console.log(data?.is_own_experience, "==========");
 
   return (
     <section className=" pb-4">
@@ -18,14 +24,17 @@ function ProfileExpreance({ userId }: { userId?: string }) {
           Experience
         </h2>
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Add experience"
-            onClick={() => setIsAddOpen(true)}
-            className="cursor-pointer text-headerColor hover:text-primaryColor"
-          >
-            <Plus className="h-5 w-5" />
-          </button>
+          {data?.is_own_experience && (
+            <button
+              type="button"
+              aria-label="Add experience"
+              onClick={() => setIsAddOpen(true)}
+              className="cursor-pointer text-headerColor hover:text-primaryColor"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          )}
+
           {/* <button
             type="button"
             aria-label="Edit experience"
@@ -71,7 +80,11 @@ function ProfileExpreance({ userId }: { userId?: string }) {
                           <div className="h-[90%] w-0.5 absolute rounded-full -left-8.75 top-14.5 shrink-0 bg-liteDescriptionColor" />
                         )}
 
-                        <ProfileExpreanceCard item={item} borderb={false} />
+                        <ProfileExpreanceCard
+                          is_own_experience={data?.is_own_experience}
+                          item={item}
+                          borderb={false}
+                        />
                       </div>
                     );
                   },

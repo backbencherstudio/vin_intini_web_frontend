@@ -19,7 +19,6 @@ import { PiStudent } from "react-icons/pi";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
-
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
@@ -98,6 +97,8 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
     setProfileImageFile(file);
     setProfileImage(URL.createObjectURL(file));
   };
+
+  console.log(data, "data");
 
   if (isLoading) {
     return (
@@ -187,6 +188,11 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               <p className="text-sm   line-clamp-3">
                 {profileData?.total_connections || 0} Connection
               </p>
+            </div>
+            <div>
+              {/* {
+                !profileData?.connection_status?.is_connected 
+              } */}
             </div>
           </div>
           <div className="space-y-3 col-span-1">

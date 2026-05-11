@@ -13,10 +13,16 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
+
+type ProfileImageDraft = {
+  dataUrl: string;
+  name: string;
+  type: string;
+};
 
 const notificationLabels: Array<{
   key: string;
@@ -45,6 +51,49 @@ const notificationLabels: Array<{
   },
 ];
 
+const resolveProfileImageFile = async (
+  profileImage: unknown,
+): Promise<File | null> => {
+  if (!profileImage) {
+    return null;
+  }
+
+  if (profileImage instanceof File) {
+    return profileImage;
+  }
+
+  if (typeof profileImage === "object") {
+    const draft = profileImage as ProfileImageDraft;
+
+    if (
+      typeof draft.dataUrl === "string" &&
+      draft.dataUrl.startsWith("data:")
+    ) {
+      const response = await fetch(draft.dataUrl);
+      const blob = await response.blob();
+      const fallbackType = draft.type || blob.type || "image/png";
+      const extension = fallbackType.split("/")[1] || "png";
+
+      return new File([blob], draft.name || `profile-image.${extension}`, {
+        type: fallbackType,
+      });
+    }
+  }
+
+  if (typeof profileImage === "string" && profileImage.startsWith("data:")) {
+    const response = await fetch(profileImage);
+    const blob = await response.blob();
+    const fallbackType = blob.type || "image/png";
+    const extension = fallbackType.split("/")[1] || "png";
+
+    return new File([blob], `profile-image.${extension}`, {
+      type: fallbackType,
+    });
+  }
+
+  return null;
+};
+
 function page() {
   const router = useRouter();
 
@@ -68,32 +117,41 @@ function page() {
   const [notificationPreferences, setNotificationPreferences] =
     useState(defaultPreferences);
 
-  const defaultFollowedIds = useMemo(() => {
+  const defaultFollowedId = useMemo(() => {
     const values = stepSixData?.followed_entities;
     if (!Array.isArray(values)) {
-      return []; // Return empty array if values is not an array
+      return null;
     }
 
-    return groupData?.data
-      .filter((item) => values.includes(item.title))
-      .map((item) => item.id);
+    return (
+      groupData?.data
+        .filter((item) => values.includes(item.title))
+        .map((item) => item.id)[0] ?? null
+    );
   }, [stepSixData, groupData]);
 
-  const [selectedFollowIds, setSelectedFollowIds] =
-    useState<number[]>(defaultFollowedIds);
+  const [selectedFollowId, setSelectedFollowId] = useState<number | null>(
+    defaultFollowedId,
+  );
+
+  useEffect(() => {
+    setNotificationPreferences(defaultPreferences);
+  }, [defaultPreferences]);
+
+  useEffect(() => {
+    setSelectedFollowId(defaultFollowedId);
+  }, [defaultFollowedId]);
 
   const handleToggleFollow = (id: number) => {
-    setSelectedFollowIds((previous) => {
-      if (previous.includes(id)) {
-        return previous.filter((item) => item !== id);
-      }
-      return [...previous, id];
-    });
+    setSelectedFollowId((previous) => (previous === id ? null : id));
   };
 
   const handleFinish = async () => {
     try {
       const formData = new FormData();
+      const profileImageFile = await resolveProfileImageFile(
+        stepSixData?.profile_image,
+      );
 
       Object.entries(stepSixData || {}).forEach(([key, value]) => {
         if (key === "profile_image") return;
@@ -111,6 +169,10 @@ function page() {
         formData.append(key, String(value));
       });
 
+      if (profileImageFile) {
+        formData.set("profile_image", profileImageFile);
+      }
+
       formData.set("notify_jobs", String(notificationPreferences.new_jobs));
       formData.set(
         "notify_publications",
@@ -125,17 +187,12 @@ function page() {
         String(notificationPreferences.premium_offers),
       );
 
-      if (selectedFollowIds.length > 0) {
-        formData.set(
-          "group_ids",
-          selectedFollowIds.length === 1
-            ? String(selectedFollowIds[0])
-            : JSON.stringify(selectedFollowIds),
-        );
+      if (selectedFollowId !== null) {
+        formData.set("group_ids", String(selectedFollowId));
       }
 
-      await profileSetup(formData).unwrap();
-
+      const result = await profileSetup(formData).unwrap();
+      toast.success(result?.message || "Profile setup completed successfully!");
       router.push(`/mu/home`);
     } catch (error) {
       console.error("Profile setup failed:", error);
@@ -192,7 +249,7 @@ function page() {
 
             <div className="mt-3 flex flex-col gap-3 ">
               {groupData?.data.map((option) => {
-                const isSelected = selectedFollowIds.includes(option.id);
+                const isSelected = selectedFollowId === option.id;
 
                 return (
                   <button

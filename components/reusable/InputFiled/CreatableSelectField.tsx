@@ -24,6 +24,7 @@ type CreatableSelectFieldProps = {
   placeholder: string;
   className?: string;
   allowCustomInput?: boolean;
+  type?: "text" | "number";
   isDisabled?: boolean;
 };
 
@@ -87,12 +88,47 @@ function CreatableSelectField({
   placeholder,
   className,
   allowCustomInput = false,
+  type = "text",
   isDisabled = false,
 }: CreatableSelectFieldProps) {
   const flatOptions = useMemo(() => {
     if (!options) return [];
     return flattenAllOptions(options);
   }, [options]);
+
+  const handleInputChange = (inputValue: string) => {
+    if (type !== "number") {
+      return inputValue;
+    }
+
+    return inputValue.replace(/[^0-9]/g, "");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (type !== "number") {
+      return;
+    }
+
+    const allowedKeys = [
+      "Backspace",
+      "Delete",
+      "Tab",
+      "Enter",
+      "Escape",
+      "ArrowLeft",
+      "ArrowRight",
+      "Home",
+      "End",
+    ];
+
+    if (allowedKeys.includes(event.key) || event.ctrlKey || event.metaKey) {
+      return;
+    }
+
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  };
 
   const selectedValue = useMemo(() => {
     if (isMulti) {
@@ -137,6 +173,8 @@ function CreatableSelectField({
       options={options as any}
       value={selectedValue as any}
       onChange={handleChange}
+      onInputChange={(inputValue) => handleInputChange(inputValue)}
+      onKeyDown={handleKeyDown}
       className={className}
       classNamePrefix="common-select"
       styles={selectStyles}

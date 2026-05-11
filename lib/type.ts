@@ -134,6 +134,7 @@ export interface EducationType {
   id: number;
   user_id: number;
   institution_id: number;
+  is_own_profile: boolean;
   degree: string;
   field_study: string;
   start_month: string;

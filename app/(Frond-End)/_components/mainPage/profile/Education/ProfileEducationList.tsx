@@ -1,6 +1,7 @@
 "use client";
 
 import ProfileEducationSkeleton from "@/components/reusable/All Skleton/ProfileEducationSkeleton";
+import { useGetEducationListByIdQuery } from "@/feature/slice/user/experienceSlice";
 import { useGetStudyQuery } from "@/feature/slice/user/studySlice";
 import { EducationType } from "@/lib/type";
 import { Plus } from "lucide-react";
@@ -10,7 +11,9 @@ import ProfileEducationForm from "./ProfileEducationForm";
 
 function ProfileEducationList({ userId }: { userId?: string }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { data, isLoading } = useGetStudyQuery(userId);
+  const { data, isLoading } = userId
+    ? useGetEducationListByIdQuery(userId)
+    : useGetStudyQuery(userId);
   const educationItems: EducationType[] = data?.data || [];
 
   const openCreateForm = () => {
@@ -23,14 +26,16 @@ function ProfileEducationList({ userId }: { userId?: string }) {
         <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
           Education
         </h2>
-        <button
-          type="button"
-          aria-label="Add education"
-          onClick={openCreateForm}
-          className="cursor-pointer text-headerColor hover:text-primaryColor"
-        >
-          <Plus className="h-5 w-5" />
-        </button>
+        {data?.is_own_profile && (
+          <button
+            type="button"
+            aria-label="Add education"
+            onClick={openCreateForm}
+            className="cursor-pointer text-headerColor hover:text-primaryColor"
+          >
+            <Plus className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <div>
@@ -39,7 +44,7 @@ function ProfileEducationList({ userId }: { userId?: string }) {
               <ProfileEducationSkeleton key={`education-skeleton-${index}`} />
             ))
           : educationItems.map((item, index) => (
-              <ProfileEducationCard key={item.id} item={item} />
+              <ProfileEducationCard is_own_experience={data?.is_own_profile} key={item.id} item={item} />
             ))}
       </div>
 
