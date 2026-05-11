@@ -11,7 +11,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
     }),
     getSuggestionGroups: builder.query({
       query: () => ({
-        url: "/groups-suggestions?page=1&per_page=5",
+        url: "/groups-suggestions?page=1&limit=5",
         method: "GET",
       }),
       providesTags: ["group"],

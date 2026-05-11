@@ -52,7 +52,7 @@ function GroupSidbar() {
               className="border-t border-borderColor py-4 first:pt-5"
             >
               <div className="flex items-start gap-3">
-                <div className="flex xl:h-18 xl:w-18 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
+                <div className="flex xl:h-14 xl:w-14 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
                   {!group.logo_url ? (
                     <ImageIcon size={30} strokeWidth={1.8} />
                   ) : (
@@ -69,7 +69,7 @@ function GroupSidbar() {
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/mu/my-network/group/${group?.id}`}
-                    className="text-base lg:text-lg leading-[150%]  font-semibold text-headerColor"
+                    className="text-base  leading-[150%]  font-semibold text-headerColor"
                   >
                     {group.name}
                   </Link>
@@ -82,7 +82,6 @@ function GroupSidbar() {
                   </div>
                 </div>
               </div>
-
               <ButtonReuseable
                 type="button"
                 className={`py-0.5! px-4! border rounded-full! disabled:bg-bgColor!  disabled:py-1! disabled:text-descriptionColor! disabled:border-none! disabled:border-borderColor!  ${!group.id ? "border-primaryColor! bg-primaryColor! text-whiteColor!" : "border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor!  hover:text-primaryColor! hover:bg-primaryColor/10!"} mt-4!`}

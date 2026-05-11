@@ -31,7 +31,7 @@ function ProfileUserConnectCard({ profile }: any) {
         className={` py-4  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
-          <div className="xl:h-16 xl:w-16 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
+          <div className="xl:h-14 xl:w-14 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
               src={user?.profile_image_url || emptyImage}
               alt={user?.name}
@@ -73,7 +73,7 @@ function ProfileUserConnectCard({ profile }: any) {
             type="button"
             disabled={isLoading}
             onClick={() => handleConnect(user?.id)}
-            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-4`}
+            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-2`}
           >
             {isLoading
               ? "Sending..."
