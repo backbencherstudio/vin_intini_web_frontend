@@ -37,7 +37,7 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
 
   return (
     <div>
-      <div className="">
+      <div className="w-full">
         {isFetching
           ? Array.from({ length: 8 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
