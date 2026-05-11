@@ -17,15 +17,15 @@ const groupSlice = baseApiSlice.injectEndpoints({
       providesTags: ["group"],
     }),
     getMyJoinedGroups: builder.query({
-      query: (searchQuery) => ({
-        url: `/my-joined-groups?search=${searchQuery}`,
+      query: ({query}) => ({
+        url: `/my-joined-groups${query}`,
         method: "GET",
       }),
       providesTags: ["group"],
     }),
     getMyCreatedGroups: builder.query({
-      query: (searchQuery) => ({
-        url: `/my-created-groups?search=${searchQuery}`,
+      query: ({query}) => ({
+        url: `/my-created-groups${query}`,
         method: "GET",
       }),
       providesTags: ["group"],
