@@ -6,6 +6,7 @@ const connectSlice = baseApiSlice.injectEndpoints({
       query: ({ query }) => ({
         url: `/connections/requests${query}`,
         method: "GET",
+        
       }),
     }),
     getMyConnections: builder.query({
