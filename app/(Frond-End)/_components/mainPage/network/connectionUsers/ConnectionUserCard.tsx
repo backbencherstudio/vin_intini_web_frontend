@@ -14,7 +14,6 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
     const payload = {
       user_id: user.id,
     };
-    console.log(payload);
 
     try {
       const result = await sendRequest({ payload }).unwrap();
