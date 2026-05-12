@@ -1,20 +1,21 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  useGetMyProfileQuery,
   useGetProfileByIdQuery,
-  useGetUserProfileQuery,
 } from "@/feature/slice/user/userSlice";
 import { EditeIcon } from "@/public/svgIcons/Icons";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 
 function ProfileAbout({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
-  const { data: profileData } = useGetUserProfileQuery("user");
-  const { data, isLoading, isError } = useGetProfileByIdQuery(userId || "", {
-    skip: !userId,
-  });
+
+  const { data, isLoading } = userId
+    ? useGetProfileByIdQuery(userId || "", {
+        skip: !userId,
+      })
+    : useGetMyProfileQuery("profile");
 
   if (isLoading) {
     return (
@@ -30,17 +31,19 @@ function ProfileAbout({ userId }: { userId?: string }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg md:text-xl font-semibold ">About</h2>
 
-        <button
-          aria-label="notify-open"
-          onClick={() => setIsNotify(true)}
-          className="cursor-pointer"
-        >
-          <EditeIcon />
-        </button>
+        {data?.data?.is_own_profile && (
+          <button
+            aria-label="notify-open"
+            onClick={() => setIsNotify(true)}
+            className="cursor-pointer"
+          >
+            <EditeIcon />
+          </button>
+        )}
       </div>
       <p className="text-base text-descriptionColor leading-[150%]">
         {data?.data?.about ||
-          profileData?.user?.profile?.about ||
+          data?.user?.profile?.about ||
           "No about information available."}
       </p>
 
@@ -50,7 +53,7 @@ function ProfileAbout({ userId }: { userId?: string }) {
           setOpen={setIsNotify}
           initialAbout={
             data?.data?.about ||
-            profileData?.user?.profile?.about ||
+            data?.user?.profile?.about ||
             "No about information available."
           }
         />

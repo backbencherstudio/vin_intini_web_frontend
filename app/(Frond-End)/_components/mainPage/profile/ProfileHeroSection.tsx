@@ -104,7 +104,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
     setProfileImage(URL.createObjectURL(file));
   };
 
-  console.log(data, "data");
+
 
   if (isLoading) {
     return (
@@ -204,7 +204,9 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           <div className="space-y-3 col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
-              {profileData?.current_position?.name ? (
+              {!profileData?.is_own_profile ? (
+                <div>---</div>
+              ) : profileData?.current_position?.name ? (
                 <p>
                   {profileData?.current_position?.name ||
                     "Software Engineer at Betopia Group"}
