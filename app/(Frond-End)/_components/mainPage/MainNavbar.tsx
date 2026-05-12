@@ -98,7 +98,7 @@ export default function MainNavbar() {
   return (
     <header className="py-2.5 px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
-        <div>
+        <Link href="/mu/home" >
           <Image
             src={mainLogo}
             alt="Logo"
@@ -107,7 +107,7 @@ export default function MainNavbar() {
             className="w-12.5 h-auto"
             priority
           />
-        </div>
+        </Link>
 
         <nav className="hidden space-x-6 text-base lg:flex">
           {menuItems.map((item) => {
