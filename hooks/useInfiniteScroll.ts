@@ -1,40 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export function useInfiniteScroll(data, isFetching, isLoading, resetKey) {
+export function useInfiniteScroll(data, isFetching, isLoading) {
   const [page, setPage] = useState(1);
   const [combinedData, setCombinedData] = useState([]);
 
-  useEffect(() => {
-    setPage(1);
-    setCombinedData([]);
-  }, [resetKey]);
-
   // Reset or append data when the API response changes
   useEffect(() => {
-    if (isFetching || !data?.data) return;
-
-    setCombinedData((prev) => {
-      if (page === 1) {
-        return data.data;
-      }
-
-      const merged = [...prev];
-
-      data.data.forEach((newItem) => {
-        const existingIndex = merged.findIndex(
-          (oldItem) => oldItem.id === newItem.id,
-        );
-
-        if (existingIndex === -1) {
-          merged.push(newItem);
-        } else {
-          merged[existingIndex] = newItem;
+    if (data?.data) {
+      setCombinedData((prev) => {
+        if (page === 1) {
+          return data.data;
         }
-      });
 
-      return merged;
-    });
-  }, [data, page, isFetching]);
+        const merged = [...prev];
+
+        data.data.forEach((newItem) => {
+          const existingIndex = merged.findIndex(
+            (oldItem) => oldItem.id === newItem.id,
+          );
+
+          if (existingIndex === -1) {
+            merged.push(newItem);
+          } else {
+            merged[existingIndex] = newItem;
+          }
+        });
+
+        return merged;
+      });
+    }
+  }, [data, page]);
 
   const observer = useRef(null);
 
