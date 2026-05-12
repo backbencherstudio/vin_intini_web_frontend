@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 
-export function useLoadMore(data, isFetching, resetKey, limit = 10) {
+export function useLoadMore(
+  data,
+  isFetching,
+  limit = 10,
+  resetKey = undefined,
+) {
   const [page, setPage] = useState(1);
   const [combinedData, setCombinedData] = useState([]);
 
   // Reset combined data when reset key changes (e.g., search query)
   useEffect(() => {
+    if (resetKey === undefined) return;
     setCombinedData([]);
     setPage(1);
   }, [resetKey]);
@@ -38,7 +44,7 @@ export function useLoadMore(data, isFetching, resetKey, limit = 10) {
   }, [data, page, isFetching]);
 
   const hasMore =
-    data?.data && data.data.length > 0 && data.data.length === limit;
+    data?.data && data?.data?.length > 0 && data?.data?.length === limit;
 
   return {
     page,

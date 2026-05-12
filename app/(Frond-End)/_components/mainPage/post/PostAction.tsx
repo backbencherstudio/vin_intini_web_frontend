@@ -54,67 +54,70 @@ function PostAction({ post, meta }: PostCardProps) {
             {"Connect"}
           </button>
         )}
-        {can_edit && (
-          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-            <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
-              <DotIcon className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="p-3">
-              <h4 className="text-base font-semibold leading-[140%] text-headerColor md:text-lg">
-                Action
-              </h4>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={(event) => {
-                  event.preventDefault();
-                  setMenuOpen(false);
-                  setIsDeleted(true);
-                }}
-                className={"cursor-pointer "}
-              >
-                <DeleteIcon />
-                Delete post
-              </DropdownMenuItem>
-              {post?.visibility === "groups" ? (
+        {(can_edit ||
+          meta?.is_creator) && (
+            <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+              <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
+                <DotIcon className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="p-3">
+                <h4 className="text-base font-semibold leading-[140%] text-headerColor md:text-lg">
+                  Action
+                </h4>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
                     setMenuOpen(false);
-                    setIsGroupEdited(true);
+                    setIsDeleted(true);
                   }}
                   className={"cursor-pointer "}
                 >
-                  <EditeIcon />
-                  Edit post
+                  <DeleteIcon />
+                  Delete post
                 </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    setMenuOpen(false);
-                    setIsEdited(true);
-                  }}
-                  className={"cursor-pointer "}
-                >
-                  <EditeIcon />
-                  Edit post
-                </DropdownMenuItem>
-              )}
-              {post?.visibility === "groups" && meta?.is_creator && (
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    setMenuOpen(false);
-                    setIsBanUser(true);
-                  }}
-                  className="cursor-pointer"
-                >
-                  <UserBanIcon /> Ban User
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+                {post?.visibility === "groups" ? (
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      setMenuOpen(false);
+                      setIsGroupEdited(true);
+                    }}
+                    className={"cursor-pointer "}
+                  >
+                    <EditeIcon />
+                    Edit post
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      setMenuOpen(false);
+                      setIsEdited(true);
+                    }}
+                    className={"cursor-pointer "}
+                  >
+                    <EditeIcon />
+                    Edit post
+                  </DropdownMenuItem>
+                )}
+                {post?.visibility === "groups" &&
+                  meta?.is_creator &&
+                  !post?.can_edit && (
+                    <DropdownMenuItem
+                      onSelect={(event) => {
+                        event.preventDefault();
+                        setMenuOpen(false);
+                        setIsBanUser(true);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <UserBanIcon /> Ban User
+                    </DropdownMenuItem>
+                  )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
       </div>
       {isBanUser && (
         <GroupUserBanDialog open={isBanUser} setOpen={setIsBanUser} />

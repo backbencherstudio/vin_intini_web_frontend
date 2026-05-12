@@ -22,8 +22,8 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
   const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
-    searchQuery,
     limit,
+    searchQuery,
   );
 
   useEffect(() => {

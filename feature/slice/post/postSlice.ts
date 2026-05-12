@@ -9,12 +9,12 @@ export const postApi = baseApiSlice.injectEndpoints({
 
     getGroupList: builder.query({
       query: () => ({ url: "/group-list", method: "GET" }),
-      providesTags: ["Post"],
+      providesTags: ["group"],
     }),
 
     getGroupTimeline: builder.query({
       query: ({ query }) => ({ url: `/group-posts/${query}`, method: "GET" }),
-      providesTags: ["Post"],
+      providesTags: ["group"],
     }),
 
     getProfileTimeline: builder.query({
@@ -40,7 +40,7 @@ export const postApi = baseApiSlice.injectEndpoints({
         url: `/groups/${groupId}/posts/${id}`,
         method: "GET",
       }),
-      providesTags: ["Post"],
+      providesTags: ["group"],
     }),
 
     createPost: builder.mutation({
@@ -49,9 +49,9 @@ export const postApi = baseApiSlice.injectEndpoints({
         method: "POST",
         body: postData,
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["Post", "group"],
     }),
-
+    
     updatePost: builder.mutation({
       query: ({ id, body }) => ({
         url: `/profile/posts/${id}`,
@@ -67,7 +67,7 @@ export const postApi = baseApiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["group"],
     }),
 
     deletePost: builder.mutation({
@@ -83,7 +83,7 @@ export const postApi = baseApiSlice.injectEndpoints({
         url: `/groups/${groupId}/posts/${postId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["group"],
     }),
   }),
 });
