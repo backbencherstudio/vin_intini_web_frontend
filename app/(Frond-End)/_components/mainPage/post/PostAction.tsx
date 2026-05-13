@@ -6,6 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { PostFeedType } from "@/lib/type";
 import {
@@ -15,6 +16,7 @@ import {
   UserBanIcon,
 } from "@/public/svgIcons/Icons";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteGroup from "../group/DeleteGroup";
 import GroupPostCreateDialog from "../group/GroupPostCreateDialog";
@@ -27,34 +29,53 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, is_connected } = post || {};
+  const { can_edit, media, is_connected, user } = post || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const [isGroupEdited, setIsGroupEdited] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [action_label, setActionLabel] = useState("Connect");
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
+  const [sendRequest, { isLoading }] = useSendRequestMutation();
 
   const handleSetPostType = (type: string) => {
     dispatch(setPostType(type as any));
   };
   const [isBanUser, setIsBanUser] = useState(false);
+  console.log("check", meta);
+  const handleConnect = async () => {
+    const payload = {
+      user_id: user.id,
+    };
 
+    try {
+      const result = await sendRequest({ payload }).unwrap();
+      console.log(result, "result");
+      toast.success(result.message || "Connection request sent!");
+      setActionLabel("Sent request");
+    } catch (error) {
+      console.error("Error sending connection request:", error);
+      toast.error("Failed to send connection request.");
+    }
+  };
   return (
     <div>
       <div className="flex items-center gap-1.5">
-        {!is_connected && (
+        {(!is_connected) && (
           <button
+            onClick={handleConnect}
+            disabled={isLoading || action_label !== "Connect"}
             type="button"
-            className={`h-7  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+            className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
           >
-            {"Connect"}
+            {isLoading ? "Sending..." : action_label}
           </button>
         )}
-        {can_edit && (
+        {(can_edit || meta?.is_creator) && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
               <DotIcon className="h-4 w-4" />
@@ -100,18 +121,20 @@ function PostAction({ post, meta }: PostCardProps) {
                   Edit post
                 </DropdownMenuItem>
               )}
-              {post?.visibility === "groups" && meta?.is_creator && (
-                <DropdownMenuItem
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    setMenuOpen(false);
-                    setIsBanUser(true);
-                  }}
-                  className="cursor-pointer"
-                >
-                  <UserBanIcon /> Ban User
-                </DropdownMenuItem>
-              )}
+              {post?.visibility === "groups" &&
+                meta?.is_creator &&
+                !post?.can_edit && (
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      setMenuOpen(false);
+                      setIsBanUser(true);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <UserBanIcon /> Ban User
+                  </DropdownMenuItem>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}

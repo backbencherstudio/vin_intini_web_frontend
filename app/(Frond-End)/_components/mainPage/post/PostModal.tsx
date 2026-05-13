@@ -17,6 +17,7 @@ import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSl
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -37,7 +38,6 @@ function PostModal({
   setPostType?: (type: string) => void;
   postData?: any;
 }) {
-
   const [postText, setPostText] = useState("");
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
@@ -45,6 +45,7 @@ function PostModal({
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
+  const router = useRouter();
   const [createPost, { isLoading }] = useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
   const { postVisibility, commentControl, selectedGroupIds } = useSelector(
@@ -195,6 +196,8 @@ function PostModal({
             ? "Post updated successfully"
             : "Post created successfully"),
       );
+      router.refresh();
+
       dispatch(resetPostComposeState());
       previewMedia.forEach((item) => {
         if (item.isObjectUrl) {

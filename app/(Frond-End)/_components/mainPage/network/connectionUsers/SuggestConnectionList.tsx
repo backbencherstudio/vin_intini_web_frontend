@@ -1,34 +1,36 @@
-"use client";
-import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
 import Error from "@/components/reusable/Error";
-import { useGetMyConnectionSuggestionsQuery } from "@/feature/slice/connect/connectSlice";
-import { ConnectionRequestType } from "@/lib/type";
-import ConnectionUserCard from "./ConnectionUserCard";
+import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import SuggestConnectionListClient from "./SuggestConnectionListClient";
 
-function SuggestConnectionList() {
-  const { data, isLoading, isError } = useGetMyConnectionSuggestionsQuery("");
+async function SuggestConnectionList({
+  searchQuery,
+}: {
+  searchQuery?: string;
+}) {
+  const query = searchQuery || "";
+  const limit = 10;
 
-  if (isError) {
+  let suggestedConnections = { data: [] } as any;
+  try {
+    suggestedConnections = await fetchWrapper(
+      `/connections/suggestions?page=1&per_page=${limit}&search=${encodeURIComponent(query)}`,
+      {
+        next: { tags: ["suggestions"] },
+      },
+    );
+  } catch (error) {
+    console.error("SuggestConnectionList server fetch error:", error);
     return <Error />;
   }
 
+  const initialData = suggestedConnections.data || [];
+
   return (
-    <div>
-      <div className="grid grid-cols-2 gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {isLoading
-          ? Array.from({ length: 10 }).map((_, index) => (
-              <UserConnectionCardSkleton
-                key={`suggested-profile-skeleton-${index}`}
-              />
-            ))
-          : data?.data?.map((profile: ConnectionRequestType, index: number) => (
-              <ConnectionUserCard
-                profile={profile}
-                key={profile?.id || `profile-${index}`}
-              />
-            ))}
-      </div>
-    </div>
+    <SuggestConnectionListClient
+      initialData={initialData}
+      limit={limit}
+      searchQuery={searchQuery}
+    />
   );
 }
 

@@ -27,7 +27,7 @@ function ProfileEducationList({ userId }: { userId?: string }) {
         <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
           Education
         </h2>
-        {data?.is_own_profile && (
+        {data?.is_own_education && (
           <button
             type="button"
             aria-label="Add education"
@@ -47,7 +47,7 @@ function ProfileEducationList({ userId }: { userId?: string }) {
         ) : educationItems.length > 0 ? (
           educationItems.map((item, index) => (
             <ProfileEducationCard
-              is_own_experience={data?.is_own_profile}
+              is_own_experience={data?.is_own_education}
               key={item.id}
               item={item}
             />

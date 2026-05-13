@@ -28,7 +28,7 @@ function ProfileUserConnectCard({ profile }: any) {
     <div>
       <article
         key={profile.id}
-        className={` py-4  border-b border-borderColor" `}
+        className={` py-3  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
           <div className="xl:h-14 xl:w-14 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
@@ -52,7 +52,7 @@ function ProfileUserConnectCard({ profile }: any) {
               {user?.title}
             </p>
             {mutual_connections_count > 0 && (
-              <div className="mt-4 mb-3 flex items-center gap-1 text-[11px] text-descriptionColor">
+              <div className="mt-2.5 mb-2.5 flex items-center gap-1 text-[11px] text-descriptionColor">
                 <Image
                   src={emptyImage}
                   alt="mutual"
@@ -73,7 +73,7 @@ function ProfileUserConnectCard({ profile }: any) {
             type="button"
             disabled={isLoading}
             onClick={() => handleConnect(user?.id)}
-            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-2`}
+            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-1`}
           >
             {isLoading
               ? "Sending..."

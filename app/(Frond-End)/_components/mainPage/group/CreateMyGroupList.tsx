@@ -1,8 +1,9 @@
 "use client";
 import GroupSkleton from "@/components/reusable/All Skleton/GroupSkleton";
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
+import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetMyCreatedGroupsQuery } from "@/feature/slice/group/groupSlice";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useLoadMore } from "@/hooks/useLoadMore";
 import { GroupDetailType } from "@/lib/type";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
 import { Plus } from "lucide-react";
@@ -14,19 +15,20 @@ import CreateGroupForm from "./GroupCreateModal";
 function CreateMyGroupList() {
   const params = useSearchParams();
   const [isCreating, setIsCreating] = useState(false);
-  const limit = 10;
+  const limit = 5;
   const [tempPage, setTempPage] = useState(1);
   const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
   const { data, isLoading, isFetching, isError } = useGetMyCreatedGroupsQuery({
     query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
   });
 
-  const { page, combinedData, lastElementRef } = useInfiniteScroll(
+  const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
-    isLoading,
+    limit,
     searchQuery,
   );
+
   useEffect(() => {
     setTempPage(page);
   }, [page]);
@@ -34,18 +36,19 @@ function CreateMyGroupList() {
     return <div>Error loading groups</div>;
   }
 
+  const showInitialSkeleton =
+    (isLoading || isFetching) && combinedData.length === 0;
+  const showMoreLoader = isFetching && combinedData.length > 0;
+
   return (
     <div>
-      {isLoading && combinedData.length === 0 ? (
+      {showInitialSkeleton ? (
         Array.from({ length: 6 }).map((_, index) => (
           <GroupSkleton key={index} />
         ))
       ) : combinedData.length > 0 ? (
         combinedData.map((group: GroupDetailType, index: number) => (
-          <div
-            key={group?.id}
-            ref={combinedData.length === index + 1 ? lastElementRef : null}
-          >
+          <div key={group?.id}>
             <GroupCard group={group} />
           </div>
         ))
@@ -67,10 +70,13 @@ function CreateMyGroupList() {
         </div>
       )}
 
-      {isFetching && combinedData.length > 0 && (
+      {showMoreLoader && (
         <div className="mt-4">
           <GroupSkleton />
         </div>
+      )}
+      {!showMoreLoader && hasMore && (
+        <LoadMorePagination setPage={setPage} isFetching={isFetching} />
       )}
 
       {isCreating && (

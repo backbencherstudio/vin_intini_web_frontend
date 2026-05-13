@@ -69,7 +69,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
         >
           {posts.map((post) => (
             <SwiperSlide className="" key={post.id}>
-              <ProfilePostCard post={post} userId={userId} />
+              <ProfilePostCard post={post} meta={data?.meta}  userId={userId} />
             </SwiperSlide>
           ))}
         </Swiper>

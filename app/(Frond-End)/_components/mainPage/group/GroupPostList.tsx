@@ -1,7 +1,8 @@
 "use client";
 
+import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetGroupTimelineQuery } from "@/feature/slice/post/postSlice";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useLoadMore } from "@/hooks/useLoadMore";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import PostCard from "../post/PostCard";
 import PostCardSkleton from "../post/PostCardSkleton";
 
 function GroupPostList({ groupId }: { groupId?: string }) {
-  const limit = 10;
+  const limit = 5;
   const [tempPage, setTempPage] = useState(1);
 
   const params = useParams();
@@ -21,14 +22,13 @@ function GroupPostList({ groupId }: { groupId?: string }) {
 
   const { data, isLoading, isFetching } =
     useGetGroupTimelineQuery(groupTimelineArg);
-
-  const { page, combinedData, lastElementRef } = useInfiniteScroll(
+  const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
-    isLoading,
+    limit,
   );
+  console.log(hasMore, "hasMore");
 
-  // Sync the hook's page state back to our query
   useEffect(() => {
     setTempPage(page);
   }, [page]);
@@ -41,16 +41,23 @@ function GroupPostList({ groupId }: { groupId?: string }) {
         ))
       ) : combinedData.length > 0 ? (
         combinedData.map((post, index) => (
-          <div
-            key={post.id}
-            ref={combinedData.length === index + 1 ? lastElementRef : null}
-          >
+          <div key={post.id}>
             <PostCard post={post} meta={data?.meta} />
           </div>
         ))
       ) : (
         <p className="text-center text-muted-foreground">No posts available.</p>
       )}
+      <div>
+        {isFetching && combinedData.length > 0 && (
+          <div className="mt-4">
+            <PostCardSkleton />
+          </div>
+        )}
+        {!isFetching && hasMore && (
+          <LoadMorePagination setPage={setPage} isFetching={isFetching} />
+        )}
+      </div>
     </section>
   );
 }

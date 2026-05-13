@@ -1,5 +1,5 @@
 import GroupMemberList from "@/app/(Frond-End)/_components/mainPage/group/GroupMemberList";
-import GroupSidbar from "@/app/(Frond-End)/_components/mainPage/GroupSidbar";
+import GroupSidbarWrapper from "@/app/(Frond-End)/_components/mainPage/GroupSidbarWrapper";
 import React from "react";
 
 async function GroupLayout({
@@ -19,7 +19,7 @@ async function GroupLayout({
         </div>
         <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 lg:pl-6 lg:sticky lg:top-19  lg:overflow-y-auto self-start h-full">
           <GroupMemberList groupId={groupId} />
-          <GroupSidbar />
+          <GroupSidbarWrapper />
         </div>
       </div>
     </div>

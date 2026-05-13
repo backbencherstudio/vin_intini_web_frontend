@@ -1,7 +1,8 @@
 "use client";
 import GroupSkleton from "@/components/reusable/All Skleton/GroupSkleton";
+import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetMyJoinedGroupsQuery } from "@/feature/slice/group/groupSlice";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useLoadMore } from "@/hooks/useLoadMore";
 import { GroupDetailType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,42 +17,44 @@ function GroupList() {
     query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
   });
 
-  const { page, combinedData, lastElementRef } = useInfiniteScroll(
+  const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
-    isLoading,
+    limit,
     searchQuery,
   );
+
   useEffect(() => {
     setTempPage(page);
   }, [page]);
-
+  const showInitialSkeleton =
+    (isLoading || isFetching) && combinedData.length === 0;
+  const showMoreLoader = isFetching && combinedData.length > 0;
   if (isError) {
     return <div>Error loading groups</div>;
   }
   return (
     <div>
-      {isLoading && combinedData.length === 0 ? (
+      {showInitialSkeleton ? (
         Array.from({ length: 6 }).map((_, index) => (
           <GroupSkleton key={index} />
         ))
       ) : combinedData.length > 0 ? (
         combinedData.map((group: GroupDetailType, index: number) => (
-          <div
-            key={group.id}
-            ref={combinedData.length === index + 1 ? lastElementRef : null}
-          >
+          <div key={group.id}>
             <GroupCard group={group} />
           </div>
         ))
       ) : (
         <div>No groups found</div>
       )}
-
-      {isFetching && combinedData.length > 0 && (
+      {showMoreLoader && (
         <div className="mt-4">
           <GroupSkleton />
         </div>
+      )}
+      {!showMoreLoader && hasMore && (
+        <LoadMorePagination setPage={setPage} isFetching={isFetching} />
       )}
     </div>
   );
