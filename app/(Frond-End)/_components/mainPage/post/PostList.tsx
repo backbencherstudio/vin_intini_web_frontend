@@ -12,6 +12,7 @@ export default async function PostList() {
   } catch (err) {
     console.error("PostList server fetch error:", err);
   }
+ 
 
   return <PostListClient initialData={initialData} limit={limit} />;
 }

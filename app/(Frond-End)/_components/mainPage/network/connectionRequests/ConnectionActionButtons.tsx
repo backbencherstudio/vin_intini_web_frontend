@@ -53,7 +53,9 @@ export const ConnectionActionButtons = ({
       const response = await requestReject({ id }).unwrap();
       toast.success(response.message || "Connection request ignored.");
     } catch (error) {
-      console.log("Error handling connection action:", error);
+      toast.error(
+        error?.data?.message || "Failed to process connection request.",
+      );
     }
   };
   const handleUnfirend = async () => {

@@ -31,7 +31,7 @@ function page() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  console.log(onboardingData, "onboardingData");
+
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);

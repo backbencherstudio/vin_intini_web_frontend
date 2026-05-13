@@ -14,12 +14,12 @@ export const useRealtimeNotifications = (
     const channel = echo.private(channelName);
 
     channel.notification((data: any) => {
-      console.log("🔥 Notification Received:", data);
+   
       dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
     });
 
     return () => {
-      console.log(`🛑 Unsubscribing from: ${channelName}`);
+    
       echo.leave(channelName);
     };
   }, [userId, dispatch]);

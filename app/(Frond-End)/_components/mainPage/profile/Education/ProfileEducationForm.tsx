@@ -119,7 +119,6 @@ function ProfileEducationForm({
       );
       setOpen(false);
     } catch (error) {
-      console.log(error);
       toast.error(
         error?.data?.message || "Failed to save education. Please try again.",
       );

@@ -1,10 +1,10 @@
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
+import emptyImage from "@/public/empty_user.jpg";
+import coverImage from "@/public/images/feature-img.jpg";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import coverImage from "@/public/images/feature-img.jpg"
-import emptyImage from "@/public/empty_user.jpg";
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, is_connectable, action_label } =
     profile;
@@ -18,7 +18,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
 
     try {
       const result = await sendRequest({ payload }).unwrap();
-      console.log(result, "result");
+
       toast.success(result.message || "Connection request sent!");
       setRequestSent(result.data);
     } catch (error) {

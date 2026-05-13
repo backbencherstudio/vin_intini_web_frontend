@@ -42,7 +42,6 @@ export const buildSourceBreadcrumbs = (
     []
   );
   
-  console.log(" Source : ", parsedBase);
   const base = parsedBase.length > 0 ? parsedBase : fallbackBase;
 
   if (!currentLabel) {
