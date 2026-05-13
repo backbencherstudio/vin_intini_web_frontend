@@ -11,9 +11,10 @@ import ProfileImagRender from "./ProfileImagRender";
 type PostCardProps = {
   post?: PostFeedType;
   userId?: string | number;
+  meta?: any;
 };
 
-function PostCard({ post, userId }: PostCardProps) {
+function PostCard({ post, userId, meta }: PostCardProps) {
   const { user, media, is_connected } = post || {};
   const mediaItems = media ?? [];
   const { displayText, toggleExpanded, shouldShowButton } = useTruncatedText(
@@ -47,7 +48,7 @@ function PostCard({ post, userId }: PostCardProps) {
             </div>
           </div>
 
-          <PostAction post={post} />
+          <PostAction post={post} meta={meta} />
         </div>
 
         <div className="mt-4 space-y-1">

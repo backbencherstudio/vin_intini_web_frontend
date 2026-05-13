@@ -135,7 +135,6 @@ export const baseApiSlice = createApi({
     "Comment",
     "Like",
     "connect",
-    
     "follow",
     "group",
     "Notifications",

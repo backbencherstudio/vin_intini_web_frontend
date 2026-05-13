@@ -43,9 +43,8 @@ function PostAction({ post, meta }: PostCardProps) {
     dispatch(setPostType(type as any));
   };
   const [isBanUser, setIsBanUser] = useState(false);
+  console.log("check", meta);
   const handleConnect = async () => {
-    console.log("check");
-
     const payload = {
       user_id: user.id,
     };
@@ -63,7 +62,7 @@ function PostAction({ post, meta }: PostCardProps) {
   return (
     <div>
       <div className="flex items-center gap-1.5">
-        {!is_connected && (
+        {(!is_connected) && (
           <button
             onClick={handleConnect}
             disabled={isLoading || action_label !== "Connect"}
