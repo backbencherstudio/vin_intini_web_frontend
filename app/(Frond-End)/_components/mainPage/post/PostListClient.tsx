@@ -18,6 +18,10 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
   );
   const [isFetching, setIsFetching] = useState(false);
 
+  useEffect(() => {
+    setDataResponse(initialData ?? { data: [] });
+  }, [initialData]);
+
   const { page, combinedData, lastElementRef } = useInfiniteScroll(
     dataResponse,
     isFetching,
