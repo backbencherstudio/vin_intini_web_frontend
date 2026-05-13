@@ -3,6 +3,7 @@ import { ConnectionRequestType } from "@/lib/type";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import coverImage from "@/public/images/feature-img.jpg"
 import emptyImage from "@/public/empty_user.jpg";
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, is_connectable, action_label } =
@@ -30,7 +31,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
       <article className="overflow-hidden group rounded-md hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 flex flex-col h-full justify-between border border-borderColor bg-white">
         <div className="">
           <Image
-            src={user?.cover_image_url || "/images/feature-img.jpg"}
+            src={user?.cover_image_url || coverImage}
             alt="profile cover"
             width={650}
             height={150}

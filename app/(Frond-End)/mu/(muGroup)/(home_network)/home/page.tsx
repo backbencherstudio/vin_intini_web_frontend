@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import CreatePostSection from "@/app/(Frond-End)/_components/mainPage/CreatePostSection";
 import GroupSidbarWrapper from "@/app/(Frond-End)/_components/mainPage/GroupSidbarWrapper";
 import PostList from "@/app/(Frond-End)/_components/mainPage/post/PostList";
