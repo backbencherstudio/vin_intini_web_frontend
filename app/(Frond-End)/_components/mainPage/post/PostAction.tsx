@@ -43,7 +43,7 @@ function PostAction({ post, meta }: PostCardProps) {
     dispatch(setPostType(type as any));
   };
   const [isBanUser, setIsBanUser] = useState(false);
-  console.log("check", meta);
+
   const handleConnect = async () => {
     const payload = {
       user_id: user.id,
@@ -51,12 +51,11 @@ function PostAction({ post, meta }: PostCardProps) {
 
     try {
       const result = await sendRequest({ payload }).unwrap();
-      console.log(result, "result");
       toast.success(result.message || "Connection request sent!");
       setActionLabel("Sent request");
     } catch (error) {
-      console.error("Error sending connection request:", error);
-      toast.error("Failed to send connection request.");
+      
+      toast.error( error?.data?.message || "Failed to send connection request.");
     }
   };
   return (

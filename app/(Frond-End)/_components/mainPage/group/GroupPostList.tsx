@@ -27,7 +27,7 @@ function GroupPostList({ groupId }: { groupId?: string }) {
     isFetching,
     limit,
   );
-  console.log(hasMore, "hasMore");
+
 
   useEffect(() => {
     setTempPage(page);

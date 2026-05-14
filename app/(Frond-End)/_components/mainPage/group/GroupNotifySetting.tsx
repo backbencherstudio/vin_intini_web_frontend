@@ -46,7 +46,7 @@ export default function GroupNotifySetting({
       toast.error(
         error?.data?.message || "Failed to update notification setting.",
       );
-      console.log(error);
+   
     }
   };
 

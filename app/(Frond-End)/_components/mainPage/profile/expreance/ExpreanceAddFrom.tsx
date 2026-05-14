@@ -166,14 +166,12 @@ function ExpreanceAddFrom({
             payload: values,
           }).unwrap()
         : await addExperience(values).unwrap();
-      console.log("Experience added successfully:", response);
+
       toast.success(response.message || "Experience added successfully");
     } catch (error) {
-      console.log(error, "An error occurs");
       toast.error("An error occurred while adding the experience");
     }
 
-    console.log("Add Experience Form Values:", values);
     setOpen(false);
   };
 

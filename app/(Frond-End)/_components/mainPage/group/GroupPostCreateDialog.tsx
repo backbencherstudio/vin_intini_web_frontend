@@ -47,8 +47,6 @@ function GroupPostCreateDialog({
   const [updateGroupPost, { isLoading: isUpdating }] =
     useUpdateGroupPostMutation();
 
-  console.log(groupId, postData, "group id and post data");
-
   useEffect(() => {
     setPostText(postData?.description || "");
     setRemovedMediaIds([]);

@@ -208,9 +208,8 @@ function PostModal({
       setPreviewMedia([]);
       setOpen(false);
     } catch (error) {
-      console.error(
+      toast.error(
         postData?.id ? "Failed to update post" : "Failed to create post",
-        error,
       );
     }
   };
