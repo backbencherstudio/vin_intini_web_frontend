@@ -26,6 +26,7 @@ function GroupPostList({ groupId }: { groupId?: string }) {
     data,
     isFetching,
     isLoading,
+    
   );
 
   // Sync the hook's page state back to our query

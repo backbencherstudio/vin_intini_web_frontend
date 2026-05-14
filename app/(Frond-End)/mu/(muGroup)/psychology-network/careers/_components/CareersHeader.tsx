@@ -1,13 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import { SearchInput } from "../../_components/SearchInput";
 import { FilterButton } from "../../_components/FilterButton";
 
 interface CareersHeaderProps {
-  onSearch: (value: string) => void;
+  onSearch?: (value: string) => void;
 }
 
 export const CareersHeader = ({ onSearch }: CareersHeaderProps) => {
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+
+  const handleSearch = (value: string) => {
+    setLocalSearchQuery(value);
+    onSearch?.(value);
+  };
+
+  const handleFilterReset = () => {
+    setLocalSearchQuery("");
+    onSearch?.("");
+  };
+
   return (
     <div className="flex w-full max-w-360 flex-col items-start gap-4 md:gap-10">
       {/* Desktop Layout */}
@@ -16,8 +29,8 @@ export const CareersHeader = ({ onSearch }: CareersHeaderProps) => {
           Psychology Careers
         </h1>
         <div className="flex items-center gap-3">
-          <SearchInput onSearch={onSearch} />
-          <FilterButton onClick={() => onSearch("")} />
+          <SearchInput onSearch={handleSearch} />
+          <FilterButton onClick={handleFilterReset} />
         </div>
       </div>
 
@@ -27,8 +40,8 @@ export const CareersHeader = ({ onSearch }: CareersHeaderProps) => {
           Psychology Careers
         </h1>
         <div className="flex w-full flex-col gap-3">
-          <SearchInput onSearch={onSearch} />
-          <FilterButton onClick={() => onSearch("")} />
+          <SearchInput onSearch={handleSearch} />
+          <FilterButton onClick={handleFilterReset} />
         </div>
       </div>
     </div>

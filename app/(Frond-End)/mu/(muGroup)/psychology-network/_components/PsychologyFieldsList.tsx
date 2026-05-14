@@ -7,12 +7,12 @@ import { PsychologyPagination } from "./PsychologyPagination";
 
 interface PsychologyFieldsListProps {
   fields: PsychologyField[];
-  searchQuery: string;
+  searchQuery?: string;
 }
 
 export const PsychologyFieldsList = ({
   fields,
-  searchQuery,
+  searchQuery = "",
 }: PsychologyFieldsListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);

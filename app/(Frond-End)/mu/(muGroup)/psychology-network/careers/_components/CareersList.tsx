@@ -8,10 +8,13 @@ import { CareerSectionItem } from "./CareerSectionItem";
 
 interface CareersListProps {
   sections: CareerSection[];
-  searchQuery: string;
+  searchQuery?: string;
 }
 
-export const CareersList = ({ sections, searchQuery }: CareersListProps) => {
+export const CareersList = ({
+  sections,
+  searchQuery = "",
+}: CareersListProps) => {
   const filteredSections = useMemo(() => {
     if (!searchQuery.trim()) return sections;
 
