@@ -34,51 +34,9 @@ type MenuItem = {
   dropdownItems?: Array<{ label: string; slug: string }>;
 };
 
-const menuItems: MenuItem[] = [
-  { label: "Home", slug: "/mu/home", icon: HomeIcon },
-  { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
-  { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
-  {
-    label: "Psychology Network",
-    slug: "/mu/psychology-network",
-    icon: PsychologyMenuIcon,
-    isDropdown: true,
-    dropdownItems: [
-      { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
-      {
-        label: "Psychology Careers",
-        slug: "/mu/psychology-network/careers",
-      },
-      { label: "Industry", slug: "/mu/psychology-network/industry" },
-      { label: "Jobs", slug: "/mu/psychology-network/jobs" },
-    ],
-  },
-  {
-    label: "Neuroscience Network",
-    slug: "/mu/neuroscience-network",
-    icon: ClinicalIcon,
-    isDropdown: true,
-    dropdownItems: [
-      {
-        label: "Neuroscience Fields",
-        slug: "/mu/neuroscience-network/fields",
-      },
-      {
-        label: "Neuroscience Careers",
-        slug: "/mu/neuroscience-network/careers",
-      },
-      { label: "Industry", slug: "/mu/neuroscience-network/industry" },
-      { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
-    ],
-  },
-  { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
-];
-
 export default function MainNavbar() {
   const pathname = usePathname();
   const params = useParams();
-  const muId = params.id as string;
-  const baseUrl = muId ? `/mu/${muId}` : "/mu";
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
@@ -91,48 +49,48 @@ export default function MainNavbar() {
   useRealtimeNotifications(user?.user.id);
 
   const menuItems: MenuItem[] = [
-    { label: "Home", slug: `${baseUrl}/home`, icon: HomeIcon },
-    { label: "Academia", slug: `${baseUrl}/academia?redirect=home`, icon: GlobalIcon },
-    { label: "My Network", slug: `${baseUrl}/my-network`, icon: MultiUserIcon },
+    { label: "Home", slug: "/mu/home", icon: HomeIcon },
+    { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
+    { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
     {
       label: "Psychology Network",
-      slug: `${baseUrl}/psychology-network`,
+      slug: "/mu/psychology-network",
       icon: PsychologyMenuIcon,
       isDropdown: true,
       dropdownItems: [
-        { label: "Psychology Fields", slug: `${baseUrl}/psychology-network/fields` },
+        { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
         {
           label: "Psychology Careers",
-          slug: `${baseUrl}/psychology-network/careers`,
+          slug: "/mu/psychology-network/careers",
         },
-        { label: "Industry", slug: `${baseUrl}/psychology-network/industry` },
-        { label: "Jobs", slug: `${baseUrl}/psychology-network/jobs` },
+        { label: "Industry", slug: "/mu/psychology-network/industry" },
+        { label: "Jobs", slug: "/mu/psychology-network/jobs" },
       ],
     },
     {
       label: "Neuroscience Network",
-      slug: `${baseUrl}/neuroscience-network`,
+      slug: "/mu/neuroscience-network",
       icon: ClinicalIcon,
       isDropdown: true,
       dropdownItems: [
         {
           label: "Neuroscience Fields",
-          slug: `${baseUrl}/neuroscience-network/fields`,
+          slug: "/mu/neuroscience-network/fields",
         },
         {
           label: "Neuroscience Careers",
-          slug: `${baseUrl}/neuroscience-network/careers`,
+          slug: "/mu/neuroscience-network/careers",
         },
-        { label: "Industry", slug: `${baseUrl}/neuroscience-network/industry` },
-        { label: "Jobs", slug: `${baseUrl}/neuroscience-network/jobs` },
+        { label: "Industry", slug: "/mu/neuroscience-network/industry" },
+        { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
       ],
     },
-    { label: "Jobs", slug: `${baseUrl}/jobs`, icon: JobsIcon },
+    { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
   ];
 
   const isActive = (href: string): boolean => {
-    if (href === `${baseUrl}/home`) {
-      return pathname === `${baseUrl}/home`;
+    if (href === `/home`) {
+      return pathname === `/home`;
     }
     return pathname.startsWith(href);
   };
@@ -140,7 +98,7 @@ export default function MainNavbar() {
   return (
     <header className="py-2.5 px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
-        <Link href="/mu/home" >
+        <Link href="/mu/home">
           <Image
             src={mainLogo}
             alt="Logo"

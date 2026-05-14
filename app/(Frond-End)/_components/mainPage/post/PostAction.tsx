@@ -54,14 +54,13 @@ function PostAction({ post, meta }: PostCardProps) {
       toast.success(result.message || "Connection request sent!");
       setActionLabel("Sent request");
     } catch (error) {
-      
-      toast.error( error?.data?.message || "Failed to send connection request.");
+      toast.error(error?.data?.message || "Failed to send connection request.");
     }
   };
   return (
     <div>
       <div className="flex items-center gap-1.5">
-        {(!is_connected) && (
+        {!is_connected && !meta?.is_own_profile && (
           <button
             onClick={handleConnect}
             disabled={isLoading || action_label !== "Connect"}
@@ -74,7 +73,7 @@ function PostAction({ post, meta }: PostCardProps) {
             {isLoading ? "Sending..." : action_label}
           </button>
         )}
-        {(can_edit || meta?.is_creator) && (
+        {(can_edit || meta?.is_creator || meta?.is_own_profile) && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
               <DotIcon className="h-4 w-4" />
