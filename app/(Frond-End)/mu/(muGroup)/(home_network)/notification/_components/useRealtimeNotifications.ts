@@ -9,7 +9,7 @@ export const useRealtimeNotifications = (
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !echo) return;
     const channelName = `App.Models.User.${userId}`;
     const channel = echo.private(channelName);
 
