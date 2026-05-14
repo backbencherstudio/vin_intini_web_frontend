@@ -1,8 +1,9 @@
 "use client";
 
-import LoadMorePagination from "@/components/reusable/LoadMorePagination";
+import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
 import { ConnectionRequestType } from "@/lib/type";
 import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConnectionUserCard from "./ConnectionUserCard";
 
@@ -17,71 +18,54 @@ export default function SuggestConnectionListClient({
   limit,
   searchQuery,
 }: SuggestConnectionListClientProps) {
-  const [combinedData, setCombinedData] = useState<ConnectionRequestType[]>(
-    initialData,
-  );
+  const [combinedData, setCombinedData] =
+    useState<ConnectionRequestType[]>(initialData);
   const [page, setPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialData.length >= limit);
 
-  // Reset when search query changes
   useEffect(() => {
     setCombinedData(initialData);
     setPage(1);
-    setHasMore(true);
-  }, [searchQuery]);
+    setHasMore(initialData.length >= limit);
+  }, [initialData, limit]);
 
-  // Fetch next page when page changes
-  useEffect(() => {
-    if (page === 1) return; // Skip first page
-    if (isFetching) return;
+  const fetchNextPage = async (nextPage: number) => {
+    setIsFetching(true);
+    try {
+      const query = searchQuery || "";
+      const response = await fetchWrapper(
+        `/connections/suggestions?page=${nextPage}&per_page=${limit}&search=${encodeURIComponent(query)}`,
+      );
 
-    const fetchNextPage = async () => {
-      setIsFetching(true);
-      try {
-        const query = searchQuery || "";
-        const response = await fetchWrapper(
-          `/connections/suggestions?page=${page}&per_page=${limit}&search=${encodeURIComponent(query)}`,
-          {
-            next: { tags: ["suggestions"] },
-          },
-        );
+      const newItems = response.data || [];
 
-        const newItems = response.data || [];
-
-        if (newItems.length === 0) {
-          setHasMore(false);
-          return;
-        }
-
-        // Merge new items, avoiding duplicates by ID
+      if (newItems.length === 0) {
+        setHasMore(false);
+      } else {
         setCombinedData((prev) => {
-          const existingIds = new Set(prev.map((item) => item.id));
-          const uniqueNewItems = newItems.filter(
-            (item: ConnectionRequestType) => !existingIds.has(item.id),
-          );
-          return [...prev, ...uniqueNewItems];
+          return [...prev, ...newItems];
         });
 
-        // If received items less than limit, no more data
         if (newItems.length < limit) {
           setHasMore(false);
         }
-      } catch (error) {
-        console.error("Error loading more suggestions:", error);
-      } finally {
-        setIsFetching(false);
       }
-    };
-
-    fetchNextPage();
-  }, [page, searchQuery, limit]);
+    } catch (error) {
+      console.error("Error loading more suggestions:", error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const handleLoadMore = () => {
     if (!isFetching && hasMore) {
-      setPage((prev) => prev + 1);
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchNextPage(nextPage);
     }
   };
+
 
   return (
     <div>
@@ -99,7 +83,14 @@ export default function SuggestConnectionListClient({
           </p>
         )}
       </div>
-
+      <div className="grid mt-4 grid-cols-2 gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {isFetching &&
+          Array.from({ length: 5 }).map((_, index) => (
+            <div key={`skeleton-${index}`} className="mb-4">
+              <UserConnectionCardSkleton />
+            </div>
+          ))}
+      </div>
       {/* Load More Button */}
       {hasMore && combinedData.length > 0 && (
         <div className="flex justify-center w-full cursor-pointer mt-4">
@@ -108,7 +99,7 @@ export default function SuggestConnectionListClient({
             onClick={handleLoadMore}
             disabled={isFetching}
           >
-            {isFetching ? "Loading..." : "Load More"}
+            {isFetching ? <Loader className="animate-spin" /> : "Load More"}
           </button>
         </div>
       )}
