@@ -16,6 +16,7 @@ export default function page() {
   const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [verifyMail, setVerifyMail] = useState<string>("");
+  const [resendCountdown, setResendCountdown] = useState(0);
   const [verifyOtp, { isLoading, isError, isSuccess }] = useVerifyOtpMutation();
   const router = useRouter();
   const [
@@ -29,6 +30,24 @@ export default function page() {
       setVerifyMail(email);
     }
   }, []);
+
+  useEffect(() => {
+    if (resendCountdown <= 0) return;
+
+    const intervalId = window.setInterval(() => {
+      setResendCountdown((currentCountdown) => {
+        if (currentCountdown <= 1) {
+          window.clearInterval(intervalId);
+          return 0;
+        }
+
+        return currentCountdown - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [resendCountdown]);
+
   const handleChange = (index: number, value: string) => {
     const digitsOnly = value.replace(/\D/g, "");
     if (!digitsOnly) {
@@ -98,10 +117,18 @@ export default function page() {
   const handleResendClick = async () => {
     try {
       await forgotPassword(verifyMail).unwrap();
+      setResendCountdown(180);
       toast.success("OTP resent successfully.");
     } catch (error) {
       toast.error("Failed to resend OTP. Please try again.");
     }
+  };
+
+  const formatCountdown = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
   };
 
   const handleClick = async () => {
@@ -168,10 +195,14 @@ export default function page() {
           <button
             type="button"
             onClick={handleResendClick}
-            disabled={isForgotPasswordLoading}
+            disabled={isForgotPasswordLoading || resendCountdown > 0}
             className=" text-sm font-medium   text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
-            {isForgotPasswordLoading ? "Sending..." : "Resend"}
+            {isForgotPasswordLoading
+              ? "Sending..."
+              : resendCountdown > 0
+                ? `Resend in ${formatCountdown(resendCountdown)}`
+                : "Resend"}
           </button>
         </div>
 

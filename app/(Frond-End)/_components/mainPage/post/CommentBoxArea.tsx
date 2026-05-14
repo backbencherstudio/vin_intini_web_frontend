@@ -30,7 +30,7 @@ function CommentBoxArea({
   onCancelReply?: () => void;
 }) {
   const [commentText, setCommentText] = useState("");
-  const [commentPostById, { isLoading }] = useCommentPostByIdMutation();
+  const [commentPostById, { isLoading , isError}] = useCommentPostByIdMutation();
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -183,7 +183,7 @@ function CommentBoxArea({
       setIsEmojiOpen(false);
       onCancelReply?.();
     } catch (error) {
-      console.error("Failed to submit comment:", error);
+      toast.error(error?.data?.message || "Failed to post comment");
     }
   };
 
@@ -197,7 +197,7 @@ function CommentBoxArea({
         onChange={handleImagesChange}
       />
 
-      <div className="w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3">
+      <div className={`w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3 ${isError ? "border-redColor" : ""}`}>
         {replyingToUserName && (
           <div className="mb-1 flex items-center justify-between bg-blue-50 rounded-lg p-1 px-3">
             <span className="text-[13px] text-headerColor">
@@ -224,7 +224,7 @@ function CommentBoxArea({
 
         {previewUrl && (
           <div className="mb-2">
-            <div className="relative w-24 h-20 overflow-hidden rounded-md border border-borderColor">
+            <div className={`relative w-24 h-20 overflow-hidden rounded-md border border-borderColor  ${isError ? "border-redColor" : ""}`}>
               <Image
                 src={previewUrl}
                 alt="Preview"

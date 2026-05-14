@@ -46,8 +46,9 @@ function PostModal({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [createPost, { isLoading }] = useCreatePostMutation();
-  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
+  const [createPost, { isLoading, isError }] = useCreatePostMutation();
+  const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
+    useUpdatePostMutation();
   const { postVisibility, commentControl, selectedGroupIds } = useSelector(
     (state: any) => state.postCompose,
   );
@@ -209,7 +210,8 @@ function PostModal({
       setOpen(false);
     } catch (error) {
       toast.error(
-        postData?.id ? "Failed to update post" : "Failed to create post",
+        error?.data?.message ||
+          (postData?.id ? "Failed to update post" : "Failed to create post"),
       );
     }
   };
@@ -275,7 +277,7 @@ function PostModal({
               return media.type === "video" ? (
                 <div
                   key={`media-${index}`}
-                  className="relative overflow-hidden rounded-md border border-borderColor"
+                  className={`relative overflow-hidden rounded-md border border-borderColor ${isError || isUpdateError ? "border-redColor" : ""}`}
                 >
                   <video
                     src={media.source}
@@ -299,7 +301,7 @@ function PostModal({
               ) : (
                 <div
                   key={`media-${index}`}
-                  className="relative overflow-hidden h-37.5 rounded-md border border-borderColor"
+                  className={`relative overflow-hidden h-37.5 rounded-md border border-borderColor ${isError || isUpdateError ? "border-redColor" : ""}`}
                 >
                   <Image
                     src={media.source}
