@@ -16,6 +16,7 @@ import {
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import ProfileEducationForm from "./Education/ProfileEducationForm";
@@ -69,9 +70,10 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
       try {
         await profileImageUpdate(formData).unwrap();
         setProfileImageFile(null);
+        toast.success("Succesfully Update Profile Image");
         setCoverImageFile(null);
       } catch (error) {
-        console.error("Profile image update failed", error);
+        toast.error(error?.data?.message || "Failed to update profile image");
       }
     }, 3000);
 
@@ -104,8 +106,6 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
     setProfileImage(URL.createObjectURL(file));
   };
 
-
-
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -126,6 +126,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         <input
           type="file"
           ref={coverImgRef}
+          accept="image/*,video/*"
           className="hidden"
           onChange={handleCoverImageChange}
         />
@@ -150,6 +151,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             />
             <input
               type="file"
+              accept="image/*,video/*"
               ref={profileImgRef}
               className="hidden"
               onChange={handleProfileImageChange}

@@ -5,6 +5,7 @@ import { formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
@@ -62,9 +63,12 @@ function PostCard({ post, meta }: PostCardProps) {
             />
           </div>
           <div>
-            <h4 className="line-clamp-1 text-base font-semibold leading-7 text-headerColor">
+            <Link
+              href={`/mu/profile/${user?.id}`}
+              className="line-clamp-1 text-base font-semibold leading-7 text-headerColor"
+            >
               {user?.first_name + " " + user?.last_name || "Vin Intini"}
-            </h4>
+            </Link>
             <p className="line-clamp-1 text-sm leading-5 text-descriptionColor">
               {user?.title || "CEO & Founder, MindUnite"}
             </p>
