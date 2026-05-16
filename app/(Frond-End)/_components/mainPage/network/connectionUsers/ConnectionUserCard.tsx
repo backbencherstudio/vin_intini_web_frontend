@@ -3,6 +3,7 @@ import { ConnectionRequestType } from "@/lib/type";
 import emptyImage from "@/public/empty_user.jpg";
 import coverImage from "@/public/images/feature-img.jpg";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
@@ -48,9 +49,12 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
               />
             </div>
             <div className="text-center">
-              <h4 className="mt-3 line-clamp-2  text-base font-semibold leading-[1.2] text-headerColor">
+              <Link
+                href={`/mu/profile/${user?.id}`}
+                className="mt-3 line-clamp-2  text-base font-semibold leading-[1.2] text-headerColor"
+              >
                 {user?.name}
-              </h4>
+              </Link>
               <p className="mt-1.5 line-clamp-3  text-[14px] leading-[1.2] text-descriptionColor">
                 {user?.title}
               </p>

@@ -59,7 +59,7 @@ function PostAction({ post, meta }: PostCardProps) {
   };
   return (
     <div>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center relative gap-1.5">
         {!is_connected && !meta?.is_own_profile && (
           <button
             onClick={handleConnect}
@@ -78,7 +78,7 @@ function PostAction({ post, meta }: PostCardProps) {
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
               <DotIcon className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="p-3">
+            <DropdownMenuContent className="p-3    w-full">
               <h4 className="text-base font-semibold leading-[140%] text-headerColor md:text-lg">
                 Action
               </h4>
@@ -89,7 +89,7 @@ function PostAction({ post, meta }: PostCardProps) {
                   setMenuOpen(false);
                   setIsDeleted(true);
                 }}
-                className={"cursor-pointer "}
+                className={"cursor-pointer px-0 text-nowrap "}
               >
                 <DeleteIcon />
                 Delete post
@@ -101,7 +101,7 @@ function PostAction({ post, meta }: PostCardProps) {
                     setMenuOpen(false);
                     setIsGroupEdited(true);
                   }}
-                  className={"cursor-pointer "}
+                  className={"cursor-pointer px-0"}
                 >
                   <EditeIcon />
                   Edit post
@@ -113,7 +113,7 @@ function PostAction({ post, meta }: PostCardProps) {
                     setMenuOpen(false);
                     setIsEdited(true);
                   }}
-                  className={"cursor-pointer "}
+                  className={"cursor-pointer px-0"}
                 >
                   <EditeIcon />
                   Edit post
@@ -128,7 +128,7 @@ function PostAction({ post, meta }: PostCardProps) {
                       setMenuOpen(false);
                       setIsBanUser(true);
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer px-0"
                   >
                     <UserBanIcon /> Ban User
                   </DropdownMenuItem>
