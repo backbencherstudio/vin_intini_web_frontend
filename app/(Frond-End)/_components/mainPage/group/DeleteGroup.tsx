@@ -1,6 +1,7 @@
 import RootDialog from "@/components/reusable/RootDialog";
 import { useDeletePostMutation } from "@/feature/slice/post/postSlice";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 function DeleteGroup({
@@ -10,14 +11,28 @@ function DeleteGroup({
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
-  postId?: number ;
+  postId?: number;
 }) {
+  const router = useRouter();
   const [deletePost, { isLoading }] = useDeletePostMutation();
+
   const handleDeletePost = async () => {
     try {
       const response = await deletePost(postId ?? "").unwrap();
       toast.success(response?.message || "Post deleted successfully");
       setOpen(false);
+      // ask server to revalidate the newsfeed path so server components refresh
+      try {
+        await fetch("/api/revalidate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: "/mu" }),
+        });
+      } catch (err) {
+        console.warn("Revalidate request failed", err);
+      }
+
+      router.refresh();
     } catch (error) {
       console.error("Failed to delete post:", error);
       toast.error(error?.data?.message || "Failed to delete post");

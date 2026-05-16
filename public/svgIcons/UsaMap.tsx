@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { USAMapType } from "@/lib/type";
 
@@ -173,9 +173,13 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
         setHoveredState(null);
     };
 
+    const params = useParams();
+    const muId = params.id as string;
+    const baseUrl = muId ? `/mu/${muId}` : "/mu";
+
     const handleClick = (state: (typeof STATE_DATA)[0]) => {
         router.push(
-            `/mu/academia/${state.id}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.id}:${state.name}`
+            `${baseUrl}/academia/${state.id}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.id}:${state.name}`
         );
     };
 

@@ -1,12 +1,18 @@
 import {} from "@/components/ui/accordion";
 
+import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
 import { useGetAllCommentListByPostIdQuery } from "@/feature/slice/post/commentSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
-import Image from "next/image";
-import { type CSSProperties, useRef, useState } from "react";
 import emptyImage from "@/public/empty_user.jpg";
-import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
+import Image from "next/image";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
 import { CommentReplyList } from "./CommentReplyList";
@@ -21,9 +27,15 @@ type CommentItem = {
 
 function PostComment({ post }: { post?: PostFeedType }) {
   const CONNECTOR_START_OFFSET = 44;
+  const limit = 5;
+  const [page, setPage] = useState(1);
+  const [comments, setComments] = useState<CommentItem[]>([]);
   const { data } = useGetUserProfileQuery("user");
   const { data: commentData, isLoading: isCommentLoading } =
-    useGetAllCommentListByPostIdQuery(post?.id);
+    useGetAllCommentListByPostIdQuery(
+      { query: `${post?.id}?page=${page}&per_page=${limit}` },
+      { skip: !post?.id },
+    );
   const commentContainerRefs = useRef<Record<number, HTMLDivElement | null>>(
     {},
   );
@@ -55,28 +67,52 @@ function PostComment({ post }: { post?: PostFeedType }) {
     setReplyingToUserName(null);
   };
 
-  const handleLastReplyTopChange = (
-    commentId: number,
-    lastTopInViewport: number | null,
-  ) => {
-    const commentContainer = commentContainerRefs.current[commentId];
+  const handleLastReplyTopChange = useCallback(
+    (commentId: number, lastTopInViewport: number | null) => {
+      const commentContainer = commentContainerRefs.current[commentId];
 
-    if (!commentContainer || lastTopInViewport === null) {
-      setReplyLineHeights((previous) => ({ ...previous, [commentId]: 0 }));
-      return;
-    }
+      const nextHeight =
+        !commentContainer || lastTopInViewport === null
+          ? 0
+          : Math.max(
+              lastTopInViewport -
+                commentContainer.getBoundingClientRect().top -
+                CONNECTOR_START_OFFSET,
+              0,
+            );
 
-    const commentTop = commentContainer.getBoundingClientRect().top;
-    const nextHeight = Math.max(
-      lastTopInViewport - commentTop - CONNECTOR_START_OFFSET,
-      0,
-    );
+      setReplyLineHeights((previous) => {
+        if (previous[commentId] === nextHeight) {
+          return previous;
+        }
 
-    setReplyLineHeights((previous) => ({
-      ...previous,
-      [commentId]: nextHeight,
-    }));
-  };
+        return {
+          ...previous,
+          [commentId]: nextHeight,
+        };
+      });
+    },
+    [CONNECTOR_START_OFFSET],
+  );
+
+  useEffect(() => {
+    const newItems: CommentItem[] = commentData?.data || [];
+
+    if (!newItems.length) return;
+
+    setComments((prev) => {
+      if (page === 1) return newItems;
+
+      const existingIds = new Set(prev.map((c) => c.id));
+      const merged = [...prev];
+
+      newItems.forEach((it) => {
+        if (!existingIds.has(it.id)) merged.push(it);
+      });
+
+      return merged;
+    });
+  }, [commentData, page]);
 
   return (
     <section className=" border-t border-borderColor comment-section py-4 md:py-4">
@@ -101,7 +137,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
       </div>
 
       <div className="mt-4 space-y-4 lg:space-y-6 ">
-        {isCommentLoading ? (
+        {isCommentLoading && page === 1 ? (
           <div className="w-full space-y-3">
             {[...Array(3)].map((_, index) => (
               <div className="border-b " key={index}>
@@ -110,7 +146,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
             ))}
           </div>
         ) : (
-          commentData?.data?.map((item) => (
+          (comments || commentData?.data || []).map((item) => (
             <div
               key={item?.id}
               ref={(element) => {
@@ -147,7 +183,9 @@ function PostComment({ post }: { post?: PostFeedType }) {
 
       <button
         type="button"
-        className="mt-6 text-[16px] font-semibold text-headerColor hover:opacity-80 cursor-pointer"
+        onClick={() => setPage((p) => p + 1)}
+        disabled={isCommentLoading || (commentData?.data?.length || 0) < limit}
+        className="mt-6 text-[16px] font-semibold text-headerColor hover:opacity-80 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         See all comments
       </button>

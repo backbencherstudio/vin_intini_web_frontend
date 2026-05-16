@@ -59,7 +59,7 @@ function page() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  console.log("Step Five Data from Redux:", stepFiveData); // Debugging log
+
   const initialSelectedOptions = useMemo(() => {
     const interests: string[] = stepFiveData?.interests || [];
     return interestOptions.filter((option) => interests.includes(option.title));

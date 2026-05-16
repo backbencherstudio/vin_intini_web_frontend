@@ -1,9 +1,19 @@
 import ConnectionRequestSection from "@/app/(Frond-End)/_components/mainPage/network/ConnectionRequestSection";
 
-export default function page() {
+export default async function page({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = (await searchParams) || {};
+  const rawSearch = params.search;
+  const searchQuery = Array.isArray(rawSearch)
+    ? rawSearch[0] || ""
+    : rawSearch || "";
+
   return (
     <div>
-      <ConnectionRequestSection />
+      <ConnectionRequestSection searchQuery={searchQuery} />
     </div>
   );
 }

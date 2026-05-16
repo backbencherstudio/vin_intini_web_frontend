@@ -9,6 +9,20 @@ const experienceSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["experience"],
     }),
+    getExperienceListById: builder.query({
+      query: (id) => ({
+        url: `/user-experiences/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["experience"],
+    }),
+    getEducationListById: builder.query({
+      query: (id) => ({
+        url: `/user-educations/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["experience"],
+    }),
     getCompanySuggestions: builder.query({
       query: () => ({
         url: "/company-suggestions",
@@ -59,6 +73,8 @@ const experienceSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetExperienceQuery,
+  useGetExperienceListByIdQuery,
+  useGetEducationListByIdQuery,
   useGetCompanySuggestionsQuery,
   useGetSkillSuggestionsQuery,
   useGetExperienceByIdQuery,

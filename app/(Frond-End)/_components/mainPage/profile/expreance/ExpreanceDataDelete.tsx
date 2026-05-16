@@ -23,7 +23,7 @@ function ExpreanceDataDelete({
       );
       setIsOpen(false);
     } catch (error) {
-      console.log(error);
+  
       toast.error(error?.data?.message || "Failed to delete the experience.");
     }
   };

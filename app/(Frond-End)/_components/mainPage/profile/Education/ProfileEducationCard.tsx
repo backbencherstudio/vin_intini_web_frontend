@@ -5,12 +5,16 @@ import { MdWorkOutline } from "react-icons/md";
 import EducationDelete from "./EducationDelete";
 import ProfileEducationForm from "./ProfileEducationForm";
 
-function ProfileEducationCard({ item }: { item: EducationType }) {
+function ProfileEducationCard({
+  item,
+  is_own_experience,
+}: {
+  item: EducationType;
+  is_own_experience?: boolean;
+}) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const handleEdite = (item: EducationType) => {
-    // Handle edit action here, e.g., open an edit form with the item details
-    console.log("Edit education:", item);
     setIsEditOpen(true);
   };
   return (
@@ -24,20 +28,24 @@ function ProfileEducationCard({ item }: { item: EducationType }) {
             <h3 className="text-base font-semibold leading-[1.2] text-descriptionColor">
               {item.institution?.name || "Institution Name"}
             </h3>
-            <button
-              type="button"
-              onClick={() => handleEdite(item)}
-              className="cursor-pointer"
-            >
-              <EditeIcon className="h-4 w-4 text-descriptionColor" />
-            </button>
-            <button
-              onClick={() => setIsDeleteOpen(true)}
-              type="button"
-              className="cursor-pointer"
-            >
-              <DeleteIcon className="h-4 w-4 text-redColor" />
-            </button>
+            {is_own_experience && (
+              <button
+                type="button"
+                onClick={() => handleEdite(item)}
+                className="cursor-pointer"
+              >
+                <EditeIcon className="h-4 w-4 text-descriptionColor" />
+              </button>
+            )}
+            {is_own_experience && (
+              <button
+                onClick={() => setIsDeleteOpen(true)}
+                type="button"
+                className="cursor-pointer"
+              >
+                <DeleteIcon className="h-4 w-4 text-redColor" />
+              </button>
+            )}
           </div>
 
           <p className="mt-1 text-sm text-descriptionColor">

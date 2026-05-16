@@ -2,17 +2,28 @@ import baseApiSlice from "../baseApi";
 
 export const commentApi = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-
     getAllCommentListByPostId: builder.query({
-      query: (postId) => ({
-        url: `/comment-list/${postId}`,
-      }),
+      // Supports both legacy call `query(postId)` and object call `query({ postId, query })`.
+      query: ({ query }) => {
+        return {
+          url: `/comment-list/${query}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Comment"],
     }),
 
     getReplyListByCommentId: builder.query({
       query: (commentId) => ({
         url: `/reply-list/${commentId}`,
+        method: "GET",
+      }),
+      providesTags: ["Comment"],
+    }),
+    getMyCommentList: builder.query({
+      query: () => ({
+        url: `/my-comment-list`,
+        method: "GET",
       }),
       providesTags: ["Comment"],
     }),
@@ -46,6 +57,7 @@ export const commentApi = baseApiSlice.injectEndpoints({
 
 export const {
   useGetAllCommentListByPostIdQuery,
+  useGetMyCommentListQuery,
   useGetReplyListByCommentIdQuery,
   useCommentPostByIdMutation,
   useDeleteCommentMutation,

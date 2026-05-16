@@ -9,17 +9,17 @@ export const useRealtimeNotifications = (
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !echo) return;
     const channelName = `App.Models.User.${userId}`;
     const channel = echo.private(channelName);
 
     channel.notification((data: any) => {
-      console.log("🔥 Notification Received:", data);
+   
       dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
     });
 
     return () => {
-      console.log(`🛑 Unsubscribing from: ${channelName}`);
+    
       echo.leave(channelName);
     };
   }, [userId, dispatch]);

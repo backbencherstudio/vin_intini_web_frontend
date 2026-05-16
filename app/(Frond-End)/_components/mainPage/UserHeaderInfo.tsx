@@ -3,11 +3,14 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
+import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { clearToken } from "@/lib/token";
+import emptyImage from "@/public/empty_user.jpg";
 import {
   LogoutIcon,
   NotificationIcon,
@@ -17,22 +20,23 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import emptyImage from "@/public/empty_user.jpg";
+import { useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { useDispatch } from "react-redux";
 
 function UserHeaderInfo() {
-  const {
-    data: userProfileData,
-    isLoading: userProfileLoading,
-    isError: userProfileError,
-  } = useGetUserProfileQuery("user");
+  const { data: userProfileData } = useGetUserProfileQuery("user");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (userProfileData?.success) {
+      dispatch(onboardingReset());
+    }
+  }, [userProfileData?.success, dispatch]);
 
   const router = useRouter();
-  const {
-    data: notificationCountData,
-    isLoading: notificationCountLoading,
-    error,
-  } = useGetNotificationCountQuery("notificationCount");
+  const { data: notificationCountData } =
+    useGetNotificationCountQuery("notificationCount");
   const handleLogout = async () => {
     // Clear the access token cookie
     await clearToken();
@@ -65,8 +69,7 @@ function UserHeaderInfo() {
                     <div className=" w-7 h-7 lg:w-12 border border-primaryColor lg:h-12 rounded-full overflow-hidden">
                       <Image
                         src={
-                          userProfileData?.user?.profile_image_url ||
-                         emptyImage
+                          userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}
@@ -88,8 +91,7 @@ function UserHeaderInfo() {
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
                       <Image
                         src={
-                          userProfileData?.user?.profile_image_url ||
-                          emptyImage
+                          userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
                         width={40}
@@ -111,20 +113,25 @@ function UserHeaderInfo() {
                   </div>
                 </div>
                 <div className="py-3 space-y-2">
-                  <Link
-                    href={`/mu/profile`}
-                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
-                  >
-                    <UserCircleIcon className="w-5 h-5 text-grayColor1" />
-                    Profile
-                  </Link>
-                  <Link
-                    href={`/mu/profile`}
-                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
-                  >
-                    <SettingIcon className="w-5 h-5 text-grayColor1  " />
-                    Account Setting
-                  </Link>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/profile`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                    >
+                      <UserCircleIcon className="w-5 h-5 text-grayColor1" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/profile`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                    >
+                      <SettingIcon className="w-5 h-5 text-grayColor1  " />
+                      Account Setting
+                    </Link>
+                  </DropdownMenuItem>
                 </div>
                 <div className="pt-3  border-t border-borderColor">
                   <button

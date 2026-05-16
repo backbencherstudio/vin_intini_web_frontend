@@ -136,6 +136,7 @@ export interface EducationType {
   id: number;
   user_id: number;
   institution_id: number;
+  is_own_profile: boolean;
   degree: string;
   field_study: string;
   start_month: string;
@@ -169,7 +170,7 @@ export interface PostFeedType {
   id: number;
   user: UserProfileType;
   description: string;
-  visibility: "public" | "private" | "connections";
+  visibility: "public" | "groups" | "connections";
   who_can_comment: "anyone" | "connections" | "no_one";
   total_like: number;
   liked_by_me: boolean;

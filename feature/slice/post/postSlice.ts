@@ -9,16 +9,19 @@ export const postApi = baseApiSlice.injectEndpoints({
 
     getGroupList: builder.query({
       query: () => ({ url: "/group-list", method: "GET" }),
-      providesTags: ["Post"],
+      providesTags: ["group"],
     }),
 
     getGroupTimeline: builder.query({
-      query: (id) => ({ url: `/group-posts/${id}`, method: "GET" }),
-      providesTags: ["Post"],
+      query: ({ query }) => ({ url: `/group-posts/${query}`, method: "GET" }),
+      providesTags: ["group"],
     }),
 
     getProfileTimeline: builder.query({
-      query: (id) => ({ url: `/timeline/${id}`, method: "GET" }),
+      query: ({ userId, query }) => ({
+        url: `/timeline/${userId}?${query}`,
+        method: "GET",
+      }),
       providesTags: ["Post"],
     }),
 
@@ -28,7 +31,7 @@ export const postApi = baseApiSlice.injectEndpoints({
     }),
 
     getPostProfileById: builder.query({
-      query: (id) => ({ url: `/profile/posts/${id}`, method: "GET" }),
+      query: ({ id }) => ({ url: `/profile/posts/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
@@ -37,7 +40,7 @@ export const postApi = baseApiSlice.injectEndpoints({
         url: `/groups/${groupId}/posts/${id}`,
         method: "GET",
       }),
-      providesTags: ["Post"],
+      providesTags: ["group"],
     }),
 
     createPost: builder.mutation({
@@ -46,25 +49,25 @@ export const postApi = baseApiSlice.injectEndpoints({
         method: "POST",
         body: postData,
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["Post", "group"],
     }),
-
+    
     updatePost: builder.mutation({
-      query: (postData) => ({
-        url: `/profile/posts/${postData.id}`,
+      query: ({ id, body }) => ({
+        url: `/profile/posts/${id}`,
         method: "POST",
-        body: postData,
+        body,
       }),
       invalidatesTags: ["Post"],
     }),
 
     updateGroupPost: builder.mutation({
-      query: (postData) => ({
-        url: `/groups/${postData.groupId}/posts/${postData.id}`,
+      query: ({ id, groupId, body }) => ({
+        url: `/groups/${groupId}/posts/${id}`,
         method: "POST",
-        body: postData,
+        body,
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["group"],
     }),
 
     deletePost: builder.mutation({
@@ -80,7 +83,7 @@ export const postApi = baseApiSlice.injectEndpoints({
         url: `/groups/${groupId}/posts/${postId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["group"],
     }),
   }),
 });

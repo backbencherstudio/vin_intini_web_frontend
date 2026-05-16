@@ -2,9 +2,9 @@
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import Link from "next/link";
 import { useState } from "react";
-import ProfileAllPost from "./ProfileAllPost";
 import ProfileComment from "./ProfileComment";
 import { ProfileTabs } from "./ProfileTabs";
+import ProfileTimelinePost from "./ProfileTimelinePost";
 
 function ProfilePostList() {
   const profileFilter = [
@@ -45,7 +45,7 @@ function ProfilePostList() {
       <div className="mt-3">
         {activeFilter === "Post" ? (
           <div>
-            <ProfileAllPost userProfile={userProfile} />
+            <ProfileTimelinePost userId={userProfile?.user?.id} />
           </div>
         ) : (
           <div>

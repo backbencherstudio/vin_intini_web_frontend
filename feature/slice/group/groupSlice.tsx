@@ -11,21 +11,21 @@ const groupSlice = baseApiSlice.injectEndpoints({
     }),
     getSuggestionGroups: builder.query({
       query: () => ({
-        url: "/groups-suggestions",
+        url: "/groups-suggestions?page=1&limit=5",
         method: "GET",
       }),
       providesTags: ["group"],
     }),
     getMyJoinedGroups: builder.query({
-      query: () => ({
-        url: "/my-joined-groups",
+      query: ({query}) => ({
+        url: `/my-joined-groups${query}`,
         method: "GET",
       }),
       providesTags: ["group"],
     }),
     getMyCreatedGroups: builder.query({
-      query: () => ({
-        url: "/my-created-groups",
+      query: ({query}) => ({
+        url: `/my-created-groups${query}`,
         method: "GET",
       }),
       providesTags: ["group"],

@@ -1,9 +1,10 @@
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
+import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import emptyImage from "@/public/empty_user.jpg";
 function ProfileUserConnectCard({ profile }: any) {
   const { user, mutual_connections_count } = profile;
   const [sendRequest, { isLoading }] = useSendRequestMutation();
@@ -27,10 +28,10 @@ function ProfileUserConnectCard({ profile }: any) {
     <div>
       <article
         key={profile.id}
-        className={` py-4  border-b border-borderColor" `}
+        className={` py-3  border-b border-borderColor" `}
       >
         <div className="flex items-start gap-3">
-          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
+          <div className="xl:h-14 xl:w-14 w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-bgLightColor shadow-sm ring-1 ring-borderColor/50">
             <Image
               src={user?.profile_image_url || emptyImage}
               alt={user?.name}
@@ -41,14 +42,17 @@ function ProfileUserConnectCard({ profile }: any) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h4 className="truncate text-base  font-semibold leading-[1.2] text-headerColor">
+            <Link
+              href={`/mu/profile/${user?.id}`}
+              className="truncate text-base  font-semibold leading-[1.2] text-headerColor"
+            >
               {user?.name}
-            </h4>
+            </Link>
             <p className="mt-1 line-clamp-1 text-sm leading-[1.35] text-descriptionColor">
               {user?.title}
             </p>
             {mutual_connections_count > 0 && (
-              <div className="mt-4 mb-3 flex items-center gap-1 text-[11px] text-descriptionColor">
+              <div className="mt-2.5 mb-2.5 flex items-center gap-1 text-[11px] text-descriptionColor">
                 <Image
                   src={emptyImage}
                   alt="mutual"
@@ -69,7 +73,7 @@ function ProfileUserConnectCard({ profile }: any) {
             type="button"
             disabled={isLoading}
             onClick={() => handleConnect(user?.id)}
-            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-4`}
+            className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-1`}
           >
             {isLoading
               ? "Sending..."

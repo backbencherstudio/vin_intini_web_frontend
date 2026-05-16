@@ -19,7 +19,7 @@ function GroupLeaveDialog({
       router.push("/mu/my-network/groups");
       setIsNotify(false);
     } catch (error) {
-      console.log(error);
+
       toast.error(error?.data?.message || "Failed to leave the group.");
     }
   };

@@ -1,8 +1,9 @@
 import { ConnectionRequestType } from "@/lib/type";
+import emptyImage from "@/public/empty_user.jpg";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
-import emptyImage from "@/public/empty_user.jpg";
 function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
   return (
     <div>
@@ -13,7 +14,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
             ) : (
               <Image
-                src={item?.user?.profile_image_url || emptyImage  }
+                src={item?.user?.profile_image_url || emptyImage}
                 alt={item?.user?.name}
                 width={150}
                 height={150}
@@ -23,9 +24,12 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
           </div>
 
           <div className="flex-1">
-            <h4 className=" text-[18px] text-headerColor font-semibold">
+            <Link
+              href={`/mu/profile/${item?.user?.id}`}
+              className=" text-[18px] text-headerColor font-semibold"
+            >
               {item?.user?.name}
-            </h4>
+            </Link>
             <p className=" text-[14px] text-descriptionColor">
               {item?.user?.title}
             </p>

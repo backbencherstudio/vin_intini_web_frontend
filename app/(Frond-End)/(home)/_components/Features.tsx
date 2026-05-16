@@ -4,7 +4,8 @@ import FeatureCard from "./FeatureCard";
 import { landingPageFeatures } from "@/public/staticData";
 import WrapperContainer from "../../_components/WrapperContainer";
 import JoinButton from "@/components/reusable/JoinButton";
-import featureImage from "@/public/images/feature-img.jpg";
+import featureGroupImage from "@/public/images/feature-img.jpg";
+
 
 export default function Features() {
     return (
@@ -22,7 +23,7 @@ export default function Features() {
                         </div>
                         <div className="">
                             <Image
-                                src={featureImage}
+                                src={featureGroupImage}
                                 alt="Feature Image"
                                 width={500}
                                 height={300}

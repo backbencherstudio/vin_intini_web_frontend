@@ -18,8 +18,10 @@ export const EquipmentCard = ({ card }: EquipmentCardProps) => {
         <Image
           src={card.image}
           alt={card.title}
-          fill
-          className="object-cover"
+          width={400}
+          height={300}
+          className="h-full w-full object-cover"
+          unoptimized
         />
       </div>
 
