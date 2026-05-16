@@ -144,6 +144,7 @@ function PostAction({ post, meta }: PostCardProps) {
         <DeleteGroup
           open={isDeleted}
           setOpen={setIsDeleted}
+          groupId={meta?.group_id}
           postId={post?.id}
         />
       )}

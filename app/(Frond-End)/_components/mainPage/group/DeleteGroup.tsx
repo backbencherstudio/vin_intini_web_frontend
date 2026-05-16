@@ -1,5 +1,8 @@
 import RootDialog from "@/components/reusable/RootDialog";
-import { useDeletePostMutation } from "@/feature/slice/post/postSlice";
+import {
+  useDeleteGroupPostMutation,
+  useDeletePostMutation,
+} from "@/feature/slice/post/postSlice";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -8,17 +11,23 @@ function DeleteGroup({
   open,
   setOpen,
   postId,
+  groupId,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
   postId?: number;
+  groupId?: string;
 }) {
   const router = useRouter();
-  const [deletePost, { isLoading }] = useDeletePostMutation();
+  const [deletePost, { isLoading }] = groupId
+    ? useDeleteGroupPostMutation()
+    : useDeletePostMutation();
 
   const handleDeletePost = async () => {
     try {
-      const response = await deletePost(postId ?? "").unwrap();
+      const response = await deletePost(
+        groupId ? { groupId, postId } : postId,
+      ).unwrap();
       toast.success(response?.message || "Post deleted successfully");
       setOpen(false);
       // ask server to revalidate the newsfeed path so server components refresh
