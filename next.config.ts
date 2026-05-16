@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  allowedDevOrigins: ['192.168.7.154'],
+  allowedDevOrigins: ["192.168.7.154", "backend.mindunite.com"],
   images: {
     remotePatterns: [
       {
@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "vin.apphero.agency",
+      },
+      {
+        protocol: "https",
+        hostname: "backend.mindunite.com",
       },
     ],
   },

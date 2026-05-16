@@ -46,7 +46,7 @@ function ProfileImagRender({ mediaItems }: { mediaItems: any[] }) {
           <SwiperSlide key={m.id || idx}>
             <button
               onClick={() => openMediaViewer(idx)}
-              className="w-full h-105 md:h-130 lg:h-90 overflow-hidden rounded-md bg-gray-100"
+              className="w-full h-90 md:h-130 lg:h-90 overflow-hidden rounded-md bg-gray-100"
             >
               {isVideo(m) ? (
                 <video

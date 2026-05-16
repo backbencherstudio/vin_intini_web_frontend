@@ -45,7 +45,10 @@ function LoginForm() {
         route.push(`/mu/home`);
       }
     } catch (error) {
-      console.log("Login error:", error);
+      toast.error(
+        error?.data?.message ||
+          "An error occurred during login. Please try again.",
+      );
     }
   };
 

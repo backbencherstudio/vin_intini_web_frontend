@@ -3,6 +3,7 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
@@ -50,11 +51,11 @@ function UserHeaderInfo() {
             href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
-            {notificationCountData?.unread_count > 0 && (
+            {notificationCountData?.data?.unread_count > 0 && (
               <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
-                {notificationCountData?.unread_count > 99
+                {notificationCountData?.data?.unread_count > 99
                   ? "99+"
-                  : notificationCountData?.unread_count}
+                  : notificationCountData?.data?.unread_count}
               </span>
             )}
             <NotificationIcon />
@@ -112,20 +113,25 @@ function UserHeaderInfo() {
                   </div>
                 </div>
                 <div className="py-3 space-y-2">
-                  <Link
-                    href={`/mu/profile`}
-                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
-                  >
-                    <UserCircleIcon className="w-5 h-5 text-grayColor1" />
-                    Profile
-                  </Link>
-                  <Link
-                    href={`/mu/profile`}
-                    className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
-                  >
-                    <SettingIcon className="w-5 h-5 text-grayColor1  " />
-                    Account Setting
-                  </Link>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/profile`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                    >
+                      <UserCircleIcon className="w-5 h-5 text-grayColor1" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/profile`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                    >
+                      <SettingIcon className="w-5 h-5 text-grayColor1  " />
+                      Account Setting
+                    </Link>
+                  </DropdownMenuItem>
                 </div>
                 <div className="pt-3  border-t border-borderColor">
                   <button

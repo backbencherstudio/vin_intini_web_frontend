@@ -1,9 +1,12 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
+import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetMyConnectionsQuery } from "@/feature/slice/connect/connectSlice";
+import { useLoadMore } from "@/hooks/useLoadMore";
 import { ConnectionRequestType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import ConnectionNotFound from "../connectionRequests/ConnectionNotFound";
 import ConnectionRequestCard from "../connectionRequests/ConnectionRequestCard";
 import ConnectionListHeader from "./ConnectionListHeader";
@@ -12,16 +15,27 @@ function AllConnectionFriendList() {
   const params = useSearchParams();
 
   const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
+  const limit = 5;
+  const [tempPage, setTempPage] = useState(1);
 
-  const filterCustomers = () => {
-    const filtered = new URLSearchParams();
-    if (searchQuery) filtered.set("search", searchQuery);
+  const { data, isFetching, isError } = useGetMyConnectionsQuery({
+    query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
+  });
 
-    return filtered;
-  };
-  const { data, isFetching, isError } = useGetMyConnectionsQuery(
-    filterCustomers().toString(),
+  const { page, setPage, combinedData, hasMore } = useLoadMore(
+    data,
+    isFetching,
+    limit,
+    searchQuery,
   );
+
+  useEffect(() => {
+    setTempPage(page);
+  }, [page]);
+
+  const showInitialSkeleton = isFetching && combinedData.length === 0;
+  const showMoreLoader = isFetching && combinedData.length > 0;
+
   if (isError) {
     return <Error />;
   }
@@ -30,18 +44,26 @@ function AllConnectionFriendList() {
     <div>
       <ConnectionListHeader data={data} />
       <div className="">
-        {isFetching ? (
+        {showInitialSkeleton ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
           ))
-        ) : data?.data?.length > 0 ? (
-          data?.data?.map((item: ConnectionRequestType) => (
+        ) : combinedData?.length > 0 ? (
+          combinedData?.map((item: ConnectionRequestType) => (
             <ConnectionRequestCard key={item.id} item={item} />
           ))
         ) : (
           <ConnectionNotFound title="No Connections Found" />
         )}
       </div>
+      {showMoreLoader && (
+        <div className="mt-4">
+          <ConnectionRequestSkleton />
+        </div>
+      )}
+      {!showMoreLoader && hasMore && (
+        <LoadMorePagination setPage={setPage} isFetching={isFetching} />
+      )}
     </div>
   );
 }

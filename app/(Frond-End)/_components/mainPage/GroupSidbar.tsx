@@ -1,38 +1,21 @@
-"use client";
-import { GroupCardSkeleton } from "@/components/reusable/All Skleton/GroupCardSkeleton";
-import ButtonReuseable from "@/components/reusable/CustomButton";
-import Error from "@/components/reusable/Error";
-import {
-  useGetSuggestionGroupsQuery,
-  useJoinGroupMutation,
-} from "@/feature/slice/group/groupSlice";
 import { GroupDetailType } from "@/lib/type";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
-import { ImageIcon, Loader } from "lucide-react";
+import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import JoinGroupAction from "./group/JoinGroupAction";
 
-function GroupSidbar() {
-  const { data, isLoading, isError } = useGetSuggestionGroupsQuery("");
-  const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
-  const [isJoiningGroupId, setIsJoiningGroupId] = useState<number | null>(null);
-  const groups: GroupDetailType[] = data?.data || [];
-  if (isError) {
-    return <Error />;
+async function GroupSidbar() {
+  let groups: GroupDetailType[] = [];
+
+  try {
+    const data = await fetchWrapper("/groups-suggestions?page=1&limit=5");
+    groups = data?.data || [];
+  } catch (error) {
+    groups = [];
   }
-  const handleJoinGroup = async (groupId: number) => {
-    setIsJoiningGroupId(groupId);
-    try {
-      const response = await joinGroup({ group_id: groupId }).unwrap();
-      toast.success(response.message || "Successfully joined the group!");
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.data?.message || "Failed to join the group.");
-    }
-  };
 
   return (
     <aside className="rounded-md ">
@@ -41,10 +24,6 @@ function GroupSidbar() {
       </h3>
 
       <div className=" space-y-0">
-        {isLoading &&
-          Array.from({ length: 4 }).map((_, index) => (
-            <GroupCardSkeleton key={index} />
-          ))}
         {groups.length > 0 &&
           groups.map((group: GroupDetailType) => (
             <div
@@ -82,18 +61,10 @@ function GroupSidbar() {
                   </div>
                 </div>
               </div>
-              <ButtonReuseable
-                type="button"
-                className={`py-0.5! px-4! border rounded-full! disabled:bg-bgColor!  disabled:py-1! disabled:text-descriptionColor! disabled:border-none! disabled:border-borderColor!  ${!group.id ? "border-primaryColor! bg-primaryColor! text-whiteColor!" : "border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor!  hover:text-primaryColor! hover:bg-primaryColor/10!"} mt-4!`}
-                title={!group.id ? "Joined" : "Join"}
-                sendingMsg={<Loader size={20} className="animate-spin" />}
-                onClick={() => handleJoinGroup(group.id)}
-                disabled={isJoiningGroupId === group.id && isJoining}
-                loading={isJoiningGroupId === group.id && isJoining}
-              />
+              <JoinGroupAction groupID={group.id} />
             </div>
           ))}
-        {!isLoading && groups.length === 0 && (
+        {groups.length === 0 && (
           <div className="py-10 border border-dashed rounded-sm font-semibold border-primaryColor  text-center text-base text-primaryColor">
             No group suggestions available.
           </div>

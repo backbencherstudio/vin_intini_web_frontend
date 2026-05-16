@@ -2,6 +2,7 @@ import { DiamondIcon, RightArrowIcon } from "@/public/svgIcons/Icons"
 import Image from "next/image";
 import WrapperContainer from "../../_components/WrapperContainer";
 import JoinButton from "@/components/reusable/JoinButton";
+import heroImage from "@/public/images/hero-img.svg";
 
 export default function Hero() {
     return (
@@ -37,7 +38,7 @@ export default function Hero() {
                     </div>
                     <div className="w-full h-full relative">
                         <Image
-                            src="/images/hero-img.svg"
+                            src={heroImage}
                             alt="Hero Image"
                             fill
                             className="w-full h-full object-contain"

@@ -6,7 +6,13 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import CommentBoxArea from "./CommentBoxArea";
 import CommentRow from "./CommentCard";
 import { CommentReplyList } from "./CommentReplyList";
@@ -61,28 +67,33 @@ function PostComment({ post }: { post?: PostFeedType }) {
     setReplyingToUserName(null);
   };
 
-  const handleLastReplyTopChange = (
-    commentId: number,
-    lastTopInViewport: number | null,
-  ) => {
-    const commentContainer = commentContainerRefs.current[commentId];
+  const handleLastReplyTopChange = useCallback(
+    (commentId: number, lastTopInViewport: number | null) => {
+      const commentContainer = commentContainerRefs.current[commentId];
 
-    if (!commentContainer || lastTopInViewport === null) {
-      setReplyLineHeights((previous) => ({ ...previous, [commentId]: 0 }));
-      return;
-    }
+      const nextHeight =
+        !commentContainer || lastTopInViewport === null
+          ? 0
+          : Math.max(
+              lastTopInViewport -
+                commentContainer.getBoundingClientRect().top -
+                CONNECTOR_START_OFFSET,
+              0,
+            );
 
-    const commentTop = commentContainer.getBoundingClientRect().top;
-    const nextHeight = Math.max(
-      lastTopInViewport - commentTop - CONNECTOR_START_OFFSET,
-      0,
-    );
+      setReplyLineHeights((previous) => {
+        if (previous[commentId] === nextHeight) {
+          return previous;
+        }
 
-    setReplyLineHeights((previous) => ({
-      ...previous,
-      [commentId]: nextHeight,
-    }));
-  };
+        return {
+          ...previous,
+          [commentId]: nextHeight,
+        };
+      });
+    },
+    [CONNECTOR_START_OFFSET],
+  );
 
   useEffect(() => {
     const newItems: CommentItem[] = commentData?.data || [];

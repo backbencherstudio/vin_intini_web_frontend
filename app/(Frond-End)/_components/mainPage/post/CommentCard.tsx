@@ -48,8 +48,9 @@ export default function CommentRow({
         response?.data?.message || "Comment like toggled successfully",
       );
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to like the comment. Please try again.");
+      toast.error(
+        error?.data?.message || "Failed to like the comment. Please try again.",
+      );
     }
   };
   const handleReplyLikeComment = async () => {
@@ -62,11 +63,12 @@ export default function CommentRow({
       );
     } catch (error) {
       setIsLiked(!newLikedStatus);
-      console.log(error);
-      toast.error("Failed to like the reply. Please try again.");
+
+      toast.error(
+        error?.data?.message || "Failed to like the reply. Please try again.",
+      );
     }
   };
-  console.log(item, "comment list");
 
   return (
     <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
@@ -110,7 +112,9 @@ export default function CommentRow({
               alt="Profile"
               width={132}
               height={132}
-              className="h-full w-full  "
+              priority
+              unoptimized
+              className="h-full w-full object-cover "
             />
           </div>
         )}

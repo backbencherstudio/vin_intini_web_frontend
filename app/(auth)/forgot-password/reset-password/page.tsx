@@ -25,7 +25,7 @@ export default function page() {
   const togglePasswordVisibility = () => {
     setIsShowingPassword((prev) => !prev);
   };
-  console.log(isLoading, "check");
+
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("resetEmail");

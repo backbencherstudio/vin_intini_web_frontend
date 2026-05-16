@@ -47,6 +47,7 @@ function PostImageRender({ mediaItems }: any) {
           alt="Post media"
           width={10000}
           height={10000}
+          unoptimized
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover w-full h-full bg-black/5"
         />

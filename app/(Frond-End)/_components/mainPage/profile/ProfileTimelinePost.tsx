@@ -37,11 +37,11 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
       )}
 
       {isLoading ? (
-        <div className="text-center py-10">
+        <div className="text-center flex  py-10">
           {Array.from({ length: 2 }).map((_, index) => (
             <div
               key={index}
-              className="animate-pulse h-32 bg-grayColor1 rounded-md mb-4"
+              className=" rounded-md mb-4"
             >
               <PostCardSkleton />
             </div>
@@ -49,13 +49,19 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
         </div>
       ) : posts.length > 0 ? (
         <Swiper
-          slidesPerView={2}
+          slidesPerView={1}
           spaceBetween={20}
           loop={true}
           speed={1000}
           autoplay={{
             delay: 300000,
             disableOnInteraction: false,
+          }}
+          breakpoints={{
+            640: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+            },
           }}
           modules={[Navigation, Autoplay, Pagination]}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -69,7 +75,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
         >
           {posts.map((post) => (
             <SwiperSlide className="" key={post.id}>
-              <ProfilePostCard post={post} userId={userId} />
+              <ProfilePostCard post={post} meta={data?.meta} userId={userId} />
             </SwiperSlide>
           ))}
         </Swiper>

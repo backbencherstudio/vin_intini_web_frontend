@@ -4,6 +4,8 @@ import FeatureCard from "./FeatureCard";
 import { landingPageFeatures } from "@/public/staticData";
 import WrapperContainer from "../../_components/WrapperContainer";
 import JoinButton from "@/components/reusable/JoinButton";
+import featureGroupImage from "@/public/images/feature-img.jpg";
+
 
 export default function Features() {
     return (
@@ -21,11 +23,11 @@ export default function Features() {
                         </div>
                         <div className="">
                             <Image
-                                src="/images/feature-img.jpg"
+                                src={featureGroupImage}
                                 alt="Feature Image"
                                 width={500}
                                 height={300}
-                                className="w-full h-auto object-cover rounded-2xl md:rounded-lg xl:rounded-2xl"
+                                className="w-full h-full object-cover rounded-2xl md:rounded-lg xl:rounded-2xl"
                                 priority
                             />
                         </div>

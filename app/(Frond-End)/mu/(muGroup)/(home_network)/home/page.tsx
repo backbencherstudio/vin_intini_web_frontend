@@ -1,5 +1,6 @@
+export const dynamic = "force-dynamic";
 import CreatePostSection from "@/app/(Frond-End)/_components/mainPage/CreatePostSection";
-import GroupSidbar from "@/app/(Frond-End)/_components/mainPage/GroupSidbar";
+import GroupSidbarWrapper from "@/app/(Frond-End)/_components/mainPage/GroupSidbarWrapper";
 import PostList from "@/app/(Frond-End)/_components/mainPage/post/PostList";
 
 function page() {
@@ -12,7 +13,7 @@ function page() {
         </div>
       </div>
       <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] pl-4 md:pl-6 h-full md:sticky md:top-19 md:h-[calc(100vh-5rem)] md:overflow-y-auto self-start">
-        <GroupSidbar />
+        <GroupSidbarWrapper />
       </div>
     </div>
   );

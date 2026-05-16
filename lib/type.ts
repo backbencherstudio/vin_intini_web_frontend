@@ -1,8 +1,10 @@
+import { StaticImageData } from "next/image";
+
 export type Testimonial = {
   id: string;
   review: string;
   rating: number;
-  imgUrl: string;
+  imgUrl: StaticImageData;
   reviewer: {
     name: string;
     occupation: string;
