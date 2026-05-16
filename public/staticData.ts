@@ -10,6 +10,10 @@ import {
   UserWithStarIcon,
 } from "./svgIcons/Icons";
 import { group } from "console";
+import NeuroscienceResearchLeadLogo from "@/public/images/company-logo-1.png";
+import ClinicalPsychologistLogo from "@/public/images/company-logo-2.png";
+import LicensedCounselorLogo from "@/public/images/company-logo-3.png";
+import BehavioralAnalystLogo from "@/public/images/company-logo-4.png";
 
 export const landingPageFeatures = [
   {
@@ -82,7 +86,7 @@ export const opportunities = [
     id: "1",
     job_title: "Neuroscience Research Lead",
     company_name: "Johns Hopkins University",
-    company_logo: "/images/company-logo-1.png",
+    company_logo: NeuroscienceResearchLeadLogo,
     location: "Baltimore, MD 21218, United States",
     created_at: "2026-03-25T10:00:00Z",
     job_field: "neuroscience",
@@ -94,7 +98,7 @@ export const opportunities = [
     id: "2",
     job_title: "Clinical Psychologist",
     company_name: "Stanford University",
-    company_logo: "/images/company-logo-2.png",
+    company_logo: ClinicalPsychologistLogo,
     location: "Stanford, CA 94305, United States",
     created_at: "2026-04-02T10:00:00Z",
     job_field: "clinical",
@@ -106,7 +110,7 @@ export const opportunities = [
     id: "3",
     job_title: "Licensed Counselor",
     company_name: "Penn State University",
-    company_logo: "/images/company-logo-3.png",
+    company_logo: LicensedCounselorLogo,
     location: "Cambridge, MA 02139, United States",
     created_at: "2026-04-10T10:00:00Z",
     job_field: "counselling",
@@ -118,7 +122,7 @@ export const opportunities = [
     id: "4",
     job_title: "Behavioral Analyst",
     company_name: "University of Washington",
-    company_logo: "/images/company-logo-4.png",
+    company_logo: BehavioralAnalystLogo,
     location: "Seattle, WA 98195, United States",
     created_at: "2026-04-16T10:00:00Z",
     job_field: "behavioral",

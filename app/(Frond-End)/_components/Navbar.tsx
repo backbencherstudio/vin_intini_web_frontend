@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import logo from "@/public/logo.svg";
 
 export default function Navbar() {
   return (
@@ -9,7 +10,7 @@ export default function Navbar() {
       <div className="container py-4! grid grid-cols-[auto_auto] items-center justify-between gap-4">
         <Link href="/">
           <Image
-            src="/logo.svg"
+            src={logo}
             alt="Logo"
             width={256}
             height={50}

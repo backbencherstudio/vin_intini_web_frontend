@@ -2,6 +2,9 @@ import Image from "next/image";
 import { CheckMarkWithCircleIcon } from "@/public/svgIcons/Icons";
 import { features } from "@/public/staticData";
 import Link from "next/link";
+import playStoreQR from "@/public/images/appdownload-qr.png";
+import playStoreLogo from "@/public/images/playstore.svg";
+import appStoreLogo from "@/public/images/appstore.svg";
 
 export default function GetApp() {
     return (
@@ -25,7 +28,7 @@ export default function GetApp() {
                     <div className="flex items-center gap-3">
                         <Link href="/">
                             <Image
-                                src="/images/playstore.svg"
+                                src={playStoreLogo}
                                 alt="App Store Badge"
                                 width={150}
                                 height={50}
@@ -35,7 +38,7 @@ export default function GetApp() {
                         </Link>
                         <Link href="/" className="">
                             <Image
-                                src="/images/appstore.svg"
+                                src={appStoreLogo}
                                 alt="App Store Badge"
                                 width={150}
                                 height={50}
@@ -47,7 +50,7 @@ export default function GetApp() {
                 </div>
                 <div className="border-2 border-blue-400 w-fit h-fit">
                     <Image
-                        src="/images/appdownload-qr.png"
+                        src={playStoreQR}
                         alt="QR code for app download"
                         width={400}
                         height={400}

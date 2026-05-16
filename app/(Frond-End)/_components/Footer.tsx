@@ -2,6 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaceBookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@/public/svgIcons/Icons";
+import logo from "@/public/logo.png";
+import bgImage from "@/public/images/landingpage-footer.svg";
 
 const socialMediaLinks = [
   // {
@@ -31,7 +33,7 @@ export default function Footer() {
     <footer
       className="px-4 container"
       style={{
-        backgroundImage: 'url("/images/landingpage-footer.svg")',
+        backgroundImage: `url("${bgImage.src}")`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: "no-repeat"
@@ -42,7 +44,7 @@ export default function Footer() {
       >
         <div className="flex flex-col sm:flex-row items-start justify-between pb-4">
           <Image
-            src="/logo.png"
+            src={logo}
             alt="Logo"
             width={305}
             height={100}
