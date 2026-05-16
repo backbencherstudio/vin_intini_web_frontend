@@ -1,14 +1,26 @@
 "use client";
+import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import React from "react";
 
 function layout({ children }: { children: React.ReactNode }) {
   const params = useParams();
-  const profileFilter = [
-    { id: 1, name: "Post", pathName: `/mu/profile/${params.id}/posts` },
-    { id: 2, name: "Comments", pathName: `/mu/profile/${params.id}/comments` },
-  ];
+
+  const { data: userProfile } = useGetProfileByIdQuery(params.id, {
+    skip: !params.id,
+  });
+
+  const profileFilter = userProfile?.data?.is_own_profile
+    ? [
+        { id: 1, name: "Post", pathName: `/mu/profile/${params.id}/posts` },
+        {
+          id: 2,
+          name: "Comments",
+          pathName: `/mu/profile/${params.id}/comments`,
+        },
+      ]
+    : [{ id: 1, name: "Post", pathName: `/mu/profile/${params.id}/posts` }];
   const pathName = usePathname();
   const isActive = (href: string): boolean => {
     if (href === `/mu/profile/${params.id}/posts`) {
