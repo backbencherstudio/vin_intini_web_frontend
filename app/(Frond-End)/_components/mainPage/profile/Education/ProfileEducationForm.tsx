@@ -79,23 +79,29 @@ function ProfileEducationForm({
     useGetInstitutionSuggestionsQuery("school-suggestions");
   const [addStudy, { isLoading }] = useAddStudyMutation();
   const [updateStudy, { isLoading: isUpdating }] = useUpdateStudyMutation();
-  const { control, register, handleSubmit, watch, reset } =
-    useForm<EducationFormValues>({
-      defaultValues: {
-        institution: initialValues?.institution?.name || "",
-        degree: initialValues?.degree || "",
-        field_study: initialValues?.field_study || "",
-        start_month: initialValues?.start_month || "",
-        start_year: initialValues?.start_year || "",
-        end_month: initialValues?.end_month || "",
-        end_year: initialValues?.end_year || "",
-        is_current: initialValues?.is_current || false,
-        grade: initialValues?.grade || "",
-        activities: initialValues?.activities || "",
-        description: initialValues?.description || "",
-        skills: normalizeSkillsList(initialValues?.skills_data),
-      },
-    });
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<EducationFormValues>({
+    defaultValues: {
+      institution: initialValues?.institution?.name || "",
+      degree: initialValues?.degree || "",
+      field_study: initialValues?.field_study || "",
+      start_month: initialValues?.start_month || "",
+      start_year: initialValues?.start_year || "",
+      end_month: initialValues?.end_month || "",
+      end_year: initialValues?.end_year || "",
+      is_current: initialValues?.is_current || false,
+      grade: initialValues?.grade || "",
+      activities: initialValues?.activities || "",
+      description: initialValues?.description || "",
+      skills: normalizeSkillsList(initialValues?.skills_data),
+    },
+  });
 
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills =
@@ -113,7 +119,6 @@ function ProfileEducationForm({
       );
       setOpen(false);
     } catch (error) {
-      console.log(error);
       toast.error(
         error?.data?.message || "Failed to save education. Please try again.",
       );
@@ -213,6 +218,7 @@ function ProfileEducationForm({
                   <CreatableSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
+                    type="number"
                     options={yearOptions}
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
@@ -247,6 +253,7 @@ function ProfileEducationForm({
                   <CreatableSelectField
                     value={field.value || undefined}
                     onChange={field.onChange}
+                    type="number"
                     options={yearOptions}
                     placeholder="Year"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
@@ -271,8 +278,29 @@ function ProfileEducationForm({
             id="grade"
             label="Grade"
             type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="2"
+            max="5"
             placeholder="Grade"
-            {...register("grade")}
+            {...register("grade", {
+              validate: (value) => {
+                if (!value) return true;
+
+                const numericValue = Number(value);
+
+                if (Number.isNaN(numericValue)) {
+                  return "Grade must be a valid number.";
+                }
+
+                if (numericValue < 2 || numericValue > 5) {
+                  return "Grade must be between 2.00 and 5.00.";
+                }
+
+                return true;
+              },
+            })}
+            error={errors.grade?.message}
             className="rounded-lg border-borderColor"
           />
 

@@ -6,76 +6,100 @@ const API_BASE_URL =
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for public pages (auth-related, API routes, and onboarding)
+  // Skip middleware for static files, images, API and public assets
   if (
-    pathname === "/" ||
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/sign-up") ||
-    pathname.startsWith("/forgot-password") ||
-    pathname.startsWith("/onboarding") ||
-    pathname.startsWith("/api/") ||
+    pathname === "/favicon.ico" ||
     pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/") ||
     pathname.startsWith("/public")
   ) {
     return NextResponse.next();
   }
 
-  // Get token from cookies or query params
-  const token = request.nextUrl.searchParams.get("auth");
+  const tokenQuery = request.nextUrl.searchParams.get("auth");
   const cookieToken = request.cookies.get("accessToken")?.value;
-  const hasToken = token || cookieToken;
 
-  // If no token, redirect to login
-  if (!hasToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  // Helper to redirect to login or home
+  const redirectToLogin = () =>
+    NextResponse.redirect(new URL("/login", request.url));
+  const redirectToHome = () =>
+    NextResponse.redirect(new URL("/mu/home", request.url));
 
-  // If token from query param, decode and set cookie
+  // If token came as query param, decode and set cookie on the response
   let response = NextResponse.next();
-  let currentToken = cookieToken;
+  let currentToken = cookieToken || null;
 
-  if (token) {
+  if (tokenQuery) {
     try {
-      const decodedToken = JSON.parse(atob(token)).token;
-      response.cookies.set("accessToken", decodedToken, {
-        path: "/",
-        httpOnly: false,
-        maxAge: undefined,
-      });
-      currentToken = decodedToken;
-    } catch (error) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Expecting the `auth` param to be base64(JSON) like: btoa(JSON.stringify({ token }))
+      const decoded = JSON.parse(atob(tokenQuery));
+      if (decoded && decoded.token) {
+        currentToken = decoded.token;
+        response.cookies.set("accessToken", currentToken, { path: "/" });
+      }
+    } catch (e) {
+      return redirectToLogin();
     }
   }
 
-  // Check onboarding status by calling /me API
-  if (currentToken) {
-    try {
-      const userResponse = await fetch(`${API_BASE_URL}/me`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          accept: "application/json",
-        },
-        credentials: "include",
-      });
-      const userData = await userResponse.json();
-     
+  // If no token, allow access to auth and onboarding pages, otherwise redirect to login
+  if (!currentToken) {
+    if (
+      pathname === "/" ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/sign-up") ||
+      pathname.startsWith("/forgot-password") ||
+      pathname.startsWith("/onboarding")
+    ) {
+      return response;
+    }
 
-      if (userData.success) {
-        // If onboarding is incomplete (is_onboarding === false), redirect to onboarding
+    return redirectToLogin();
+  }
 
-        if (!userData?.is_onboarding) {
+  // Validate token and get user info
+  try {
+    const userResponse = await fetch(`${API_BASE_URL}/me`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${currentToken}`,
+        Accept: "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (userResponse.status === 401) {
+      return redirectToLogin();
+    }
+
+    const userData = await userResponse.json();
+
+    if (userData && userData.success) {
+      // Authenticated users should not access login/root pages
+      if (
+        pathname === "/" ||
+        pathname.startsWith("/login") ||
+        pathname.startsWith("/sign-up") ||
+        pathname.startsWith("/forgot-password")
+      ) {
+        return redirectToHome();
+      }
+
+      // If onboarding is incomplete, redirect to onboarding for protected pages
+      if (!userData?.is_onboarding) {
+        if (!pathname.startsWith("/onboarding")) {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
-      } else if (userResponse.status === 401) {
-        // Token expired or invalid
-        return NextResponse.redirect(new URL("/login", request.url));
+      } else {
+        // If onboarding is completed, prevent access to onboarding pages
+        if (pathname.startsWith("/onboarding")) {
+          return redirectToHome();
+        }
       }
-    } catch (error) {
-      // If API call fails, log and continue
-      console.error("Failed to fetch user profile in middleware:", error);
     }
+  } catch (error) {
+    // On failure to validate, allow the request to continue (or you may prefer to redirect)
+    console.error("Middleware: failed to validate token:", error);
   }
 
   return response;
@@ -83,13 +107,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
+    // apply middleware to all routes except next/static, images and public assets
     "/((?!_next/static|_next/image|favicon.ico|public).*)",
   ],
 };

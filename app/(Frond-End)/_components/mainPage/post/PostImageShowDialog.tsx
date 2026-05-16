@@ -21,6 +21,16 @@ function PostImageShowDialog({
   activeMediaIndex,
   setActiveMediaIndex,
 }: PostImageShowDialogProps) {
+  const isVideo = (item: any): boolean => {
+    const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi", ".mkv"];
+    const url = item.url || item.file_path || "";
+    const type = item.type?.toLowerCase() || "";
+    return (
+      type === "video" ||
+      videoExtensions.some((ext) => url.toLowerCase().includes(ext))
+    );
+  };
+
   const goToPreviousMedia = () => {
     setActiveMediaIndex(
       activeMediaIndex === 0 ? mediaItems.length - 1 : activeMediaIndex - 1,
@@ -84,14 +94,23 @@ function PostImageShowDialog({
             {mediaItems.map((item) => (
               <div key={item.id} className="relative min-w-full ">
                 <div className="relative h-[70vh] w-full">
-                  <Image
-                    src={item.url || "/post_placeholder.png"}
-                    alt="Post image preview"
-                    width={1000}
-                    height={1000}
-                    sizes="100vw"
-                    className="w-full h-full object-contain bg-black/5"
-                  />
+                  {isVideo(item) ? (
+                    <video
+                      src={item.url || item.file_path}
+                      controls
+                      className="w-full h-full object-contain bg-black/5"
+                      preload="metadata"
+                    />
+                  ) : (
+                    <Image
+                      src={item.url || "/post_placeholder.png"}
+                      alt="Post image preview"
+                      width={1000}
+                      height={1000}
+                      sizes="100vw"
+                      className="w-full h-full object-contain bg-black/5"
+                    />
+                  )}
                 </div>
               </div>
             ))}

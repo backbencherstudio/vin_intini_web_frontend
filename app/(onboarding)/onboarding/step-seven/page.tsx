@@ -2,27 +2,27 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Switch } from "@/components/ui/switch";
-import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
+import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import {
-  ClinicalIcon,
   EmailIcon,
-  PhsychologicalIcon,
+  GroupUserIcon,
   PremiumIcon,
   ProgramIcon,
   PublicationIcon,
 } from "@/public/svgIcons/Icons";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
-interface FollowOption {
-  id: number;
-  title: string;
-  subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
+type ProfileImageDraft = {
+  dataUrl: string;
+  name: string;
+  type: string;
+};
 
 const notificationLabels: Array<{
   key: string;
@@ -51,95 +51,154 @@ const notificationLabels: Array<{
   },
 ];
 
-const followOptions: FollowOption[] = [
-  {
-    id: 1,
-    title: "American Psychological Association",
-    subtitle: "Organization",
-    icon: PhsychologicalIcon,
-  },
-  {
-    id: 2,
-    title: "Psychological Review",
-    subtitle: "Journal",
-    icon: PhsychologicalIcon,
-  },
-  {
-    id: 3,
-    title: "Neuroscience Today",
-    subtitle: "Publication",
-    icon: ClinicalIcon,
-  },
-  {
-    id: 4,
-    title: "Pfizer Neuroscience",
-    subtitle: "Industry Partner",
-    icon: ClinicalIcon,
-  },
-  {
-    id: 5,
-    title: "Clinical Psychology Network",
-    subtitle: "Community",
-    icon: PhsychologicalIcon,
-  },
-];
+const resolveProfileImageFile = async (
+  profileImage: unknown,
+): Promise<File | null> => {
+  if (!profileImage) {
+    return null;
+  }
+
+  if (profileImage instanceof File) {
+    return profileImage;
+  }
+
+  if (typeof profileImage === "object") {
+    const draft = profileImage as ProfileImageDraft;
+
+    if (
+      typeof draft.dataUrl === "string" &&
+      draft.dataUrl.startsWith("data:")
+    ) {
+      const response = await fetch(draft.dataUrl);
+      const blob = await response.blob();
+      const fallbackType = draft.type || blob.type || "image/png";
+      const extension = fallbackType.split("/")[1] || "png";
+
+      return new File([blob], draft.name || `profile-image.${extension}`, {
+        type: fallbackType,
+      });
+    }
+  }
+
+  if (typeof profileImage === "string" && profileImage.startsWith("data:")) {
+    const response = await fetch(profileImage);
+    const blob = await response.blob();
+    const fallbackType = blob.type || "image/png";
+    const extension = fallbackType.split("/")[1] || "png";
+
+    return new File([blob], `profile-image.${extension}`, {
+      type: fallbackType,
+    });
+  }
+
+  return null;
+};
 
 function page() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const stepSevenData = useSelector((state: any) => state.onboarding.formData);
-  const [isLoading, setIsLoading] = useState(false);
-  const { data } = useGetUserProfileQuery("profile-data");
+
+  const stepSixData = useSelector((state: any) => state.onboarding.formData);
+
+  const { data: groupData } = useGetSuggestionGroupsQuery("group-suggestions");
+  const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const defaultPreferences = useMemo(
     () => ({
-      new_jobs: stepSevenData?.notification_preferences?.new_jobs ?? true,
+      new_jobs: stepSixData?.notification_preferences?.new_jobs ?? true,
       publications_alerts:
-        stepSevenData?.notification_preferences?.publications_alerts ?? true,
+        stepSixData?.notification_preferences?.publications_alerts ?? true,
       program_updates:
-        stepSevenData?.notification_preferences?.program_updates ?? true,
+        stepSixData?.notification_preferences?.program_updates ?? true,
       premium_offers:
-        stepSevenData?.notification_preferences?.premium_offers ?? true,
+        stepSixData?.notification_preferences?.premium_offers ?? true,
     }),
-    [stepSevenData],
+    [stepSixData],
   );
 
   const [notificationPreferences, setNotificationPreferences] =
     useState(defaultPreferences);
 
-  const defaultFollowedIds = useMemo(() => {
-    const values = stepSevenData?.followed_entities;
+  const defaultFollowedId = useMemo(() => {
+    const values = stepSixData?.followed_entities;
     if (!Array.isArray(values)) {
-      return []; // Return empty array if values is not an array
+      return null;
     }
 
-    return followOptions
-      .filter((item) => values.includes(item.title))
-      .map((item) => item.id);
-  }, [stepSevenData]);
+    return (
+      groupData?.data
+        .filter((item) => values.includes(item.title))
+        .map((item) => item.id)[0] ?? null
+    );
+  }, [stepSixData, groupData]);
 
-  const [selectedFollowIds, setSelectedFollowIds] =
-    useState<number[]>(defaultFollowedIds);
+  const [selectedFollowId, setSelectedFollowId] = useState<number | null>(
+    defaultFollowedId,
+  );
+
+  useEffect(() => {
+    setNotificationPreferences(defaultPreferences);
+  }, [defaultPreferences]);
+
+  useEffect(() => {
+    setSelectedFollowId(defaultFollowedId);
+  }, [defaultFollowedId]);
 
   const handleToggleFollow = (id: number) => {
-    setSelectedFollowIds((previous) => {
-      if (previous.includes(id)) {
-        return previous.filter((item) => item !== id);
+    setSelectedFollowId((previous) => (previous === id ? null : id));
+  };
+
+  const handleFinish = async () => {
+    try {
+      const formData = new FormData();
+      const profileImageFile = await resolveProfileImageFile(
+        stepSixData?.profile_image,
+      );
+
+      Object.entries(stepSixData || {}).forEach(([key, value]) => {
+        if (key === "profile_image") return;
+        if (key === "notification_preferences") return;
+        if (key === "followed_entities") return;
+        if (value === undefined || value === null) return;
+        if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+        if (typeof value === "object") {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+        formData.append(key, String(value));
+      });
+
+      if (profileImageFile) {
+        formData.set("profile_image", profileImageFile);
       }
-      return [...previous, id];
-    });
+
+      formData.set("notify_jobs", String(notificationPreferences.new_jobs));
+      formData.set(
+        "notify_publications",
+        String(notificationPreferences.publications_alerts),
+      );
+      formData.set(
+        "notify_residency",
+        String(notificationPreferences.program_updates),
+      );
+      formData.set(
+        "notify_offers",
+        String(notificationPreferences.premium_offers),
+      );
+
+      if (selectedFollowId !== null) {
+        formData.set("group_ids", String(selectedFollowId));
+      }
+
+      const result = await profileSetup(formData).unwrap();
+      toast.success(result?.message || "Profile setup completed successfully!");
+      router.push(`/mu/home`);
+    } catch (error) {
+      console.error("Profile setup failed:", error);
+      toast.error("Failed to complete profile setup. Please try again.");
+    }
   };
-
-  const handleFinish = () => {
-    setIsLoading(true);
-
-    router.push(`/mu/${data?.user?.id}/home`);
-    setTimeout(() => {
-      dispatch(onboardingReset());
-      setIsLoading(false);
-    }, 500);
-  };
-
-  console.log("Step Seven Data from Redux:", data); // Debugging log
 
   return (
     <div>
@@ -189,9 +248,8 @@ function page() {
             </h3>
 
             <div className="mt-3 flex flex-col gap-3 ">
-              {followOptions.map((option) => {
-                const isSelected = selectedFollowIds.includes(option.id);
-                const Icon = option.icon;
+              {groupData?.data.map((option) => {
+                const isSelected = selectedFollowId === option.id;
 
                 return (
                   <button
@@ -206,12 +264,22 @@ function page() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-[#dff4f4] text-buttonColor">
-                        <Icon className="h-4 w-4" />
+                        {option?.logo_url ? (
+                          <Image
+                            src={option?.logo_url}
+                            alt={option.name}
+                            width={48}
+                            height={48}
+                            className="rounded-md w-full h-full object-cover"
+                          />
+                        ) : (
+                          <GroupUserIcon className="h-6 w-6" />
+                        )}
                       </div>
 
                       <div>
                         <p className="text-sm font-semibold text-headerColor ">
-                          {option.title}
+                          {option.name}
                         </p>
                         <p className="text-xs text-grayColor1 mt-1 ">
                           {option.subtitle}

@@ -10,7 +10,7 @@ import {
 } from "@/feature/slice/group/groupSlice";
 import { GroupDetailType } from "@/lib/type";
 import { ImageUploadIcon, UploadUPIcon } from "@/public/svgIcons/Icons";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -47,8 +47,6 @@ export default function CreateGroupForm({
   setOpen: (open: boolean) => void;
   groupData?: GroupDetailType;
 }) {
-  console.log(groupData?.id, "=============");
-
   const [logoPreview, setLogoPreview] = useState<string | null>(
     groupData?.logo_url || null,
   );
@@ -135,15 +133,13 @@ export default function CreateGroupForm({
           id: groupData?.id,
           data: formData,
         }).unwrap();
-        console.log("Group updated successfully:", response);
         toast.success(response.message || "Group updated successfully!");
         setOpen(false);
         return;
       }
       const response = await createGroup(formData).unwrap();
-      console.log("Group created successfully:", response);
       toast.success(response.message || "Group created successfully!");
-      // setOpen(false);
+      setOpen(false);
     } catch (error: any) {
       console.error("Error creating group:", error);
       toast.error(error?.data?.message || "Failed to create group.");
@@ -482,15 +478,17 @@ export default function CreateGroupForm({
               <button
                 type="submit"
                 disabled={isLoading || isUpdateLoading}
-                className="bg-primaryColor disabled:cursor-not-allowed disabled:bg-bgColor disabled:shadow-transparent disabled:text-grayColor1 text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
+                className="bg-primaryColor disabled:cursor-not-allowed disabled:bg-grayColor1 disabled:shadow-transparent disabled:text-grayColor1 text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
               >
-                {isUpdateLoading
-                  ? "Updating..."
-                  : groupData
-                    ? "Update Group"
-                    : isUpdateLoading
-                      ? "Creating..."
-                      : "Create Group"}
+                {isUpdateLoading ? (
+                  <Loader className="animate-spin h-5 w-5 mx-auto text-white" />
+                ) : groupData ? (
+                  "Update Group"
+                ) : isLoading ? (
+                  <Loader className="animate-spin h-5 w-5 mx-auto text-white" />
+                ) : (
+                  "Create Group"
+                )}
               </button>
             </div>
           </div>

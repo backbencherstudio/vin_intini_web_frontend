@@ -6,9 +6,6 @@ interface PsychologyNetworkPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function PsychologyNetworkPage({
-  params,
-}: PsychologyNetworkPageProps) {
-  const { id } = await params;
-  redirect(`/mu/${id}/psychology-network/fields`);
+export default async function PsychologyNetworkPage() {
+  redirect(`/mu/psychology-network/fields`);
 }

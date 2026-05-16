@@ -1,50 +1,18 @@
-"use client";
+import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import PostListClient from "./PostListClient";
 
-import { useGetNewsfeedQuery } from "@/feature/slice/post/postSlice";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"; // Adjust path
-import { useEffect, useState } from "react";
-import PostCard from "./PostCard";
-import PostCardSkleton from "./PostCardSkleton";
+const limit = 10;
 
-function PostList() {
-  const limit = 10;
-  // We temporarily pass an empty query to initialize the hook
-  const [tempPage, setTempPage] = useState(1);
+export default async function PostList() {
+  let initialData = { data: [] } as any;
+  try {
+    initialData = await fetchWrapper(`/newsfeed?page=1&per_page=${limit}`, {
+      next: { tags: ["posts"] },
+    });
+  } catch (err) {
+    console.error("PostList server fetch error:", err);
+  }
+ 
 
-  const { data, isFetching, isLoading } = useGetNewsfeedQuery({
-    query: `page=${tempPage}&per_page=${limit}`,
-  });
-
-  const { page, combinedData, lastElementRef } = useInfiniteScroll(
-    data,
-    isFetching,
-    isLoading,
-  );
-
-  // Sync the hook's page state back to our query
-  useEffect(() => {
-    setTempPage(page);
-  }, [page]);
-
-  return (
-    <section className="space-y-4">
-      {combinedData.map((post, index) => (
-        <div
-          key={post.id}
-          ref={combinedData.length === index + 1 ? lastElementRef : null}
-        >
-          <PostCard post={post} />
-        </div>
-      ))}
-
-      {(isLoading || isFetching) && (
-        <div className="space-y-4">
-          <PostCardSkleton />
-          <PostCardSkleton />
-        </div>
-      )}
-    </section>
-  );
+  return <PostListClient initialData={initialData} limit={limit} />;
 }
-
-export default PostList;

@@ -95,7 +95,7 @@ function ProfileUpdateForm({
       toast.success(response.message || "Profile updated successfully!");
       setOpen(false);
     } catch (error) {
-      console.log("profile update error", error);
+     
       toast.error(error?.data?.message || "Failed to update profile.");
     }
   };

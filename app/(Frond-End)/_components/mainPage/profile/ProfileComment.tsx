@@ -1,15 +1,12 @@
 "use client";
 
 import CommentSkleton from "@/components/reusable/All Skleton/CommentSkleton";
-import { useGetAllCommentListByPostIdQuery } from "@/feature/slice/post/commentSlice";
+import { useGetAllCommentListByPostIdQuery, useGetMyCommentListQuery } from "@/feature/slice/post/commentSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { formatPostDate } from "@/lib/utils";
 
 function ProfileComment() {
-  const { data: userProfile } = useGetUserProfileQuery("user");
-  const { data, isLoading } = useGetAllCommentListByPostIdQuery(
-    userProfile?.user?.id ?? 0,
-  );
+  const { data, isLoading } = useGetMyCommentListQuery("my-comments");
 
   const commentList = data?.data || [];
 
@@ -22,7 +19,7 @@ function ProfileComment() {
         : commentList.map((item) => (
             <article key={item.id} className="border-b border-borderColor py-3">
               <p className="text-sm font-normal leading-[1.35] text-descriptionColor">
-                <span>{item?.user?.name}</span>
+                <span>{item?.post?.posted_by?.name}</span>
                 <span className="mx-1">•</span>
                 <span>{formatPostDate(item?.comment_time)}</span>
               </p>

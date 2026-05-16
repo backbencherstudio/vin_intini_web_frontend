@@ -108,13 +108,12 @@ export default function page() {
   const handleClick = async () => {
     try {
       const enteredOtp = otp.join("");
-      console.log("chekc");
 
       const response = await regVerifyOtp({
         email: verifyMail,
         otp: enteredOtp,
       }).unwrap();
-      console.log(response?.token, "response for reg");
+      
 
       toast.success(response?.message || "OTP verified successfully.");
       await setToken(response?.token || "");

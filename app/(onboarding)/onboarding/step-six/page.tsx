@@ -3,7 +3,6 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
-import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import { UploadIcon, UploadUserIcon } from "@/public/svgIcons/Icons";
 
 import {
@@ -12,7 +11,7 @@ import {
 } from "@/feature/slice/onboarding/onboardingSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,16 +22,35 @@ interface StepSixData {
   about: string;
 }
 
+type ProfileImageDraft = {
+  dataUrl: string;
+  name: string;
+  type: string;
+};
+
+const readFileAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(String(reader.result ?? ""));
+    };
+
+    reader.onerror = () => {
+      reject(new Error("Failed to read image file."));
+    };
+
+    reader.readAsDataURL(file);
+  });
+
 function page() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const stepSixData = useSelector((state: any) => state.onboarding.formData);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string>(
-    stepSixData?.profile_image || "",
-  );
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [profileSetup, { isLoading }] = useProfileSetupMutation();
   const {
     control,
     register,
@@ -45,6 +63,19 @@ function page() {
       about: stepSixData?.about || "",
     },
   });
+
+  useEffect(() => {
+    const profileImage = stepSixData?.profile_image;
+
+    if (profileImage && typeof profileImage === "object") {
+      setPhotoPreview(profileImage.dataUrl || "");
+      return;
+    }
+
+    if (typeof profileImage === "string") {
+      setPhotoPreview(profileImage);
+    }
+  }, [stepSixData?.profile_image]);
 
   const titleValue = watch("title") || "";
   const aboutValue = watch("about") || "";
@@ -78,39 +109,34 @@ function page() {
 
   const onSubmit = async (data: StepSixData) => {
     try {
-      const formData = new FormData();
+      setIsSavingDraft(true);
 
-      Object.entries(stepSixData || {}).forEach(([key, value]) => {
-        if (key === "profile_image") return;
-        if (value === undefined || value === null) return;
-        formData.append(key, String(value));
-      });
-
-      formData.set("title", data.title);
-      formData.set("about", data.about || "");
+      let profileImageDraft: ProfileImageDraft | string | undefined =
+        stepSixData?.profile_image;
 
       if (selectedImageFile) {
-        formData.set("profile_image", selectedImageFile);
+        profileImageDraft = {
+          dataUrl: await readFileAsDataUrl(selectedImageFile),
+          name: selectedImageFile.name,
+          type: selectedImageFile.type,
+        };
       }
 
-      const response = await profileSetup(formData).unwrap();
-      if (response.status) {
-        // Handle success (e.g., navigate to next step)
-        toast.success(response?.message || "Profile setup successful!");
-        dispatch(setStep(7));
-        dispatch(
-          updateFormData({
-            title: data.title,
-            about: data.about,
-            profile_image: photoPreview,
-          }),
-        );
+      dispatch(
+        updateFormData({
+          title: data.title,
+          about: data.about,
+          profile_image: profileImageDraft,
+        }),
+      );
+      dispatch(setStep(7));
 
-        router.push("/onboarding/step-seven");
-      }
+      router.push("/onboarding/step-seven");
     } catch (error) {
       console.error("Error setting up profile:", error);
       toast.error(error?.message || "Failed to set up profile.");
+    } finally {
+      setIsSavingDraft(false);
     }
   };
 
@@ -223,7 +249,7 @@ function page() {
 
           <ButtonReuseable
             type="submit"
-            loading={isLoading}
+            loading={isSavingDraft}
             sendingMsg="Saving..."
             title="Continue"
             className="w-full lg:py-4!"

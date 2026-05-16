@@ -4,9 +4,6 @@ interface NeuroscienceNetworkPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function NeuroscienceNetworkPage({
-  params,
-}: NeuroscienceNetworkPageProps) {
-  const { id } = await params;
-  redirect(`/mu/${id}/neuroscience-network/fields`);
+export default async function NeuroscienceNetworkPage() {
+  redirect(`/mu/neuroscience-network/fields`);
 }

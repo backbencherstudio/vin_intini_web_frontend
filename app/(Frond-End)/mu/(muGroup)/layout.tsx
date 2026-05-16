@@ -1,3 +1,4 @@
+import Loading from "@/components/reusable/Loader";
 import { Suspense } from "react";
 
 export default function FrontEndLayout({
@@ -10,7 +11,7 @@ export default function FrontEndLayout({
       <div className="h-full w-full grid">
         <div className="">
           <div className="col-span-8 h-full">
-            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <Suspense fallback={<Loading />}>{children}</Suspense>
           </div>
         </div>
       </div>

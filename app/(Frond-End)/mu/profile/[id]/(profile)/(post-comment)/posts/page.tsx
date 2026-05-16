@@ -1,9 +1,10 @@
 import PostList from "@/app/(Frond-End)/_components/mainPage/post/PostList";
+import ProfileAllPost from "@/app/(Frond-End)/_components/mainPage/profile/ProfileAllPost";
 
 function page() {
   return (
     <div>
-      <PostList />
+      <ProfileAllPost />
     </div>
   );
 }
