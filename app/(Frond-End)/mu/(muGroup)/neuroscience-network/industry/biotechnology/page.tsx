@@ -1,8 +1,5 @@
-// app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/biotechnology/page.tsx
+// app/(Frond-End)/mu/[id]/(muGroup)/neuroscience-network/industry/biotechnology/page.tsx
 
-"use client";
-
-import { useState } from "react";
 import { IndustryHeader } from "../_components";
 import { AssessmentGrid } from "./_components/";
 import {
@@ -17,15 +14,12 @@ import {
 } from "./_mock/biotechnologyData";
 
 export default function BiotechnologyPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   return (
     <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col py-8 lg:py-10">
       <div className="flex w-full flex-1 flex-col">
         {/* Hide this header on mobile since it's in IndustrySidebar */}
         <div className="hidden md:block">
           <IndustryHeader
-            onSearch={setSearchQuery}
             title="Biotechnology Industry"
             description="Explore the latest biotech equipment releases advancing brain health research and treatment."
           />

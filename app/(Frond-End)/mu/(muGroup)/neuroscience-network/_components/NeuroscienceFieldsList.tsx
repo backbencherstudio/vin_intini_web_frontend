@@ -7,12 +7,12 @@ import { NeurosciencePagination } from "./NeurosciencePagination";
 
 interface NeuroscienceFieldsListProps {
   fields: NeuroscienceField[];
-  searchQuery: string;
+  searchQuery?: string;
 }
 
 export const NeuroscienceFieldsList = ({
   fields,
-  searchQuery,
+  searchQuery = "",
 }: NeuroscienceFieldsListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);

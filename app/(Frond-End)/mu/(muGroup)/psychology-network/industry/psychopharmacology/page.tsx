@@ -1,21 +1,15 @@
 // app/(Frond-End)/mu/[id]/(muGroup)/psychology-network/industry/psychopharmacology/page.tsx
 
-"use client";
-
-import { useState } from "react";
 import { IndustryHeader } from "../_components";
 import { MedicationGrid } from "./_components";
 
 export default function PsychopharmacologyPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   return (
     <div className="flex w-full flex-col">
       <div className="flex w-full flex-1 flex-col">
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            onSearch={setSearchQuery}
             title="Psychopharmacology"
             description="Explore the latest psychopharmacology and psychotropic releases advancing brain health research and treatment."
           />

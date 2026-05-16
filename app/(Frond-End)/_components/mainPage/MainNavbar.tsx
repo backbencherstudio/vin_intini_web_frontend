@@ -89,8 +89,8 @@ export default function MainNavbar() {
   ];
 
   const isActive = (href: string): boolean => {
-    if (href === `/home`) {
-      return pathname === `/home`;
+    if (href === "/mu/home") {
+      return pathname === "/mu/home";
     }
     return pathname.startsWith(href);
   };
