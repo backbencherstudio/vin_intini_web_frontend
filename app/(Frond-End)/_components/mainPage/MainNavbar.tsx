@@ -105,6 +105,7 @@ export default function MainNavbar() {
             width={50}
             height={50}
             className="w-12.5 h-auto"
+            
             priority
           />
         </Link>

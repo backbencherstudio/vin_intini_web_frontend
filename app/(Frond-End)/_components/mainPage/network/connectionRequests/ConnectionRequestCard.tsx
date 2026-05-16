@@ -18,6 +18,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                 alt={item?.user?.name}
                 width={150}
                 height={150}
+                unoptimized
                 className="h-full w-full object-cover"
               />
             )}
