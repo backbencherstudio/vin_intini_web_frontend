@@ -24,17 +24,13 @@ export const AssessmentGrid = ({
 }: AssessmentGridProps) => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
-    setIsMounted(true);
     const updateItemsPerPage = () => {
-      if (window.innerWidth >= 1024 && window.innerWidth < 1280) {
-        setItemsPerPage(2);
-      } else {
-        setItemsPerPage(4);
-      }
+      setItemsPerPage(
+        window.innerWidth >= 1024 && window.innerWidth < 1280 ? 2 : 4
+      );
     };
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
@@ -47,12 +43,9 @@ export const AssessmentGrid = ({
   }, [items, activeFilter]);
 
   const paginatedCards = useMemo(() => {
-    if (!isMounted) {
-      return filteredCards.slice(0, 4);
-    }
     const end = (currentPage + 1) * itemsPerPage;
     return filteredCards.slice(0, end);
-  }, [filteredCards, currentPage, itemsPerPage, isMounted]);
+  }, [filteredCards, currentPage, itemsPerPage]);
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
@@ -117,8 +110,7 @@ export const AssessmentGrid = ({
       </div>
 
       {/* Load More Button (Mobile) */}
-      {isMounted && filteredCards.length > itemsPerPage &&
-        (currentPage + 1) * itemsPerPage < filteredCards.length && (
+      {filteredCards.length > (currentPage + 1) * itemsPerPage && (
           <div className="flex w-full items-center justify-center">
             <button
               onClick={() => setCurrentPage((prev) => prev + 1)}
