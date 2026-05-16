@@ -3,6 +3,11 @@ import { Testimonial } from "@/lib/type";
 import image1 from "@/public/images/testimonial/user1.png"
 import image2 from "@/public/images/testimonial/user2.png"
 import image3 from "@/public/images/testimonial/user3.jpg"
+import banner1 from "@/public/images/testimonial/banner1.png"
+import banner2 from "@/public/images/testimonial/banner2.png"
+import banner3 from "@/public/images/testimonial/banner3.png"
+
+
 export const demoData = [
   {
     id: "1",
@@ -221,7 +226,7 @@ export const testimonials: Testimonial[] = [
     review:
       "This platform made my job search so much easier. The interface is user-friendly and the support team is fantastic!",
     rating: 5,
-    imgUrl: "/images/testimonial/banner1.png",
+    imgUrl: banner1 ,
     reviewer: {
       name: "Alice Johnson",
       occupation: "Software Engineer",
@@ -234,7 +239,7 @@ export const testimonials: Testimonial[] = [
     review:
       "I found my dream job within a week of signing up. Highly recommended for anyone looking for new opportunities!",
     rating: 4,
-    imgUrl: "/images/testimonial/banner2.png",
+    imgUrl: banner2,
     reviewer: {
       name: "Brian Lee",
       occupation: "Marketing Specialist",
@@ -247,7 +252,7 @@ export const testimonials: Testimonial[] = [
     review:
       "The neuroscience network helped me connect with professionals in my field. Great resource for networking!",
     rating: 5,
-    imgUrl: "/images/testimonial/banner3.png",
+    imgUrl: banner3,
     reviewer: {
       name: "Carla Mendes",
       occupation: "Neuroscientist",

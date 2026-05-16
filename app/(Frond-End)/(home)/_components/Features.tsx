@@ -27,7 +27,7 @@ export default function Features() {
                                 alt="Feature Image"
                                 width={500}
                                 height={300}
-                                className="w-full h-auto object-cover rounded-2xl md:rounded-lg xl:rounded-2xl"
+                                className="w-full h-full object-cover rounded-2xl md:rounded-lg xl:rounded-2xl"
                                 priority
                             />
                         </div>
