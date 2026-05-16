@@ -25,12 +25,7 @@ function GroupPostList({ groupId }: { groupId?: string }) {
   const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
-<<<<<<< HEAD
-    isLoading,
-    
-=======
     limit,
->>>>>>> 97a62a8e00475c10ac85c6dc9a5f514a7be64bc9
   );
 
 

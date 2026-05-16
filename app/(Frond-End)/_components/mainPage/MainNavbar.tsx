@@ -20,7 +20,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
@@ -36,10 +36,7 @@ type MenuItem = {
 
 export default function MainNavbar() {
   const pathname = usePathname();
-<<<<<<< HEAD
-=======
   const params = useParams();
->>>>>>> 97a62a8e00475c10ac85c6dc9a5f514a7be64bc9
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
@@ -51,11 +48,6 @@ export default function MainNavbar() {
 
   useRealtimeNotifications(user?.user.id);
 
-<<<<<<< HEAD
-  const isActive = (href: string): boolean => {
-    if (href === "/mu/home") {
-      return pathname === "/mu/home";
-=======
   const menuItems: MenuItem[] = [
     { label: "Home", slug: "/mu/home", icon: HomeIcon },
     { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
@@ -97,9 +89,8 @@ export default function MainNavbar() {
   ];
 
   const isActive = (href: string): boolean => {
-    if (href === `/home`) {
-      return pathname === `/home`;
->>>>>>> 97a62a8e00475c10ac85c6dc9a5f514a7be64bc9
+    if (href === "/mu/home") {
+      return pathname === "/mu/home";
     }
     return pathname.startsWith(href);
   };
