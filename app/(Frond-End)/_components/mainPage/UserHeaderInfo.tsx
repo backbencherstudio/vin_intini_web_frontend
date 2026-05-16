@@ -51,11 +51,11 @@ function UserHeaderInfo() {
             href={`/mu/notification`}
             className="relative flex justify-center items-center "
           >
-            {notificationCountData?.unread_count > 0 && (
+            {notificationCountData?.data?.unread_count > 0 && (
               <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
-                {notificationCountData?.unread_count > 99
+                {notificationCountData?.data?.unread_count > 99
                   ? "99+"
-                  : notificationCountData?.unread_count}
+                  : notificationCountData?.data?.unread_count}
               </span>
             )}
             <NotificationIcon />
