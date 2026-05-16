@@ -166,7 +166,7 @@ function PostAction({ post, meta }: PostCardProps) {
       {isGroupEdited && (
         <GroupPostCreateDialog
           open={isGroupEdited}
-          groupId={post?.groups?.[0]?.id}
+          groupId={post?.group?.id}
           setOpen={setIsGroupEdited}
           postData={post}
         />

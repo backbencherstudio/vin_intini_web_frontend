@@ -1,7 +1,7 @@
 import { EducationType } from "@/lib/type";
 import { DeleteIcon, EditeIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
-import { MdWorkOutline } from "react-icons/md";
+import { PiStudent } from "react-icons/pi";
 import EducationDelete from "./EducationDelete";
 import ProfileEducationForm from "./ProfileEducationForm";
 
@@ -21,7 +21,7 @@ function ProfileEducationCard({
     <article className={`py-4  border-b border-borderColor`}>
       <div className="flex items-start gap-2.5">
         <div className="h-11 w-11 shrink-0 flex items-center justify-center bg-primaryColor rounded-md">
-          <MdWorkOutline className="text-whiteColor" size={22} />
+          <PiStudent className="text-whiteColor w-6 h-6" />
         </div>
         <div>
           <div className="flex items-center gap-2.5">

@@ -175,7 +175,7 @@ export interface PostFeedType {
   total_comment: number;
   is_connected: boolean;
   media: PostMediaType[];
-  groups: any[];
+  group: any;
   created_at: string;
   can_edit: boolean;
   can_delete: boolean;
