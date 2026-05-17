@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
+import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import {
   DeleteIcon,
@@ -30,6 +31,7 @@ type PostCardProps = {
 };
 function PostAction({ post, meta }: PostCardProps) {
   const { can_edit, media, is_connected, user } = post || {};
+  const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const [isGroupEdited, setIsGroupEdited] = useState(false);
@@ -38,7 +40,7 @@ function PostAction({ post, meta }: PostCardProps) {
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
   const [sendRequest, { isLoading }] = useSendRequestMutation();
-
+  const { data: userProfile } = useGetProfileByIdQuery(userId);
   const handleSetPostType = (type: string) => {
     dispatch(setPostType(type as any));
   };
@@ -57,20 +59,31 @@ function PostAction({ post, meta }: PostCardProps) {
       toast.error(error?.data?.message || "Failed to send connection request.");
     }
   };
+
+
+
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
-        {!is_connected && !meta?.is_own_profile && (
+        {!is_connected && !meta?.is_own_profile && !meta?.is_connected && (
           <button
             onClick={handleConnect}
-            disabled={isLoading || action_label !== "Connect"}
+            disabled={
+              isLoading ||
+              action_label !== "Connect" ||
+              userProfile?.data?.connection_status?.action_label === "Pending"
+            }
             type="button"
             className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
           >
-            {isLoading ? "Sending..." : action_label}
+            {isLoading
+              ? "Sending..."
+              : userProfile?.data?.connection_status?.action_label === "Pending"
+                ? "Request sent"
+                : action_label}
           </button>
         )}
         {(can_edit || meta?.is_creator || meta?.is_own_profile) && (

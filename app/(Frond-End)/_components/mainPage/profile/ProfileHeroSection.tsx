@@ -113,6 +113,8 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
       </div>
     );
   }
+
+
   return (
     <section>
       <div className=" relative h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
@@ -206,11 +208,13 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           <div className="space-y-3 col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
-              {!profileData?.is_own_profile ? (
+              {!profileData?.is_own_profile &&
+              !profileData?.current_position ? (
                 <div>---</div>
-              ) : profileData?.current_position?.name ? (
+              ) : profileData?.current_position ? (
                 <p>
-                  {profileData?.current_position?.name ||
+                  {profileData?.current_position?.company_name ||
+                    profileData?.current_position?.name ||
                     "Software Engineer at Betopia Group"}
                 </p>
               ) : (
@@ -227,7 +231,10 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             <div className="flex items-center text-descriptionColor font-semibold gap-1.5">
               <PiStudent size={24} className="" />
 
-              {profileData?.current_institute?.name ? (
+              {!profileData?.is_own_profile &&
+              !profileData?.current_institute ? (
+                <div>---</div>
+              ) : profileData?.current_institute ? (
                 <p>{profileData?.current_institute?.name}</p>
               ) : (
                 <button
