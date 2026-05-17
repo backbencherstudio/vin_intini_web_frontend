@@ -43,7 +43,7 @@ function AllConnectionFriendList() {
   return (
     <div>
       <ConnectionListHeader data={data} />
-      <div className="">
+      <div className=" max-w-full">
         {showInitialSkeleton ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
