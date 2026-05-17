@@ -14,6 +14,7 @@ import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSl
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -28,14 +29,17 @@ type PreviewMedia = {
 function GroupPostCreateDialog({
   setOpen,
   open,
-  groupId,
   postData,
 }: {
   setOpen: (open: boolean) => void;
   open: boolean;
-  groupId?: number | string;
+
   postData?: any;
 }) {
+  const params = useParams();
+  const groupId = Array.isArray(params?.groupId)
+    ? params.groupId[0]
+    : params?.groupId;
   const [postText, setPostText] = useState("");
   const { data } = useGetUserProfileQuery("user");
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
@@ -46,7 +50,6 @@ function GroupPostCreateDialog({
   const [createPost, { isLoading }] = useCreatePostMutation();
   const [updateGroupPost, { isLoading: isUpdating }] =
     useUpdateGroupPostMutation();
-
   useEffect(() => {
     setPostText(postData?.description || "");
     setRemovedMediaIds([]);
