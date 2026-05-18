@@ -1,7 +1,7 @@
 "use client";
 import {
+  useGetMyProfileQuery,
   useGetProfileByIdQuery,
-  useGetUserProfileQuery,
 } from "@/feature/slice/user/userSlice";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -15,7 +15,7 @@ function ProfilePostList() {
 
   const { data: userProfile } = id
     ? useGetProfileByIdQuery(id)
-    : useGetUserProfileQuery("user");
+    : useGetMyProfileQuery("user");
   const profileFilter = !userProfile?.data?.is_own_profile
     ? [{ id: 1, name: "Post" }]
     : [
@@ -38,7 +38,6 @@ function ProfilePostList() {
       setActiveFilter(selectedFilter.name);
     }
   };
-
 
   return (
     <div>
