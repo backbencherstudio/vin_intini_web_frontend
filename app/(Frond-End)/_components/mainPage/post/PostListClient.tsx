@@ -27,7 +27,6 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     isFetching,
     false,
   );
-  console.log(initialData, "data");
 
   useEffect(() => {
     if (page === 1) return;
