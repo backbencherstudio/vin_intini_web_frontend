@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
     const navigationItems = [
         {
-            label: "Undergrad & Grad Programs",
+            label: "Degree Programs",
             href: `/mu/academia/${stateId}/grad-undergrad-programs`,
             Icon: UndergradCapIcon,
             redirectKey: "undergradgradprograms"
