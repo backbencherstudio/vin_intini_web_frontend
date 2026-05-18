@@ -40,7 +40,6 @@ function RegistrationForm() {
       localStorage.setItem("regEmail", data.email);
       route.push("/sign-up/verify-email");
     } catch (error) {
-    
       toast.error(
         error?.data?.message || "Registration failed. Please try again.",
       );
@@ -125,7 +124,7 @@ function RegistrationForm() {
             disabled={isLoading}
             className="w-full h-12 active:scale-95 cursor-pointer disabled:bg-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed rounded-lg bg-buttonColor text-white font-medium hover:opacity-90 transition-opacity"
           >
-            {isLoading ? "Connecting..." : "Sign in"}
+            {isLoading ? "Connecting..." : "Register"}
           </button>
         </form>
         <div className=" relative h-px w-full bg-borderColor">
