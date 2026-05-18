@@ -19,11 +19,21 @@ export async function proxy(request: NextRequest) {
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   const cookieToken = request.cookies.get("accessToken")?.value;
 
-  // Helper to redirect to login or home
-  const redirectToLogin = () =>
-    NextResponse.redirect(new URL("/login", request.url));
-  const redirectToHome = () =>
-    NextResponse.redirect(new URL("/mu/home", request.url));
+  // Helper to redirect to login or home. These will attach the current token
+  // as a cookie on the redirect response so the cookie persists across redirects.
+  const redirectToLogin = () => {
+    const res = NextResponse.redirect(new URL("/login", request.url));
+    if (currentToken)
+      res.cookies.set("accessToken", currentToken, { path: "/" });
+    return res;
+  };
+
+  const redirectToHome = () => {
+    const res = NextResponse.redirect(new URL("/mu/home", request.url));
+    if (currentToken)
+      res.cookies.set("accessToken", currentToken, { path: "/" });
+    return res;
+  };
 
   // If token came as query param, decode and set cookie on the response
   let response = NextResponse.next();
@@ -33,6 +43,7 @@ export async function proxy(request: NextRequest) {
     try {
       // Expecting the `auth` param to be base64(JSON) like: btoa(JSON.stringify({ token }))
       const decoded = JSON.parse(atob(tokenQuery));
+
       if (decoded && decoded.token) {
         currentToken = decoded.token;
         response.cookies.set("accessToken", currentToken, { path: "/" });
@@ -88,7 +99,12 @@ export async function proxy(request: NextRequest) {
       // If onboarding is incomplete, redirect to onboarding for protected pages
       if (!userData?.is_onboarding) {
         if (!pathname.startsWith("/onboarding")) {
-          return NextResponse.redirect(new URL("/onboarding", request.url));
+          const res = NextResponse.redirect(
+            new URL("/onboarding", request.url),
+          );
+          if (currentToken)
+            res.cookies.set("accessToken", currentToken, { path: "/" });
+          return res;
         }
       } else {
         // If onboarding is completed, prevent access to onboarding pages

@@ -9,11 +9,9 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
-import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import { countries } from "@/public/demoData/RealData";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 
-import Link from "next/link";
+import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import { useRouter } from "next/navigation";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 interface StepOneData {
@@ -39,7 +37,6 @@ function page() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);
@@ -52,7 +49,6 @@ function page() {
   };
   return (
     <div className=" ">
-      
       <OnboardingWrapper
         title={`Welcome, ${onboardingData?.first_name || "there"}!`}
         description="Tell us where you are from."
@@ -72,11 +68,16 @@ function page() {
               rules={{ required: "Country is required" }}
               render={({ field }) => {
                 return (
-                  <SelecteInputField
-                    options={countries}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    placeholder="Select country"
+                  <CreatableSelectField
+                    placeholder="Select Country/Region"
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    options={countries.map((country) => ({
+                      value: country?.country || "",
+                      label: country?.country || "",
+                    } )) as any}
+                    allowCustomInput
+                    className="w-full h-12! md:h-13! rounded-md"
                   />
                 );
               }}

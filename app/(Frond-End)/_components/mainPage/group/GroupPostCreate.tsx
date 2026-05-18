@@ -8,7 +8,6 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import GroupPostCreateDialog from "./GroupPostCreateDialog";
 
@@ -16,10 +15,6 @@ function GroupPostCreateSection() {
   const [isOpen, setIsOpen] = useState(false);
   const [postText, setPostText] = useState("");
   const { data } = useGetUserProfileQuery("user");
-  const params = useParams();
-  const groupId = Array.isArray(params?.groupId)
-    ? params.groupId[0]
-    : params?.groupId;
 
   return (
     <div className="rounded-md border border-borderColor bg-[#f6f7f8] p-4">
@@ -82,13 +77,7 @@ function GroupPostCreateSection() {
           </button>
         </div>
       </div>
-      {isOpen && (
-        <GroupPostCreateDialog
-          setOpen={setIsOpen}
-          open={isOpen}
-          groupId={groupId}
-        />
-      )}
+      {isOpen && <GroupPostCreateDialog setOpen={setIsOpen} open={isOpen} />}
     </div>
   );
 }

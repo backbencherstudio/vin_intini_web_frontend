@@ -6,6 +6,7 @@ import { formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import CommentDeleteDialog from "./CommentDeleteDialog";
@@ -87,9 +88,12 @@ export default function CommentRow({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-sm lg:text-[15px] leading-[140%] font-semibold text-headerColor">
+          <Link
+            href={`/mu/profile/${item?.user?.id}`}
+            className="text-sm lg:text-[15px] leading-[140%] font-semibold text-headerColor"
+          >
             {item?.user?.name || "Profile Name"}
-          </h4>
+          </Link>
           <p className=" line-clamp-1 text-[13px] wf font-normal text-descriptionColor">
             {item?.user?.title ||
               "Title (whether its a concise or long title, all the text will be in single line. Truncate the sentence i...)"}
