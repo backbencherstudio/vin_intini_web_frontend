@@ -60,8 +60,6 @@ function PostAction({ post, meta }: PostCardProps) {
     }
   };
 
-
-
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
@@ -107,7 +105,7 @@ function PostAction({ post, meta }: PostCardProps) {
                 <DeleteIcon />
                 Delete post
               </DropdownMenuItem>
-              {post?.visibility === "groups" ? (
+              {post?.visibility === "groups" && can_edit && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
@@ -119,7 +117,9 @@ function PostAction({ post, meta }: PostCardProps) {
                   <EditeIcon />
                   Edit post
                 </DropdownMenuItem>
-              ) : (
+              )}
+
+              {post?.visibility !== "groups" && can_edit && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();

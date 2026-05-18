@@ -29,15 +29,16 @@ type PreviewMedia = {
 function GroupPostCreateDialog({
   setOpen,
   open,
+  groupId,
   postData,
 }: {
   setOpen: (open: boolean) => void;
   open: boolean;
-
+  groupId?: number;
   postData?: any;
 }) {
   const params = useParams();
-  const groupId = Array.isArray(params?.groupId)
+  const groupsId = Array.isArray(params?.groupId)
     ? params.groupId[0]
     : params?.groupId;
   const [postText, setPostText] = useState("");
@@ -165,7 +166,7 @@ function GroupPostCreateDialog({
     const formData = new FormData();
     formData.append("description", trimmedText);
     formData.append("visibility", "groups");
-    formData.append("group_ids[]", String(groupId));
+    formData.append("group_ids[]", String(groupId || groupsId));
     previewMedia.forEach((media) => {
       if (media.file) {
         formData.append("media[]", media.file);
@@ -183,7 +184,7 @@ function GroupPostCreateDialog({
       const response = postData?.id
         ? await updateGroupPost({
             id: postData.id,
-            groupId,
+            groupId: groupId || groupsId,
             body: formData,
           }).unwrap()
         : await createPost(formData).unwrap();
@@ -205,10 +206,11 @@ function GroupPostCreateDialog({
       setRemovedMediaIds([]);
       setOpen(false);
     } catch (error) {
-      console.error(
-        postData?.id ? "Failed to update post" : "Failed to create post",
-        error,
+      toast.error(
+        error?.data?.message ||
+          (postData?.id ? "Failed to update post" : "Failed to create post"),
       );
+      console.error(error);
     }
   };
 
