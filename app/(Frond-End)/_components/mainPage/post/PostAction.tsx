@@ -30,7 +30,7 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, is_connected, user } = post || {};
+  const { can_edit, media, can_delete, is_connected, user } = post || {};
   const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -60,6 +60,13 @@ function PostAction({ post, meta }: PostCardProps) {
     }
   };
 
+  console.log(post, "post===");
+  console.log(
+    can_edit || can_delete || meta?.is_creator || meta?.is_own_profile,
+    "can_edit || meta?.is_creator || meta?.is_own_profile===",
+  );
+  console.log(can_edit, "can_edit ");
+
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
@@ -84,7 +91,10 @@ function PostAction({ post, meta }: PostCardProps) {
                 : action_label}
           </button>
         )}
-        {(can_edit || meta?.is_creator || meta?.is_own_profile) && (
+        {(can_edit ||
+          can_delete ||
+          meta?.is_creator ||
+          meta?.is_own_profile) && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
               <DotIcon className="h-4 w-4" />
@@ -157,7 +167,7 @@ function PostAction({ post, meta }: PostCardProps) {
         <DeleteGroup
           open={isDeleted}
           setOpen={setIsDeleted}
-          groupId={meta?.group_id}
+          groupId={meta?.group_id || post?.group?.id}
           postId={post?.id}
         />
       )}

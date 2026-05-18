@@ -16,6 +16,9 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
   const [dataResponse, setDataResponse] = useState<any>(
     initialData ?? { data: [] },
   );
+
+  console.log("intial Data ", initialData);
+
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
