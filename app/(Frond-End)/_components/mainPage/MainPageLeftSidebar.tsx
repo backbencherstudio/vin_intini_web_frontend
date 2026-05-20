@@ -26,6 +26,12 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
       slug: "/mu/my-network/following",
       icon: SingleUserIcon,
     },
+    // {
+    //   label: "Groups Invited",
+    //   slug: "/mu/my-network/groups-invited",
+    //   icon: GroupUserIcon,
+    //   isDropdown: true,
+    // },
     {
       label: "Groups",
       slug: "/mu/my-network/groups",

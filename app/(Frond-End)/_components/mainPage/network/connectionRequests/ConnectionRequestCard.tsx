@@ -7,7 +7,7 @@ import { ConnectionActionButtons } from "./ConnectionActionButtons";
 function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
   return (
     <div>
-      <article className="flex flex-col md:flex-row lg:gap-6 xl:gap-8 items-center justify-between gap-3 border-b border-borderColor py-3">
+      <article className="flex flex-col md:flex-row lg:gap-6 xl:gap-8 items-start justify-between gap-3 border-b border-borderColor py-3">
         <div className="flex h-full items-start flex-1 gap-3 ">
           <div className="flex md:h-16 md:w-16  w-12 h-12 items-center justify-center overflow-hidden rounded-full bg-bgColor">
             {item.id === 1 ? (
@@ -18,6 +18,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                 alt={item?.user?.name}
                 width={150}
                 height={150}
+                unoptimized
                 className="h-full w-full object-cover"
               />
             )}
@@ -34,7 +35,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
               {item?.user?.title}
             </p>
             <div
-              className={`flex ${item?.mutual_connections?.length > 0 ? "justify-between" : "justify-end"}  items-center`}
+              className={`flex ${item?.mutual_connections?.length > 0 ? "justify-between" : "justify-end"}  gap-3 items-center`}
             >
               {item?.mutual_connections?.length > 0 ? (
                 <div className="mt-1 flex  items-center gap-1 text-[12px] text-grayColor1">
@@ -48,17 +49,22 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                     height={24}
                     className="h-5 w-5 rounded-full object-cover"
                   />
-                  <span className="truncate">
-                    {item?.mutual_connections[0]?.name}{" "}
-                    {item?.mutual_connections?.length > 1 &&
-                      item?.mutual_connections?.length + "and others "}{" "}
+                  <span className="">
+                    <Link
+                      href={`/mu/profile/${item?.mutual_connections[0]?.id}`}
+                      className="text-headerColor"
+                    >
+                      {item?.mutual_connections[0]?.name}
+                    </Link>{" "}
+                    {item?.mutual_connections_count > 1 &&
+                      "and " + item?.mutual_connections_count + " others "}{" "}
                     mutual connections
                   </span>
                 </div>
               ) : null}
               <div className="">
                 {item?.status == "accepted" && (
-                  <span className="text-[12px] text-grayColor1 font-semibold">
+                  <span className="text-[12px] leading-3 text-grayColor1 font-semibold">
                     {item?.connected_since}
                   </span>
                 )}

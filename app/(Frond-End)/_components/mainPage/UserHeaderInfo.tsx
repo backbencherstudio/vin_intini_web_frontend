@@ -43,6 +43,7 @@ function UserHeaderInfo() {
     // Redirect to the login page
     router.push("/login");
   };
+
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -72,9 +73,10 @@ function UserHeaderInfo() {
                           userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-full w-full h-full"
+                        width={80}
+                        height={80}
+                        unoptimized
+                        className="rounded-full w-full object-cover h-full"
                       />
                     </div>
                   </div>
@@ -85,7 +87,7 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-60.5 p-3">
+              <DropdownMenuContent align="end" className="w-50.5 p-3">
                 <div className="">
                   <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
@@ -112,7 +114,7 @@ function UserHeaderInfo() {
                     </div>
                   </div>
                 </div>
-                <div className="py-3 space-y-2">
+                <div className="py-2 space-y-1">
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/profile`}

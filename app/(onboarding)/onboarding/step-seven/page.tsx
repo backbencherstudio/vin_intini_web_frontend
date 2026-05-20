@@ -117,33 +117,34 @@ function page() {
   const [notificationPreferences, setNotificationPreferences] =
     useState(defaultPreferences);
 
-  const defaultFollowedId = useMemo(() => {
+  const defaultFollowedIds = useMemo(() => {
     const values = stepSixData?.followed_entities;
     if (!Array.isArray(values)) {
-      return null;
+      return [] as number[];
     }
 
-    return (
-      groupData?.data
-        .filter((item) => values.includes(item.title))
-        .map((item) => item.id)[0] ?? null
-    );
+    return groupData?.data
+      .filter((item) => values.includes(item.title))
+      .map((item) => item.id) as number[];
   }, [stepSixData, groupData]);
 
-  const [selectedFollowId, setSelectedFollowId] = useState<number | null>(
-    defaultFollowedId,
-  );
+  const [selectedFollowIds, setSelectedFollowIds] =
+    useState<number[]>(defaultFollowedIds);
 
   useEffect(() => {
     setNotificationPreferences(defaultPreferences);
   }, [defaultPreferences]);
 
   useEffect(() => {
-    setSelectedFollowId(defaultFollowedId);
-  }, [defaultFollowedId]);
+    setSelectedFollowIds(defaultFollowedIds);
+  }, [defaultFollowedIds]);
 
   const handleToggleFollow = (id: number) => {
-    setSelectedFollowId((previous) => (previous === id ? null : id));
+    setSelectedFollowIds((previous) =>
+      previous.includes(id)
+        ? previous.filter((item) => item !== id)
+        : [...previous, id],
+    );
   };
 
   const handleFinish = async () => {
@@ -187,8 +188,8 @@ function page() {
         String(notificationPreferences.premium_offers),
       );
 
-      if (selectedFollowId !== null) {
-        formData.set("group_ids", String(selectedFollowId));
+      if (selectedFollowIds.length > 0) {
+        formData.set("group_ids", selectedFollowIds.join(","));
       }
 
       const result = await profileSetup(formData).unwrap();
@@ -249,7 +250,7 @@ function page() {
 
             <div className="mt-3 flex flex-col gap-3 ">
               {groupData?.data.map((option) => {
-                const isSelected = selectedFollowId === option.id;
+                const isSelected = selectedFollowIds.includes(option.id);
 
                 return (
                   <button

@@ -20,6 +20,8 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
     query: `page=1&per_page=10`,
   });
 
+  console.log(data);
+
   const posts = data?.data || [];
   const swiperRef = useRef<any>(null);
 
@@ -39,10 +41,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
       {isLoading ? (
         <div className="text-center flex  py-10">
           {Array.from({ length: 2 }).map((_, index) => (
-            <div
-              key={index}
-              className=" rounded-md mb-4"
-            >
+            <div key={index} className=" rounded-md mb-4">
               <PostCardSkleton />
             </div>
           ))}
@@ -79,6 +78,8 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
             </SwiperSlide>
           ))}
         </Swiper>
+      ) : !data?.meta?.is_own_profile ? (
+        <p className="text-center text-grayColor1">No posts available</p>
       ) : (
         <div className=" py-6">
           <h4 className="text-lg font-semibold text-headerColor mb-4">

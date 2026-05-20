@@ -61,6 +61,7 @@ function ProfileImagRender({ mediaItems }: { mediaItems: any[] }) {
                   alt={m.type || `media-${idx}`}
                   width={500}
                   height={500}
+                  unoptimized
                   className="w-full h-full object-cover"
                   style={{ maxHeight: "520px" }}
                 />

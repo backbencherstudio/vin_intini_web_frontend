@@ -1,7 +1,6 @@
 "use client";
-import RootDialog from "@/components/reusable/RootDialog";
-import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import emptyImage from "@/public/empty_user.jpg";
 import {
   EmojiIcon,
   ImageUploadIcon,
@@ -9,23 +8,15 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
-import emptyImage from "@/public/empty_user.jpg";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import PostAccessModal from "./post/PostAccessModal";
-import PostGroupListModal from "./post/PostGroupListModal";
-import PostModal from "./post/PostModal";
+import CreatePostDialog from "./profile/CreatePostDialog";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
-  const { data } = useGetUserProfileQuery("user");
-  const { postType } = useSelector((state: any) => state.postCompose);
-  const [postText, setPostText] = useState("");
 
-  const handleSetPostType = (type: string) => {
-    dispatch(setPostType(type as any));
-  };
+  const { data } = useGetUserProfileQuery("user");
+
+  const [postText, setPostText] = useState("");
 
   return (
     <div className="rounded-md border border-borderColor bg-[#f6f7f8] p-4">
@@ -34,8 +25,9 @@ function CreatePostSection() {
           <Image
             src={data?.user?.profile_image_url || emptyImage}
             alt="User avatar"
-            width={32}
-            height={32}
+            width={62}
+            height={62}
+            unoptimized
             className="h-full w-full object-cover"
             priority
           />
@@ -89,17 +81,7 @@ function CreatePostSection() {
           </button>
         </div>
       </div>
-      {isOpen && (
-        <RootDialog open={isOpen} setOpen={setIsOpen}>
-          {postType == "Post_write" ? (
-            <PostModal setOpen={setIsOpen} setPostType={handleSetPostType} />
-          ) : postType == "post_access" ? (
-            <PostAccessModal setPostType={handleSetPostType} />
-          ) : (
-            <PostGroupListModal setPostType={handleSetPostType} />
-          )}
-        </RootDialog>
-      )}
+      {isOpen && <CreatePostDialog isOpen={isOpen} setIsOpen={setIsOpen} />}
     </div>
   );
 }

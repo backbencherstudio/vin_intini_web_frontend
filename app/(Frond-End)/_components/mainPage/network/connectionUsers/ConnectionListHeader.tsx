@@ -1,12 +1,11 @@
 "use client";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import Search from "@/components/reusable/Search";
-import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import { useState } from "react";
 
-function ConnectionListHeader({data}:any) {
+function ConnectionListHeader({ data }: any) {
   const [selectedSort, setSelectedSort] = useState("Recently Added");
- 
+
   const sortOptions = [
     { iso_code: "recent", country: "Recently Added" },
     { iso_code: "oldest", country: "Oldest" },
@@ -27,7 +26,7 @@ function ConnectionListHeader({data}:any) {
           <h1 className="text-base md:hidden font-semibold text-headerColor">
             Total Connection{" "}
             <span className="font-normal text-grayColor1">
-              {data?.total || 0}
+              ({data?.total || 0})
             </span>
           </h1>
           <div className="relative w-55 lg:w-75 mx-auto hidden md:block  max-w-full">
@@ -46,7 +45,7 @@ function ConnectionListHeader({data}:any) {
             />
           </div>
         </div>
-        <div className="relative w-100 mx-auto md:hidden  max-w-full">
+        <div className="relative w-full  mx-auto md:hidden  max-w-full">
           <Search />
         </div>
       </div>

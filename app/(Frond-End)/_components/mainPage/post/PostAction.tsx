@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
+import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import {
   DeleteIcon,
@@ -29,7 +30,8 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, is_connected, user } = post || {};
+  const { can_edit, media, can_delete, is_connected, user } = post || {};
+  const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const [isGroupEdited, setIsGroupEdited] = useState(false);
@@ -38,7 +40,7 @@ function PostAction({ post, meta }: PostCardProps) {
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
   const [sendRequest, { isLoading }] = useSendRequestMutation();
-
+  const { data: userProfile } = useGetProfileByIdQuery(userId);
   const handleSetPostType = (type: string) => {
     dispatch(setPostType(type as any));
   };
@@ -57,28 +59,47 @@ function PostAction({ post, meta }: PostCardProps) {
       toast.error(error?.data?.message || "Failed to send connection request.");
     }
   };
+
+  console.log(post, "post===");
+  console.log(
+    can_edit || can_delete || meta?.is_creator || meta?.is_own_profile,
+    "can_edit || meta?.is_creator || meta?.is_own_profile===",
+  );
+  console.log(can_edit, "can_edit ");
+
   return (
     <div>
-      <div className="flex items-center gap-1.5">
-        {!is_connected && !meta?.is_own_profile && (
+      <div className="flex items-center relative gap-1.5">
+        {!is_connected && !meta?.is_own_profile && !meta?.is_connected && (
           <button
             onClick={handleConnect}
-            disabled={isLoading || action_label !== "Connect"}
+            disabled={
+              isLoading ||
+              action_label !== "Connect" ||
+              userProfile?.data?.connection_status?.action_label === "Pending"
+            }
             type="button"
             className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
           >
-            {isLoading ? "Sending..." : action_label}
+            {isLoading
+              ? "Sending..."
+              : userProfile?.data?.connection_status?.action_label === "Pending"
+                ? "Request sent"
+                : action_label}
           </button>
         )}
-        {(can_edit || meta?.is_creator || meta?.is_own_profile) && (
+        {(can_edit ||
+          can_delete ||
+          meta?.is_creator ||
+          meta?.is_own_profile) && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
               <DotIcon className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="p-3">
+            <DropdownMenuContent className="p-3    w-full">
               <h4 className="text-base font-semibold leading-[140%] text-headerColor md:text-lg">
                 Action
               </h4>
@@ -89,31 +110,33 @@ function PostAction({ post, meta }: PostCardProps) {
                   setMenuOpen(false);
                   setIsDeleted(true);
                 }}
-                className={"cursor-pointer "}
+                className={"cursor-pointer px-0 text-nowrap "}
               >
                 <DeleteIcon />
                 Delete post
               </DropdownMenuItem>
-              {post?.visibility === "groups" ? (
+              {post?.visibility === "groups" && can_edit && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
                     setMenuOpen(false);
                     setIsGroupEdited(true);
                   }}
-                  className={"cursor-pointer "}
+                  className={"cursor-pointer px-0"}
                 >
                   <EditeIcon />
                   Edit post
                 </DropdownMenuItem>
-              ) : (
+              )}
+
+              {post?.visibility !== "groups" && can_edit && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
                     setMenuOpen(false);
                     setIsEdited(true);
                   }}
-                  className={"cursor-pointer "}
+                  className={"cursor-pointer px-0"}
                 >
                   <EditeIcon />
                   Edit post
@@ -128,7 +151,7 @@ function PostAction({ post, meta }: PostCardProps) {
                       setMenuOpen(false);
                       setIsBanUser(true);
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer px-0"
                   >
                     <UserBanIcon /> Ban User
                   </DropdownMenuItem>
@@ -144,6 +167,7 @@ function PostAction({ post, meta }: PostCardProps) {
         <DeleteGroup
           open={isDeleted}
           setOpen={setIsDeleted}
+          groupId={meta?.group_id || post?.group?.id}
           postId={post?.id}
         />
       )}
@@ -165,7 +189,7 @@ function PostAction({ post, meta }: PostCardProps) {
       {isGroupEdited && (
         <GroupPostCreateDialog
           open={isGroupEdited}
-          groupId={post?.groups?.[0]?.id}
+          groupId={post?.group?.id}
           setOpen={setIsGroupEdited}
           postData={post}
         />

@@ -42,7 +42,7 @@ export default function page() {
     return (
         <div className="xl:pl-6 space-y-6">
             <AcademiHeader
-                title="Graduate and Undergraduate Programs"
+                title="Degree Programs"
                 description="See State Map for Doctorate Programs"
                 selectedDegree={selectedDegree}
                 setSelectedDegree={setSelectedDegree}

@@ -32,6 +32,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
                 alt="Profile"
                 width={80}
                 height={80}
+                unoptimized
                 className="rounded-full w-full h-full object-cover"
               />
             </div>
