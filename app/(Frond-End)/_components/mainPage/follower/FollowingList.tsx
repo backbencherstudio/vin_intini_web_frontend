@@ -43,8 +43,8 @@ function FollowingList({ isNetwork }: { isNetwork?: boolean }) {
           ? Array.from({ length: 8 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))
-          : data?.data?.length > 0
-            ? data?.data?.map((item: ConnectionRequestType) => (
+          : combinedData?.length > 0
+            ? combinedData?.map((item: ConnectionRequestType) => (
                 <ConnectionRequestCard key={item.id} item={item} />
               ))
             : isNetwork && <ConnectionNotFound />}

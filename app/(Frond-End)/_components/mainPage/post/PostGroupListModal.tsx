@@ -12,8 +12,10 @@ import { useDispatch } from "react-redux";
 
 function PostGroupListModal({
   setPostType,
+  postData,
 }: {
   setPostType: (type: string) => void;
+  postData?: any;
 }) {
   const [localSelectedGroupIds, setLocalSelectedGroupIds] = useState<number[]>(
     [],

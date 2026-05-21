@@ -7,11 +7,16 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
   const candidateJobMenus = [
     {
       id: 1,
+      title: "Group Invitation",
+      href: "/mu/my-network/groups/group-invitation",
+    },
+    {
+      id: 2,
       title: "Groups you Connected",
       href: "/mu/my-network/groups",
     },
     {
-      id: 2,
+      id: 3,
       title: "Groups you Created",
       href: "/mu/my-network/groups/group-created",
     },

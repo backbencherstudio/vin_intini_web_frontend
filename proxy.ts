@@ -19,12 +19,11 @@ export async function proxy(request: NextRequest) {
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   const cookieToken = request.cookies.get("accessToken")?.value;
 
-  // Helper to redirect to login or home. These will attach the current token
-  // as a cookie on the redirect response so the cookie persists across redirects.
+  // Login redirects clear auth cookies; home redirects keep the current token.
   const redirectToLogin = () => {
     const res = NextResponse.redirect(new URL("/login", request.url));
-    if (currentToken)
-      res.cookies.set("accessToken", currentToken, { path: "/" });
+    res.cookies.delete("accessToken");
+    res.cookies.delete("accessTokenIssuedAt");
     return res;
   };
 
