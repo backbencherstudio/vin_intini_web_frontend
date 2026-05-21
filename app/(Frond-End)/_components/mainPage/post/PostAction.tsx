@@ -79,38 +79,42 @@ function PostAction({ post, meta }: PostCardProps) {
     );
   })();
 
-
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
-        {(relationship_status === "not_connected" &&
+        {((relationship_status === "not_connected" &&
           !meta?.is_own_profile &&
-          !meta?.is_connected || isRequestSent) && (
-            <button
-              onClick={handleConnect}
-              disabled={
-                isLoading || action_label !== "Connect" || isRequestSent
-              }
-              type="button"
-              className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+          !meta?.is_connected) ||
+          isRequestSent) && (
+          <button
+            onClick={handleConnect}
+            disabled={isLoading || action_label !== "Connect" || isRequestSent}
+            type="button"
+            className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
-            >
-              {isLoading
-                ? "Sending..."
-                : isRequestSent
-                  ? "Request sent"
-                  : action_label}
-            </button>
-          )}
+          >
+            {isLoading
+              ? "Sending..."
+              : isRequestSent
+                ? "Request sent"
+                : action_label}
+          </button>
+        )}
         {(can_edit ||
           can_delete ||
           meta?.is_creator ||
           meta?.is_own_profile) && (
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-            <DropdownMenuTrigger className="cursor-pointer border rounded-sm p-1.5 focus:outline-0">
-              <DotIcon className="h-4 w-4" />
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="cursor-pointer rounded-sm border p-1.5 focus:outline-0"
+                aria-label="Open post actions"
+              >
+                <DotIcon className="h-4 w-4" />
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-3    w-full">
               <h4 className="text-base font-semibold leading-[140%] text-headerColor md:text-lg">
@@ -142,7 +146,7 @@ function PostAction({ post, meta }: PostCardProps) {
                 </DropdownMenuItem>
               )}
 
-              {post?.visibility !== "groups"  && (
+              {post?.visibility !== "groups" && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
@@ -193,9 +197,12 @@ function PostAction({ post, meta }: PostCardProps) {
               postData={post}
             />
           ) : postType == "post_access" ? (
-            <PostAccessModal setPostType={handleSetPostType} />
+            <PostAccessModal postData={post} setPostType={handleSetPostType} />
           ) : (
-            <PostGroupListModal setPostType={handleSetPostType} />
+            <PostGroupListModal
+              postData={post}
+              setPostType={handleSetPostType}
+            />
           )}
         </RootDialog>
       )}

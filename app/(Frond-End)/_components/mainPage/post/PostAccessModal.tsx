@@ -10,6 +10,7 @@ import {
   GroupUserIcon,
   MultiUserIcon,
 } from "@/public/svgIcons/Icons";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 type PostVisibility = "public" | "connections" | "group";
@@ -39,15 +40,50 @@ const commentControlOptions: Array<{
 
 function PostAccessModal({
   setPostType,
+  postData,
 }: {
   setPostType: (type: string) => void;
+  postData?: any;
 }) {
   const dispatch = useDispatch();
   const { postVisibility, commentControl } = useSelector(
     (state: any) => state.postCompose,
   );
 
+  const resolvePostVisibility = (value?: string): PostVisibility => {
+    if (value === "groups") {
+      return "group";
+    }
+
+    if (value === "public" || value === "connections" || value === "group") {
+      return value;
+    }
+
+    return postVisibility;
+  };
+
+  const resolveCommentControl = (value?: string): CommentVisibility => {
+    if (value === "anyone" || value === "connections" || value === "no_one") {
+      return value;
+    }
+
+    return commentControl;
+  };
+
+  const [selectedPostVisibility, setSelectedPostVisibility] =
+    useState<PostVisibility>(() => resolvePostVisibility(postData?.visibility));
+  const [selectedCommentControl, setSelectedCommentControl] =
+    useState<CommentVisibility>(() =>
+      resolveCommentControl(postData?.who_can_comment),
+    );
+
+  useEffect(() => {
+    setSelectedPostVisibility(resolvePostVisibility(postData?.visibility));
+    setSelectedCommentControl(resolveCommentControl(postData?.who_can_comment));
+  }, [postData?.visibility, postData?.who_can_comment]);
+
   const handlePostVisibilityChange = (value: PostVisibility) => {
+    setSelectedPostVisibility(value);
     dispatch(setPostVisibility(value));
 
     if (value === "group") {
@@ -59,6 +95,7 @@ function PostAccessModal({
   };
 
   const handleCommentControlChange = (value: CommentVisibility) => {
+    setSelectedCommentControl(value);
     dispatch(setCommentControl(value));
   };
 
@@ -77,7 +114,7 @@ function PostAccessModal({
 
           <div className="mt-4 space-y-1">
             {postVisibilityOptions.map((option) => {
-              const isActive = postVisibility === option.value;
+              const isActive = selectedPostVisibility === option.value;
 
               return (
                 <button
@@ -117,7 +154,7 @@ function PostAccessModal({
 
           <div className="mt-4 space-y-1">
             {commentControlOptions.map((option) => {
-              const isActive = commentControl === option.value;
+              const isActive = selectedCommentControl === option.value;
 
               return (
                 <button

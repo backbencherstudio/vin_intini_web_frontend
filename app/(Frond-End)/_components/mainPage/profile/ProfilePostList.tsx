@@ -39,7 +39,6 @@ function ProfilePostList() {
     }
   };
 
-  console.log(userProfile, "userProfile");
 
   return (
     <div>

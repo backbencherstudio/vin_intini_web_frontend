@@ -20,7 +20,6 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
     query: `page=1&per_page=10`,
   });
 
-  console.log(data);
 
   const posts = data?.data || [];
   const swiperRef = useRef<any>(null);
