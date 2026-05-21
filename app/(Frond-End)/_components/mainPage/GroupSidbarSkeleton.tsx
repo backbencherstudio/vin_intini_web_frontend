@@ -9,7 +9,7 @@ export default function GroupSidbarSkeleton() {
 
       <div className=" space-y-0">
         {Array.from({ length: 3 }).map((_, idx) => (
-          <GroupCardSkeleton />
+          <GroupCardSkeleton key={idx} />
         ))}
       </div>
     </aside>

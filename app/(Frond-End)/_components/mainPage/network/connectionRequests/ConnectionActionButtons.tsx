@@ -134,7 +134,7 @@ export const ConnectionActionButtons = ({
                   className={`${BUTTON_STYLES.primary} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor`}
                 >
                   {isAccepting ? (
-                    <span className="px-2">
+                    <span className="">
                       <Loader className="w-4.5 animate-spin h-4.5 " />
                     </span>
                   ) : (
