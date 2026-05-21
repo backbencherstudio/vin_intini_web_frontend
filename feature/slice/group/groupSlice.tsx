@@ -82,6 +82,13 @@ const groupSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["group"],
     }),
+    removeGroupInvitation: builder.mutation({
+      query: ({ invitationId }) => ({
+        url: `/group-invitations/${invitationId}/ignore`,
+        method: "POST",
+      }),
+      invalidatesTags: ["group"],
+    }),
     groupUpdate: builder.mutation({
       query: ({ id, data }) => ({
         url: `/group-update/${id}`,
@@ -132,6 +139,7 @@ export const {
   useGetViewByIdGroupQuery,
   useJoinGroupMutation,
   useAcceptGroupInvitationMutation,
+  useRemoveGroupInvitationMutation,
   useLeaveGroupMutation,
   useCreateGroupMutation,
   useGroupUpdateMutation,

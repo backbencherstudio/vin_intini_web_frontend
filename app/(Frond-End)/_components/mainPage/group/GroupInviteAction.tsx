@@ -1,5 +1,8 @@
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
-import { useAcceptGroupInvitationMutation } from "@/feature/slice/group/groupSlice";
+import {
+  useAcceptGroupInvitationMutation,
+  useRemoveGroupInvitationMutation,
+} from "@/feature/slice/group/groupSlice";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { Loader } from "lucide-react";
 import Link from "next/link";
@@ -17,9 +20,12 @@ function GroupInviteAction({
 }) {
   const [acceptGroupInvitation, { isLoading: isAccepting, isSuccess }] =
     useAcceptGroupInvitationMutation();
+  const [
+    removeGroupInvitation,
+    { isLoading: isRemoving, isSuccess: isRemoved },
+  ] = useRemoveGroupInvitationMutation();
 
   const router = useRouter();
-  const isRejecting = false;
   const handleConnectionAction = async (action: "accept" | "ignore") => {
     if (action === "accept") {
       try {
@@ -36,7 +42,30 @@ function GroupInviteAction({
         );
       }
     } else {
-      // Ignore connection logic here
+      try {
+        const response = await removeGroupInvitation({ invitationId }).unwrap();
+        try {
+          await fetch("/api/revalidate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              path: "/mu/my-network/groups/",
+            }),
+          });
+        } catch (err) {
+          console.warn("Revalidate request failed", err);
+        }
+        router.refresh();
+        toast.success(
+          response?.message || "Group invitation ignored successfully!",
+        );
+      } catch (error) {
+        console.error("Error ignoring group invitation:", error);
+        toast.error(
+          error?.data?.message ||
+            "Failed to ignore the group invitation. Please try again.",
+        );
+      }
     }
   };
   return (
@@ -48,14 +77,22 @@ function GroupInviteAction({
         >
           <OpenEyeIcon className="w-4 h-4" /> View
         </Link>
+      ) : isRemoved ? (
+        <p className="text-redColor">Invitation ignored</p>
       ) : (
         <div className="flex items-center gap-2">
           <button
-            disabled={isRejecting}
+            disabled={isRemoving}
             onClick={() => handleConnectionAction("ignore")}
             className={`${BUTTON_STYLES.secondary} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor`}
           >
-            {isRejecting ? "Ignoring..." : "Ignore"}
+            {isRemoving ? (
+              <span className="">
+                <Loader className="w-4.5 animate-spin h-4.5 " />
+              </span>
+            ) : (
+              "Ignore"
+            )}
           </button>
           <button
             disabled={isAccepting}
