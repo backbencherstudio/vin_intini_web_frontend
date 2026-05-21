@@ -30,7 +30,14 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, can_delete, is_connected, user } = post || {};
+  const {
+    can_edit,
+    media,
+    can_delete,
+    is_connected,
+    relationship_status,
+    user,
+  } = post || {};
   const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -60,37 +67,43 @@ function PostAction({ post, meta }: PostCardProps) {
     }
   };
 
-  console.log(post, "post===");
-  console.log(
-    can_edit || can_delete || meta?.is_creator || meta?.is_own_profile,
-    "can_edit || meta?.is_creator || meta?.is_own_profile===",
-  );
-  console.log(can_edit, "can_edit ");
+  const isRequestSent = (() => {
+    const actionLabel = (
+      userProfile?.data?.connection_status?.action_label || ""
+    )
+      .toString()
+      .toLowerCase();
+
+    return (
+      actionLabel === "pending" || String(relationship_status) === "pending"
+    );
+  })();
+
 
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
-        {!is_connected && !meta?.is_own_profile && !meta?.is_connected && (
-          <button
-            onClick={handleConnect}
-            disabled={
-              isLoading ||
-              action_label !== "Connect" ||
-              userProfile?.data?.connection_status?.action_label === "Pending"
-            }
-            type="button"
-            className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+        {(relationship_status === "not_connected" &&
+          !meta?.is_own_profile &&
+          !meta?.is_connected || isRequestSent) && (
+            <button
+              onClick={handleConnect}
+              disabled={
+                isLoading || action_label !== "Connect" || isRequestSent
+              }
+              type="button"
+              className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
-          >
-            {isLoading
-              ? "Sending..."
-              : userProfile?.data?.connection_status?.action_label === "Pending"
-                ? "Request sent"
-                : action_label}
-          </button>
-        )}
+            >
+              {isLoading
+                ? "Sending..."
+                : isRequestSent
+                  ? "Request sent"
+                  : action_label}
+            </button>
+          )}
         {(can_edit ||
           can_delete ||
           meta?.is_creator ||
@@ -129,7 +142,7 @@ function PostAction({ post, meta }: PostCardProps) {
                 </DropdownMenuItem>
               )}
 
-              {post?.visibility !== "groups" && can_edit && (
+              {post?.visibility !== "groups"  && (
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();

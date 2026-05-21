@@ -170,6 +170,7 @@ export interface PostFeedType {
   id: number;
   user: UserProfileType;
   description: string;
+  relationship_status: "connected" | "not_connected" | "pending" | "declined";
   visibility: "public" | "groups" | "connections";
   who_can_comment: "anyone" | "connections" | "no_one";
   total_like: number;

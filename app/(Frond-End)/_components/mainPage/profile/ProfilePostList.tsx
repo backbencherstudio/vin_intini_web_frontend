@@ -39,6 +39,8 @@ function ProfilePostList() {
     }
   };
 
+  console.log(userProfile, "userProfile");
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -63,7 +65,7 @@ function ProfilePostList() {
       <div className="mt-3">
         {activeFilter === "Post" ? (
           <div>
-            <ProfileTimelinePost userId={userProfile?.user?.id} />
+            <ProfileTimelinePost userId={userProfile?.user?.id || userProfile?.data?.id} />
           </div>
         ) : (
           <div>

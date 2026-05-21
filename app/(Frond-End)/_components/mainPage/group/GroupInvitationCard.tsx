@@ -46,7 +46,7 @@ function GroupInvitationCard({ item }: { item: any }) {
                 {item?.group?.name}
               </Link>
             </div>
-            <p className=" text-[14px] text-descriptionColor">
+            <p className=" text-[14px] line-clamp-1 text-descriptionColor">
               {item?.group?.description || "No description added"}
             </p>
             <div className="flex items-center gap-2 text-grayColor1">
