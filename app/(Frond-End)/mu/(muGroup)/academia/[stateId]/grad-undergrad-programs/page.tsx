@@ -18,6 +18,24 @@ import { useParams } from "next/navigation";
 import TableLoading from "./_components/TableLoading";
 import { useSearchParams } from "next/navigation";
 
+const degreeTokens = [
+    {key: "BS", label: "BS"},
+    {key: "BA", label: "BA"},
+    {key: "Sc.B.", label: "Sc.B."},
+    {key: "A.B.", label: "A.B."},
+    {key: "BAS", label: "BAS"},
+    {key: "MS", label: "MS"},
+    {key: "MA", label: "MA"},
+    {key: "MRes", label: "MRes"},
+    {key: "M.Ed.", label: "M.Ed."},
+    {key: "MSEd", label: "MSEd"},
+    {key: "MSP", label: "MSP"},
+    {key: "MASS", label: "MASS"},
+    {key: "EdS", label: "EdS"},
+    {key: "PhD", label: "PhD"},
+    {key: "PsyD", label: "PsyD"},
+    {key: "EdD", label: "EdD"},
+]
 export default function page() {
     const [selectedDegree, setSelectedDegree] = useState<string>("all");
     const [limit, setLimit] = useState<number>(10);
@@ -46,14 +64,7 @@ export default function page() {
                 description="See State Map for Doctorate Programs"
                 selectedDegree={selectedDegree}
                 setSelectedDegree={setSelectedDegree}
-                filterData={[
-                    { key: "BA", label: "BA" },
-                    { key: "BS", label: "BS" },
-                    { key: "MA", label: "MA" },
-                    { key: "PhD", label: "PhD" },
-                    { key: "MS", label: "MS" },
-                    { key: "MS (OL)", label: "MS (OL)" },
-                ]}
+                filterData={degreeTokens}
                 onSearch={handleSearch}
                 searchPlaceHolder="Search Degree/ University..."
             />

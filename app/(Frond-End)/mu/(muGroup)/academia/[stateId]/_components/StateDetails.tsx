@@ -9,6 +9,7 @@ import GoogleMap from "./GoogleMap";
 import { useGetAcademiaByStateQuery } from "@/feature/slice/academia/academiaSlice";
 import { Activity } from "react";
 import MapPopup from "@/components/reusable/MapPopup";
+import {useSearchParams} from "next/navigation";
 
 type PropType = {
     id: string;
@@ -21,9 +22,13 @@ const GOOGLE_MAP_ZOOM_LEVEL = {
 };
 
 export default function StateDetails({ id }: PropType) {
+    const searchParams = useSearchParams();
+    const locationQuery = searchParams.get("location");
     const { setStateCode } = useAcademiaContext();
     const [isLoading, setIsLoading] = useState(true);
     const { data, isLoading: isAcademiaLoading } = useGetAcademiaByStateQuery(id);
+
+    console.log("Location Query:", locationQuery); // Debug log to check the location query parameter
 
     useEffect(() => {
         if (id) {
@@ -49,6 +54,7 @@ export default function StateDetails({ id }: PropType) {
                 zoomLevel={GOOGLE_MAP_ZOOM_LEVEL[id] || 6}
                 onFinishZoom={()=>setIsLoading(false)}
                 data={data?.data || []}
+                location={locationQuery ? locationQuery.split(",").map(Number) : undefined}
             />
             {/* <GoogleMap /> */}
         </div>
