@@ -79,6 +79,7 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
           hover: true,
           hoverbg: "hover:bg-[#ECEFF3]",
           rowClickable: true,
+          rowClickCheck: "latitude,longitude",
           rowClick: (row: any) => {
             const params = new URLSearchParams(window.location.search);
             params.set("location", `${row.latitude},${row.longitude}`);

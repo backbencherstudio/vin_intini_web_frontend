@@ -92,6 +92,7 @@ export default function GradprogramsTable({ data }: PropType) {
         rowStyle={{
           hover: true,
           hoverbg: "hover:bg-[#ECEFF3]",
+          rowClickCheck: "latitude,longitude",
           rowClickable: true,
           rowClick: (row: any) => {
             const params = new URLSearchParams(window.location.search);
