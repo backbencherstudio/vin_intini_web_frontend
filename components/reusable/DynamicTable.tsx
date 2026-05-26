@@ -52,6 +52,7 @@ interface DynamicTableProps {
     rowClickable?: boolean;
     rowClick?: (row: any) => void;
     cursorStype?: string;
+    rowClickCheck?: string;
   }
 }
  
@@ -123,7 +124,7 @@ export default function DynamicTable({
             <tbody>
               {data.length > 0 ? (
                 data.map((row, i) => (
-                  <tr key={i} className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ''} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ''} ${rowStyle?.rowClickable ? "cursor-pointer" : 'cursor-default'}`} onClick={() => rowStyle?.rowClickable && rowStyle.rowClick ? rowStyle.rowClick(row) : null}>
+                  <tr key={i} className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ''} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ''} ${(rowStyle?.rowClickable && rowStyle.rowClickCheck ? row?.[rowStyle.rowClickCheck?.split(",")?.[0]] && row?.[rowStyle.rowClickCheck?.split(",")?.[1]] : true) ? "cursor-pointer" : 'cursor-default'}`} onClick={() => rowStyle?.rowClickable && rowStyle.rowClick ? rowStyle.rowClick(row) : null}>
                     {columns.map((col, idx) => (
                       <td
                         key={idx}
