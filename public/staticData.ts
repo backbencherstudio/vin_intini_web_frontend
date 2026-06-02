@@ -304,6 +304,7 @@ export const usaStateKeyToNameMap: Record<string, string> = {
   WV: "West Virginia",
   WI: "Wisconsin",
   WY: "Wyoming",
+  WADC: "Washington DC",
 };
 
 export const Limits = [10, 25, 50, 100];

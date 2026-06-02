@@ -18,7 +18,8 @@ type PropType = {
 const GOOGLE_MAP_ZOOM_LEVEL = {
     "NY": 10,
     "DE": 8,
-    "MS": 7
+    "MS": 7,
+    "WADC": 12,
 };
 
 export default function StateDetails({ id }: PropType) {
@@ -27,8 +28,6 @@ export default function StateDetails({ id }: PropType) {
     const { setStateCode } = useAcademiaContext();
     const [isLoading, setIsLoading] = useState(true);
     const { data, isLoading: isAcademiaLoading } = useGetAcademiaByStateQuery(id);
-
-    console.log("Location Query:", locationQuery); // Debug log to check the location query parameter
 
     useEffect(() => {
         if (id) {
