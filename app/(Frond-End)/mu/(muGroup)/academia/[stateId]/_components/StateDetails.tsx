@@ -16,7 +16,7 @@ type PropType = {
 }
 
 const GOOGLE_MAP_ZOOM_LEVEL = {
-    "NY": 10,
+    "NY": 6,
     "DE": 8,
     "MS": 7,
     "WADC": 12,

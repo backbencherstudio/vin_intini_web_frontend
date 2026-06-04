@@ -285,7 +285,7 @@ export const usaStateKeyToNameMap: Record<string, string> = {
   NH: "New Hampshire",
   NJ: "New Jersey",
   NM: "New Mexico",
-  NY: "New York",
+  NY: "new york state",
   NC: "North Carolina",
   ND: "North Dakota",
   OH: "Ohio",
