@@ -7,9 +7,13 @@ import { useRouter, useSearchParams, useParams } from "next/navigation";
 
 type PropType = {
   data: HospitalType[];
+  filter?: boolean;
+  setFilter?: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage: number;
+  limit: number;
 };
 
-export default function HospitalTable({ data }: PropType) {
+export default function HospitalTable({ data, filter, setFilter, currentPage, limit }: PropType) {
 
     const params = useParams();
       const stateId = params.stateId as string;
@@ -31,7 +35,7 @@ export default function HospitalTable({ data }: PropType) {
       width: "30px",
       formatter: (accessor: string, row: any, index: number) => (
         <div className="w-full h-full text-start pl-2 text-[#0B0B0B]">
-          {index + 1}
+          {(index + 1) + (currentPage - 1) * limit}
         </div>
       ),
     },
@@ -39,6 +43,12 @@ export default function HospitalTable({ data }: PropType) {
       label: "Hospitals",
       accessor: "name",
       width: "300px",
+      sortable: true,
+      sortFunction: () => {
+        if (setFilter) {
+          setFilter((prev) => !prev);
+        }
+      },
       formatter: (accessor: string, row: any) => (
         <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
           {accessor}
@@ -87,6 +97,10 @@ export default function HospitalTable({ data }: PropType) {
 
             router.push(`/mu/academia/${stateId}?${params.toString()}`);
           },
+        }}
+        sortConfig={{
+          key: "name",
+          direction: filter ? "ascending" : "descending",
         }}
       />
     </div>

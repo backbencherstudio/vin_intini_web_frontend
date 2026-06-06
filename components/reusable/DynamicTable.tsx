@@ -1,5 +1,5 @@
 "use client";
- 
+
 import Image from "next/image";
 import React from "react";
 import {
@@ -7,21 +7,24 @@ import {
   HiOutlineChevronUp,
   HiOutlineSelector,
 } from "react-icons/hi";
- 
+import { BsSortUpAlt } from "react-icons/bs";
+import { BsSortUp } from "react-icons/bs";
+
 interface ColumnConfig {
   label: React.ReactNode;
   position?: "justify-center" | "justify-start" | "justify-end" | string;
   width: any;
   accessor: string;
   sortable?: boolean;
+  sortFunction?: () => void;
   formatter?: (value: any, row: any, i: number) => React.ReactNode;
 }
- 
+
 interface SortConfig {
   key: string;
   direction: "ascending" | "descending";
 }
- 
+
 interface DynamicTableProps {
   columns: ColumnConfig[];
   data: any[];
@@ -41,7 +44,7 @@ interface DynamicTableProps {
     fontWeight?: string;
     fontSize?: string;
     position?: "justify-center" | "justify-start" | "justify-end";
-  },
+  };
   tableMinWidth?: string;
   tableMaxWidth?: string;
   rowStyle?: {
@@ -54,9 +57,9 @@ interface DynamicTableProps {
     rowClick?: (row: any) => void;
     cursorStype?: string;
     rowClickCheck?: string;
-  }
+  };
 }
- 
+
 export default function DynamicTable({
   columns,
   data,
@@ -71,47 +74,57 @@ export default function DynamicTable({
   header = {
     position: "justify-start",
   },
-  rowStyle
+  rowStyle,
 }: DynamicTableProps) {
   // const totalPages = Math.ceil(data.length / itemsPerPage);
   // const data = data.slice(
   //   (currentPage - 1) * itemsPerPage,
   //   currentPage * itemsPerPage
   // );
- 
+
   const renderSortIcon = (columnKey: string) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
       return <HiOutlineSelector className="w-5 h-5 text-headerColor" />;
     }
     if (sortConfig.direction === "ascending") {
-      return <HiOutlineChevronUp className="w-4 h-4" />;
+      return <BsSortUpAlt className="w-4.5 h-4.5" />;
     }
-    return <HiOutlineChevronDown className="w-4 h-4" />;
+    return <BsSortUp className="w-4.5 h-4.5" />;
   };
- 
+
   return (
     <div className="w-full h-full grid">
       {/* Table Wrapper with Border & Radius */}
       <div className="overflow-hidden h-full">
         <div className="overflow-x-auto">
-          <table className={`w-full text-left ${rowStyle?.spaceing || ''}`}>
+          <table className={`w-full text-left ${rowStyle?.spaceing || ""}`}>
             <thead className="sticky top-0">
-              <tr style={{borderRadius: '100%'}} className="text-center">
+              <tr style={{ borderRadius: "100%" }} className="text-center">
                 {columns.map((col, index) => (
                   <th
                     key={index}
                     style={{ minWidth: col.width || "auto" }}
                     className="whitespace-nowrap text-sm font-normal capitalize  text-descriptionColor"
-                  // onClick={() =>
-                  //   col.sortable && onSort && onSort(col.accessor)
-                  // }
+                    // onClick={() =>
+                    //   col.sortable && onSort && onSort(col.accessor)
+                    // }
                   >
                     <div
-                      className={`flex gap-1 ${col?.position} ${col.sortable ? "cursor-pointer" : ""} ${index === 0 ? "rounded-tl-lg" : ""} ${index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
-                      style={{ background: header?.bg, padding: header?.padding,color: header?.text, fontWeight: header?.fontWeight, fontSize: header?.fontSize }}
+                      className={`flex gap-1.5 ${col?.position} ${col.sortable ? "cursor-pointer" : ""} ${index === 0 ? "rounded-tl-lg" : ""} ${index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
+                      style={{
+                        background: header?.bg,
+                        padding: header?.padding,
+                        color: header?.text,
+                        fontWeight: header?.fontWeight,
+                        fontSize: header?.fontSize,
+                      }}
                     >
+                      {col?.sortable && (
+                        <button onClick={col.sortFunction} className="cursor-pointer p-px rounded hover:bg-gray-300 transition-colors duration-300">
+                          {renderSortIcon(col.accessor)}
+                        </button>
+                      )}
                       {col.label}
-                      {/* {col.sortable && renderSortIcon(col.accessor)} */}
                     </div>
                   </th>
                 ))}
@@ -125,7 +138,15 @@ export default function DynamicTable({
             <tbody>
               {data.length > 0 ? (
                 data.map((row, i) => (
-                  <tr key={i} className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ''} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ''} ${(rowStyle?.rowClickable && rowStyle.rowClickCheck ? row?.[rowStyle.rowClickCheck?.split(",")?.[0]] && row?.[rowStyle.rowClickCheck?.split(",")?.[1]] : true) ? "cursor-pointer" : 'cursor-default'}`} onClick={() => rowStyle?.rowClickable && rowStyle.rowClick ? rowStyle.rowClick(row) : null}>
+                  <tr
+                    key={i}
+                    className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ""} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ""} ${(rowStyle?.rowClickable && rowStyle.rowClickCheck ? row?.[rowStyle.rowClickCheck?.split(",")?.[0]] && row?.[rowStyle.rowClickCheck?.split(",")?.[1]] : true) ? "cursor-pointer" : "cursor-default"}`}
+                    onClick={() =>
+                      rowStyle?.rowClickable && rowStyle.rowClick
+                        ? rowStyle.rowClick(row)
+                        : null
+                    }
+                  >
                     {columns.map((col, idx) => (
                       <td
                         key={idx}

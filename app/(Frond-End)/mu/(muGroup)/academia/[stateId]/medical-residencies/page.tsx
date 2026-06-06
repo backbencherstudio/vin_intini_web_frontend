@@ -23,6 +23,7 @@ export default function page() {
   const [searchItem, setSearchItem] = useState<string>("");
   const { stateId } = useParams();
   const [selectedDegree, setSelectedDegree] = useState<string>("all");
+  const [isAccending, setIsAccending] = useState<boolean>(true);
 
   const { data, isLoading, isFetching, error } = useGetResidenciesQuery({
     id: stateId,
@@ -30,6 +31,7 @@ export default function page() {
     page,
     searchItem,
     degree: selectedDegree !== "all" ? selectedDegree : undefined,
+    sort: isAccending ? "asc" : "desc",
   });
 
   const handleSearch = (query: string) => {
@@ -39,9 +41,9 @@ export default function page() {
     console.log(searchParams.toString());
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setPage(1);
-  },[selectedDegree, searchItem])
+  }, [selectedDegree, searchItem,limit]);
 
   return (
     <div className="xl:pl-6 space-y-6">
@@ -65,7 +67,13 @@ export default function page() {
       {isFetching || isLoading ? (
         <TableLoading />
       ) : (
-        <MedResidencyTable data={data?.data || []} />
+        <MedResidencyTable
+          data={data?.data || []}
+          filter={isAccending}
+          setFilter={setIsAccending}
+          currentPage={page}
+          limit={limit}
+        />
       )}
       <div className="flex items-center gap-4 justify-end">
         <Pagination

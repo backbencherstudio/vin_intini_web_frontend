@@ -4,7 +4,15 @@ import DynamicTable from "@/components/reusable/DynamicTable";
 import { MedicalResidencyPrograms } from "@/public/demoData/DemoData";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-export default function MedResidencyTable({ data }: { data: any[] }) {
+type Props = {
+  data: any[];
+  filter?: boolean;
+  setFilter?: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage: number;
+  limit: number;
+}
+
+export default function MedResidencyTable({ data, filter, setFilter, currentPage, limit }: Props) {
   const params = useParams();
   const stateId = params.stateId as string;
   const router = useRouter();
@@ -25,7 +33,7 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
       width: "30px",
       formatter: (accessor: string, row: any, index: number) => (
         <div className="w-full h-full text-start pl-2 text-[#0B0B0B]">
-          {index + 1}
+          {(index + 1) + (currentPage - 1) * limit}
         </div>
       ),
     },
@@ -33,6 +41,12 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
       label: "Universities",
       accessor: "program_name",
       width: "300px",
+      sortable: true,
+      sortFunction: () => {
+        if (setFilter) {
+          setFilter((prev) => !prev);
+        }
+      },
       formatter: (accessor: string, row: any) => (
         <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
           {accessor}
@@ -95,6 +109,10 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
                 router.push(`/mu/academia/${stateId}?${params.toString()}`);
             }
           },
+        }}
+        sortConfig={{
+          key: "program_name",
+          direction: filter ? "ascending" : "descending",
         }}
       />
     </div>
