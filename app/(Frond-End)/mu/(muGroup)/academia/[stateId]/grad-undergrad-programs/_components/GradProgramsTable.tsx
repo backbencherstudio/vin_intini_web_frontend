@@ -36,9 +36,9 @@ export default function GradprogramsTable({ data }: PropType) {
     {
       label: "Universities",
       accessor: "name",
-      width: "300px",
+      width: "250px",
       formatter: (accessor: string, row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-start pl-2 pr-2 py-3 text-[#0B0B0B]">
           {accessor}
         </div>
       ),

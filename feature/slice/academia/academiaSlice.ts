@@ -21,8 +21,8 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
       }),
     }),
     getResidencies: builder.query({
-      query: ({id,limit,page, searchItem}) => ({
-        url: `/states/${id}/residencies?limit=${limit}&page=${page}&search=${searchItem}`,
+      query: ({id,limit,page, searchItem, degree}) => ({
+        url: `/states/${id}/residencies?limit=${limit}&page=${page}&search=${searchItem}${degree ? `&degree=${degree}` : ''}`,
         method: "GET",
       }),
     }),

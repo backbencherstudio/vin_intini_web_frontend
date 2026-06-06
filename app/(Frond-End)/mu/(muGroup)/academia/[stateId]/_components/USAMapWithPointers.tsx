@@ -261,6 +261,7 @@ const USAMapWithPointers = ({
             >
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
+                type="residency"
                   name={residency.program_name}
                   address={residency.location}
                   website={residency.website}

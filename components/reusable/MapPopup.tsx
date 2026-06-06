@@ -3,6 +3,7 @@ import React from "react";
 import { FaGlobeAmericas } from "react-icons/fa";
 
 type MapPopupProps = {
+  type?: "hospital" | "university" | "residency";
   name: string;
   psychologyDegrees?: string[];
   counselingDegrees?: string[];
@@ -14,6 +15,7 @@ type MapPopupProps = {
 };
 
 const MapPopup = ({
+  type,
   name,
   psychologyDegrees,
   counselingDegrees,
@@ -67,7 +69,7 @@ const MapPopup = ({
             )}
             {degree && degree.length > 0 && (
               <h3 className="text-blackColor font-medium text-[11px]">
-                {degree.join(", ")} in {degree[0]}
+                {degree.join(", ")} { type !== "residency" ? "in " + degree[0] : "" }
               </h3>
             )}
           </div>

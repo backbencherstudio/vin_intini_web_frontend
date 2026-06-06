@@ -57,6 +57,10 @@ export default function page() {
         console.log(searchParams.toString());
     };
 
+    useEffect(()=>{
+        setPage(1);
+    },[selectedDegree, searchItem])
+
     return (
         <div className="xl:pl-6 space-y-6">
             <AcademiHeader
@@ -80,7 +84,10 @@ export default function page() {
                 />
                 <Select
                     value={limit.toString()}
-                    onValueChange={(value) => setLimit(Number(value))}
+                    onValueChange={(value) => {
+                        setLimit(Number(value));
+                        setPage(1);
+                    }}
                 >
                     <SelectTrigger className="bg-white min-w-20 focus-visible:border-[#A5A5AB] focus-visible:ring-0">
                         <SelectValue placeholder="Select limit" />
