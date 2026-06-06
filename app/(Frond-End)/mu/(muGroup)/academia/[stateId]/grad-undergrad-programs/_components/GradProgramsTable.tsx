@@ -6,9 +6,13 @@ import { useEffect } from "react";
 
 type PropType = {
   data: any[];
+  filter?: boolean;
+  setFilter?: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage: number;
+  limit: number;
 };
 
-export default function GradprogramsTable({ data }: PropType) {
+export default function GradprogramsTable({ data, filter, setFilter, currentPage = 1, limit = 10 }: PropType) {
   const params = useParams();
   const stateId = params.stateId as string;
   const router = useRouter();
@@ -29,7 +33,7 @@ export default function GradprogramsTable({ data }: PropType) {
       width: "30px",
       formatter: (accessor: string, row: any, index: number) => (
         <div className="w-full h-full text-start pl-2 text-[#0B0B0B]">
-          {index + 1}
+          {(index + 1) + (currentPage - 1) * limit}
         </div>
       ),
     },
@@ -37,6 +41,12 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Universities",
       accessor: "name",
       width: "250px",
+      sortable: true,
+      sortFunction: () => {
+        if (setFilter) {
+          setFilter((prev) => !prev);
+        }
+      },
       formatter: (accessor: string, row: any) => (
         <div className="w-full h-full text-start pl-2 pr-2 py-3 text-[#0B0B0B]">
           {accessor}
@@ -47,8 +57,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Psychology Degrees",
       accessor: "psychology_degrees",
       width: "170px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -57,8 +68,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Counseling Degrees",
       accessor: "counseling_degrees",
       width: "190px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -67,8 +79,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Neuroscience Degrees",
       accessor: "neuroscience_degrees",
       width: "190px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -105,6 +118,10 @@ export default function GradprogramsTable({ data }: PropType) {
 
             router.push(`/mu/academia/${stateId}?${params.toString()}`);
           },
+        }}
+        sortConfig={{
+          key: "name",
+          direction: filter ? "ascending" : "descending",
         }}
       />
     </div>

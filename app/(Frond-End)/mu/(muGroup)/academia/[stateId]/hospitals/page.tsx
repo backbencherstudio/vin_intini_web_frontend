@@ -33,12 +33,17 @@ export default function page() {
     const { stateId } = useParams();
     const [limit, setLimit] = useState<number>(10);
     const [page, setPage] = useState<number>(1);
+    const [isAccending, setIsAccending] = useState<boolean>(true);
 
-    const { data, isLoading,isFetching,error } = useGetHospitalsQuery({ id: stateId, type: activeTab, limit, page });
+    const { data, isLoading,isFetching,error } = useGetHospitalsQuery({ id: stateId, type: activeTab, limit, page, sort: isAccending ? "asc" : "desc" });
 
     const handleTabChange = (tabValue: string) => {
         setActiveTab(tabValue);
     }
+
+    useEffect(()=>{
+        setPage(1);
+    },[activeTab, limit])
 
     return (
         <div className="xl:pl-6 space-y-6">
@@ -65,9 +70,9 @@ export default function page() {
                 <HospitalLoading />
             ) : (
                 <div className="grid grid-cols-1 gap-6">
-                    {activeTab === "state_institution" && <StateInstitutionTable data={data?.data || []} />}
-                    {activeTab === "university_hospital" && <HospitalTable data={data?.data || []} />}
-                    {activeTab === "va_facility" && <ResidencyTable data={data?.data || []} />}
+                    {activeTab === "state_institution" && <StateInstitutionTable data={data?.data || []} filter={isAccending} setFilter={setIsAccending} currentPage={page} limit={limit} />}
+                    {activeTab === "university_hospital" && <HospitalTable data={data?.data || []} filter={isAccending} setFilter={setIsAccending} currentPage={page} limit={limit} />}
+                    {activeTab === "va_facility" && <ResidencyTable data={data?.data || []} filter={isAccending} setFilter={setIsAccending} currentPage={page} limit={limit} />}
                 </div>
             )}
             <div className="flex items-center gap-4 justify-end">
