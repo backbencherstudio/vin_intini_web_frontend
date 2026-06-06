@@ -10,6 +10,7 @@ import {
  
 interface ColumnConfig {
   label: React.ReactNode;
+  position?: "justify-center" | "justify-start" | "justify-end" | string;
   width: any;
   accessor: string;
   sortable?: boolean;
@@ -106,7 +107,7 @@ export default function DynamicTable({
                   // }
                   >
                     <div
-                      className={`flex gap-1 ${header?.position} ${col.sortable ? "cursor-pointer" : ""} ${index === 0 ? "rounded-tl-lg" : ""} ${index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
+                      className={`flex gap-1 ${col?.position} ${col.sortable ? "cursor-pointer" : ""} ${index === 0 ? "rounded-tl-lg" : ""} ${index === columns.length - 1 ? "rounded-tr-lg" : ""}`}
                       style={{ background: header?.bg, padding: header?.padding,color: header?.text, fontWeight: header?.fontWeight, fontSize: header?.fontSize }}
                     >
                       {col.label}

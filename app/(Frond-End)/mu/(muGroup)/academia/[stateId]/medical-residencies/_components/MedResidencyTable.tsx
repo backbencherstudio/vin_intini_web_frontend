@@ -43,8 +43,9 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
       label: "Degrees",
       accessor: "degree_types",
       width: "170px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -53,8 +54,9 @@ export default function MedResidencyTable({ data }: { data: any[] }) {
       label: "Location",
       accessor: "location",
       width: "170px",
+      position: "justify-center",
       formatter: (accessor: string, row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B] whitespace-nowrap">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B] whitespace-nowrap">
           {accessor}
         </div>
       ),

@@ -47,8 +47,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Psychology Degrees",
       accessor: "psychology_degrees",
       width: "170px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -57,8 +58,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Counseling Degrees",
       accessor: "counseling_degrees",
       width: "190px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
@@ -67,8 +69,9 @@ export default function GradprogramsTable({ data }: PropType) {
       label: "Neuroscience Degrees",
       accessor: "neuroscience_degrees",
       width: "190px",
+      position: "justify-center",
       formatter: (accessor: string[], row: any) => (
-        <div className="w-full h-full text-start pl-2 py-3 text-[#0B0B0B]">
+        <div className="w-full h-full text-center pl-2 py-3 text-[#0B0B0B]">
           {accessor?.join(", ") || "--"}
         </div>
       ),
