@@ -61,9 +61,9 @@ export const LabInfrastructureGrid = () => {
   };
 
   return (
-    <div className="flex w-full flex-col items-start gap-4">
+    <div className="flex w-full flex-col items-stretch gap-4">
       {/* Filter Tabs */}
-      <div className="flex w-full items-center">
+      <div className="w-full min-w-0">
         <LabInfrastructureFilterTabs
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}

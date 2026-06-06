@@ -1,8 +1,5 @@
 // app/(Frond-End)/mu/(muGroup)/neuroscience-network/industry/biotechnology/page.tsx
 
-"use client";
-
-import { useState } from "react";
 import { IndustryHeader } from "../_components";
 import { AssessmentGrid } from "./_components/";
 import {
@@ -17,20 +14,19 @@ import {
 } from "./_mock/biotechnologyData";
 
 export default function BiotechnologyPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   return (
-    <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col py-8 lg:py-10">
-      <div className="flex w-full flex-1 flex-col">
+    <div className="flex w-full flex-col min-w-0">
+      <div className="flex w-full flex-1 flex-col min-w-0">
+        {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            onSearch={setSearchQuery}
             title="Biotechnology Industry"
             description="Explore the latest biotech equipment releases advancing brain health research and treatment."
           />
         </div>
 
-        <div className="flex w-full flex-col items-start gap-10 pt-6">
+        {/* Added min-w-0 to keep the Assessments inside the available width */}
+        <div className="flex lg:w-[555px] flex-col items-stretch gap-10 pt-6 min-w-0">
           <AssessmentGrid
             title="Diagnostic Imaging"
             items={diagnosticImagingCards}

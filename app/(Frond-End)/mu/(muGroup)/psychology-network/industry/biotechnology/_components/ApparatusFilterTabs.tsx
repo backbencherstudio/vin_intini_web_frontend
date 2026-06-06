@@ -17,7 +17,7 @@ export const ApparatusFilterTabs = ({
   onFilterChange,
 }: ApparatusFilterTabsProps) => {
   return (
-    <div className="w-full overflow-x-auto border-y border-[#E0E0E1] scrollbar-hide">
+    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1] scrollbar-hide">
       <div className="flex w-max">
         {apparatusFilterCategories.map((category, index) => (
           <button

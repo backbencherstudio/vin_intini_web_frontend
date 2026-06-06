@@ -14,7 +14,7 @@ export const FilterTabs = ({
   onFilterChange,
 }: FilterTabsProps) => {
   return (
-    <div className="w-full overflow-x-auto border-y border-[#E0E0E1]">
+    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1]">
       <div className="flex w-max">
         {filterCategories.map((category, index) => (
           <button

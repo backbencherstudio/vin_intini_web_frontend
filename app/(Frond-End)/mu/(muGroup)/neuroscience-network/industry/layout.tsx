@@ -13,7 +13,7 @@ export default function IndustryLayout({
       <div className="flex w-full flex-col gap-6 pt-6 lg:hidden">
         <PartnersSidebar />
         <IndustrySidebar />
-        <div className="w-full">{children}</div>
+        <div className="w-full min-w-0">{children}</div>
       </div>
 
       {/* Desktop Layout - ADD items-stretch */}
