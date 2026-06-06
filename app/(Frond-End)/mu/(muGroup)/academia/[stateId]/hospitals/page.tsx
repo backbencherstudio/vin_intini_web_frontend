@@ -23,7 +23,7 @@ import { useParams } from "next/navigation";
 const tabs = [
     { label: "University Hospitals", value: "university_hospital" },
     { label: "State Institutions", value: "state_institution" },
-    { label: "Residential Treatment Facilities", value: "va_facility" },
+    { label: "Vererans Affairs (VA) Facilities", value: "va_facility" },
 ]
 
 export default function page() {
