@@ -40,7 +40,7 @@ export default function HospitalTable({ data, filter, setFilter, currentPage, li
       ),
     },
     {
-      label: "Hospitals",
+      label: "University Hospitals",
       accessor: "name",
       width: "300px",
       sortable: true,
