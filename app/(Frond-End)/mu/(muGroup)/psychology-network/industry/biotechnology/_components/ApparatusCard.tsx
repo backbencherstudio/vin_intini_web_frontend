@@ -6,9 +6,10 @@ import { ApparatusCard as ApparatusCardType } from "../_mock/biotechnologyData";
 
 interface ApparatusCardProps {
   card: ApparatusCardType;
+  priority?: boolean;
 }
 
-export const ApparatusCard = ({ card }: ApparatusCardProps) => {
+export const ApparatusCard = ({ card, priority = false }: ApparatusCardProps) => {
   return (
     <div className="flex w-full  flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px">
       {/* Image */}
@@ -20,6 +21,8 @@ export const ApparatusCard = ({ card }: ApparatusCardProps) => {
           height={300}
           className="h-full w-full object-cover"
           unoptimized
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
         />
       </div>
 

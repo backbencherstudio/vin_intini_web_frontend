@@ -19,10 +19,10 @@ export interface CareerSection {
 export const careersData: CareerSection[] = [
   {
     id: "1",
-    category: "Bachelor's Degree",
+    category: "Undergraduate Degree",
     titleParts: [
-      { text: "Bachelor's Degree", isHighlighted: true },
-      { text: " (BS, BA, Sc.B., A.B.)", isHighlighted: false },
+      { text: "Undergraduate Degree", isHighlighted: true },
+      { text: " (BS, BA, Sc.B., A.B., and BAS)", isHighlighted: false },
     ],
     subSections: [
       {
@@ -54,10 +54,13 @@ export const careersData: CareerSection[] = [
   },
   {
     id: "2",
-    category: "Master's Degree",
+    category: "Graduate Degree",
     titleParts: [
-      { text: "Master's Degree", isHighlighted: true },
-      { text: " (MS, MA, M.Ed., and MRes)", isHighlighted: false },
+      { text: "Graduate Degree", isHighlighted: true },
+      {
+        text: " (MS, MA, MRes, M.Ed., MSEd, MSP, MASS and EdS)",
+        isHighlighted: false,
+      },
     ],
     subSections: [
       {
@@ -69,7 +72,7 @@ export const careersData: CareerSection[] = [
           "Neuroimaging Analyst",
           "Neuroinformatics Specialist",
           "Speech-Language Pathologist/Audiologist",
-          "Physician Assist",
+          "Physician Assistant",
           "Genetic Counselor",
           "Occupational or Physical Therapist",
         ],

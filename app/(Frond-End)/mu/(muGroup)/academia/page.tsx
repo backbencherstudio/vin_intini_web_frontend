@@ -34,7 +34,7 @@ export default function page() {
       }}
     >
       <p className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-semibold leading-[130%] text-headerColor text-center">
-        Select a state
+        Select a State
       </p>
       <UsaMapIcon className="w-full" data={data?.data} redirect={redirect} />
     </div>

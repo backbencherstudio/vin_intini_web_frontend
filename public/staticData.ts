@@ -285,7 +285,7 @@ export const usaStateKeyToNameMap: Record<string, string> = {
   NH: "New Hampshire",
   NJ: "New Jersey",
   NM: "New Mexico",
-  NY: "New York",
+  NY: "new york state",
   NC: "North Carolina",
   ND: "North Dakota",
   OH: "Ohio",
@@ -304,6 +304,7 @@ export const usaStateKeyToNameMap: Record<string, string> = {
   WV: "West Virginia",
   WI: "Wisconsin",
   WY: "Wyoming",
+  WADC: "Washington DC",
 };
 
 export const Limits = [10, 25, 50, 100];

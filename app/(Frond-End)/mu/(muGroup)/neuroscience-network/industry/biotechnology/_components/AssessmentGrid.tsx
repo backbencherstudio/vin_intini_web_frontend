@@ -24,17 +24,13 @@ export const AssessmentGrid = ({
 }: AssessmentGridProps) => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
-    setIsMounted(true);
     const updateItemsPerPage = () => {
-      if (window.innerWidth >= 1024 && window.innerWidth < 1280) {
-        setItemsPerPage(2);
-      } else {
-        setItemsPerPage(4);
-      }
+      setItemsPerPage(
+        window.innerWidth >= 1024 && window.innerWidth < 1280 ? 2 : 4
+      );
     };
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
@@ -47,12 +43,9 @@ export const AssessmentGrid = ({
   }, [items, activeFilter]);
 
   const paginatedCards = useMemo(() => {
-    if (!isMounted) {
-      return filteredCards.slice(0, 4);
-    }
     const end = (currentPage + 1) * itemsPerPage;
     return filteredCards.slice(0, end);
-  }, [filteredCards, currentPage, itemsPerPage, isMounted]);
+  }, [filteredCards, currentPage, itemsPerPage]);
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
@@ -74,7 +67,7 @@ export const AssessmentGrid = ({
   };
 
   return (
-    <div className="flex w-full flex-col items-start gap-6">
+    <div className="flex w-full flex-col items-stretch gap-6 min-w-0">
       {/* Optional Section Title */}
       {title && (
         <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
@@ -83,7 +76,7 @@ export const AssessmentGrid = ({
       )}
 
       {/* Filter Tabs */}
-      <div className="flex w-full items-center">
+      <div className="w-full min-w-0">
         <AssessmentFilterTabs
           categories={filterCategories}
           activeFilter={activeFilter}
@@ -117,19 +110,18 @@ export const AssessmentGrid = ({
       </div>
 
       {/* Load More Button (Mobile) */}
-      {isMounted && filteredCards.length > itemsPerPage &&
-        (currentPage + 1) * itemsPerPage < filteredCards.length && (
-          <div className="flex w-full items-center justify-center">
-            <button
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="flex items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 xl:hidden"
-            >
-              <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-                Load more
-              </span>
-            </button>
-          </div>
-        )}
+      {filteredCards.length > (currentPage + 1) * itemsPerPage && (
+        <div className="flex w-full items-center justify-center">
+          <button
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            className="flex items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 xl:hidden"
+          >
+            <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
+              Load more
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

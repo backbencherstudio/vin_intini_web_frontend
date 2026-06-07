@@ -9,18 +9,22 @@ import GoogleMap from "./GoogleMap";
 import { useGetAcademiaByStateQuery } from "@/feature/slice/academia/academiaSlice";
 import { Activity } from "react";
 import MapPopup from "@/components/reusable/MapPopup";
+import {useSearchParams} from "next/navigation";
 
 type PropType = {
     id: string;
 }
 
 const GOOGLE_MAP_ZOOM_LEVEL = {
-    "NY": 10,
+    "NY": 6,
     "DE": 8,
-    "MS": 7
+    "MS": 7,
+    "WADC": 12,
 };
 
 export default function StateDetails({ id }: PropType) {
+    const searchParams = useSearchParams();
+    const locationQuery = searchParams.get("location");
     const { setStateCode } = useAcademiaContext();
     const [isLoading, setIsLoading] = useState(true);
     const { data, isLoading: isAcademiaLoading } = useGetAcademiaByStateQuery(id);
@@ -49,6 +53,7 @@ export default function StateDetails({ id }: PropType) {
                 zoomLevel={GOOGLE_MAP_ZOOM_LEVEL[id] || 6}
                 onFinishZoom={()=>setIsLoading(false)}
                 data={data?.data || []}
+                location={locationQuery ? locationQuery.split(",").map(Number) : undefined}
             />
             {/* <GoogleMap /> */}
         </div>

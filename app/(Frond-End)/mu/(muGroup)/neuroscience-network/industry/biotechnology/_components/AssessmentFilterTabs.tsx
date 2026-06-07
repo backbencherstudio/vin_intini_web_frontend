@@ -18,7 +18,7 @@ export const AssessmentFilterTabs = ({
   onFilterChange,
 }: AssessmentFilterTabsProps) => {
   return (
-    <div className="w-full overflow-x-auto border-y border-[#E0E0E1] scrollbar-hide">
+    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1] scrollbar-hide">
       <div className="flex w-max">
         {categories.map((category) => (
           <button
