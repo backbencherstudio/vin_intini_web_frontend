@@ -34,7 +34,6 @@ function PostAction({ post, meta }: PostCardProps) {
     can_edit,
     media,
     can_delete,
-    is_connected,
     relationship_status,
     user,
   } = post || {};

@@ -86,6 +86,7 @@ export default function MainNavbar() {
       ],
     },
     { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
+    { label: "Contact Us", slug: "/mu/contact-us", icon: JobsIcon },
   ];
 
   const isActive = (href: string): boolean => {
