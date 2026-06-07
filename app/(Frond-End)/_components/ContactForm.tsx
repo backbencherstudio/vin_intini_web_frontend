@@ -3,8 +3,8 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useContactSubmitMutation } from "@/feature/slice/auth/authSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -19,18 +19,15 @@ type FormValues = {
 };
 
 export default function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const { data } = useGetUserProfileQuery("profile");
+  const [contactSubmit, { isLoading }] = useContactSubmitMutation();
 
-  console.log(data, "data");
   const userFullName = data?.user?.first_name + " " + data?.user?.last_name;
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
-    watch,
+
     reset,
   } = useForm<FormValues>({
     defaultValues: {
@@ -44,28 +41,23 @@ export default function ContactForm() {
     },
   });
   const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
     const formData = {
-      full_name: data.fullName,
-      phone_number: data.phone,
+      name: data.fullName,
+      phone: data.phone,
       email: data.email,
-      topic: data.topic,
+      address: data.address,
+      subject: data.subject,
       message: data.message,
     };
     try {
-      let response;
-      if (response?.data?.success) {
-        toast.success(response?.data?.message);
-        reset();
-      } else {
-        toast.error(response?.data?.message);
-      }
-      setIsSuccess(true);
-      setTimeout(() => setIsSuccess(false), 3000);
+      let response = await contactSubmit({ payload: formData }).unwrap();
+      console.log(response, "message");
+
+      toast.success(response?.message || "Message sent successfully");
+      reset();
     } catch (error) {
       console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
+      toast.error(error?.data?.message || "Failed to send message");
     }
   };
 
@@ -87,7 +79,7 @@ export default function ContactForm() {
               id="fullName"
               placeholder="Enter your full name"
               {...register("fullName", { required: "Full name is required" })}
-              className={`w-full py-6 ${errors.fullName ? "border-redtext-redColor" : ""}`}
+              className={`w-full py-6 ${errors.fullName ? "border-redColor text-redColor py-6 " : ""}`}
             />
             {errors.fullName && (
               <p className="text-redColor text-xs mt-1">
@@ -103,7 +95,7 @@ export default function ContactForm() {
               id="phone"
               placeholder="+1 0000 000 000"
               {...register("phone", { required: "Phone number is required" })}
-              className={`w-full py-6${errors.phone ? "border-redtext-redColor" : ""}`}
+              className={`w-full py-6 ${errors.phone ? "border-redColor text-redColor" : ""}`}
             />
             {errors.phone && (
               <p className="text-redColor text-xs mt-1">
@@ -128,7 +120,7 @@ export default function ContactForm() {
                   message: "Invalid email address",
                 },
               })}
-              className={`w-full  py-6${errors.email ? "border-redtext-redColor" : ""}`}
+              className={`w-full  py-6 ${errors.email ? "border-redColor text-redColor" : ""}`}
             />
             {errors.email && (
               <p className="text-redColor text-xs mt-1">
@@ -147,7 +139,7 @@ export default function ContactForm() {
               {...register("address", {
                 required: "Address is required",
               })}
-              className={`w-full  py-6${errors.address ? "border-redtext-redColor" : ""}`}
+              className={`w-full  py-6 ${errors.address ? "border-redColor text-redColor" : ""}`}
             />
             {errors.address && (
               <p className="text-redColor text-xs mt-1">
@@ -167,7 +159,7 @@ export default function ContactForm() {
             {...register("subject", {
               required: "Subject is required",
             })}
-            className={`w-full  py-6${errors.subject ? "border-redtext-redColor" : ""}`}
+            className={`w-full  py-6 ${errors.subject ? "border-red text-redColor" : ""}`}
           />
           {errors.subject && (
             <p className="text-redColor text-xs mt-1">
@@ -184,7 +176,7 @@ export default function ContactForm() {
             rows={5}
             placeholder="Your message here..."
             {...register("message", { required: "Message is required" })}
-            className={`w-full h-37 ${errors.message ? "border-redtext-redColor" : ""}`}
+            className={`w-full h-37 ${errors.message ? "border-redColor text-redColor" : ""}`}
           />
           {errors.message && (
             <p className="text-redColor text-xs mt-1">
@@ -196,7 +188,7 @@ export default function ContactForm() {
         <ButtonReuseable
           type="submit"
           className="w-full cursor-pointer bg-primaryColor text-base   text-white py-6 rounded"
-          disabled={isSubmitting}
+          disabled={isLoading}
           title="Send Message"
           sendingMsg="Sending..."
         />

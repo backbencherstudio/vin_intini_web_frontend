@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import SocialShare from "@/components/reusable/SocialShare";
 import { IoMailSharp } from "react-icons/io5";
 import { MdCall } from "react-icons/md";
 
@@ -14,38 +14,20 @@ function ContactInfo() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className=" p-2 bg-white rounded-full">
-                <IoMailSharp className=" text-secondaryColor" />
+                <IoMailSharp className=" text-primaryColor" />
               </div>
-              <span className="text-gray-600">elisabeth_sarah@gmail.com</span>
+              <span className="text-gray-600">mindunite@gmail.com</span>
             </div>
             <div className="flex items-center gap-3">
               <div className=" p-2 bg-white rounded-full">
-                <MdCall size={18} className="  text-secondaryColor " />
+                <MdCall size={18} className="  text-primaryColor" />
               </div>
               <span className="text-gray-600">+6726 664 074</span>
             </div>
           </div>
         </div>
-
-        <div className="mt-8 flex gap-3">
-          <a
-            href="#"
-            className="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-white"
-          >
-            <Facebook size={18} />
-          </a>
-          <a
-            href="#"
-            className="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-white"
-          >
-            <Instagram size={18} />
-          </a>
-          <a
-            href="#"
-            className="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-white"
-          >
-            <Twitter size={18} />
-          </a>
+        <div className="mt-4">
+          <SocialShare />
         </div>
       </div>
     </div>

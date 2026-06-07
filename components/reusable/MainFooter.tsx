@@ -1,37 +1,12 @@
 import balckImage from "@/public/black_Logo.png";
-import {
-  FaceBookIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-} from "@/public/svgIcons/Icons";
+
 import Image from "next/image";
 import Link from "next/link";
+import SocialShare from "./SocialShare";
 
 function MainFooter() {
   const year = new Date().getFullYear();
-  const socialLinks = [
-    // {
-    //   href: "#",
-    //   label: "Facebook",
-    //   icon: <FaceBookIcon className="h-4 w-4" />,
-    // },
-    {
-      href: "https://www.instagram.com/mindunitellc",
-      label: "Instagram",
-      icon: <InstagramIcon className="h-4 w-4" />,
-    },
-    {
-      href: "https://www.linkedin.com/company/mind-unite",
-      label: "LinkedIn",
-      icon: <LinkedInIcon className="h-4 w-4" />,
-    },
-    {
-      href: "#",
-      label: "X",
-      icon: <TwitterIcon className="h-4 w-4" />,
-    },
-  ];
+
   return (
     <footer className="  border-t border-[#DFE1E7] bg-whiteColor py-10">
       <div className="container py-5 sm:py-6">
@@ -63,19 +38,7 @@ function MainFooter() {
               <p className="mb-3 text-[14px] md:text-base font-medium text-primaryColor">
                 Communicate. Collaborate. Connect.
               </p>
-              <div className="flex items-center gap-2 text-primaryColor">
-                {socialLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    aria-label={link.label}
-                    target="_blank"
-                    className=" rounded-full p-2 hover:bg-lightGreenColor/60 transition-all duration-200 hover:shadow-md shadow-lightGreenColor"
-                  >
-                    {link.icon}
-                  </Link>
-                ))}
-              </div>
+              <SocialShare/>
             </div>
 
             <p className="text-right text-sm text-[#A5A5AB]">
