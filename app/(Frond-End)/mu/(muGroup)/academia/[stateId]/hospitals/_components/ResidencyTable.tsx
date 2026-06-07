@@ -39,7 +39,7 @@ export default function ResidencyTable({ data, filter, setFilter, currentPage, l
       ),
     },
     {
-      label: "Residency",
+      label: "Veterans Affairs (VA) Facilities",
       accessor: "name",
       width: "300px",
       sortable: true,
