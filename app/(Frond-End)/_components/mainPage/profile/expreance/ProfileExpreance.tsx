@@ -16,6 +16,7 @@ function ProfileExpreance({ userId }: { userId?: string }) {
     ? useGetExperienceListByIdQuery(userId)
     : useGetExperienceQuery("experience");
   const profileData = data?.data || [];
+  console.log(data?.is_own_experience, "check experience own");
 
   return (
     <section className=" pb-4">
@@ -99,17 +100,22 @@ function ProfileExpreance({ userId }: { userId?: string }) {
             <h4 className="text-lg font-semibold text-headerColor mb-2">
               No experience added yet
             </h4>
-            <p className="text-sm text-grayColor1">
-              Start building your profile by adding your work experience.
-            </p>
-            <button
-              type="button"
-              onClick={() => setIsAddOpen(true)}
-              className={`${BUTTON_STYLES.primary} flex items-center justify-center gap-1 py-2! mt-3 text-sm! px-3! `}
-            >
-              <Plus className="h-4 w-4" />
-              Add Experience
-            </button>
+
+            {data?.is_own_experience && (
+              <>
+                <p className="text-sm text-grayColor1">
+                  Start building your profile by adding your work experience.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsAddOpen(true)}
+                  className={`${BUTTON_STYLES.primary} flex items-center justify-center gap-1 py-2! mt-3 text-sm! px-3! `}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Experience
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

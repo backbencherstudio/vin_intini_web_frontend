@@ -34,8 +34,14 @@ export function normalizeSkillsList(skills?: unknown): string[] {
     const now = dayjs();
     const diffDays = now.diff(postDate, "day");
 
-    if (diffDays >= 7) {
-      return postDate.format("YYYY-MM-DD HH:mm:ss");
+    if (diffDays >= 365) {
+      const years = now.diff(postDate, "year");
+      return years === 1 ? "1 year ago" : `${years} years ago`;
+    }
+
+    if (diffDays >= 30) {
+      const months = now.diff(postDate, "month");
+      return months === 1 ? "1 month ago" : `${months} months ago`;
     }
 
     return postDate.fromNow();

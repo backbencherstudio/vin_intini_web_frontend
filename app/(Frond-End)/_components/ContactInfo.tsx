@@ -1,0 +1,37 @@
+import SocialShare from "@/components/reusable/SocialShare";
+import { IoMailSharp } from "react-icons/io5";
+import { MdCall } from "react-icons/md";
+
+function ContactInfo() {
+  return (
+    <div>
+      <div className="w-full   p-8 flex flex-col justify-between">
+        <div>
+          <h2 className="text-3xl lg:text-5xl font-semibold mb-8">
+            Get in Touch
+          </h2>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className=" p-2 bg-white rounded-full">
+                <IoMailSharp className=" text-primaryColor" />
+              </div>
+              <span className="text-gray-600">mindunite@gmail.com</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className=" p-2 bg-white rounded-full">
+                <MdCall size={18} className="  text-primaryColor" />
+              </div>
+              <span className="text-gray-600">+6726 664 074</span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-4">
+          <SocialShare />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ContactInfo;

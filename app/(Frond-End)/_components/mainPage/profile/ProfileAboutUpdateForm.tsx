@@ -65,7 +65,7 @@ function ProfileAboutUpdateForm({
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <ReusableTextarea
             label="About"
-            placeholder="What is the purpose of the group?"
+            placeholder="Tell us about yourself..."
             maxLength={2500}
             {...register("about")}
             className="min-h-48 w-full rounded-lg border border-borderColor bg-white px-3 py-2 text-base text-descriptionColor outline-none transition focus:ring-2! focus:ring-primaryColor/20!"
