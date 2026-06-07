@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
 import {
   ClinicalIcon,
+  ContactUsIcon,
   GlobalIcon,
   HomeIcon,
   JobsIcon,
@@ -86,7 +87,7 @@ export default function MainNavbar() {
       ],
     },
     { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
-    { label: "Contact Us", slug: "/mu/contact-us", icon: JobsIcon },
+    { label: "Contact Us", slug: "/mu/contact-us", icon: ContactUsIcon },
   ];
 
   const isActive = (href: string): boolean => {

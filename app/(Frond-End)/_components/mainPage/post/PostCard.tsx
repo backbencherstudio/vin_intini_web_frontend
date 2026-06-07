@@ -18,7 +18,7 @@ type PostCardProps = {
 };
 
 function PostCard({ post, meta }: PostCardProps) {
-  const { user, media, is_connected, group } = post || {};
+  const { user, media, group } = post || {};
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
@@ -38,7 +38,6 @@ function PostCard({ post, meta }: PostCardProps) {
   const handleLikeClick = async () => {
     const newLikedStatus = !isLiked;
     setIsLiked(newLikedStatus);
-
     try {
       await postToggleLike({
         postId: post?.id ?? "",
