@@ -62,8 +62,6 @@ export default function ContactForm() {
     };
     try {
       let response = await contactSubmit({ payload: formData }).unwrap();
-      console.log(response, "message");
-
       toast.success(response?.message || "Message sent successfully");
       reset();
     } catch (error) {
