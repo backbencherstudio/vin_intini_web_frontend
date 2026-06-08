@@ -1,6 +1,5 @@
 import SocialShare from "@/components/reusable/SocialShare";
 import { IoMailSharp } from "react-icons/io5";
-import { MdCall } from "react-icons/md";
 
 function ContactInfo() {
   return (
@@ -16,14 +15,14 @@ function ContactInfo() {
               <div className=" p-2 bg-white rounded-full">
                 <IoMailSharp className=" text-primaryColor" />
               </div>
-              <span className="text-gray-600">mindunite@gmail.com</span>
+              <span className="text-gray-600">contact@mindunite.com</span>
             </div>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className=" p-2 bg-white rounded-full">
                 <MdCall size={18} className="  text-primaryColor" />
               </div>
               <span className="text-gray-600">+6726 664 074</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="mt-4">
