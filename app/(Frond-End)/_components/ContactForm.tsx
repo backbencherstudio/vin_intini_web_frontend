@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useContactSubmitMutation } from "@/feature/slice/auth/authSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -22,7 +23,7 @@ export default function ContactForm() {
   const { data } = useGetUserProfileQuery("profile");
   const [contactSubmit, { isLoading }] = useContactSubmitMutation();
 
-  const userFullName = data?.user?.first_name + " " + data?.user?.last_name;
+  const userFullName = (data?.user?.first_name  || "") + (data?.user?.last_name  ? " " + data?.user?.last_name  : "");
   const {
     register,
     handleSubmit,
@@ -40,6 +41,16 @@ export default function ContactForm() {
       subject: "",
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        fullName: userFullName || "",
+        email: data?.user?.email || "",
+      });
+    }
+  }, [data, reset]);
+
   const onSubmit = async (data: FormValues) => {
     const formData = {
       name: data.fullName,
@@ -51,8 +62,6 @@ export default function ContactForm() {
     };
     try {
       let response = await contactSubmit({ payload: formData }).unwrap();
-      console.log(response, "message");
-
       toast.success(response?.message || "Message sent successfully");
       reset();
     } catch (error) {
@@ -89,19 +98,14 @@ export default function ContactForm() {
           </div>
           <div>
             <label htmlFor="phone" className="block text-base font-medium mb-1">
-              Phone <span className="text-redColor">*</span>
+              Phone
             </label>
             <Input
               id="phone"
               placeholder="+1 0000 000 000"
-              {...register("phone", { required: "Phone number is required" })}
-              className={`w-full py-6 ${errors.phone ? "border-redColor text-redColor" : ""}`}
+              {...register("phone")}
+              className={`w-full py-6`}
             />
-            {errors.phone && (
-              <p className="text-redColor text-xs mt-1">
-                {errors.phone.message}
-              </p>
-            )}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -130,27 +134,20 @@ export default function ContactForm() {
           </div>
           <div>
             <label htmlFor="email" className="block text-base font-medium mb-1">
-              Address <span className="text-redColor">*</span>
+              Address
             </label>
             <Input
               id="address"
               type="text"
               placeholder="123 Main Street, City, Country"
-              {...register("address", {
-                required: "Address is required",
-              })}
-              className={`w-full  py-6 ${errors.address ? "border-redColor text-redColor" : ""}`}
+              {...register("address")}
+              className={`w-full  py-6 `}
             />
-            {errors.address && (
-              <p className="text-redColor text-xs mt-1">
-                {errors.address.message}
-              </p>
-            )}
           </div>
         </div>
         <div>
           <label htmlFor="email" className="block text-base font-medium mb-1">
-            Subject <span className="text-grayColor1 text-sm">(Optional)</span>
+            Subject <span className="text-redColor">*</span>
           </label>
           <Input
             id="subject"
