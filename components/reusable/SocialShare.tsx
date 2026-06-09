@@ -4,6 +4,7 @@ import {
   TwitterIcon,
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
+import { TbBrandTiktok } from "react-icons/tb";
 function SocialShare() {
   const socialLinks = [
     // {
@@ -22,9 +23,14 @@ function SocialShare() {
       icon: <LinkedInIcon className="h-4 w-4" />,
     },
     {
-      href: "#",
+      href: "https://x.com/mindunitellc",
       label: "X",
       icon: <TwitterIcon className="h-4 w-4" />,
+    },
+    {
+      href: "https://x.com/mindunitellc",
+      label: "Tik Tok",
+      icon: <TbBrandTiktok className="h-5 w-5" />,
     },
   ];
   return (
