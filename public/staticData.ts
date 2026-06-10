@@ -263,7 +263,7 @@ export const usaStateKeyToNameMap: Record<string, string> = {
   CT: "Connecticut",
   DE: "Delaware",
   FL: "Florida",
-  GA: "Georgia",
+  GA: "Georgia, USA",
   HI: "Hawaii",
   ID: "Idaho",
   IL: "Illinois",
