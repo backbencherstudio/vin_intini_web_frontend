@@ -17,7 +17,7 @@ const ReusableTextarea = ({
   return (
     <div className="space-y-1.5">
       {label && (
-        <Label className="text-base text-descriptionColor font-semibold">
+        <Label className="text-base text-descriptionColor font-medium">
           {label}
         </Label>
       )}

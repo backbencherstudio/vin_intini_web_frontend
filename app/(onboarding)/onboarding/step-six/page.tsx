@@ -200,7 +200,7 @@ function page() {
               label="Title"
               required
               maxLength={120}
-              placeholder="Clinical Psychologist | Trauma Specialist | Arizona"
+              placeholder="Dean/Prof/Lab Director/Marketer | University/Lab Name/Company | State"
               {...register("title", {
                 required: "Title is required",
                 maxLength: {
@@ -208,10 +208,10 @@ function page() {
                   message: "Title cannot exceed 120 characters",
                 },
               })}
-              className="rounded-md"
+              className="rounded-md placeholder:text-[13px]"
               error={errors.title?.message}
             />
-            <p className="text-sm text-grayColor1 mt-1.5">
+            <p className="text-sm  text-grayColor1 mt-1.5">
               {titleValue.length}/120 characters
             </p>
           </div>
@@ -232,8 +232,9 @@ function page() {
                   {...field}
                   rows={5}
                   maxLength={250}
-                  placeholder="Tell us about your background, interests and profile summary."
-                  className="w-full rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none "
+                  placeholder="Tell us about your professional interests/experience in a brief
+profile summary."
+                  className="w-full placeholder:text-[13px] rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none "
                 />
               )}
             />

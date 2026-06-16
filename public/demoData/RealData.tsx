@@ -30,9 +30,9 @@ export const monthOptions = [
 const currentYear = new Date().getFullYear();
 
 export const yearOptions = Array.from(
-  { length: currentYear - 1900 + 6 },
+  { length: currentYear - 1852 + 6 },
   (_, index) => {
-    const year = currentYear + 5 - index;
+    const year = currentYear + 26 - index;
     return { value: String(year), label: String(year) };
   },
 );
