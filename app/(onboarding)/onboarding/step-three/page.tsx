@@ -6,6 +6,7 @@ import {
 } from "@/feature/slice/onboarding/onboardingSlice";
 import {
   ClinicalIcon,
+  IndustryIcon,
   LeftArrowIcon,
   ProfessionalIcon,
   ResearcherIcon,
@@ -34,26 +35,32 @@ function page() {
     {
       id: 1,
       title: "Student",
-      subtitle: "Undergrad/grad exploring psych/neuro paths, etc.",
+      subtitle: "Undergrad/Grad Student exploring PSYC/NSCI education, etc.",
       Icon: StudentIcon,
     },
     {
       id: 2,
       title: "Early-Career Professional",
-      subtitle: "Postdoc, entry-level clinician, etc.",
+      subtitle: "Postbac; Entry-level clinician, etc.",
       Icon: ProfessionalIcon,
     },
     {
       id: 3,
-      title: "Researcher/ Academic",
-      subtitle: "Professor, Lab Director, etc.",
+      title: "Academic/Researcher",
+      subtitle: "Professor; Lab Director; Postdoc; Research Assistant, etc.",
       Icon: ResearcherIcon,
     },
     {
       id: 4,
       title: "Clinical Professional",
-      subtitle: "Psychologist, Psychiatrist, Neurologist, Neurosurgeon, etc.",
+      subtitle: "Psychologist, Psychiatrist; Neurologist; Neurosurgeon; etc.",
       Icon: ClinicalIcon,
+    },
+    {
+      id: 5,
+      title: "Industry/Organization",
+      subtitle: "Biotech Co; Pharma Co; Professional Publication, etc.",
+      Icon: IndustryIcon,
     },
   ];
   const initialSelectedOptions = useMemo(() => {

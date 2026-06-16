@@ -72,10 +72,12 @@ function page() {
                     placeholder="Select Country/Region"
                     value={field.value || undefined}
                     onChange={field.onChange}
-                    options={countries.map((country) => ({
-                      value: country?.country || "",
-                      label: country?.country || "",
-                    } )) as any}
+                    options={
+                      countries.map((country) => ({
+                        value: country?.country || "",
+                        label: country?.country || "",
+                      })) as any
+                    }
                     allowCustomInput
                     className="w-full h-12! md:h-13! rounded-md"
                   />
@@ -87,7 +89,7 @@ function page() {
           <div>
             <ReusableInput
               id="postal_code"
-              label="Postal Code"
+              label="Postal/Zip Code"
               required
               type="number"
               placeholder="Enter your postal code"
