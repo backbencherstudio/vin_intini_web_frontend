@@ -17,15 +17,15 @@ function MainFooter() {
                 <Image
                   src={balckImage}
                   alt="Logo"
-                  width={256}
+                  width={296}
                   height={50}
-                  className="w-[256px] h-auto"
+                  className="w-full max-w-32.5 lg:max-w-60.5 h-auto "
                   priority
                 />
               </Link>
             </div>
 
-            <p className="max-w-81.25 text-left text-base md:text-xl lg:text-2xl leading-tight text-[#54565a]">
+            <p className="max-w-100.25 text-left text-base md:text-xl lg:text-2xl leading-tight text-[#54565a]">
               The networking platform for brain health professionals and
               students.
             </p>
@@ -38,7 +38,7 @@ function MainFooter() {
               <p className="mb-3 text-[14px] md:text-base font-medium text-primaryColor">
                 Communicate. Collaborate. Connect.
               </p>
-              <SocialShare/>
+              <SocialShare />
             </div>
 
             <p className="text-right text-sm text-[#A5A5AB]">

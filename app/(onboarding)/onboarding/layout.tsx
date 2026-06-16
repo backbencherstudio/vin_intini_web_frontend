@@ -51,7 +51,7 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div
-        className={`${currentStep == 4 || currentStep == 3 || currentStep == 7 ? "max-w-[638px]" : "max-w-[532px]"} mx-auto px-4 py-8`}
+        className={`${currentStep == 4 || currentStep == 3 || currentStep == 7 ? "max-w-159.5" : "max-w-133"} mx-auto px-4 py-8`}
       >
         <div
           className={`flex items-center ${currentStep == 1 ? "justify-end" : "justify-between"}  mb-4`}
