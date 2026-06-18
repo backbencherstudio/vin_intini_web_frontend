@@ -15,11 +15,12 @@ function AllConnectionFriendList() {
   const params = useSearchParams();
 
   const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
+  const sortQuery = params.get("sort") ?? "";
   const limit = 5;
   const [tempPage, setTempPage] = useState(1);
 
   const { data, isFetching, isError } = useGetMyConnectionsQuery({
-    query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
+    query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}${sortQuery ? `&sort=${sortQuery}` : ""}`,
   });
 
   const { page, setPage, combinedData, hasMore } = useLoadMore(
