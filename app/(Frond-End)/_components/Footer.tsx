@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FaceBookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@/public/svgIcons/Icons";
 import logo from "@/public/logo.png";
 import bgImage from "@/public/images/landingpage-footer.svg";
+import { PiTiktokLogo } from "react-icons/pi";
 
 const socialMediaLinks = [
   // {
@@ -14,17 +15,22 @@ const socialMediaLinks = [
   {
     name: "Instagram",
     url: "https://www.instagram.com/mindunitellc",
-    Icon: InstagramIcon
+    Icon: <InstagramIcon className="w-4.5 text-primaryColor"/>
   },
   {
     name: "LinkedIn",
     url: "https://www.linkedin.com/company/mind-unite",
-    Icon: LinkedInIcon
+    Icon: <LinkedInIcon className="w-4.5 text-primaryColor"/>
   },
   {
     name: "Twitter",
     url: "https://x.com/mindUnite",
-    Icon: TwitterIcon
+    Icon: <TwitterIcon className="w-4.5 text-primaryColor"/>
+  },
+  {
+    name: "TikTok",
+    url: "https://www.tiktok.com/@mindunite",
+    Icon: <PiTiktokLogo className="text-2xl text-primaryColor"/>
   }
 ]
 
@@ -50,7 +56,7 @@ export default function Footer() {
             height={100}
             className=""
           />
-          <p className="text-center sm:text-start sm:pt-4 text-[#404040] text-lg lg:text-xl 2xl:text-2xl font-light leading-[130%] tracking-[0.12px] sm:max-w-[311px]">The networking platform for brain health professionals and students.</p>
+          <p className="text-center sm:text-start sm:pt-4 text-[#404040] text-lg lg:text-xl 2xl:text-2xl font-light leading-[130%] tracking-[0.12px] sm:max-w-77.75">The networking platform for brain health professionals and students.</p>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center sm:items-start">
@@ -61,7 +67,7 @@ export default function Footer() {
                 return (
                   <li>
                     <Link href={url} target="_blank" className="p-2 block">
-                      <Icon className="w-4.5 text-primaryColor" />
+                      {Icon}
                     </Link>
                   </li>
                 )
