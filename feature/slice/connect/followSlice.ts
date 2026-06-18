@@ -27,7 +27,7 @@ const followSlice = baseApiSlice.injectEndpoints({
     }),
     unfollowUser: builder.mutation({
       query: ({ userId }) => ({
-        url: `/connections/${userId}/unfollow/`,
+        url: `/connections/${userId}/unfollow`,
         method: "DELETE",
       }),
       invalidatesTags: ["follow"],

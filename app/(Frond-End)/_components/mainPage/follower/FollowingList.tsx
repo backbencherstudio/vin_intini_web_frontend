@@ -3,7 +3,7 @@ import ConnectionRequestSkleton from "@/components/reusable/All Skleton/Connecti
 import Error from "@/components/reusable/Error";
 
 import LoadMorePagination from "@/components/reusable/LoadMorePagination";
-import { useGetMyFollowingsQuery } from "@/feature/slice/connect/followSlice";
+import { useGetMyFollowersQuery, useGetMyFollowingsQuery } from "@/feature/slice/connect/followSlice";
 import { useLoadMore } from "@/hooks/useLoadMore";
 import { ConnectionRequestType } from "@/lib/type";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import ConnectionRequestCard from "../network/connectionRequests/ConnectionReque
 function FollowingList({ isNetwork }: { isNetwork?: boolean }) {
   const limit = 10;
   const [tempPage, setTempPage] = useState(1);
-  const { data, isLoading, isFetching, isError } = useGetMyFollowingsQuery({
+  const { data, isLoading, isFetching, isError } = useGetMyFollowersQuery({
     query: `?page=${tempPage}&limit=${limit}`,
   });
   const { page, setPage, combinedData, hasMore } = useLoadMore(

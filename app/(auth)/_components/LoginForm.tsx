@@ -33,14 +33,10 @@ function LoginForm() {
       const response = await login(data).unwrap();
 
       toast.success("Login successful!");
-      await setToken(response.data.token);
+      await setToken(response?.token || response.data.token);
       route.push(`/mu/home`);
-    } catch (error: any) {
-      toast.error(
-        error?.data?.message ||
-          error?.message ||
-          "Email or password is incorrect.",
-      );
+    } catch (error) {
+      toast.error(error?.data?.message || "Email or password is incorrect.");
     }
   };
 
