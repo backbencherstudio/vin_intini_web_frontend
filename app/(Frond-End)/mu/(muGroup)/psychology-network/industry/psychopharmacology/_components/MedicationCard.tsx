@@ -5,9 +5,10 @@ import { ArrowUpRight } from "lucide-react";
 
 interface MedicationCardProps {
   card: IndustryItemType;
+  priority?: boolean;
 }
 
-export const MedicationCard = ({ card }: MedicationCardProps) => {
+export const MedicationCard = ({ card, priority = false }: MedicationCardProps) => {
   return (
     <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
       <div className="flex w-full items-center justify-between">

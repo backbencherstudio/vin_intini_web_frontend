@@ -4,49 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { IndustryCategoryType } from "@/lib/type";
 import { PaginationDots } from "../../_components";
+import { FilterTabs } from "./FilterTabs";
 import { MedicationCard } from "./MedicationCard";
-
-interface FilterTabsProps {
-  activeCategoryId: number | "all";
-  onFilterChange: (id: number | "all") => void;
-  industryData: IndustryCategoryType[];
-}
-
-const FilterTabs = ({
-  activeCategoryId,
-  onFilterChange,
-  industryData,
-}: FilterTabsProps) => {
-  return (
-    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1]">
-      <div className="flex w-max">
-        <button
-          onClick={() => onFilterChange("all")}
-          className={`flex items-center justify-center gap-2.5 whitespace-nowrap px-5 py-2 font-['Segoe_UI'] text-sm font-medium transition ${
-            activeCategoryId === "all"
-              ? "bg-[#ECEFF3] text-black"
-              : "bg-white text-[#78797E] hover:bg-[#ECEFF3] hover:text-black"
-          }`}
-        >
-          All
-        </button>
-        {industryData.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => onFilterChange(category.id)}
-            className={`flex items-center justify-center gap-2.5 whitespace-nowrap px-5 py-2 font-['Segoe_UI'] text-sm font-medium transition ${
-              activeCategoryId === category.id
-                ? "bg-[#ECEFF3] text-black"
-                : "bg-white text-[#78797E] hover:bg-[#ECEFF3] hover:text-black"
-            }`}
-          >
-            {category.category_name}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 export const MedicationGrid = ({
   industryData,
@@ -116,9 +75,9 @@ export const MedicationGrid = ({
         />
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-        {paginatedItems.map((item) => (
-          <MedicationCard key={item.id} card={item} />
+      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2">
+        {paginatedItems.map((item, index) => (
+          <MedicationCard key={item.id} card={item} priority={index < 2} />
         ))}
       </div>
 
