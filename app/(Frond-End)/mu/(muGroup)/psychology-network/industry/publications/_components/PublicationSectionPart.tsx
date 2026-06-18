@@ -1,11 +1,17 @@
 "use client";
 
 import { useGetPublicationsOneQuery } from "@/feature/slice/biotechnologySlice";
+import { useGetNeurosciencePublicationsOneQuery } from "@/feature/slice/neuroscienceSlice";
 import { IndustryDataType } from "@/lib/type";
+import { usePathname } from "next/navigation";
 import { PublicationsList } from "./PublicationsList";
 
 export default function PublicationSectionPart() {
-  const { data } = useGetPublicationsOneQuery("publications");
+  const pathName = usePathname();
+  const { data } =
+    pathName === "/mu/neuroscience-network/industry/publications"
+      ? useGetNeurosciencePublicationsOneQuery("publications")
+      : useGetPublicationsOneQuery("publications");
 
   return (
     <div className="flex w-full flex-col min-w-0">

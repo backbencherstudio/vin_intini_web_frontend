@@ -26,7 +26,9 @@ export const FilterTabs = ({
         >
           All
         </button>
-        {industryData.map((category, index) => (
+        {industryData
+          .filter((cat) => cat.category_name?.toLowerCase() !== "all")
+          .map((category, index) => (
           <button
             key={category.id}
             onClick={() => onFilterChange(category.id)}
