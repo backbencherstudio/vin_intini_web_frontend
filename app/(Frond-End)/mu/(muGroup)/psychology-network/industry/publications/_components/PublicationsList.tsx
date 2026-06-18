@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { IndustryCategoryType } from "@/lib/type";
 import { PaginationDots } from "../../_components";
-import { FilterTabs } from "./FilterTabs";
 import { PublicationCard } from "./PublicationCard";
 
 export const PublicationsList = ({
@@ -12,7 +11,9 @@ export const PublicationsList = ({
 }: {
   industryData: IndustryCategoryType[];
 }) => {
-  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">("all");
+  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
+    "all",
+  );
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
 
@@ -47,9 +48,7 @@ export const PublicationsList = ({
 
   const getActiveDotIndex = () => {
     if (activeCategoryId === "all") return 0;
-    const index = industryData.findIndex(
-      (cat) => cat.id === activeCategoryId,
-    );
+    const index = industryData.findIndex((cat) => cat.id === activeCategoryId);
     return index >= 0 ? index + 1 : 0;
   };
 
@@ -67,13 +66,13 @@ export const PublicationsList = ({
 
   return (
     <div className="flex w-full flex-col items-stretch gap-4">
-      <div className="w-full min-w-0">
+      {/* <div className="w-full min-w-0">
         <FilterTabs
           activeCategoryId={activeCategoryId}
           onFilterChange={handleFilterChange}
           industryData={industryData}
         />
-      </div>
+      </div> */}
 
       <div className="flex w-full flex-col">
         {paginatedItems.length > 0 ? (

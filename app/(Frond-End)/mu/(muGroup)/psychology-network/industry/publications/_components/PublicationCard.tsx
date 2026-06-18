@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import { IndustryItemType } from "@/lib/type";
+import { ChevronRight, Dot } from "lucide-react";
+import Link from "next/link";
 
 interface PublicationCardProps {
   publication: IndustryItemType;
@@ -36,26 +37,41 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
             </span>
           )}
         </div>
-        {publication.link ? (
-          <a
-            href={publication.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-[#04A1B7] hover:underline"
-          >
-            <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-              Learn more
-            </span>
-            <ChevronRight className="h-4 w-4" />
-          </a>
-        ) : (
-          <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
-            <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-              Learn more
-            </span>
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        )}
+        <div className="flex items-center justify-between w-full gap-1">
+          <div className="flex items-center ">
+            {publication.pub_date && (
+              <p className=" font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+                {publication.pub_date}
+              </p>
+            )}
+            <Dot className="text-[#777980]" />
+            {publication.extra_tag && (
+              <span className="font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+                {publication.extra_tag}
+              </span>
+            )}
+          </div>
+          {publication.link ? (
+            <Link
+              href={publication.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-[#04A1B7] hover:underline"
+            >
+              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
+                Learn more
+              </span>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
+              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
+                Learn more
+              </span>
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -64,7 +64,10 @@ export default function MainNavbar() {
           label: "Psychology Careers",
           slug: "/mu/psychology-network/careers",
         },
-        { label: "Industry", slug: "/mu/psychology-network/industry" },
+        {
+          label: "Industry",
+          slug: "/mu/psychology-network/industry/biotechnology",
+        },
         { label: "Jobs", slug: "/mu/psychology-network/jobs" },
       ],
     },
@@ -82,7 +85,10 @@ export default function MainNavbar() {
           label: "Neuroscience Careers",
           slug: "/mu/neuroscience-network/careers",
         },
-        { label: "Industry", slug: "/mu/neuroscience-network/industry" },
+        {
+          label: "Industry",
+          slug: "/mu/neuroscience-network/industry/biotechnology",
+        },
         { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
       ],
     },
