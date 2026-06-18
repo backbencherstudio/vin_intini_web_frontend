@@ -33,7 +33,7 @@ export default function OurImpact() {
                         </div>
                     </div>
                     <div className="p-6 grid md:grid-cols-[1fr_auto] items-center gap-4 md:gap-6">
-                        <h3 className="text-blackColor text-center md:text-start text-2xl md:text-xl xl:text-2xl 2xl:text-[32px] font-semibold leading-[130%]">Trusted by Leading Institutions</h3>
+                        <h3 className="text-blackColor text-center md:text-start text-2xl md:text-xl xl:text-2xl 2xl:text-[32px] font-semibold leading-[130%]">Trusted by students, graduates, educators of Leading Institutions</h3>
                         <div className="flex items-center justify-center md:justify-start gap-4 lg:gap-6">
                             {trustedLeadingInstitutions.map((logo, index) => (
                                 <Image
