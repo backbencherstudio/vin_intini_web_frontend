@@ -22,7 +22,7 @@ function ConnectionRequestHeader() {
           </h2>
 
           <div className="relative w-75 hidden md:block  max-w-full">
-            <Search />
+            <Search placeHolder="Search network & connection.." />
           </div>
         </div>
 

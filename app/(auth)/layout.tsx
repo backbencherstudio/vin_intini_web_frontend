@@ -16,9 +16,9 @@ function layout({ children }: { children: React.ReactNode }) {
               <Image
                 src={balckImage}
                 alt="Logo"
-                width={256}
+                width={296}
                 height={50}
-                className="w-full max-w-32.5 lg:max-w-55.5 h-auto "
+                className="w-full max-w-32.5 lg:max-w-60.5 h-auto "
                 priority
               />
             </Link>

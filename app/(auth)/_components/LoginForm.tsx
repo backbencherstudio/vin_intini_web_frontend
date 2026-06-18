@@ -30,25 +30,13 @@ function LoginForm() {
   const route = useRouter();
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await login(data);
-      if (response.error) {
-        const status =
-          "status" in response.error ? response.error.status : undefined;
-        if (status === 401) {
-          toast.error("Invalid email or password");
-        }
-      }
+      const response = await login(data).unwrap();
 
-      if (response?.data?.success) {
-        toast.success("Login successful!");
-        await setToken(response.data.token);
-        route.push(`/mu/home`);
-      }
+      toast.success("Login successful!");
+      await setToken(response?.token || response.data.token);
+      route.push(`/mu/home`);
     } catch (error) {
-      toast.error(
-        error?.data?.message ||
-          "An error occurred during login. Please try again.",
-      );
+      toast.error(error?.data?.message || "Email or password is incorrect.");
     }
   };
 

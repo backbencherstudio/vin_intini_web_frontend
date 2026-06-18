@@ -5,8 +5,6 @@ import {
   setStep,
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,39 +16,43 @@ interface InterestOption {
 }
 
 const interestOptions: InterestOption[] = [
-  { id: 1, title: "Psychiatry" },
-  { id: 2, title: "Counseling Psychology" },
-  { id: 3, title: "Abnormal Psychology" },
-  { id: 4, title: "Personality Psychology" },
-  { id: 5, title: "Behavioral Psychology" },
-  { id: 6, title: "Biopsychology" },
-  { id: 7, title: "School Psychology" },
-  { id: 8, title: "Cognitive Neuroscience" },
-  { id: 9, title: "Developmental Neuroscience" },
-  { id: 10, title: "Affective Neuroscience" },
-  { id: 11, title: "Computational Neuroscience" },
-  { id: 12, title: "Clinical Neuroscience" },
-  { id: 13, title: "Neuroengineering" },
-  { id: 14, title: "Neurogenetics" },
-  { id: 15, title: "Neurolinguistics" },
-  { id: 16, title: "Neuroeconomics" },
-  { id: 17, title: "Neuroanatomy" },
-  { id: 18, title: "Neurophysiology" },
-  { id: 19, title: "Clinical Psychology" },
-  { id: 20, title: "Cognitive Psychology" },
-  { id: 21, title: "Developmental Psychology" },
-  { id: 22, title: "Educational Psychology" },
-  { id: 23, title: "Forensic Psychology" },
-  { id: 24, title: "Health Psychology" },
-  { id: 25, title: "Behavioral Neuroscience" },
-  { id: 26, title: "Industrial-Organizational Psychology" },
-  { id: 27, title: "Neuroimaging" },
-  { id: 28, title: "Sport Psychology" },
-  { id: 29, title: "Psychopharmacology" },
-  { id: 30, title: "Neuropsychology" },
-  { id: 31, title: "Social Psychology" },
-  { id: 32, title: "Neuroscience" },
-  { id: 33, title: "Counseling" },
+  { id: 4, title: "Psychology" },
+  { id: 5, title: "Neuroscience" },
+  { id: 6, title: "Psychiatry" },
+  { id: 7, title: "Counseling" },
+  { id: 8, title: "Biotech" },
+  { id: 9, title: "Psychotropics" },
+  { id: 10, title: "Publications" },
+  { id: 11, title: "Abnormal Psychology" },
+  { id: 12, title: "Behavioral Psychology" },
+  { id: 13, title: "Biopsychology" },
+  { id: 14, title: "Clinical Psychology" },
+  { id: 15, title: "Cognitive Psychology" },
+  { id: 16, title: "Counseling Psychology" },
+  { id: 17, title: "Developmental Psychology" },
+  { id: 18, title: "Educational Psychology" },
+  { id: 19, title: "Forensic Psychology" },
+  { id: 20, title: "Health Psychology" },
+  { id: 21, title: "Industrial Organizational Psychology" },
+  { id: 22, title: "Personality Psychology" },
+  { id: 23, title: "School Psychology" },
+  { id: 24, title: "Social Psychology" },
+  { id: 25, title: "Sport Psychology" },
+  { id: 26, title: "Affective Neuroscience" },
+  { id: 27, title: "Behavioral Neuroscience" },
+  { id: 28, title: "Clinical Neuroscience" },
+  { id: 29, title: "Cognitive Neuroscience" },
+  { id: 30, title: "Computational Neuroscience" },
+  { id: 31, title: "Developmental Neuroscience" },
+  { id: 32, title: "Neuroanatomy" },
+  { id: 33, title: "Neuroeconomics" },
+  { id: 34, title: "Neuroengineering" },
+  { id: 35, title: "Neurogenetics" },
+  { id: 36, title: "Neuroimaging" },
+  { id: 37, title: "Neurolinguistics" },
+  { id: 38, title: "Neuropsychology" },
+  { id: 39, title: "Neurophysiology" },
+  { id: 40, title: "Psychopharmacology" },
 ];
 
 function page() {
@@ -58,7 +60,6 @@ function page() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
 
   const initialSelectedOptions = useMemo(() => {
     const interests: string[] = stepFiveData?.interests || [];
@@ -90,22 +91,22 @@ function page() {
     if (selectedOptions.length === 0) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      dispatch(
-        updateFormData({
-          interests: selectedOptions.map((item) => item.title).join(","),
-        }),
-      );
-      dispatch(setStep(6));
 
-      router.push("/onboarding/step-six");
+    dispatch(
+      updateFormData({
+        interests: selectedOptions.map((item) => item.title).join(","),
+      }),
+    );
+    dispatch(setStep(6));
+
+    router.push("/onboarding/step-six");
+    setTimeout(() => {
       setIsLoading(false);
-    }, 1200);
+    }, 1000);
   };
 
   return (
     <div className="">
-    
       <OnboardingWrapper
         title="Your Brain Health Fields of Interest"
         description="Please select all that apply."

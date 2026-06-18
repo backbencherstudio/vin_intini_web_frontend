@@ -242,7 +242,7 @@ function page() {
 
           <div>
             <h3 className="text-base font-semibold text-descriptionColor">
-              Follow to Get Started
+              Join Groups to Get Started
               <span className="ml-1 text-sm font-normal text-[#A5A5AB]">
                 (Optional)
               </span>

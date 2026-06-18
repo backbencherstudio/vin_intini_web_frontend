@@ -48,6 +48,10 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   {
     label: "Psychology",
     options: [
+      {
+        value: "Generic degree in Psychology",
+        label: "Generic degree in Psychology",
+      },
       { value: "Clinical Psychology", label: "Clinical Psychology" },
       { value: "Counseling Psychology", label: "Counseling Psychology" },
       { value: "Abnormal Psychology", label: "Abnormal Psychology" },
@@ -70,6 +74,10 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   {
     label: "Counseling",
     options: [
+      {
+        value: "Generic degree in Counseling",
+        label: "Generic degree in Counseling",
+      },
       { value: "Mental Health Counseling", label: "Mental Health Counseling" },
       {
         value: "Marriage and Family Therapy",
@@ -94,6 +102,10 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   {
     label: "Neuroscience",
     options: [
+      {
+        value: "Generic degree in Neuroscience",
+        label: "Generic degree in Neuroscience",
+      },
       {
         value: "Molecular and Cellular Neuroscience",
         label: "Molecular and Cellular Neuroscience",
@@ -161,12 +173,14 @@ function page() {
 
   const onSubmit = (data: StepFourData) => {
     setIsLoading(true);
+
+    dispatch(updateFormData(data));
+    dispatch(setStep(5));
+    router.push("/onboarding/step-five");
+
     setTimeout(() => {
-      dispatch(updateFormData(data));
-      dispatch(setStep(5));
-      router.push("/onboarding/step-five");
       setIsLoading(false);
-    }, 1200);
+    }, 1000);
   };
 
   return (
@@ -260,7 +274,7 @@ function page() {
           </div>
           <div className="space-y-1.5">
             <label className="text-sm text-headerColor font-medium block">
-              Completed Graduation/ Expected Year{" "}
+              Graduated/Expected Graduation Year{" "}
               <span className="text-redColor">*</span>
             </label>
             <Controller

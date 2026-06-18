@@ -2,38 +2,37 @@
 
 "use client";
 
+import { useGetBiotechnologyPartnersQuery, useGetPsychologyOnePartnersQuery, useGetPublicationsOnePartnersQuery } from "@/feature/slice/biotechnologySlice";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { PartnerCard } from "./PartnerCard";
 import { PaginationDots } from "./PaginationDots";
-import { partnersData } from "../_mock/partnersData";
-import { useParams, usePathname } from "next/navigation";
+import { PartnerCard } from "./PartnerCard";
 
 export const PartnersSidebar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-
-  const params = useParams();
   const pathname = usePathname();
-  const muId = params.id as string;
-  const baseUrl = muId ? `/mu/${muId}` : "/mu";
+
+
+  const { data } = pathname === `/mu/psychology-network/industry/biotechnology` ? useGetBiotechnologyPartnersQuery("biotechnology") : 
+  pathname === `/mu/psychology-network/industry/psychopharmacology` ?   useGetPsychologyOnePartnersQuery("psychopharmacology") : pathname === `/mu/psychology-network/industry/publications` ? useGetPublicationsOnePartnersQuery("publications") : useGetBiotechnologyPartnersQuery("biotechnology");
+
 
   const navItems = [
     {
-      href: `${baseUrl}/psychology-network/industry/biotechnology`,
+      href: `/psychology-network/industry/biotechnology`,
       label: "Biotechnology",
     },
     {
-      href: `${baseUrl}/psychology-network/industry/psychopharmacology`,
+      href: `/psychology-network/industry/psychopharmacology`,
       label: "Psychopharmacology",
     },
     {
-      href: `${baseUrl}/psychology-network/industry/publications`,
+      href: `/psychology-network/industry/publications`,
       label: "Publications",
     },
   ];
 
   const currentPage = navItems.find((item) => pathname === item.href);
-
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
@@ -51,14 +50,14 @@ export const PartnersSidebar = () => {
           Mind Unite Partners
         </h3>
         <p className="font-['Segoe_UI'] text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
-          Leading {currentPage?.label} companies advancing brain health research and
-          treatment.
+          Leading {currentPage?.label} companies advancing brain health research
+          and treatment.
         </p>
       </div>
 
       {/* Desktop View - Vertical List */}
       <div className="hidden w-full flex-col lg:flex">
-        {partnersData.map((partner) => (
+        {data?.partners?.map((partner) => (
           <PartnerCard key={partner.id} partner={partner} />
         ))}
       </div>
@@ -69,7 +68,7 @@ export const PartnersSidebar = () => {
           className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide"
           onScroll={handleScroll}
         >
-          {partnersData.map((partner) => (
+          {data?.partners?.map((partner) => (
             <div key={partner.id} className="w-full shrink-0 snap-center">
               <PartnerCard partner={partner} isMobile />
             </div>
@@ -79,7 +78,7 @@ export const PartnersSidebar = () => {
         {/* Pagination Dots for Mobile */}
         <div className="flex w-full justify-center">
           <PaginationDots
-            total={partnersData.length}
+            total={data?.partners?.length || 0}
             activeIndex={currentIndex}
             onDotClick={(index) => {
               setCurrentIndex(index);

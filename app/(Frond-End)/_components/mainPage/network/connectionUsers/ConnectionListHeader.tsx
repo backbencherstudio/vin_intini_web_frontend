@@ -1,17 +1,44 @@
 "use client";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import Search from "@/components/reusable/Search";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function ConnectionListHeader({ data }: any) {
-  const [selectedSort, setSelectedSort] = useState("Recently Added");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [selectedSort, setSelectedSort] = useState("");
 
   const sortOptions = [
-    { iso_code: "recent", country: "Recently Added" },
-    { iso_code: "oldest", country: "Oldest" },
-    { iso_code: "name_asc", country: "Name (A-Z)" },
-    { iso_code: "name_desc", country: "Name (Z-A)" },
+    { iso_code: "recent", country: "Recent" },
+    { iso_code: "az", country: "Name (A-Z)" },
+    { iso_code: "za", country: "Name (Z-A)" },
   ];
+
+  useEffect(() => {
+    const sortParam = searchParams.get("sort") || "";
+    if (sortParam) {
+      setSelectedSort(sortParam);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (selectedSort) {
+      params.set("sort", selectedSort);
+    } else {
+      params.delete("sort");
+    }
+    const nextQuery = params.toString();
+    const currentQuery = window.location.search.replace(/^\?/, "");
+    if (nextQuery === currentQuery) return;
+    router.replace(`${pathname}${nextQuery ? `?${nextQuery}` : ""}`, {
+      scroll: false,
+    });
+  }, [selectedSort, pathname, router]);
 
   return (
     <div>
@@ -30,7 +57,7 @@ function ConnectionListHeader({ data }: any) {
             </span>
           </h1>
           <div className="relative w-55 lg:w-75 mx-auto hidden md:block  max-w-full">
-            <Search />
+            <Search placeHolder="Search connection..." />
           </div>
           <div className="flex items-center ">
             <span className="text-grayColor1 hidden lg:block text-nowrap">
@@ -41,7 +68,7 @@ function ConnectionListHeader({ data }: any) {
               onValueChange={setSelectedSort}
               options={sortOptions}
               placeholder="Sort by"
-              className="h-10 border-none! px-1! shadow-none! shadow-transparent! text-[14px]"
+              className="h-10 border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
             />
           </div>
         </div>

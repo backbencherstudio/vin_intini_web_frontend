@@ -6,7 +6,7 @@ import {
 } from "@/feature/slice/onboarding/onboardingSlice";
 import {
   ClinicalIcon,
-  LeftArrowIcon,
+  IndustryIcon,
   ProfessionalIcon,
   ResearcherIcon,
   StudentIcon,
@@ -15,7 +15,6 @@ import type { ComponentType } from "react";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
@@ -34,26 +33,32 @@ function page() {
     {
       id: 1,
       title: "Student",
-      subtitle: "Undergrad/grad exploring psych/neuro paths, etc.",
+      subtitle: "Undergrad/Grad Student exploring PSYC/NSCI education, etc.",
       Icon: StudentIcon,
     },
     {
       id: 2,
       title: "Early-Career Professional",
-      subtitle: "Postdoc, entry-level clinician, etc.",
+      subtitle: "Postbac; Entry-level clinician, etc.",
       Icon: ProfessionalIcon,
     },
     {
       id: 3,
-      title: "Researcher/ Academic",
-      subtitle: "Professor, Lab Director, etc.",
+      title: "Academic/Researcher",
+      subtitle: "Professor; Lab Director; Postdoc; Research Assistant, etc.",
       Icon: ResearcherIcon,
     },
     {
       id: 4,
       title: "Clinical Professional",
-      subtitle: "Psychologist, Psychiatrist, Neurologist, Neurosurgeon, etc.",
+      subtitle: "Psychologist, Psychiatrist; Neurologist; Neurosurgeon; etc.",
       Icon: ClinicalIcon,
+    },
+    {
+      id: 5,
+      title: "Industry/Organization",
+      subtitle: "Biotech Co; Pharma Co; Professional Publication, etc.",
+      Icon: IndustryIcon,
     },
   ];
   const initialSelectedOptions = useMemo(() => {
@@ -90,20 +95,20 @@ function page() {
     if (selectedOptions.length === 0) return;
 
     setIsLoading(true);
+
+    dispatch(
+      updateFormData({
+        profession: selectedOptions.map((item) => item.title).join(","),
+      }),
+    );
+    dispatch(setStep(4));
+    router.push("/onboarding/step-four");
     setTimeout(() => {
-      dispatch(
-        updateFormData({
-          profession: selectedOptions.map((item) => item.title).join(","),
-        }),
-      );
-      dispatch(setStep(4));
-      router.push("/onboarding/step-four");
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   };
   return (
     <div className="">
-      
       <OnboardingWrapper
         title="Welcome to Mind Unite!"
         description="Select all that apply."

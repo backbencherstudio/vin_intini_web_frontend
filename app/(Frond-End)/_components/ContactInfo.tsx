@@ -4,12 +4,14 @@ import { IoMailSharp } from "react-icons/io5";
 function ContactInfo() {
   return (
     <div>
-      <div className="w-full   p-8 flex flex-col justify-between">
+      <div className="w-full   p-4 flex flex-col justify-between">
         <div>
-          <h2 className="text-3xl lg:text-5xl font-semibold mb-8">
-            Get in Touch
-          </h2>
-
+          <div className="mb-8">
+            <h2 className="text-3xl lg:text-5xl font-semibold ">
+              Get in Touch
+            </h2>
+            <p className="text-descriptionColor mt-2 text-base md:text-lg">Have a question/suggestion? Found a mistake?</p>
+          </div>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className=" p-2 bg-white rounded-full">

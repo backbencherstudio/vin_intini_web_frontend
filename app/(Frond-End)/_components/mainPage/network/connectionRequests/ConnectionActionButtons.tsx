@@ -22,6 +22,7 @@ interface ActionProps {
   status: any;
   userId?: number;
   isFollower?: boolean;
+  isfollowedBack?: boolean;
 }
 
 export const ConnectionActionButtons = ({
@@ -29,6 +30,7 @@ export const ConnectionActionButtons = ({
   status,
   userId,
   isFollower,
+  isfollowedBack,
 }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
@@ -84,6 +86,8 @@ export const ConnectionActionButtons = ({
       console.error("Error following user:", error);
     }
   };
+
+  console.log(isFollower, "isFollower");
 
   const renderButtons = () => {
     switch (status) {
@@ -162,34 +166,38 @@ export const ConnectionActionButtons = ({
         );
 
       default:
-        return isFollower ? (
+        return isfollowedBack ? (
           <button
             onClick={handleUnfollow}
             disabled={isUnfollowing}
             className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
           >
             {isUnfollowing ? (
-              <span className="px-2">
+              <span className="">
                 <Loader className="w-4.5 animate-spin h-4.5 " />
               </span>
             ) : (
               "Unfollow"
             )}
           </button>
-        ) : (
+        ) : !isFollower ? (
           <button
             onClick={handleUserfollow}
             disabled={isFollowing}
             className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
           >
             {isFollowing ? (
-              <span className="px-2">
+              <span className="">
                 <Loader className="w-4.5 animate-spin h-4.5 " />
               </span>
             ) : (
               "Follow"
             )}
           </button>
+        ) : (
+          <p className="font-semibold text-descriptionColor text-sm">
+            Follow me
+          </p>
         );
     }
   };

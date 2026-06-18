@@ -1,6 +1,5 @@
+import PublicationSectionPart from "../../../psychology-network/industry/publications/_components/PublicationSectionPart";
 import { IndustryHeader } from "../_components";
-import { PublicationsList } from "./_components/PublicationsList";
-import { publicationsData } from "./_mock/publicationsData";
 
 export default function PublicationsPage() {
   return (
@@ -17,7 +16,7 @@ export default function PublicationsPage() {
         {/* Main Content */}
         <div className="flex w-full flex-col items-start gap-10 pt-6">
           <div className="flex w-full flex-col items-start gap-6">
-            <PublicationsList publications={publicationsData} />
+            <PublicationSectionPart />
           </div>
         </div>
       </div>

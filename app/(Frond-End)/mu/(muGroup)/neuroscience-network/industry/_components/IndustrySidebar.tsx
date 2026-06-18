@@ -1,16 +1,15 @@
-
 "use client";
 
-import { useState } from "react";
-import { useParams, usePathname } from "next/navigation";
-import { ChevronDown, icons } from "lucide-react";
-import { IndustryNavItem } from "./IndustryNavItem";
 import {
   BiotechnologyIcon,
   PsychopharmacologyIcon,
   PublicationsIcon,
 } from "@/public/svgIcons/Icons";
+import { ChevronDown } from "lucide-react";
+import { useParams, usePathname } from "next/navigation";
+import { useState } from "react";
 import { IndustryHeader } from "./IndustryHeader";
+import { IndustryNavItem } from "./IndustryNavItem";
 
 export const IndustrySidebar = () => {
   const params = useParams();
@@ -28,7 +27,7 @@ export const IndustrySidebar = () => {
     {
       href: `${baseUrl}/neuroscience-network/industry/psychopharmacology`,
       icon: <PsychopharmacologyIcon />,
-      label: "Psychopharmacology",
+      label: "Psychotropics",
     },
     {
       href: `${baseUrl}/neuroscience-network/industry/publications`,
@@ -91,8 +90,9 @@ export const IndustrySidebar = () => {
             </div>
           </span>
           <ChevronDown
-            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-              }`}
+            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
 

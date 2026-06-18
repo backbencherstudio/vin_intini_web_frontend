@@ -40,12 +40,12 @@ function page() {
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);
+    dispatch(updateFormData(data));
+    dispatch(setStep(3));
+    router.push("/onboarding/step-three");
     setTimeout(() => {
-      dispatch(updateFormData(data));
-      dispatch(setStep(3));
-      router.push("/onboarding/step-three");
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   };
   return (
     <div className=" ">
@@ -72,10 +72,12 @@ function page() {
                     placeholder="Select Country/Region"
                     value={field.value || undefined}
                     onChange={field.onChange}
-                    options={countries.map((country) => ({
-                      value: country?.country || "",
-                      label: country?.country || "",
-                    } )) as any}
+                    options={
+                      countries.map((country) => ({
+                        value: country?.country || "",
+                        label: country?.country || "",
+                      })) as any
+                    }
                     allowCustomInput
                     className="w-full h-12! md:h-13! rounded-md"
                   />
@@ -87,9 +89,9 @@ function page() {
           <div>
             <ReusableInput
               id="postal_code"
-              label="Postal Code"
+              label="Postal/Zip Code"
               required
-              type="number"
+              type="text"
               placeholder="Enter your postal code"
               {...register("postal_code", {
                 required: "Postal code is required",

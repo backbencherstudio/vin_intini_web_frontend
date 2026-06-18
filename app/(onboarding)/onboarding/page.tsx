@@ -31,16 +31,15 @@ function page() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = (data: StepOneData) => {
     setIsLoading(true);
+    dispatch(updateFormData(data));
+    dispatch(setStep(2));
+    router.push("/onboarding/step-two");
     setTimeout(() => {
-      dispatch(updateFormData(data));
-      dispatch(setStep(2));
-      router.push("/onboarding/step-two");
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   };
   return (
     <div className="">

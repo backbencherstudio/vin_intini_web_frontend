@@ -6,21 +6,21 @@ function ConnectionNotFound({description , title}: {description?: string, title?
   return (
     <div>
       {" "}
-      <div className="flex  mt-4 flex-col items-center justify-center p-10 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm">
+      <div className="flex  mt-4 flex-col items-center justify-center p-6 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm">
         <div className="relative mb-6">
-          <div className="bg-blue-50 p-6 rounded-full">
+          <div className="bg-blue-50 p-4 rounded-full">
             <PlusUserIcon className="text-primaryColor w-5 h-5 opacity-80" />
           </div>
           <Sparkles
             size={24}
-            className="text-yellow-400 absolute -top-1 -right-1 animate-pulse"
+            className="text-yellow-400 absolute -top-2 -right-2 animate-pulse"
           />
         </div>
         <div className="text-center max-w-sm">
           <h3 className="text-xl font-semibold text-dark-800 mb-2">
             {title || "No Pending Requests"}
           </h3>
-          <p className="text-grayColor1 text-sm md:text-base mb-8">
+          <p className="text-grayColor1 text-sm md:text-base mb-6">
             {description || "You're all caught up! Why not explore and connect with people you might know?"}
           </p>
         </div>

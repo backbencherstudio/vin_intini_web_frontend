@@ -38,7 +38,7 @@ export default function SelecteInputField({
       </SelectTrigger>
       <SelectContent>
         {options.map((opt) => (
-          <SelectItem key={opt.country} value={opt.country}>
+          <SelectItem key={opt.iso_code} value={opt.iso_code}>
             {opt.country}
           </SelectItem>
         ))}

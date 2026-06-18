@@ -16,9 +16,9 @@ function OnboardingLayout({ children }: { children: React.ReactNode }) {
               <Image
                 src={balckImage}
                 alt="Logo"
-                width={256}
+                width={296}
                 height={50}
-                className="w-[256px] h-auto"
+                className="w-full max-w-32.5 lg:max-w-62.5 h-auto "
                 priority
               />
             </Link>

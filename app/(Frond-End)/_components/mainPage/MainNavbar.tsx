@@ -64,7 +64,10 @@ export default function MainNavbar() {
           label: "Psychology Careers",
           slug: "/mu/psychology-network/careers",
         },
-        { label: "Industry", slug: "/mu/psychology-network/industry" },
+        {
+          label: "Industry",
+          slug: "/mu/psychology-network/industry/biotechnology",
+        },
         { label: "Jobs", slug: "/mu/psychology-network/jobs" },
       ],
     },
@@ -82,7 +85,10 @@ export default function MainNavbar() {
           label: "Neuroscience Careers",
           slug: "/mu/neuroscience-network/careers",
         },
-        { label: "Industry", slug: "/mu/neuroscience-network/industry" },
+        {
+          label: "Industry",
+          slug: "/mu/neuroscience-network/industry/biotechnology",
+        },
         { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
       ],
     },
@@ -111,7 +117,7 @@ export default function MainNavbar() {
           />
         </Link>
 
-        <nav className="hidden space-x-6 text-base lg:flex">
+        <nav className="hidden space-x-6 text-base min-[1132px]:flex">
           {menuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
@@ -190,11 +196,11 @@ export default function MainNavbar() {
           })}
         </nav>
 
-        <div className="hidden items-center space-x-3.5 lg:flex">
+        <div className="hidden items-center space-x-3.5 min-[1132px]:flex">
           <UserHeaderInfo />
         </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 min-[1132px]:hidden">
           <UserHeaderInfo />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -207,7 +213,7 @@ export default function MainNavbar() {
 
       <div
         className={cn(
-          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
+          "fixed top-0 right-0 z-50 h-screen w-full space-y-3 bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out min-[1132px]:hidden",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >

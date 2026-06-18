@@ -46,7 +46,13 @@ function GroupList() {
           </div>
         ))
       ) : (
-        <div>No groups found</div>
+        <div>
+          <div className="py-6 text-center text-grayColor1 text-lg font-semibold ">
+            {" "}
+            You are not a member of any groups.
+          </div>
+          
+        </div>
       )}
       {showMoreLoader && (
         <div className="mt-4">
