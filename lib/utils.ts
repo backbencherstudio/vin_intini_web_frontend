@@ -66,3 +66,24 @@ export const formatNumber = ({
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(Number(value));
+
+
+export const formatNumberIntoK = ({
+  type,
+  value,
+}: {
+  type?: string;
+  value: string;
+}) => {
+  const num = Number(value);
+  if (num >= 1000) {
+    return new Intl.NumberFormat(type || "en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(Math.floor(num / 1000)) + "K";
+  }
+  return new Intl.NumberFormat(type || "en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(num);
+};

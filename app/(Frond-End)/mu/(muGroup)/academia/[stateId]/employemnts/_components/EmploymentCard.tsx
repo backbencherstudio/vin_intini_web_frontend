@@ -1,7 +1,7 @@
 import { EmpOpportunityType } from "@/lib/type";
 import { Employment } from "../page";
 import {format, formatDistanceToNow} from "date-fns";
-import { formatAmount } from "@/lib/utils";
+import { formatNumberIntoK } from "@/lib/utils";
 
 type PropType = {
     data: Employment
@@ -38,7 +38,7 @@ export default function EmploymentCard({ data }: PropType) {
                         {data?.work_mode || "Hybrid"}
                     </p>
                     <p className="px-2 py-1 rounded-lg bg-sectionColor text-[#777980] text-xs sm:text-sm font-semibold">
-                        {data?.salary_min && data?.salary_max ? `$${formatAmount({ value: data.salary_min, range: 0 })} - $${formatAmount({ value: data.salary_max, range: 0 })}` : "$0 - $0"}
+                        {data?.salary_min && data?.salary_max ? `$${formatNumberIntoK({ value: data.salary_min })} - $${formatNumberIntoK({ value: data.salary_max })}` : "$0 - $0"}
                     </p>
                 </div>
 
