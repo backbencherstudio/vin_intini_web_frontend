@@ -11,11 +11,11 @@ import { PartnerCard } from "./PartnerCard";
 export const PartnersSidebar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const pathname = usePathname();
-  console.log(pathname);
+
 
   const { data } = pathname === `/mu/psychology-network/industry/biotechnology` ? useGetBiotechnologyPartnersQuery("biotechnology") : 
   pathname === `/mu/psychology-network/industry/psychopharmacology` ?   useGetPsychologyOnePartnersQuery("psychopharmacology") : pathname === `/mu/psychology-network/industry/publications` ? useGetPublicationsOnePartnersQuery("publications") : useGetBiotechnologyPartnersQuery("biotechnology");
-  console.log(data, "data=====");
+
 
   const navItems = [
     {
