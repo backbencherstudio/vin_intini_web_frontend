@@ -28,7 +28,7 @@ export const IndustrySidebar = () => {
     {
       href: `${baseUrl}/psychology-network/industry/psychopharmacology`,
       icon: <PsychopharmacologyIcon />,
-      label: "Psychopharmacology",
+      label: "Psychotropics",
     },
     {
       href: `${baseUrl}/psychology-network/industry/publications`,
