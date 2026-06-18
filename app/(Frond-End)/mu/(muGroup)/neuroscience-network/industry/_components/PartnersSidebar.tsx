@@ -15,20 +15,19 @@ export const PartnersSidebar = () => {
 
   const params = useParams();
   const pathname = usePathname();
-  const muId = params.id as string;
-  const baseUrl = muId ? `/mu/${muId}` : "/mu";
+
 
   const navItems = [
     {
-      href: `${baseUrl}/neuroscience-network/industry/biotechnology`,
+      href: `/neuroscience-network/industry/biotechnology`,
       label: "Biotechnology",
     },
     {
-      href: `${baseUrl}/neuroscience-network/industry/psychopharmacology`,
+      href: `/neuroscience-network/industry/psychopharmacology`,
       label: "Psychopharmacology",
     },
     {
-      href: `${baseUrl}/neuroscience-network/industry/publications`,
+      href: `/neuroscience-network/industry/publications`,
       label: "Publications",
     },
   ];

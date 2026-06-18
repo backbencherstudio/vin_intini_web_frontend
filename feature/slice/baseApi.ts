@@ -138,6 +138,7 @@ export const baseApiSlice = createApi({
     "follow",
     "group",
     "Notifications",
+    "psychology",
   ],
 });
 
