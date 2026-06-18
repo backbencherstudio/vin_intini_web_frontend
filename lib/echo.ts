@@ -15,8 +15,7 @@ const echo = pusherKey ? new Echo({
   key: pusherKey,
   cluster: pusherCluster,
   forceTLS: true,
-  // Confirm this exact path with your backend dev
-  authEndpoint: "https://vin.apphero.agency/api/broadcasting/auth",
+  authEndpoint: `${process?.env?.NEXT_PUBLIC_API_BASE_URL}/broadcasting/auth`,
   auth: {
     headers: {
       Authorization: `Bearer ${CookieHelper.get({ key: "accessToken" })}`,

@@ -2,13 +2,7 @@
 import SocialShare from "@/components/reusable/SocialShare";
 import bgImage from "@/public/images/landingpage-footer.svg";
 import logo from "@/public/logo.png";
-import {
-  InstagramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-} from "@/public/svgIcons/Icons";
 import Image from "next/image";
-
 
 export default function Footer() {
   return (
