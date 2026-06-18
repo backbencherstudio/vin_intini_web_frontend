@@ -3,7 +3,11 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { PartnerCard as PartnerCardType } from "../_mock/partnersData";
+interface PartnerCardType {
+  partner_name: string;
+  partner_tag: string;
+  partner_desc: string;
+}
 
 interface PartnerCardProps {
   partner: PartnerCardType;
