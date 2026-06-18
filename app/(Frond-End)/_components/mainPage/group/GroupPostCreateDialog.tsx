@@ -14,6 +14,7 @@ import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSl
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -33,9 +34,13 @@ function GroupPostCreateDialog({
 }: {
   setOpen: (open: boolean) => void;
   open: boolean;
-  groupId?: number | string;
+  groupId?: number;
   postData?: any;
 }) {
+  const params = useParams();
+  const groupsId = Array.isArray(params?.groupId)
+    ? params.groupId[0]
+    : params?.groupId;
   const [postText, setPostText] = useState("");
   const { data } = useGetUserProfileQuery("user");
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
@@ -46,7 +51,6 @@ function GroupPostCreateDialog({
   const [createPost, { isLoading }] = useCreatePostMutation();
   const [updateGroupPost, { isLoading: isUpdating }] =
     useUpdateGroupPostMutation();
-
   useEffect(() => {
     setPostText(postData?.description || "");
     setRemovedMediaIds([]);
@@ -162,7 +166,7 @@ function GroupPostCreateDialog({
     const formData = new FormData();
     formData.append("description", trimmedText);
     formData.append("visibility", "groups");
-    formData.append("group_ids[]", String(groupId));
+    formData.append("group_ids[]", String(groupId || groupsId));
     previewMedia.forEach((media) => {
       if (media.file) {
         formData.append("media[]", media.file);
@@ -180,7 +184,7 @@ function GroupPostCreateDialog({
       const response = postData?.id
         ? await updateGroupPost({
             id: postData.id,
-            groupId,
+            groupId: groupId || groupsId,
             body: formData,
           }).unwrap()
         : await createPost(formData).unwrap();
@@ -202,10 +206,11 @@ function GroupPostCreateDialog({
       setRemovedMediaIds([]);
       setOpen(false);
     } catch (error) {
-      console.error(
-        postData?.id ? "Failed to update post" : "Failed to create post",
-        error,
+      toast.error(
+        error?.data?.message ||
+          (postData?.id ? "Failed to update post" : "Failed to create post"),
       );
+      console.error(error);
     }
   };
 

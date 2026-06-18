@@ -115,6 +115,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   }
 
 
+
   return (
     <section>
       <div className=" relative h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
@@ -167,7 +168,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               </button>
             )}
           </div>
-          {!userId && (
+          {profileData?.is_own_profile && (
             <div className="flex gap-6 ">
               <button
                 aria-label="notify-open"

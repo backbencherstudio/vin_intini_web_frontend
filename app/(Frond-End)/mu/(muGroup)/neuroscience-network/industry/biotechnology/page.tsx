@@ -1,4 +1,4 @@
-// app/(Frond-End)/mu/[id]/(muGroup)/neuroscience-network/industry/biotechnology/page.tsx
+// app/(Frond-End)/mu/(muGroup)/neuroscience-network/industry/biotechnology/page.tsx
 
 import { IndustryHeader } from "../_components";
 import { AssessmentGrid } from "./_components/";
@@ -15,9 +15,9 @@ import {
 
 export default function BiotechnologyPage() {
   return (
-    <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col py-8 lg:py-10">
-      <div className="flex w-full flex-1 flex-col">
-        {/* Hide this header on mobile since it's in IndustrySidebar */}
+    <div className="flex w-full flex-col min-w-0">
+      <div className="flex w-full flex-1 flex-col min-w-0">
+        {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
             title="Biotechnology Industry"
@@ -25,30 +25,26 @@ export default function BiotechnologyPage() {
           />
         </div>
 
-        {/* Main Content */}
-        <div className="flex w-full flex-col items-start gap-10 pt-6">
-          {/* Section 1: Diagnostic Imaging */}
+        {/* Added min-w-0 to keep the Assessments inside the available width */}
+        <div className="flex lg:w-[555px] flex-col items-stretch gap-10 pt-6 min-w-0">
           <AssessmentGrid
             title="Diagnostic Imaging"
             items={diagnosticImagingCards}
             filterCategories={diagnosticImagingCategories}
           />
 
-          {/* Section 2: Assessment Instruments */}
           <AssessmentGrid
             title="Assessment Instruments"
             items={assessmentInstrumentCards}
             filterCategories={assessmentInstrumentCategories}
           />
 
-          {/* Section 3: Experimental Apparatus */}
           <AssessmentGrid
             title="Experimental Apparatus"
             items={experimentalApparatusCards}
             filterCategories={experimentalApparatusCategories}
           />
 
-          {/* Section 4: General Lab and Clinical Infrastructure */}
           <AssessmentGrid
             title="General Lab and Clinical Infrastructure"
             items={labInfrastructureCards}

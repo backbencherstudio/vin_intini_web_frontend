@@ -16,6 +16,8 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
   const [dataResponse, setDataResponse] = useState<any>(
     initialData ?? { data: [] },
   );
+
+
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
@@ -27,7 +29,6 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     isFetching,
     false,
   );
-  console.log(initialData, "data");
 
   useEffect(() => {
     if (page === 1) return;

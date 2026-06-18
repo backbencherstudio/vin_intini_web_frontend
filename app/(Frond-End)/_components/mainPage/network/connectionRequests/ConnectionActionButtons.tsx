@@ -113,7 +113,10 @@ export const ConnectionActionButtons = ({
                 <X className="h-4 w-4" />
               </button>
             ) : identyConnection === "accept" ? (
-              <Link href={`/mu/${id}`} className={BUTTON_STYLES.primary}>
+              <Link
+                href={`/mu/profile/${id}`}
+                className={BUTTON_STYLES.primary}
+              >
                 View profile
               </Link>
             ) : (
@@ -130,7 +133,13 @@ export const ConnectionActionButtons = ({
                   onClick={() => handleConnectionAction("accept")}
                   className={`${BUTTON_STYLES.primary} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor`}
                 >
-                  {isAccepting ? "Accepting..." : "Accept"}
+                  {isAccepting ? (
+                    <span className="">
+                      <Loader className="w-4.5 animate-spin h-4.5 " />
+                    </span>
+                  ) : (
+                    "Accept"
+                  )}
                 </button>
               </div>
             )}
@@ -140,7 +149,7 @@ export const ConnectionActionButtons = ({
       case "connected":
         return (
           <div className="flex items-center gap-2">
-            <Link href={`/mu/${id}`} className={BUTTON_STYLES.primary}>
+            <Link href={`/mu/profile/${id}`} className={BUTTON_STYLES.primary}>
               View profile
             </Link>
             <button
@@ -159,7 +168,13 @@ export const ConnectionActionButtons = ({
             disabled={isUnfollowing}
             className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
           >
-            {isUnfollowing ? "Removing..." : "Unfollow"}
+            {isUnfollowing ? (
+              <span className="px-2">
+                <Loader className="w-4.5 animate-spin h-4.5 " />
+              </span>
+            ) : (
+              "Unfollow"
+            )}
           </button>
         ) : (
           <button
@@ -167,7 +182,13 @@ export const ConnectionActionButtons = ({
             disabled={isFollowing}
             className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
           >
-            {isFollowing ? "Following..." : "Follow"}
+            {isFollowing ? (
+              <span className="px-2">
+                <Loader className="w-4.5 animate-spin h-4.5 " />
+              </span>
+            ) : (
+              "Follow"
+            )}
           </button>
         );
     }

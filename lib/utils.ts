@@ -33,8 +33,17 @@ export const formatPostDate = (date: string) => {
   const postDate = dayjs(date);
   const now = dayjs();
   const diffDays = now.diff(postDate, "day");
+    if (diffDays >= 365) {
+      const years = now.diff(postDate, "year");
+      return years === 1 ? "1 year ago" : `${years} years ago`;
+    }
 
-  if (diffDays >= 7) {
+    if (diffDays >= 30) {
+      const months = now.diff(postDate, "month");
+      return months === 1 ? "1 month ago" : `${months} months ago`;
+    }
+  
+    if (diffDays >= 7) {
     return postDate.format("YYYY-MM-DD HH:mm:ss");
   }
 
