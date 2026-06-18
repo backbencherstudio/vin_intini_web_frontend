@@ -15,7 +15,7 @@ const echo = pusherKey ? new Echo({
   key: pusherKey,
   cluster: pusherCluster,
   forceTLS: true,
-  authEndpoint: `${process?.env?.NEXT_PUBLIC_API_BASE_URL}/broadcasting/auth`,
+  authEndpoint: `https://backend.mindunite.com/api/broadcasting/auth`,
   auth: {
     headers: {
       Authorization: `Bearer ${CookieHelper.get({ key: "accessToken" })}`,
