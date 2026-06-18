@@ -177,19 +177,20 @@ export const ConnectionActionButtons = ({
             )}
           </button>
         ) : (
-          <button
-            onClick={handleUserfollow}
-            disabled={isFollowing}
-            className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
-          >
-            {isFollowing ? (
-              <span className="px-2">
-                <Loader className="w-4.5 animate-spin h-4.5 " />
-              </span>
-            ) : (
-              "Follow"
-            )}
-          </button>
+          // <button
+          //   onClick={handleUserfollow}
+          //   disabled={isFollowing}
+          //   className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-bgColor `}
+          // >
+          //   {isFollowing ? (
+          //     <span className="px-2">
+          //       <Loader className="w-4.5 animate-spin h-4.5 " />
+          //     </span>
+          //   ) : (
+          //     "Follow"
+          //   )}
+          // </button>
+          <p className="font-semibold text-descriptionColor text-sm">Follow by me</p>
         );
     }
   };

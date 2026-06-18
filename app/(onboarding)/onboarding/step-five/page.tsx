@@ -5,8 +5,6 @@ import {
   setStep,
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,20 +39,20 @@ const interestOptions: InterestOption[] = [
   { id: 24, title: "Social Psychology" },
   { id: 25, title: "Sport Psychology" },
   { id: 26, title: "Affective Neuroscience" },
-  { id: 27, title: "Behavioral Neuroscience" }, 
+  { id: 27, title: "Behavioral Neuroscience" },
   { id: 28, title: "Clinical Neuroscience" },
   { id: 29, title: "Cognitive Neuroscience" },
   { id: 30, title: "Computational Neuroscience" },
   { id: 31, title: "Developmental Neuroscience" },
-  { id: 32, title: "Neuroanatomy" },            
-  { id: 33, title: "Neuroeconomics" },        
+  { id: 32, title: "Neuroanatomy" },
+  { id: 33, title: "Neuroeconomics" },
   { id: 34, title: "Neuroengineering" },
   { id: 35, title: "Neurogenetics" },
   { id: 36, title: "Neuroimaging" },
   { id: 37, title: "Neurolinguistics" },
   { id: 38, title: "Neuropsychology" },
   { id: 39, title: "Neurophysiology" },
-  { id: 40, title: "Psychopharmacology"}
+  { id: 40, title: "Psychopharmacology" },
 ];
 
 function page() {
@@ -62,7 +60,6 @@ function page() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
 
   const initialSelectedOptions = useMemo(() => {
     const interests: string[] = stepFiveData?.interests || [];
@@ -94,22 +91,22 @@ function page() {
     if (selectedOptions.length === 0) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      dispatch(
-        updateFormData({
-          interests: selectedOptions.map((item) => item.title).join(","),
-        }),
-      );
-      dispatch(setStep(6));
 
-      router.push("/onboarding/step-six");
+    dispatch(
+      updateFormData({
+        interests: selectedOptions.map((item) => item.title).join(","),
+      }),
+    );
+    dispatch(setStep(6));
+
+    router.push("/onboarding/step-six");
+    setTimeout(() => {
       setIsLoading(false);
-    }, 1200);
+    }, 1000);
   };
 
   return (
     <div className="">
-    
       <OnboardingWrapper
         title="Your Brain Health Fields of Interest"
         description="Please select all that apply."

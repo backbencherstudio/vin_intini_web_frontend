@@ -173,12 +173,14 @@ function page() {
 
   const onSubmit = (data: StepFourData) => {
     setIsLoading(true);
+
+    dispatch(updateFormData(data));
+    dispatch(setStep(5));
+    router.push("/onboarding/step-five");
+
     setTimeout(() => {
-      dispatch(updateFormData(data));
-      dispatch(setStep(5));
-      router.push("/onboarding/step-five");
       setIsLoading(false);
-    }, 1200);
+    }, 1000);
   };
 
   return (

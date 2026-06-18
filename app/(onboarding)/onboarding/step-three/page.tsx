@@ -7,7 +7,6 @@ import {
 import {
   ClinicalIcon,
   IndustryIcon,
-  LeftArrowIcon,
   ProfessionalIcon,
   ResearcherIcon,
   StudentIcon,
@@ -16,7 +15,6 @@ import type { ComponentType } from "react";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
@@ -97,20 +95,20 @@ function page() {
     if (selectedOptions.length === 0) return;
 
     setIsLoading(true);
+
+    dispatch(
+      updateFormData({
+        profession: selectedOptions.map((item) => item.title).join(","),
+      }),
+    );
+    dispatch(setStep(4));
+    router.push("/onboarding/step-four");
     setTimeout(() => {
-      dispatch(
-        updateFormData({
-          profession: selectedOptions.map((item) => item.title).join(","),
-        }),
-      );
-      dispatch(setStep(4));
-      router.push("/onboarding/step-four");
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   };
   return (
     <div className="">
-      
       <OnboardingWrapper
         title="Welcome to Mind Unite!"
         description="Select all that apply."
