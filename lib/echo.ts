@@ -16,7 +16,7 @@ const echo = pusherKey ? new Echo({
   cluster: pusherCluster,
   forceTLS: true,
   // Confirm this exact path with your backend dev
-  authEndpoint: "https://vin.apphero.agency/api/broadcasting/auth",
+  authEndpoint: "https://backend.mindunite.com/api/broadcasting/auth",
   auth: {
     headers: {
       Authorization: `Bearer ${CookieHelper.get({ key: "accessToken" })}`,
