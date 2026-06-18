@@ -18,6 +18,8 @@ function DeleteGroup({
   postId?: number;
   groupId?: string;
 }) {
+  console.log(groupId, "check group Id");
+
   const router = useRouter();
   const [deletePost, { isLoading }] = groupId
     ? useDeleteGroupPostMutation()

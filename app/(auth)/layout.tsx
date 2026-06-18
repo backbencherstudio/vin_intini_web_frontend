@@ -18,7 +18,7 @@ function layout({ children }: { children: React.ReactNode }) {
                 alt="Logo"
                 width={256}
                 height={50}
-                className="w-full h-auto "
+                className="w-full max-w-32.5 lg:max-w-55.5 h-auto "
                 priority
               />
             </Link>

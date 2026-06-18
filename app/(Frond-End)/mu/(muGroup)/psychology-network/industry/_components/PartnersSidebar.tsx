@@ -64,9 +64,9 @@ export const PartnersSidebar = () => {
       </div>
 
       {/* Mobile View - Horizontal Scrollable Cards */}
-      <div className="flex w-full flex-col gap-4 lg:hidden">
+      <div className="w-full min-w-0 flex flex-col gap-4 lg:hidden">
         <div
-          className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide"
+          className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide"
           onScroll={handleScroll}
         >
           {partnersData.map((partner) => (

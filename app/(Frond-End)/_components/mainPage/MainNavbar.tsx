@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { cn } from "@/lib/utils";
-import mainLogo from "@/public/browserLogo.svg";
+import mainLogo from "@/public/logo.png";
 import {
   ClinicalIcon,
+  ContactUsIcon,
   GlobalIcon,
   HomeIcon,
   JobsIcon,
@@ -86,6 +87,7 @@ export default function MainNavbar() {
       ],
     },
     { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
+    { label: "Contact Us", slug: "/mu/contact-us", icon: ContactUsIcon },
   ];
 
   const isActive = (href: string): boolean => {
@@ -102,10 +104,9 @@ export default function MainNavbar() {
           <Image
             src={mainLogo}
             alt="Logo"
-            width={50}
-            height={50}
-            className="w-12.5 h-auto"
-            
+            width={250}
+            height={150}
+            className="max-w-39.5 w-full h-auto"
             priority
           />
         </Link>

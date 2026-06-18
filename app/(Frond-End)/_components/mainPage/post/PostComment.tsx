@@ -1,4 +1,4 @@
-import {} from "@/components/ui/accordion";
+import { } from "@/components/ui/accordion";
 
 import CommentRowSkeleton from "@/components/reusable/All Skleton/PostCommentSkleton";
 import { useGetAllCommentListByPostIdQuery } from "@/feature/slice/post/commentSlice";
@@ -30,6 +30,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
   const limit = 5;
   const [page, setPage] = useState(1);
   const [comments, setComments] = useState<CommentItem[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { data } = useGetUserProfileQuery("user");
   const { data: commentData, isLoading: isCommentLoading } =
     useGetAllCommentListByPostIdQuery(
@@ -39,6 +40,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
   const commentContainerRefs = useRef<Record<number, HTMLDivElement | null>>(
     {},
   );
+
   const [parentId, setParentId] = useState<number | null>(null);
   const [openReplyCommentId, setOpenReplyCommentId] = useState<number | null>(
     null,
@@ -114,6 +116,28 @@ function PostComment({ post }: { post?: PostFeedType }) {
     });
   }, [commentData, page]);
 
+
+  const totalComments = commentData?.pagination?.total || 0;
+  const loadedComments = comments.length || commentData?.data?.length || 0;
+  const hasMoreComments = totalComments > loadedComments;
+  const showToggleButton = totalComments > limit;
+  const buttonLabel = isExpanded ? "See less comments" : "See all comments";
+
+  const handleToggleComments = () => {
+    if (!isExpanded) {
+      setIsExpanded(true);
+      setPage((previous) => previous + 1);
+      return;
+    }
+
+    setIsExpanded(false);
+    setPage(1);
+    setComments([]);
+    setOpenReplyCommentId(null);
+    setParentId(null);
+    setReplyingToUserName(null);
+  };
+
   return (
     <section className=" border-t border-borderColor comment-section py-4 md:py-4">
       <div className="flex items-start gap-3">
@@ -180,15 +204,16 @@ function PostComment({ post }: { post?: PostFeedType }) {
           ))
         )}
       </div>
-
-      <button
-        type="button"
-        onClick={() => setPage((p) => p + 1)}
-        disabled={isCommentLoading || (commentData?.data?.length || 0) < limit}
-        className="mt-6 text-[16px] font-semibold text-headerColor hover:opacity-80 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        See all comments
-      </button>
+      {showToggleButton ? (
+        <button
+          type="button"
+          onClick={handleToggleComments}
+          disabled={isCommentLoading}
+          className="mt-6 text-[16px] font-semibold text-headerColor hover:opacity-80 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {buttonLabel}
+        </button>
+      ) : null}
     </section>
   );
 }

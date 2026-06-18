@@ -44,7 +44,6 @@ function UserHeaderInfo() {
     router.push("/login");
   };
 
-
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -88,7 +87,7 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-60.5 p-3">
+              <DropdownMenuContent align="end" className="w-50.5 p-3">
                 <div className="">
                   <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
                     <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
@@ -115,7 +114,7 @@ function UserHeaderInfo() {
                     </div>
                   </div>
                 </div>
-                <div className="py-3 space-y-2">
+                <div className="py-2 space-y-1">
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/profile`}

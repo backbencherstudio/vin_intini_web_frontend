@@ -17,14 +17,14 @@ const groupSlice = baseApiSlice.injectEndpoints({
       providesTags: ["group"],
     }),
     getMyJoinedGroups: builder.query({
-      query: ({query}) => ({
+      query: ({ query }) => ({
         url: `/my-joined-groups${query}`,
         method: "GET",
       }),
       providesTags: ["group"],
     }),
     getMyCreatedGroups: builder.query({
-      query: ({query}) => ({
+      query: ({ query }) => ({
         url: `/my-created-groups${query}`,
         method: "GET",
       }),
@@ -40,6 +40,13 @@ const groupSlice = baseApiSlice.injectEndpoints({
     getInviteUsersGroup: builder.query({
       query: ({ id }) => ({
         url: `/group-invite-users/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["group"],
+    }),
+    getAllInviteGroup: builder.query({
+      query: ({ query }) => ({
+        url: `/group-invitations/requests?${query}`,
         method: "GET",
       }),
       providesTags: ["group"],
@@ -65,6 +72,20 @@ const groupSlice = baseApiSlice.injectEndpoints({
         url: `/group-create`,
         method: "POST",
         body: payload,
+      }),
+      invalidatesTags: ["group"],
+    }),
+    acceptGroupInvitation: builder.mutation({
+      query: ({ invitationId }) => ({
+        url: `/group-invitations/${invitationId}/accept`,
+        method: "POST",
+      }),
+      invalidatesTags: ["group"],
+    }),
+    removeGroupInvitation: builder.mutation({
+      query: ({ invitationId }) => ({
+        url: `/group-invitations/${invitationId}/ignore`,
+        method: "POST",
       }),
       invalidatesTags: ["group"],
     }),
@@ -117,6 +138,8 @@ export const {
   useGetSuggestionGroupsQuery,
   useGetViewByIdGroupQuery,
   useJoinGroupMutation,
+  useAcceptGroupInvitationMutation,
+  useRemoveGroupInvitationMutation,
   useLeaveGroupMutation,
   useCreateGroupMutation,
   useGroupUpdateMutation,
@@ -124,5 +147,6 @@ export const {
   useToggleGroupNotificationMutation,
   useGroupBanUserMutation,
   useGetInviteUsersGroupQuery,
+  useGetAllInviteGroupQuery,
   useGroupInviteUserMutation,
 } = groupSlice;

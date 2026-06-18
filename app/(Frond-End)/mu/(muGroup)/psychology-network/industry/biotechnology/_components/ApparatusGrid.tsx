@@ -15,17 +15,13 @@ export const ApparatusGrid = () => {
   const [activeFilter, setActiveFilter] =
     useState<ApparatusFilterCategory>("all");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
-    setIsMounted(true);
     const updateItemsPerPage = () => {
-      if (window.innerWidth >= 1024 && window.innerWidth < 1280) {
-        setItemsPerPage(2);
-      } else {
-        setItemsPerPage(4);
-      }
+      setItemsPerPage(
+        window.innerWidth >= 1024 && window.innerWidth < 1280 ? 2 : 4
+      );
     };
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
@@ -38,12 +34,9 @@ export const ApparatusGrid = () => {
   }, [activeFilter]);
 
   const paginatedCards = useMemo(() => {
-    if (!isMounted) {
-      return filteredCards.slice(0, 4);
-    }
     const end = (currentPage + 1) * itemsPerPage;
     return filteredCards.slice(0, end);
-  }, [filteredCards, currentPage, itemsPerPage, isMounted]);
+  }, [filteredCards, currentPage, itemsPerPage]);
 
   const handleFilterChange = (filter: ApparatusFilterCategory) => {
     setActiveFilter(filter);
@@ -65,9 +58,9 @@ export const ApparatusGrid = () => {
   };
 
   return (
-    <div className="flex w-full flex-col items-start gap-4">
+    <div className="flex w-full flex-col items-stretch gap-4">
       {/* Filter Tabs */}
-      <div className="flex w-full items-center">
+      <div className="w-full min-w-0">
         <ApparatusFilterTabs
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
@@ -76,8 +69,8 @@ export const ApparatusGrid = () => {
 
       {/* Cards Grid */}
       <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2">
-        {paginatedCards.map((card) => (
-          <ApparatusCard key={card.id} card={card} />
+        {paginatedCards.map((card, index) => (
+          <ApparatusCard key={card.id} card={card} priority={index < 2} />
         ))}
       </div>
 
@@ -91,8 +84,7 @@ export const ApparatusGrid = () => {
       )}
 
       {/* Load More Button */}
-      {isMounted && filteredCards.length > itemsPerPage &&
-        (currentPage + 1) * itemsPerPage < filteredCards.length && (
+      {filteredCards.length > (currentPage + 1) * itemsPerPage && (
           <div className="flex w-full items-center justify-center pt-2">
             <button
               onClick={() => setCurrentPage((prev) => prev + 1)}

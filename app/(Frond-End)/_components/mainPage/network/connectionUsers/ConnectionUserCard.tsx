@@ -10,8 +10,9 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, is_connectable, action_label } =
     profile;
 
-  const [requestSent, setRequestSent] = useState();
+  const [requestSent, setRequestSent] = useState<any>();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
+  console.log(requestSent, "check connections");
   const handleConnect = async () => {
     const payload = {
       user_id: user.id,
@@ -81,14 +82,20 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
             <button
               type="button"
               onClick={handleConnect}
-              disabled={isLoading || !is_connectable}
-              className="mt-3 px-8 py-1 disabled:bg-bgColor disabled:border-borderColor disabled:text-grayColor1 disabled:shadow-transparent disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
+              disabled={
+                isLoading ||
+                !is_connectable ||
+                (requestSent && requestSent?.status === "pending")
+              }
+              className="mt-3 px-4 py-1 disabled:bg-bgColor disabled:border-borderColor disabled:text-grayColor1 disabled:shadow-transparent disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
             >
               {!is_connectable
                 ? action_label
-                : isLoading
-                  ? "Sending..."
-                  : "Connect"}
+                : requestSent?.status === "pending"
+                  ? " Request Send"
+                  : isLoading
+                    ? "Sending..."
+                    : "Connect"}
             </button>
           </div>
         </div>

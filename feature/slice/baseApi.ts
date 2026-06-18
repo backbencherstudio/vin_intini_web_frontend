@@ -1,4 +1,4 @@
-import { clearToken, getToken, getTokenIssuedAt, setToken } from "@/lib/token";
+import { clearToken, getToken, setToken } from "@/lib/token";
 import {
   BaseQueryFn,
   FetchArgs,
@@ -69,9 +69,9 @@ const refreshAccessToken = async (
         if (refreshResult.error) {
           // on any refresh error, clear token and redirect to login
           await clearToken();
-          // if (typeof window !== "undefined") {
-          //   window.location.href = "/login";
-          // }
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
           return null;
         }
 
@@ -121,7 +121,7 @@ const baseQueryWithReauth: BaseQueryFn<
   }
 
   return result;
-}
+};
 
 export const baseApiSlice = createApi({
   reducerPath: "api",
