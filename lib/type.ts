@@ -184,3 +184,32 @@ export interface PostFeedType {
   can_edit: boolean;
   can_delete: boolean;
 }
+
+export interface IndustryItemType {
+  id: number;
+  category_id: number;
+  title: string;
+  tag: string | null;
+  sub_title: string;
+  description: string;
+  image: string;
+  image_url: string;
+  link: string;
+}
+
+export interface IndustryCategoryType {
+  id: number;
+  section_id: number;
+  category_name: string;
+  industry_item: IndustryItemType[];
+}
+
+export interface IndustryDataType {
+  id: number;
+  network_type: string;
+  industry_type: string;
+  name: string;
+  created_at: string; // ISO Date String
+  updated_at: string; // ISO Date String
+  industry_category: IndustryCategoryType[];
+}

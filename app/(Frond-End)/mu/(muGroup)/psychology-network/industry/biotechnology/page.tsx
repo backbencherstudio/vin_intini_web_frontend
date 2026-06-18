@@ -1,14 +1,13 @@
-// app/(Frond-End)/mu/(muGroup)/psychology-network/industry/biotechnology/page.tsx
+"use client";
 
+import { useGetBiotechnologyQuery } from "@/feature/slice/biotechnologySlice";
+import { IndustryDataType } from "@/lib/type";
 import { IndustryHeader } from "../_components";
-import {
-  EquipmentGrid,
-  AssessmentGrid,
-  ApparatusGrid,
-  LabInfrastructureGrid,
-} from "./_components";
+import { EquipmentGrid } from "./_components";
 
 export default function BiotechnologyPage() {
+  const { data } = useGetBiotechnologyQuery("biotechnology");
+
   return (
     <div className="flex w-full flex-col min-w-0">
       <div className="flex w-full flex-1 flex-col">
@@ -20,16 +19,20 @@ export default function BiotechnologyPage() {
           />
         </div>
 
-        {/* Main Content */}
-        <div className="flex w-full flex-col items-stretch gap-10 pt-6 lg:w-[555px]">
-          <div className="flex w-full flex-col items-stretch gap-6">
-            <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
-              Neuroscientific and Psychophysiological Equipment
-            </h3>
-            <EquipmentGrid />
-          </div>
+        <div className="flex w-full flex-col items-stretch gap-10 pt-6 lg:w-138.5">
+          {data?.data?.sections?.map((section: IndustryDataType) => (
+            <div
+              className="flex w-full flex-col items-stretch gap-6"
+              key={section?.id}
+            >
+              <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
+                {section?.name || "Section Title"}
+              </h3>
+              <EquipmentGrid industryData={section.industry_category} />
+            </div>
+          ))}
 
-          <div className="flex w-full flex-col items-stretch gap-6">
+          {/* <div className="flex w-full flex-col items-stretch gap-6">
             <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
               Psychological Assessment Instruments
             </h3>
@@ -48,7 +51,7 @@ export default function BiotechnologyPage() {
               General Lab and Clinical Infrastructure
             </h3>
             <LabInfrastructureGrid />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
