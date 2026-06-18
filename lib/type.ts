@@ -193,6 +193,8 @@ export interface IndustryItemType {
   sub_title: string;
   description: string;
   image: string;
+  moa: string;
+  indication: string;
   image_url: string;
   link: string;
 }

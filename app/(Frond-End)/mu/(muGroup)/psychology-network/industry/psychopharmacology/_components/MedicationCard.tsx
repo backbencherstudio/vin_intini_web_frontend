@@ -8,7 +8,10 @@ interface MedicationCardProps {
   priority?: boolean;
 }
 
-export const MedicationCard = ({ card, priority = false }: MedicationCardProps) => {
+export const MedicationCard = ({
+  card,
+  priority = false,
+}: MedicationCardProps) => {
   return (
     <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white p-4">
       <div className="flex w-full items-center justify-between">
@@ -31,6 +34,16 @@ export const MedicationCard = ({ card, priority = false }: MedicationCardProps) 
       <p className="self-stretch font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
         {card.description}
       </p>
+      {card?.moa && (
+        <p className="self-stretch font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+          <strong>Indication:</strong> {card?.moa}
+        </p>
+      )}
+      {card?.indication && (
+        <p className="self-stretch font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+          <strong>MOA:</strong> {card?.indication}
+        </p>
+      )}
 
       {card.link ? (
         <a
