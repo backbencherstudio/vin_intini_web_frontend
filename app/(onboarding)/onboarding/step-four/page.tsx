@@ -50,7 +50,7 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
     options: [
       {
         value: "Generic degree in Psychology",
-        label: "Generic degree in Psychology",
+        label: "Psychology",
       },
       { value: "Clinical Psychology", label: "Clinical Psychology" },
       { value: "Counseling Psychology", label: "Counseling Psychology" },
@@ -76,7 +76,7 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
     options: [
       {
         value: "Generic degree in Counseling",
-        label: "Generic degree in Counseling",
+        label: "Counseling",
       },
       { value: "Mental Health Counseling", label: "Mental Health Counseling" },
       {
@@ -104,7 +104,7 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
     options: [
       {
         value: "Generic degree in Neuroscience",
-        label: "Generic degree in Neuroscience",
+        label: "Neuroscience",
       },
       {
         value: "Molecular and Cellular Neuroscience",

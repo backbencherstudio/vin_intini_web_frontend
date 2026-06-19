@@ -31,8 +31,14 @@ function page() {
 
   const roleOptions: RoleOption[] = [
     {
+      id: 0,
+      title: "High School Student",
+      subtitle: "High School Student exploring a future as a PSYC/NSCI Undergrad Student",
+      Icon: StudentIcon,
+    },
+    {
       id: 1,
-      title: "Student",
+      title: "College/University Student",
       subtitle: "Undergrad/Grad Student exploring PSYC/NSCI education, etc.",
       Icon: StudentIcon,
     },
