@@ -32,17 +32,17 @@ export default function Page() {
             <span className="font-semibold text-primaryColor">
               Mind Unite Premium-Industry
             </span>{" "}
-            subscribers will be able to post their available positions — whether
-            at a University, within a research lab, private practice, or other
-            corporation or industry partners in search of brain health
-            professionals.
+            subscribers will be able to post their available positions- whether
+            at a University, within a research lab, at a private practice, or
+            within another corporation or industry seeking brain health
+            professionals, let us connect you to our network.
           </p>
 
           <div className="border-t border-borderColor pt-4 mt-4">
             <p className="text-sm sm:text-base md:text-lg text-grayColor1 leading-relaxed">
               For now, if you have a position you want to advertise, click the
-              Contact Us button below and tell us about the position so we can
-              advertise it for you!
+              Contact Us button on the navbar and tell us about the position so
+              we can advertise it for you!
             </p>
           </div>
         </div>

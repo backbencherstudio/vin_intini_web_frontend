@@ -30,13 +30,49 @@ type GroupFormValues = {
   cover_photo: FileList;
 };
 
-const industryOptions = [
-  { value: "Technology", label: "Technology" },
-  { value: "Design", label: "Design" },
-  { value: "Development", label: "Development" },
-  { value: "Marketing", label: "Marketing" },
-  { value: "Business", label: "Business" },
+const interestOptions = [
+  { value: "Psychology", label: "Psychology" },
+  { value: "Neuroscience", label: "Neuroscience" },
+  { value: "Psychiatry", label: "Psychiatry" },
+  { value: "Counseling", label: "Counseling" },
+  { value: "Biotech", label: "Biotech" },
+  { value: "Psychotropics", label: "Psychotropics" },
+  { value: "Publications", label: "Publications" },
+  { value: "Abnormal Psychology", label: "Abnormal Psychology" },
+  { value: "Behavioral Psychology", label: "Behavioral Psychology" },
+  { value: "Biopsychology", label: "Biopsychology" },
+  { value: "Clinical Psychology", label: "Clinical Psychology" },
+  { value: "Cognitive Psychology", label: "Cognitive Psychology" },
+  { value: "Counseling Psychology", label: "Counseling Psychology" },
+  { value: "Developmental Psychology", label: "Developmental Psychology" },
+  { value: "Educational Psychology", label: "Educational Psychology" },
+  { value: "Forensic Psychology", label: "Forensic Psychology" },
+  { value: "Health Psychology", label: "Health Psychology" },
+  {
+    value: "Industrial Organizational Psychology",
+    label: "Industrial Organizational Psychology",
+  },
+  { value: "Personality Psychology", label: "Personality Psychology" },
+  { value: "School Psychology", label: "School Psychology" },
+  { value: "Social Psychology", label: "Social Psychology" },
+  { value: "Sport Psychology", label: "Sport Psychology" },
+  { value: "Affective Neuroscience", label: "Affective Neuroscience" },
+  { value: "Behavioral Neuroscience", label: "Behavioral Neuroscience" },
+  { value: "Clinical Neuroscience", label: "Clinical Neuroscience" },
+  { value: "Cognitive Neuroscience", label: "Cognitive Neuroscience" },
+  { value: "Computational Neuroscience", label: "Computational Neuroscience" },
+  { value: "Developmental Neuroscience", label: "Developmental Neuroscience" },
+  { value: "Neuroanatomy", label: "Neuroanatomy" },
+  { value: "Neuroeconomics", label: "Neuroeconomics" },
+  { value: "Neuroengineering", label: "Neuroengineering" },
+  { value: "Neurogenetics", label: "Neurogenetics" },
+  { value: "Neuroimaging", label: "Neuroimaging" },
+  { value: "Neurolinguistics", label: "Neurolinguistics" },
+  { value: "Neuropsychology", label: "Neuropsychology" },
+  { value: "Neurophysiology", label: "Neurophysiology" },
+  { value: "Psychopharmacology", label: "Psychopharmacology" },
 ];
+
 
 export default function CreateGroupForm({
   open,
@@ -287,17 +323,17 @@ export default function CreateGroupForm({
             {/* Industry & Location */}
             <div className="space-y-1.5">
               <p className="block text-base font-semibold text-slate-700">
-                Industry (up to 3)
+             Collaboration Focus (up to 3)
               </p>
               <Controller
                 control={control}
                 name="industry"
                 render={({ field }) => (
                   <CreatableSelectField
-                    placeholder="Select industry here..."
+                    placeholder="Select collaboration focus here..."
                     values={field.value || []}
                     onChangeValues={field.onChange}
-                    options={industryOptions}
+                    options={interestOptions}
                     isMulti
                     maxCount={3}
                     className="w-full"
@@ -318,7 +354,7 @@ export default function CreateGroupForm({
             </div>
             <div className="space-y-1.5">
               <label className="block text-base font-semibold text-slate-700">
-                Rules
+                Purpose
               </label>
 
               <ReusableTextarea
@@ -361,7 +397,7 @@ export default function CreateGroupForm({
                       Public
                     </span>
                     <p className="text-[12px] text-gray-500 leading-tight">
-                      Anyone in the MindUnite platform can see posts in the
+                      Anyone in the Mind Unite platform can see posts in the
                       group. The group appears in search results.
                     </p>
                   </div>

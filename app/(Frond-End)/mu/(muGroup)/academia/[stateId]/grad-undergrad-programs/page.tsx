@@ -75,7 +75,7 @@ export default function page() {
     <div className="xl:pl-6 space-y-6">
       <AcademiHeader
         title="Degree Programs"
-        description="See State Map for Doctorate Programs"
+        description="Select a University and Click Map Pin for Website."
         selectedDegree={selectedDegree}
         setSelectedDegree={setSelectedDegree}
         filterData={degreeTokens}

@@ -52,9 +52,9 @@ export const landingPageFeatures = [
   },
   {
     id: 4,
-    title: "Premium Analytics",
+    title: "Research Collaboration",
     description:
-      "Get advanced profile insights, track your visibility and understand how recruiters engage with your prefile,",
+      "Create groups to collaborate on advance your research in a budgetconstrained reality.",
     icon: PremiumAnalyticsIcon,
     iconBgColor: "bg-[#C1F9EF]",
     cardBgColor: "bg-[#EBFFFA]",

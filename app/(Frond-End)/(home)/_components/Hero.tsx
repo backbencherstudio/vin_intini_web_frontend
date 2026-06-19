@@ -30,7 +30,7 @@ export default function Hero() {
                 </p>
                 <p>& Neuroscience</p>
               </h1>
-              <p className="text-sm sm:text-lg text-[#404040] font-normal leading-[160%]">
+              <p className="text-sm sm:text-lg text-[#404040] font-normal leading-[160%] tracking-[-0.5px]">
                 A professional networking platform designed exclusively for
                 current and future Brain Health Professionals, and the industry
                 partners who support them.

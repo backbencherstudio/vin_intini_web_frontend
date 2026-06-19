@@ -14,7 +14,7 @@ interface InterestOption {
   id: number;
   title: string;
 }
-
+0
 const interestOptions: InterestOption[] = [
   { id: 4, title: "Psychology" },
   { id: 5, title: "Neuroscience" },

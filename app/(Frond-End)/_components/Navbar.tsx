@@ -12,7 +12,7 @@ export default function Navbar() {
           <Image
             src={logo}
             alt="Logo"
-            width={256}
+            width={156}
             height={50}
             className="w-50 sm:w-62.5"
           />

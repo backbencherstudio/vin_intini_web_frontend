@@ -10,7 +10,12 @@ function ContactInfo() {
             <h2 className="text-3xl lg:text-5xl font-semibold ">
               Get in Touch
             </h2>
-            <p className="text-descriptionColor mt-2 text-base md:text-lg">Have a question/suggestion? Found a mistake?</p>
+            <p className="text-descriptionColor mt-2 text-base md:text-lg">
+              Have a question or suggestion?
+            </p>
+            <p className="text-descriptionColor mt-2 text-base md:text-lg md:ml-14">
+              Found a mistake?
+            </p>
           </div>
           <div className="space-y-4">
             <div className="flex items-center gap-3">

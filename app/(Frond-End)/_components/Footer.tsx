@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function Footer() {
   return (
     <footer
-      className="px-4 container"
+      className="px-4 container "
       style={{
         backgroundImage: `url("${bgImage.src}")`,
         backgroundPosition: "center",
@@ -16,11 +16,14 @@ export default function Footer() {
       }}
     >
       <div className=" text-white py-12 bg-[#ffffff7a] backdrop-blur-xs lg:bg-transparent lg:backdrop-blur-none">
-        <div className="flex flex-col sm:flex-row items-start justify-between pb-4">
-          <Image src={logo} alt="Logo" width={305} height={100} className="" />
-          <p className="text-center sm:text-start sm:pt-4 text-[#404040] text-lg lg:text-xl 2xl:text-2xl font-light leading-[130%] tracking-[0.12px] sm:max-w-7.75">
-            The networking platform for brain health professionals and students.
-          </p>
+        <div className="flex flex-col sm:flex-row items-start justify-between pb-4 ">
+          <Image src={logo} alt="Logo" width={305} height={58} className="" />
+          <div className="flex flex-col items-center sm:items-start space-y-2 w-80 ">
+            <p className="text-center sm:text-start sm:pt-4 text-[#404040] text-lg lg:text-xl 2xl:text-2xl font-light leading-[130%] tracking-[0.12px]  w-full h-60">
+              The networking platform for brain health professionals and
+              students.
+            </p>
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center sm:items-start space-y-2">

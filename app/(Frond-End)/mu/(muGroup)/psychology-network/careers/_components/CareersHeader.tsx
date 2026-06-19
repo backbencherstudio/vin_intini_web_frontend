@@ -29,8 +29,8 @@ export const CareersHeader = ({ onSearch }: CareersHeaderProps) => {
                     Psychology Careers
                 </h1>
                 <div className="flex items-center gap-3">
-                    <SearchInput onSearch={handleSearch} />
-                    <FilterButton onClick={handleFilterReset} />
+                    {/* <SearchInput onSearch={handleSearch} />
+                    <FilterButton onClick={handleFilterReset} /> */}
                 </div>
             </div>
 
@@ -40,8 +40,8 @@ export const CareersHeader = ({ onSearch }: CareersHeaderProps) => {
                     Psychology Careers
                 </h1>
                 <div className="flex w-full flex-col gap-3">
-                    <SearchInput onSearch={handleSearch} />
-                    <FilterButton onClick={handleFilterReset} />
+                    {/* <SearchInput onSearch={handleSearch} />
+                    <FilterButton onClick={handleFilterReset} /> */}
                 </div>
             </div>
         </div>

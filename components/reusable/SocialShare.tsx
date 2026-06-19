@@ -28,7 +28,7 @@ function SocialShare() {
       icon: <TwitterIcon className="h-4 w-4" />,
     },
     {
-      href: "https://x.com/mindunitellc",
+      href: "https://www.tiktok.com/@mind.unite",
       label: "Tik Tok",
       icon: <TbBrandTiktok className="h-5 w-5" />,
     },
