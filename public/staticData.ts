@@ -54,7 +54,7 @@ export const landingPageFeatures = [
     id: 4,
     title: "Research Collaboration",
     description:
-      "Create groups to collaborate on advance your research in a budgetconstrained reality.",
+      "Create groups to collaborate and advance your research in a budget-constrained reality.",
     icon: PremiumAnalyticsIcon,
     iconBgColor: "bg-[#C1F9EF]",
     cardBgColor: "bg-[#EBFFFA]",

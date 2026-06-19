@@ -112,7 +112,7 @@ export default function MainNavbar() {
             alt="Logo"
             width={250}
             height={150}
-            className="max-w-39.5 w-full h-auto"
+            className="max-w-59.5 w-full h-auto"
             priority
           />
         </Link>

@@ -150,7 +150,7 @@ export const countries = [
   { iso_code: "SI", country: "Slovenia" },
   { iso_code: "ES", country: "Spain" },
   { iso_code: "EE", country: "Estonia" },
-  { iso_code: "US", country: "United States" },
+  { iso_code: "US", country: "United States of America" },
   { iso_code: "ET", country: "Ethiopia" },
   { iso_code: "FO", country: "Faroe Islands" },
   { iso_code: "FJ", country: "Fiji" },
