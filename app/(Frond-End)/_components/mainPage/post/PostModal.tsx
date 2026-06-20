@@ -262,7 +262,7 @@ function PostModal({
         ref={textareaRef}
         value={postText}
         onChange={(event) => setPostText(event.target.value)}
-        placeholder="What’s in you mind today?"
+        placeholder="What’s on your mind today?"
         rows={3}
         className="min-h-25 w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"
       />

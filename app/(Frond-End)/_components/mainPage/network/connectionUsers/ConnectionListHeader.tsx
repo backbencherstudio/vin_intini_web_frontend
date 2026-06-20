@@ -44,14 +44,14 @@ function ConnectionListHeader({ data }: any) {
     <div>
       <div className="flex flex-col gap-3 md:flex-row w-full justify-between items-center">
         <h1 className="text-base text-nowrap lg:text-xl md:block hidden font-semibold text-headerColor">
-          Total Connection{" "}
+          Total Connections{" "}
           <span className="font-normal text-grayColor1">
             ({data?.total || 0})
           </span>
         </h1>
         <div className="flex gap-4 justify-between w-full items-center">
           <h1 className="text-base md:hidden font-semibold text-headerColor">
-            Total Connection{" "}
+            Total Connections{" "}
             <span className="font-normal text-grayColor1">
               ({data?.total || 0})
             </span>

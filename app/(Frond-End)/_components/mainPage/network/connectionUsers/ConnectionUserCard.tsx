@@ -28,6 +28,9 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
       toast.error("Failed to send connection request.");
     }
   };
+
+  console.log(profile, "profile=========");
+
   return (
     <div>
       <article className="overflow-hidden group rounded-md hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 flex flex-col h-full justify-between border border-borderColor bg-white">
@@ -66,10 +69,13 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
           {mutual_connections_count > 0 && (
             <div className="mt-4 flex items-center gap-1 text-[11px] text-descriptionColor">
               <Image
-                src={emptyImage}
+                src={
+                  profile?.mutual_connections[0]?.profile_image_url ||
+                  emptyImage
+                }
                 alt="mutual"
-                width={24}
-                height={24}
+                width={50}
+                height={50}
                 className="h-5 w-5 rounded-full object-cover"
               />
               <span className="truncate">

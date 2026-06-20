@@ -23,7 +23,7 @@ function PostCard({ post, meta }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
   const [likeList, setLikeList] = useState(false);
-  const { displayText, toggleExpanded, shouldShowButton } = useTruncatedText(
+  const { displayText, isExpanded, toggleExpanded, shouldShowButton } = useTruncatedText(
     post?.description,
     { maxLength: 200 },
   );
@@ -136,7 +136,7 @@ function PostCard({ post, meta }: PostCardProps) {
             onClick={toggleExpanded}
             className="text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
           >
-            See more
+            {isExpanded ? "See less" : "See more"}
           </button>
         )}
       </div>

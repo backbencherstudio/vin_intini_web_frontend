@@ -31,6 +31,7 @@ interface GroupedOptionType {
 }
 
 const degreeOptions: OptionType[] = [
+  { value: "Other", label: "Other" },
   { value: "High School", label: "High School" },
   { value: "Associates Degree", label: "Associates Degree" },
   { value: "Bachelor's Degree", label: "Bachelor's Degree" },
@@ -41,10 +42,13 @@ const degreeOptions: OptionType[] = [
   { value: "MD", label: "MD" },
   { value: "MD-DO", label: "MD-DO" },
   { value: "MD-PhD", label: "MD-PhD" },
-  { value: "Other", label: "Other" },
 ];
 
 const fieldOfStudyOptions: GroupedOptionType[] = [
+  {
+    label: "Other",
+    options: [{ value: "Other", label: "Other" }],
+  },
   {
     label: "Psychology",
     options: [
@@ -145,7 +149,6 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
       },
       { value: "Sleep Psychiatry", label: "Sleep Psychiatry" },
       { value: "Pain Psychiatry", label: "Pain Psychiatry" },
-      { value: "Other", label: "Other" },
     ],
   },
 ];
@@ -195,7 +198,8 @@ function page() {
         >
           <div className="space-y-1.5">
             <label className="text-sm text-headerColor font-medium block">
-              Highest Degree Completed <span className="text-redColor">*</span>
+              Highest Degree In-Progress/Completed{" "}
+              <span className="text-redColor">*</span>
             </label>
             <Controller
               name="highest_degree"
