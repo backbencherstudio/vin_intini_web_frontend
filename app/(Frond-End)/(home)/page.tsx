@@ -12,9 +12,9 @@ export default function Home() {
       <Hero />
       <Features />
       <HowWeWork />
-      <Testimonials />
-      <Opportunities />
-      <OurImpact />
+      {/* <Testimonials /> */}
+      {/* <Opportunities /> */}
+      {/* <OurImpact /> */}
       <GetApp />
     </div>
   );

@@ -8,7 +8,7 @@ import Pagination from "@/components/reusable/Pagination";
 import EmploymentLoading from "./_components/EmploymentLoading";
 import { useGetEmploymentsQuery } from "@/feature/slice/academia/academiaSlice";
 import { useParams } from "next/navigation";
-import { usaStateKeyToNameMap } from "@/public/staticData";
+import { StateNames, usaStateKeyToNameMap } from "@/public/staticData";
 
 export type Employment = {
   category: "state_institution" | "private_practice";
@@ -51,7 +51,7 @@ export default function page() {
     <div className="w-full h-full grid grid-rows-[auto_1fr]">
       <div className="lg:pl-6">
         <AcademiHeader
-          title={`Employment Opportunities in ${usaStateKeyToNameMap[stateId as string]}`}
+          title={`Employment Opportunities in ${StateNames[stateId as string]}`}
         />
       </div>
       <div className="space-y-6 grid grid-rows-[1fr_auto] gap-6">
