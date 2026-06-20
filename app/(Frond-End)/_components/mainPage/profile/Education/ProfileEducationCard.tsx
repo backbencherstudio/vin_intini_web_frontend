@@ -54,9 +54,11 @@ function ProfileEducationCard({
           <p className="mt-1 text-sm text-descriptionColor">
             {item.start_year} • {item.end_year}
           </p>
-          <p className="mt-0.5 text-sm text-descriptionColor">
-            Grade: {item.grade}
-          </p>
+          {item.grade && (
+            <p className="mt-0.5 text-sm text-descriptionColor">
+              Grade: {item.grade}
+            </p>
+          )}
         </div>
       </div>
 

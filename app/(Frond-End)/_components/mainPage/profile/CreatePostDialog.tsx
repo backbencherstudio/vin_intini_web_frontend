@@ -1,5 +1,8 @@
 import RootDialog from "@/components/reusable/RootDialog";
-import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
+import {
+  resetPostComposeState,
+  setPostType,
+} from "@/feature/slice/postCompose/postComposeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PostAccessModal from "../post/PostAccessModal";
 import PostGroupListModal from "../post/PostGroupListModal";
@@ -18,14 +21,23 @@ function CreatePostDialog({
     dispatch(setPostType(type as any));
   };
 
+  const handleClose = (open: boolean) => {
+    if (!open) {
+      dispatch(resetPostComposeState());
+    }
+    setIsOpen(open);
+  };
+
   return (
     <div>
-      <RootDialog open={isOpen} setOpen={setIsOpen}>
-        {postType == "Post_write" ? (
+      <RootDialog open={isOpen} setOpen={handleClose}>
+        <div className={postType !== "Post_write" ? "hidden" : ""}>
           <PostModal setOpen={setIsOpen} setPostType={handleSetPostType} />
-        ) : postType == "post_access" ? (
+        </div>
+        <div className={postType !== "post_access" ? "hidden" : ""}>
           <PostAccessModal setPostType={handleSetPostType} />
-        ) : (
+        </div>
+        {postType === "post_group" && (
           <PostGroupListModal setPostType={handleSetPostType} />
         )}
       </RootDialog>

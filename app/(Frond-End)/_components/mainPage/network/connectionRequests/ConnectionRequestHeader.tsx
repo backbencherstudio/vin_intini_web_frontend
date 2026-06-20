@@ -15,7 +15,7 @@ function ConnectionRequestHeader() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderColor pb-2">
         <div className="flex  items-center gap-3">
           <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
-            Connection Request{" "}
+            Connection Requests{" "}
             <span className="text-base text-grayColor1 font-normal">
               ({data?.total || 0})
             </span>
