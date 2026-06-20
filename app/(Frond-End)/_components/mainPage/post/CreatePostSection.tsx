@@ -9,7 +9,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useState } from "react";
-import CreatePostDialog from "./profile/CreatePostDialog";
+import CreatePostDialog from "../profile/CreatePostDialog";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);

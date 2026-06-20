@@ -89,7 +89,7 @@ function PostAction({ post, meta }: PostCardProps) {
             onClick={handleConnect}
             disabled={isLoading || action_label !== "Connect" || isRequestSent}
             type="button"
-            className={`h-7 disabled:bg-bgColor disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+            className={`h-7 disabled:bg-bgColor text-nowrap disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}

@@ -13,7 +13,10 @@ import {
 } from "@/public/svgIcons/Icons";
 import { useDispatch, useSelector } from "react-redux";
 
-import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSlice";
+import {
+  resetPostComposeState,
+  setPostText,
+} from "@/feature/slice/postCompose/postComposeSlice";
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
@@ -38,7 +41,8 @@ function PostModal({
   setPostType?: (type: string) => void;
   postData?: any;
 }) {
-  const [postText, setPostText] = useState("");
+  const { postText = "", postVisibility, commentControl, selectedGroupIds } =
+    useSelector((state: any) => state.postCompose);
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
@@ -49,30 +53,22 @@ function PostModal({
   const [createPost, { isLoading, isError }] = useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
     useUpdatePostMutation();
-  const { postVisibility, commentControl, selectedGroupIds } = useSelector(
-    (state: any) => state.postCompose,
-  );
-
   useEffect(() => {
-    setPostText(postData?.description || "");
+    if (postData?.description) {
+      dispatch(setPostText(postData.description));
+    }
 
-    setPreviewMedia((previous) => {
-      previous.forEach((item) => {
-        if (item.isObjectUrl) {
-          URL.revokeObjectURL(item.source);
-        }
-      });
-
-      return (
-        postData?.media?.map(
+    if (postData?.media) {
+      setPreviewMedia(
+        postData.media.map(
           (media: { id: number; url: string; type: "image" | "video" }) => ({
             id: media.id,
             source: media.url,
             type: media.type,
           }),
-        ) || []
+        ),
       );
-    });
+    }
   }, [postData]);
 
   useEffect(() => {
@@ -136,7 +132,7 @@ function PostModal({
   const handleEmojiSelect = (emoji: string) => {
     const textarea = textareaRef.current;
     if (!textarea) {
-      setPostText((prev) => prev + emoji);
+      dispatch(setPostText(postText + emoji));
       return;
     }
 
@@ -144,7 +140,7 @@ function PostModal({
     const end = textarea.selectionEnd;
     const newText =
       postText.substring(0, start) + emoji + postText.substring(end);
-    setPostText(newText);
+    dispatch(setPostText(newText));
 
     // Focus textarea and set cursor after emoji
     setTimeout(() => {
@@ -205,7 +201,7 @@ function PostModal({
           URL.revokeObjectURL(item.source);
         }
       });
-      setPostText("");
+      dispatch(setPostText(""));
       setPreviewMedia([]);
       setOpen(false);
     } catch (error) {
@@ -261,7 +257,7 @@ function PostModal({
       <textarea
         ref={textareaRef}
         value={postText}
-        onChange={(event) => setPostText(event.target.value)}
+        onChange={(event) => dispatch(setPostText(event.target.value))}
         placeholder="What’s on your mind today?"
         rows={3}
         className="min-h-25 w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"

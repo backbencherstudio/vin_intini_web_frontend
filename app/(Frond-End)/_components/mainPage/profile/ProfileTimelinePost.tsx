@@ -8,7 +8,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import CreatePostSection from "../CreatePostSection";
+import CreatePostSection from "../post/CreatePostSection";
 import PostCardSkleton from "../post/PostCardSkleton";
 import ProfilePostCard from "./ProfilePostCard";
 function ProfileTimelinePost({ userId }: { userId: string | number }) {
@@ -19,7 +19,6 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
     userId: id ? id : userId,
     query: `page=1&per_page=10`,
   });
-
 
   const posts = data?.data || [];
   const swiperRef = useRef<any>(null);

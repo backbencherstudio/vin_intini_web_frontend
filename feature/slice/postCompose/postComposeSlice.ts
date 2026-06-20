@@ -6,6 +6,7 @@ export type CommentControl = "anyone" | "connections" | "no_one";
 
 interface PostComposeState {
   postType: PostType;
+  postText: string;
   postVisibility: PostVisibility;
   commentControl: CommentControl;
   selectedGroupIds: number[];
@@ -13,6 +14,7 @@ interface PostComposeState {
 
 const initialState: PostComposeState = {
   postType: "Post_write",
+  postText: "",
   postVisibility: "public",
   commentControl: "anyone",
   selectedGroupIds: [],
@@ -24,6 +26,9 @@ const postComposeSlice = createSlice({
   reducers: {
     setPostType: (state, action: PayloadAction<PostType>) => {
       state.postType = action.payload;
+    },
+    setPostText: (state, action: PayloadAction<string>) => {
+      state.postText = action.payload;
     },
     setPostVisibility: (state, action: PayloadAction<PostVisibility>) => {
       state.postVisibility = action.payload;
@@ -40,6 +45,7 @@ const postComposeSlice = createSlice({
 
 export const {
   setPostType,
+  setPostText,
   setPostVisibility,
   setCommentControl,
   setSelectedGroupIds,
