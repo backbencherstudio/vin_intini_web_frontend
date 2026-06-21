@@ -54,7 +54,10 @@ function ProfileUserConnectCard({ profile }: any) {
             {mutual_connections_count > 0 && (
               <div className="mt-2.5 mb-2.5 flex items-center gap-1 text-[11px] text-descriptionColor">
                 <Image
-                  src={emptyImage}
+                  src={
+                    profile?.mutual_connections[0]?.profile_image_url ||
+                    emptyImage
+                  }
                   alt="mutual"
                   width={24}
                   height={24}

@@ -17,7 +17,7 @@ import {
   yearOptions,
 } from "@/public/demoData/RealData";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -85,6 +85,7 @@ function ProfileEducationForm({
     handleSubmit,
     watch,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<EducationFormValues>({
     defaultValues: {
@@ -103,15 +104,27 @@ function ProfileEducationForm({
     },
   });
 
+  const isCurrent = watch("is_current");
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills =
     watch("skills") || normalizeSkillsList(initialValues?.skills_data);
 
+  useEffect(() => {
+    if (isCurrent) {
+      const current = getValues();
+      reset({ ...current, end_month: "", end_year: "" });
+    }
+  }, [isCurrent, reset, getValues]);
+
   const onSubmit = async (values: EducationFormValues) => {
     try {
+      const payload = values.is_current
+        ? { ...values, end_month: "", end_year: "" }
+        : values;
+
       const response = initialValues
-        ? await updateStudy({ id: initialValues.id, payload: values }).unwrap()
-        : await addStudy(values).unwrap();
+        ? await updateStudy({ id: initialValues.id, payload }).unwrap()
+        : await addStudy(payload).unwrap();
       toast.success(
         response?.message || initialValues
           ? "Education updated successfully."
@@ -242,6 +255,7 @@ function ProfileEducationForm({
                     onChange={field.onChange}
                     options={monthOptions}
                     placeholder="Month"
+                    isDisabled={isCurrent}
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
@@ -256,6 +270,7 @@ function ProfileEducationForm({
                     type="number"
                     options={yearOptions}
                     placeholder="Year"
+                    isDisabled={isCurrent}
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
