@@ -22,6 +22,7 @@ import { PiStudent } from "react-icons/pi";
 import ProfileEducationForm from "./Education/ProfileEducationForm";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
+import RootDialog from "@/components/reusable/RootDialog";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
   const { data, isLoading } = userId
@@ -36,6 +37,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [showImagePreview, setShowImagePreview] = useState(false);
   const coverImgRef = useRef<HTMLInputElement>(null);
   const profileImgRef = useRef<HTMLInputElement>(null);
 
@@ -114,8 +116,6 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
     );
   }
 
-
-
   return (
     <section>
       <div className=" relative h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
@@ -145,13 +145,19 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         {/* Floating Logo Box */}
         <div className="flex px-4 justify-between w-full">
           <div className="-mt-11 relative  border-2 border-white h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
-            <Image
-              src={profileImage || logoPreview}
-              className="w-full rounded-full h-full object-cover "
-              alt="Logo"
-              width={80}
-              height={80}
-            />
+            <button
+              type="button"
+              onClick={() => setShowImagePreview(true)}
+              className="w-full h-full cursor-pointer"
+            >
+              <Image
+                src={profileImage || logoPreview}
+                className="w-full rounded-full h-full object-cover"
+                alt="Logo"
+                width={80}
+                height={80}
+              />
+            </button>
             <input
               type="file"
               accept="image/*,video/*"
@@ -252,13 +258,24 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         </div>
       </div>
 
-      {isNotify && (
-        <ProfileUpdateForm
-          open={isNotify}
-          setOpen={setIsNotify}
-          profileData={profileData}
-        />
+      {showImagePreview && (
+        <RootDialog
+          open={showImagePreview}
+          setOpen={setShowImagePreview}
+          className="sm:max-w-lg overflow-hidden max-w-[90vw]"
+        >
+          <div className="p-2">
+            <Image
+              src={profileImage || logoPreview}
+              alt="Profile"
+              width={400}
+              height={400}
+              className="w-full h-auto rounded-lg object-cover"
+            />
+          </div>
+        </RootDialog>
       )}
+
       {openEducationForm && (
         <ProfileEducationForm
           open={openEducationForm}
