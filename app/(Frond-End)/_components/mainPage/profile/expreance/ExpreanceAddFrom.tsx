@@ -123,7 +123,7 @@ function ExpreanceAddFrom({
 }: ExpreanceAddFromProps) {
   const [showSkillsPicker, setShowSkillsPicker] = useState(false);
   const [addExperience, { isLoading }] = useAddExperienceMutation();
-  const { control, register, handleSubmit, watch, reset } =
+  const { control, register, handleSubmit, watch, reset, getValues } =
     useForm<ExperienceFormValues>({
       defaultValues: defaultExperienceValues,
     });
@@ -155,17 +155,30 @@ function ExpreanceAddFrom({
     );
   }, [open, initialValues, reset]);
 
+  const isCurrent = watch("is_current");
+
+  useEffect(() => {
+    if (isCurrent) {
+      const current = getValues();
+      reset({ ...current, end_month: "", end_year: "" });
+    }
+  }, [isCurrent, reset, getValues]);
+
   const descriptionCount = watch("description")?.length || 0;
   const selectedSkills = watch("skills") || [];
 
   const onSubmit = async (values: ExperienceFormValues) => {
     try {
+      const payload = values.is_current
+        ? { ...values, end_month: "", end_year: "" }
+        : values;
+
       const response = initialValues
         ? await updateExperience({
             id: initialValues.id,
-            payload: values,
+            payload,
           }).unwrap()
-        : await addExperience(values).unwrap();
+        : await addExperience(payload).unwrap();
 
       toast.success(response.message || "Experience added successfully");
     } catch (error) {
@@ -290,6 +303,7 @@ function ExpreanceAddFrom({
                     options={monthOptions}
                     allowCustomInput
                     placeholder="Month"
+                    isDisabled={isCurrent}
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
@@ -305,6 +319,7 @@ function ExpreanceAddFrom({
                     options={yearOptions}
                     allowCustomInput
                     placeholder="Year"
+                    isDisabled={isCurrent}
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                   />
                 )}
