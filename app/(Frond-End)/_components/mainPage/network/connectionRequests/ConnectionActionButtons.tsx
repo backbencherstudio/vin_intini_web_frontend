@@ -2,7 +2,6 @@
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
-  useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } from "@/feature/slice/connect/connectSlice";
@@ -16,6 +15,7 @@ import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import UserUnfollowDialog from "../UserUnfollowDialog";
+import ConnectionUnfriendDialog from "./ConnectionUnfriendDialog";
 
 interface ActionProps {
   id: number;
@@ -33,12 +33,13 @@ export const ConnectionActionButtons = ({
   isfollowedBack,
 }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUnfriend, setIsUnfriend] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
   const [requestAccept, { isLoading: isAccepting }] =
     useRequestAcceptMutation();
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
-  const [removeRequest, { isLoading: isRemoving }] = useRemoveRequestMutation();
+
   const [unfollowUser, { isLoading: isUnfollowing }] =
     useUnfollowUserMutation();
   const [followUser, { isLoading: isFollowing }] = useFollowUserMutation();
@@ -60,15 +61,6 @@ export const ConnectionActionButtons = ({
       );
     }
   };
-  const handleUnfirend = async () => {
-    try {
-      const result = await removeRequest({ id: userId }).unwrap();
-
-      toast.success(result.message || "Connection removed.");
-    } catch (error) {
-      console.error("Error opening unfollow dialog:", error);
-    }
-  };
 
   const handleUnfollow = async () => {
     try {
@@ -87,22 +79,15 @@ export const ConnectionActionButtons = ({
     }
   };
 
-  console.log(isFollower, "isFollower");
-
   const renderButtons = () => {
     switch (status) {
       case "accepted":
         return (
           <button
-            onClick={handleUnfirend}
-            disabled={isRemoving}
+            onClick={() => setIsUnfriend(true)}
             className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
           >
-            {isRemoving ? (
-              <Loader className="w-4.5 animate-spin h-4.5" />
-            ) : (
-              <UserMinusIcon className="w-4.5 h-4.5" />
-            )}
+            <UserMinusIcon className="w-4.5 h-4.5" />
           </button>
         );
 
@@ -206,6 +191,13 @@ export const ConnectionActionButtons = ({
     <>
       {renderButtons()}
       {isOpen && <UserUnfollowDialog setOpen={setIsOpen} open={isOpen} />}
+      {isUnfriend && (
+        <ConnectionUnfriendDialog
+          setOpen={setIsUnfriend}
+          open={isUnfriend}
+          userId={userId}
+        />
+      )}
     </>
   );
 };
