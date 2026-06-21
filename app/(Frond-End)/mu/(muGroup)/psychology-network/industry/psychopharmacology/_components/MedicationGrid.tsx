@@ -34,8 +34,8 @@ export const MedicationGrid = ({
   };
 
   return (
-    <div className="flex w-full flex-col items-stretch gap-4">
-      <div className="w-full min-w-0">
+    <div className=" w-full space-y-4">
+      <div className="w-full ">
         <FilterTabs
           activeCategoryId={activeCategoryId}
           onFilterChange={handleFilterChange}

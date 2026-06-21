@@ -16,7 +16,7 @@ export default function PublicationSectionPart() {
 
   return (
     <div className="flex w-full flex-col min-w-0">
-      <div className="flex w-full flex-col items-stretch gap-10 pt-2 lg:w-138.5">
+      <div className="flex w-full flex-col items-stretch gap-10 pt-2 ">
         {isLoading ? (
           <IndustrySkleton />
         ) : (

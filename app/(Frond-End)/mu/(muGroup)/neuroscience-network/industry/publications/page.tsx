@@ -14,7 +14,7 @@ export default function PublicationsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex w-full flex-col items-start gap-10 pt-6">
+        <div className="flex w-full flex-col items-start gap-10 py-6">
           <div className="flex w-full flex-col items-start gap-6">
             <PublicationSectionPart />
           </div>

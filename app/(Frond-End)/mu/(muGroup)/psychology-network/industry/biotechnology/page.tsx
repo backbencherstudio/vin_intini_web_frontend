@@ -20,7 +20,7 @@ export default function BiotechnologyPage() {
           />
         </div>
 
-        <div className="flex w-full flex-col items-stretch gap-10 py-6 lg:w-138.5">
+        <div className="flex w-full flex-col items-stretch gap-10 py-6 ">
           {isLoading ? (
             <IndustrySkleton />
           ) : (

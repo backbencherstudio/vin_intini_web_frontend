@@ -20,7 +20,7 @@ export default function IndustryLayout({
       {/* Desktop Layout - Modified for sticky sidebars */}
       <div className="hidden w-full gap-6 pt-10 lg:flex">
         {/* Left Sidebar - Sticky with proper offset */}
-        <div className="sticky top-24 h-fit w-66 shrink-0">
+        <div className="sticky top-24 h-fit  shrink-0">
           <IndustrySidebar />
         </div>
 

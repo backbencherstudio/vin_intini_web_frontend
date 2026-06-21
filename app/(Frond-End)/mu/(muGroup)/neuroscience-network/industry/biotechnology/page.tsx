@@ -10,8 +10,8 @@ export default function BiotechnologyPage() {
   const { data, isLoading } =
     useGetNeuroscienceBiotechnologyQuery("biotechnology");
   return (
-    <div className="flex w-full flex-col min-w-0">
-      <div className="flex w-full flex-1 flex-col min-w-0">
+    <div className="">
+      <div className="">
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
@@ -21,13 +21,13 @@ export default function BiotechnologyPage() {
         </div>
 
         {/* Added min-w-0 to keep the Assessments inside the available width */}
-        <div className="flex w-full flex-col items-stretch gap-10 pt-6 lg:w-138.5">
+        <div className="flex w-full flex-col  gap-10 py-6 ">
           {isLoading ? (
             <IndustrySkleton />
           ) : (
             data?.data?.sections?.map((section: IndustryDataType) => (
               <div
-                className="flex w-full flex-col items-stretch gap-6"
+                className="flex w-full flex-col  gap-6"
                 key={section?.id}
               >
                 <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">

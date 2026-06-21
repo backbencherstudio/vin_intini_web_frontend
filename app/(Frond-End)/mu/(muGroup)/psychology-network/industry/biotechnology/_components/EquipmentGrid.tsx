@@ -16,7 +16,7 @@ export const EquipmentGrid = ({
   );
   const [currentPage, setCurrentPage] = useState(0);
 
-  const ITEMS_PER_PAGE = 2;
+  const ITEMS_PER_PAGE = 4;
 
   const allItems = useMemo(() => {
     const categories =
@@ -35,7 +35,7 @@ export const EquipmentGrid = ({
 
   return (
     <div className="flex w-full flex-col items-stretch gap-4">
-      <div className="w-full min-w-0">
+      <div className="w-full ">
         <FilterTabs
           activeCategoryId={activeCategoryId}
           onFilterChange={handleFilterChange}
