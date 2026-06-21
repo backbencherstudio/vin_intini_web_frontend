@@ -19,7 +19,7 @@ export default function PsychopharmacologyPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex w-full flex-col items-start gap-10 pt-6">
+        <div className="flex w-full flex-col items-start gap-10 py-6">
          {data?.data?.sections?.map((section: IndustryDataType) => (
             <div
               className="flex w-full flex-col items-stretch gap-6"
