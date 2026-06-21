@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { PsychologyField } from "../_mock/psychologyData";
+
 
 interface PsychologyFieldItemProps {
-  field: PsychologyField;
+  field: any;
 }
 
 export const PsychologyFieldItem = ({ field }: PsychologyFieldItemProps) => {

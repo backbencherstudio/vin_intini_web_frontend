@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { PsychologyField } from "../_mock/psychologyData";
 import { PsychologyFieldItem } from "./PsychologyFieldItem";
 import { PsychologyPagination } from "./PsychologyPagination";
 
 interface PsychologyFieldsListProps {
-  fields: PsychologyField[];
+  fields: any[];
   searchQuery?: string;
 }
 

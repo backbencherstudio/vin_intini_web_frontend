@@ -14,7 +14,7 @@ export const FilterTabs = ({
   industryData,
 }: FilterTabsProps) => {
   return (
-    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1]">
+    <div className="w-full min-w-0 overflow-x-auto border-y border-[#E0E0E1] scrollbar-primary">
       <div className="flex w-max">
         <button
           onClick={() => onFilterChange("all")}

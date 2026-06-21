@@ -81,7 +81,7 @@ export const NeuroscienceFieldsList = ({
       </div>
 
       {/* Pagination - Always show with 3 pages */}
-      <div className="hidden flex justify-end">
+      <div className=" flex justify-end">
         <NeurosciencePagination
           currentPage={currentPage}
           totalPages={DEMO_TOTAL_PAGES}

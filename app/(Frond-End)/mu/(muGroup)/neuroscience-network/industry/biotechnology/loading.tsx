@@ -21,7 +21,7 @@ const SectionSkeleton = ({ title }: { title: string }) => (
 
 export default function BiotechnologyLoading() {
   return (
-    <div className="flex xl:max-w-196.5 lg:max-w-[455px] flex-col py-8 lg:py-10 gap-10">
+    <div className="flex xl:max-w-196.5 lg:max-w-113.75 flex-col py-8 lg:py-10 gap-10">
       <SectionSkeleton title="Loading Section..." />
       <SectionSkeleton title="Loading Section..." />
     </div>

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { IndustryCategoryType } from "@/lib/type";
-import { PaginationDots } from "../../_components";
 import { EquipmentCard } from "./EquipmentCard";
 import { FilterTabs } from "./FilterTabs";
 
@@ -12,20 +11,12 @@ export const EquipmentGrid = ({
 }: {
   industryData: IndustryCategoryType[];
 }) => {
-  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">("all");
+  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
+    "all",
+  );
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
 
-  useEffect(() => {
-    const updateItemsPerPage = () => {
-      setItemsPerPage(
-        window.innerWidth >= 1024 && window.innerWidth < 1280 ? 2 : 4,
-      );
-    };
-    updateItemsPerPage();
-    window.addEventListener("resize", updateItemsPerPage);
-    return () => window.removeEventListener("resize", updateItemsPerPage);
-  }, []);
+  const ITEMS_PER_PAGE = 2;
 
   const allItems = useMemo(() => {
     const categories =
@@ -35,33 +26,10 @@ export const EquipmentGrid = ({
     return categories.flatMap((cat) => cat.industry_item);
   }, [industryData, activeCategoryId]);
 
-  const paginatedItems = useMemo(() => {
-    const end = (currentPage + 1) * itemsPerPage;
-    return allItems.slice(0, end);
-  }, [allItems, currentPage, itemsPerPage]);
+  const visibleItems = allItems.slice(0, (currentPage + 1) * ITEMS_PER_PAGE);
 
   const handleFilterChange = (id: number | "all") => {
     setActiveCategoryId(id);
-    setCurrentPage(0);
-  };
-
-  const getActiveDotIndex = () => {
-    if (activeCategoryId === "all") return 0;
-    const index = industryData.findIndex(
-      (cat) => cat.id === activeCategoryId,
-    );
-    return index >= 0 ? index + 1 : 0;
-  };
-
-  const handleDotClick = (index: number) => {
-    if (index === 0) {
-      setActiveCategoryId("all");
-    } else {
-      const category = industryData[index - 1];
-      if (category) {
-        setActiveCategoryId(category.id);
-      }
-    }
     setCurrentPage(0);
   };
 
@@ -76,7 +44,7 @@ export const EquipmentGrid = ({
       </div>
 
       <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2">
-        {paginatedItems.map((item, index) => (
+        {visibleItems.map((item, index) => (
           <EquipmentCard key={item.id} card={item} priority={index < 2} />
         ))}
       </div>
@@ -89,26 +57,16 @@ export const EquipmentGrid = ({
         </div>
       )}
 
-      {allItems.length > (currentPage + 1) * itemsPerPage && (
+      {visibleItems.length < allItems.length && (
         <div className="flex w-full items-center justify-center pt-2">
           <button
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="flex items-center justify-center gap-1 rounded-lg border border-[#DFE1E7] px-3 py-1 xl:hidden"
+            className="mt-4 px-4 py-2 cursor-pointer disabled:bg-bgColor disabled:text-grayColor1 disabled:cursor-not-allowed  bg-primaryColor text-white rounded"
           >
-            <span className="font-['Segoe_UI'] text-sm text-[#4A4C56]">
-              Load more
-            </span>
+            Load more
           </button>
         </div>
       )}
-
-      <div className="flex w-full justify-center py-6">
-        <PaginationDots
-          total={industryData.length + 1}
-          activeIndex={getActiveDotIndex()}
-          onDotClick={handleDotClick}
-        />
-      </div>
     </div>
   );
 };

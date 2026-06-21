@@ -314,3 +314,21 @@ body {
 .leaflet-popup-content{
   margin: 0 !important;
 }
+
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e0e0e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #04a1b7;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0390a3;
+}
