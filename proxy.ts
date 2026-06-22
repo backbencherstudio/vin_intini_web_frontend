@@ -67,6 +67,16 @@ export async function proxy(request: NextRequest) {
     return redirectToLogin();
   }
 
+  // If token exists, block access to auth pages immediately (no need to wait for API)
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/forgot-password")
+  ) {
+    return redirectToHome();
+  }
+
   // Validate token and get user info
   try {
     const userResponse = await fetch(`${API_BASE_URL}/me`, {
@@ -85,16 +95,6 @@ export async function proxy(request: NextRequest) {
     const userData = await userResponse.json();
 
     if (userData && userData.success) {
-      // Authenticated users should not access login/root pages
-      if (
-        pathname === "/" ||
-        pathname.startsWith("/login") ||
-        pathname.startsWith("/sign-up") ||
-        pathname.startsWith("/forgot-password")
-      ) {
-        return redirectToHome();
-      }
-
       // If onboarding is incomplete, redirect to onboarding for protected pages
       if (!userData?.is_onboarding) {
         if (!pathname.startsWith("/onboarding")) {
