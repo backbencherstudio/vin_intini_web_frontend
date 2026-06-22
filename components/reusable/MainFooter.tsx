@@ -33,15 +33,15 @@ function MainFooter() {
 
           <div className="h-px w-full bg-[#c9cccf]" />
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
+          <div className="flex flex-col gap-4 sm:flex-row justify-center sm:items-end sm:justify-between">
+            <div className="flex flex-col items-center sm:items-start space-y-2">
               <p className="mb-3 text-[14px] md:text-base font-medium text-primaryColor">
                 Communicate. Collaborate. Connect.
               </p>
               <SocialShare />
             </div>
 
-            <p className="text-right text-sm text-[#A5A5AB]">
+            <p className="sm:text-right text-center text-sm text-[#A5A5AB]">
               &copy; {year} Mind Unite, All right Reserved.
             </p>
           </div>

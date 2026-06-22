@@ -33,7 +33,7 @@ export default function Footer() {
             <SocialShare />
           </div>
           <p className="text-center sm:text-start text-[#A5A5AB] text-sm font-light leading-[140%] tracking-[0.07px]">
-            © 2026 Mind Unite, All right Reserved.
+            © {new Date().getFullYear()} Mind Unite, All right Reserved.
           </p>
         </div>
       </div>
