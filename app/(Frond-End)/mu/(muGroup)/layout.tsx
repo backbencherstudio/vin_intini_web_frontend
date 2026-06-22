@@ -8,13 +8,7 @@ export default function FrontEndLayout({
 }) {
   return (
     <div className="h-full">
-      <div className="h-full w-full grid">
-        <div className="">
-          <div className="col-span-8 h-full">
-            <Suspense fallback={<Loading />}>{children}</Suspense>
-          </div>
-        </div>
-      </div>
+      <Suspense fallback={<Loading />}>{children}</Suspense>
     </div>
   );
 }

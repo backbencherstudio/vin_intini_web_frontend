@@ -18,17 +18,15 @@ export default function IndustryLayout({
       {/* Desktop Layout - Modified for sticky sidebars */}
       <div className="hidden w-full gap-6 pt-10 lg:flex">
         {/* Left Sidebar - Sticky with proper offset */}
-        <div className="sticky top-24 h-fit w-66 shrink-0">
+        <div className="sticky top-24 h-fit shrink-0">
           <IndustrySidebar />
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="min-w-0 flex-1">
-          {children}
-        </div>
+        <div className="min-w-0 flex-1">{children}</div>
 
         {/* Right Sidebar - Sticky with proper offset */}
-        <div className="sticky top-24 h-fit w-85.5 shrink-0">
+        <div className="sticky top-24 h-fit w-[342px] shrink-0">
           <PartnersSidebar />
         </div>
       </div>

@@ -53,7 +53,7 @@ export const IndustrySidebar = () => {
   return (
     <>
       {/* Desktop View - Shows from lg (1024px) and above */}
-      <div className="hidden h-full min-h-screen w-full max-w-66 flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex lg:w-66">
+      <div className="hidden h-full min-h-screen w-full  flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex ">
         <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
           <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
             Industries
