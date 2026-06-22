@@ -8,7 +8,7 @@ function layout({ children }: { children: React.ReactNode }) {
         <div className="xl:col-span-8 lg:col-span-6 col-span-12 ">
           {children}
         </div>
-        <div className="hidden lg:block col-span-3  lg:h-[calc(100vh-5rem)] lg:sticky lg:top-19  lg:overflow-y-auto self-start border-l border-[#D2D2D5] pl-6 h-full">
+        <div className="hidden lg:block col-span-3  lg:h-[calc(100vh-5rem)] lg:sticky lg:top-19  lg:overflow-y-auto scrollbar-hide self-start border-l border-[#D2D2D5] pl-6 h-full">
           <ProfileSidebar />
         </div>
       </div>
