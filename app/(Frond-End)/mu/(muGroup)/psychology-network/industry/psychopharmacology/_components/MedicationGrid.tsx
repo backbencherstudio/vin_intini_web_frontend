@@ -34,7 +34,7 @@ export const MedicationGrid = ({
   };
 
   return (
-    <div className=" w-full space-y-4">
+    <div className=" w-full space-y-4 min-w-0">
       <div className="w-full ">
         <FilterTabs
           activeCategoryId={activeCategoryId}

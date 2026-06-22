@@ -43,9 +43,9 @@ export const PartnersSidebar = () => {
   };
 
   return (
-    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-[#F8FAFB] p-5 lg:h-253.5  rounded-lg border border-[#ECEFF3]">
+    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-[#F8FAFB] p-5  rounded-lg border border-[#ECEFF3]">
       {/* Header */}
-      <div className="flex w-full flex-col items-start gap-2 self-stretch">
+      <div className="flex w-full flex-col items-start gap-2 ">
         <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
           Mind Unite Partners
         </h3>
@@ -63,13 +63,13 @@ export const PartnersSidebar = () => {
       </div>
 
       {/* Mobile View - Horizontal Scrollable Cards */}
-      <div className="w-full min-w-0 flex flex-col gap-4 lg:hidden">
+      <div className="w-full  flex flex-col gap-4 lg:hidden">
         <div
-          className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide"
+          className="flex w-full   gap-4 overflow-x-auto scrollbar-hide"
           onScroll={handleScroll}
         >
           {data?.partners?.map((partner) => (
-            <div key={partner.id} className="w-full shrink-0 snap-center">
+            <div key={partner.id} className="w-full  snap-center">
               <PartnerCard partner={partner} isMobile />
             </div>
           ))}

@@ -16,13 +16,13 @@ export default function PublicationSectionPart() {
 
   return (
     <div className="flex w-full flex-col min-w-0">
-      <div className="flex w-full flex-col items-stretch gap-10 pt-2 ">
+      <div className="flex w-full flex-col items-stretch gap-10 pt-2 min-w-0">
         {isLoading ? (
           <IndustrySkleton />
         ) : (
           data?.data?.sections?.map((section: IndustryDataType) => (
             <div
-              className="flex w-full flex-col items-stretch gap-6"
+              className="flex w-full flex-col items-stretch gap-6 min-w-0"
               key={section?.id}
             >
               {/* <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">

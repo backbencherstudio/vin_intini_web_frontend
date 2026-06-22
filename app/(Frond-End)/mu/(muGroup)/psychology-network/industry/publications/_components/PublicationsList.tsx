@@ -11,7 +11,7 @@ export const PublicationsList = ({
 
 
   return (
-    <div className="flex w-full flex-col items-stretch gap-4">
+    <div className="flex w-full flex-col items-stretch gap-4 min-w-0">
       {/* <div className="w-full min-w-0">
         <FilterTabs
           activeCategoryId={activeCategoryId}

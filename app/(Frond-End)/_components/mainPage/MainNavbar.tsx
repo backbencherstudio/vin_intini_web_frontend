@@ -104,7 +104,7 @@ export default function MainNavbar() {
   };
 
   return (
-    <header className="py-2.5 px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
+    <header className="py-2.5 md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/mu/home">
           <Image
@@ -112,7 +112,7 @@ export default function MainNavbar() {
             alt="Logo"
             width={250}
             height={150}
-            className="max-w-59.5 w-full h-auto"
+            className="md:max-w-59.5 max-w-40 w-full h-auto"
             priority
           />
         </Link>
@@ -204,7 +204,7 @@ export default function MainNavbar() {
           <UserHeaderInfo />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-2xl text-headerColor focus:outline-none"
+            className="text-2xl border p-0.5 rounded text-headerColor focus:outline-none"
           >
             {menuOpen ? <HiX /> : <HiOutlineMenu />}
           </button>
@@ -219,10 +219,10 @@ export default function MainNavbar() {
       >
         <div className="absolute top-0 right-0 h-full max-w-[320px] w-[80%] bg-primaryColor p-4">
           <div className="mb-2 flex w-full items-center justify-between">
-            <Image src={mainLogo} alt="Logo" width={50} height={50} />
+            <Image src={mainLogo} alt="Logo" width={150} height={150} />
             <button
               aria-label="close-menu"
-              className="absolute top-4 right-4 z-10 text-white"
+              className="absolute top-4  right-4 z-10 text-white"
               onClick={() => setMenuOpen(false)}
             >
               <HiX className="text-2xl text-whiteColor" />
