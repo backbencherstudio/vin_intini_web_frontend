@@ -1,5 +1,6 @@
 "use client";
 import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
+import RootDialog from "@/components/reusable/RootDialog";
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
   useGetMyProfileQuery,
@@ -22,7 +23,6 @@ import { PiStudent } from "react-icons/pi";
 import ProfileEducationForm from "./Education/ProfileEducationForm";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
-import RootDialog from "@/components/reusable/RootDialog";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
   const { data, isLoading } = userId
@@ -286,6 +286,13 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         <ExpreanceAddFrom
           open={openExperienceForm}
           setOpen={setOpenExperienceForm}
+        />
+      )}
+      {isNotify && (
+        <ProfileUpdateForm
+          profileData={profileData}
+          open={isNotify}
+          setOpen={setIsNotify}
         />
       )}
     </section>
