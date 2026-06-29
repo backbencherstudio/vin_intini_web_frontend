@@ -8,7 +8,7 @@ export default function PublicationsPage() {
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            title="Newly Published"
+            title="Publications"
             description="Explore new publications from the brain health community."
           />
         </div>
