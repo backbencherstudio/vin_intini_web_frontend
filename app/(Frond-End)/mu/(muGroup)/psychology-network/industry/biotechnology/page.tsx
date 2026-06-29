@@ -15,7 +15,7 @@ export default function BiotechnologyPage() {
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            title="Biotechnology Industry"
+            title="Biotechnology"
             description="Explore the latest biotech equipment releases advancing brain health research and treatment."
           />
         </div>
