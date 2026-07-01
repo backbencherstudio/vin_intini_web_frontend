@@ -14,7 +14,7 @@ export default function PsychopharmacologyPage() {
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            title="Psychopharmacology & Psychotropics"
+            title="Psychotropics"
             description="Explore the latest psychopharmacology and psychotropic releases advancing brain health research and treatment."
           />
         </div>
@@ -25,10 +25,7 @@ export default function PsychopharmacologyPage() {
             <IndustrySkleton />
           ) : (
             data?.data?.sections?.map((section: IndustryDataType) => (
-              <div
-                className="flex w-full flex-col  gap-6"
-                key={section?.id}
-              >
+              <div className="flex w-full flex-col  gap-6" key={section?.id}>
                 <h3 className=" font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
                   {section?.name || "Section Title"}
                 </h3>

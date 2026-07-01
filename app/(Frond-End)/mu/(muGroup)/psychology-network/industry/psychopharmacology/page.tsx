@@ -14,7 +14,7 @@ export default function PsychopharmacologyPage() {
         {/* Desktop Header - Hidden on mobile */}
         <div className="hidden md:block">
           <IndustryHeader
-            title="Psychopharmacology"
+            title="Psychotropics"
             description="Explore the latest psychopharmacology and psychotropic releases advancing brain health research and treatment."
           />
         </div>
