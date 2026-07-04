@@ -103,7 +103,7 @@ export const ConnectionActionButtons = ({
               </button>
             ) : identyConnection === "accept" ? (
               <Link
-                href={`/mu/profile/${id}`}
+                href={`/mu/profile/${userId}`}
                 className={BUTTON_STYLES.primary}
               >
                 View profile
