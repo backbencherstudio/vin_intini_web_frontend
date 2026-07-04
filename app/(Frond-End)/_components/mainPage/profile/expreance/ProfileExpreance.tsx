@@ -16,7 +16,7 @@ function ProfileExpreance({ userId }: { userId?: string }) {
     ? useGetExperienceListByIdQuery(userId)
     : useGetExperienceQuery("experience");
   const profileData = data?.data || [];
-  console.log(data?.is_own_experience, "check experience own");
+
 
   return (
     <section className=" pb-4">

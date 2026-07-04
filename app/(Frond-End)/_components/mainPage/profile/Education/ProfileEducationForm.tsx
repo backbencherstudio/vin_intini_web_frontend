@@ -291,13 +291,13 @@ function ProfileEducationForm({
 
           <ReusableInput
             id="grade"
-            label="Grade"
+            label="GPA"
             type="number"
             inputMode="decimal"
             step="0.01"
             min="2"
             max="5"
-            placeholder="Grade"
+            placeholder="GPA (e.g., 3.75)"
             {...register("grade", {
               validate: (value) => {
                 if (!value) return true;

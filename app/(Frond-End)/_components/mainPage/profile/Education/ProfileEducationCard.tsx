@@ -17,6 +17,7 @@ function ProfileEducationCard({
   const handleEdite = (item: EducationType) => {
     setIsEditOpen(true);
   };
+
   return (
     <article className={`py-4  border-b border-borderColor`}>
       <div className="flex items-start gap-2.5">
@@ -52,11 +53,12 @@ function ProfileEducationCard({
             {item.degree} • {item.field_study}
           </p>
           <p className="mt-1 text-sm text-descriptionColor">
-            {item.start_year} • {item.end_year}
+            {item.start_year} •{" "}
+            {item?.is_current ? item?.status : item.end_year}
           </p>
           {item.grade && (
             <p className="mt-0.5 text-sm text-descriptionColor">
-              Grade: {item.grade}
+              GPA: {item.grade}
             </p>
           )}
         </div>
