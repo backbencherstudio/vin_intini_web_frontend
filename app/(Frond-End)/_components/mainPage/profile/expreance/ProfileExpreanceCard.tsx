@@ -1,5 +1,4 @@
 import { DeleteIcon, EditeIcon } from "@/public/svgIcons/Icons";
-import { Dot } from "lucide-react";
 import { useState } from "react";
 import ExpreanceAddFrom from "./ExpreanceAddFrom";
 import ExpreanceDataDelete from "./ExpreanceDataDelete";
@@ -53,11 +52,7 @@ function ProfileExpreanceCard({
               </div>
             </div>
             <p className="mt-1 flex items-center gap- text-sm text-descriptionColor">
-              {item.starting_date}
-              <Dot />
-              <span> {item.is_current ? " Still working" : " "}</span>
-              {item.is_current && <Dot />}
-              <span>{item.end_date}</span>
+              {item.timeline}
             </p>
             <p className="mt-0.5 capitalize text-sm text-descriptionColor">
               {item.location || "Location"}

@@ -1,6 +1,6 @@
+import dayjs from "@/lib/dayjs";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import dayjs from "@/lib/dayjs";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -33,18 +33,14 @@ export const formatPostDate = (date: string) => {
   const postDate = dayjs(date);
   const now = dayjs();
   const diffDays = now.diff(postDate, "day");
-    if (diffDays >= 365) {
-      const years = now.diff(postDate, "year");
-      return years === 1 ? "1 year ago" : `${years} years ago`;
-    }
+  if (diffDays >= 365) {
+    const years = now.diff(postDate, "year");
+    return years === 1 ? "1 year ago" : `${years} years ago`;
+  }
 
-    if (diffDays >= 30) {
-      const months = now.diff(postDate, "month");
-      return months === 1 ? "1 month ago" : `${months} months ago`;
-    }
-  
-    if (diffDays >= 7) {
-    return postDate.format("YYYY-MM-DD HH:mm:ss");
+  if (diffDays >= 30) {
+    const months = now.diff(postDate, "month");
+    return months === 1 ? "1 month ago" : `${months} months ago`;
   }
 
   return postDate.fromNow();
@@ -76,7 +72,6 @@ export const formatNumber = ({
     maximumFractionDigits: 0,
   }).format(Number(value));
 
-
 export const formatNumberIntoK = ({
   type,
   value,
@@ -86,10 +81,12 @@ export const formatNumberIntoK = ({
 }) => {
   const num = Number(value);
   if (num >= 1000) {
-    return new Intl.NumberFormat(type || "en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(Math.floor(num / 1000)) + "K";
+    return (
+      new Intl.NumberFormat(type || "en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(Math.floor(num / 1000)) + "K"
+    );
   }
   return new Intl.NumberFormat(type || "en-US", {
     minimumFractionDigits: 0,
