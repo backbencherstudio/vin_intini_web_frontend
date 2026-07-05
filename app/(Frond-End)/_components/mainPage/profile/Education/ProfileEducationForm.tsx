@@ -321,8 +321,8 @@ function ProfileEducationForm({
 
           <div>
             <ReusableTextarea
-              label="Activities and societies"
-              placeholder="Activities and societies"
+              label="Honors, Activities, and Societies"
+              placeholder="e.g. Valedictorian/Salutatorian, Summa/Magna/Cum Laude, President’s/Dean’s List, Highest/High Honor, Psi Chi, Nu Rho Psi, Chi Sigma Iota, etc."
               maxLength={2500}
               {...register("activities")}
               className="min-h-28 w-full rounded-lg border border-borderColor bg-white px-3 py-2 text-base text-descriptionColor outline-none"
