@@ -10,6 +10,7 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { cn } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
 import {
+  AboutIcon,
   ClinicalIcon,
   ContactUsIcon,
   GlobalIcon,
@@ -51,6 +52,8 @@ export default function MainNavbar() {
 
   const menuItems: MenuItem[] = [
     { label: "Home", slug: "/mu/home", icon: HomeIcon },
+    { label: "About Us", slug: "/mu/about-us", icon: AboutIcon },
+
     { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
     { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
     {

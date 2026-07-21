@@ -19,7 +19,7 @@ export default function Features() {
                                 <h1 className="text-blackColor text-lg sm:text-3xl md:text-lg lg:text-3xl xl:text-5xl font-semibold leading-[130%] tracking-[-0.96px] max-w-72.5">Why Choose Mind Unite?</h1>
                                 <p className="text-[#404040] text-xs sm:text-base md:text-xs xl:text-sm font-normal leading-[160%] tracking-[-0.5px] max-w-72.5">Everything you need to build your career in the mind sciences, all in one platform.</p>
                             </div>
-                            <JoinButton title="Join Now" redirectUrl="/sign-up"/>
+                            <JoinButton title="Join Now" redirectUrl="/sign-up" />
                         </div>
                         <div className="">
                             <Image
