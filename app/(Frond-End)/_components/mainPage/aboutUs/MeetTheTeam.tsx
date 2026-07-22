@@ -66,7 +66,7 @@ export default function MeetTheTeam() {
                 </div>
 
                 {/* Right */}
-                <div className="flex min-h-[650px] items-center justify-center bg-[#F6F8FA] p-5  md:p-10">
+                <div className="flex min-h-[550px] items-center justify-center bg-[#F6F8FA] p-5  md:p-10">
                     <div className="grid grid-cols-4 gap-[2px]">
                         {demoImages.map((image, index) => (
                             <Image

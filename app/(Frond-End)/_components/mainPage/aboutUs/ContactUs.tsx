@@ -9,6 +9,7 @@ import coin5 from "../../../../../public/images/coins/coins5.png";
 import coin6 from "../../../../../public/images/coins/coins6.png";
 import coin7 from "../../../../../public/images/coins/coins7.png"
 import React from 'react'
+import ReusableTextarea from '@/components/reusable/InputFiled/TextAreaField';
 
 const coinImages = [
     coin1,
@@ -58,13 +59,13 @@ export default function ContactUs() {
 
                 <div className='space-y-4 bg-[#FFFFFF] max-w-[668px] min-w-full'>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                        <ReusableInput id="name" label="Full Name*" className='rounded-xl' />
-                        <ReusableInput id="Phone" label="Phone*" className='rounded-xl' />
-                        <ReusableInput id="email" label="Email*" className='rounded-xl' />
-                        <ReusableInput id="address" label="Address*" className='rounded-xl' />
+                        <ReusableInput id="name" label="Full Name*" className='rounded-xl' placeholder='Your full name' />
+                        <ReusableInput id="Phone" label="Phone*" className='rounded-xl' placeholder='+1 0000 000 000' />
+                        <ReusableInput id="email" label="Email*" className='rounded-xl' placeholder='Enter your email' />
+                        <ReusableInput id="address" label="Address*" className='rounded-xl' placeholder='123 Main Street, City, Country' />
                     </div>
-                    <ReusableInput id="subject" label="Subject*" className='rounded-xl' />
-                    <ReusableInput id="message" label="Message*" className='rounded-xl' />
+                    <ReusableInput id="subject" label="Subject*" className='rounded-xl' placeholder='Your subject' />
+                    <ReusableTextarea id="message" label="Message*" className='rounded-xl h-[140px] px-2 py-3 border w-full' placeholder='Your message here...' />
                     <button className="w-full py-3 bg-[#04A1B7] rounded-xl text-white text-base font-medium">Send Message</button>
                 </div>
             </div>
