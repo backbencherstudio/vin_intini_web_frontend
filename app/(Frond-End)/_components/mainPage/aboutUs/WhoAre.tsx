@@ -1,13 +1,23 @@
-import { MonitorsIcon, OurVisionIcon, StrategyIcon } from '@/public/svgIcons/Icons';
+"use client"
+
 import React from 'react'
+import Image from 'next/image'
+
+import { useGetAboutUsQuery } from '@/feature/slice/aboutUs/aboutUs';
+import { MonitorsIcon, OurVisionIcon, StrategyIcon } from '@/public/svgIcons/Icons';
 
 export default function WhoAre() {
+    const { data, error, isLoading } = useGetAboutUsQuery({});
+
+    const aboutUs = data?.data?.founder || [];
+    const vedio = data?.data?.core_values || [];
+
+
     const visionMissionStrategy = [
         {
             id: 1,
             title: "Our Vision",
-            description:
-                "Empowering researchers, academia, and industry professionals through meaningful knowledge sharing and networking.",
+            description: vedio?.vision,
             cardBg: "#E2FBFF",
             iconBg: "#BCF3FB",
             icon: OurVisionIcon,
@@ -15,8 +25,7 @@ export default function WhoAre() {
         {
             id: 2,
             title: "Our Mission",
-            description:
-                "To become the world's leading collaborative platform for neuroscience, connecting experts and improving healthcare through innovation.",
+            description: vedio?.mission,
             cardBg: "#E4EEFF",
             iconBg: "#CEDEFC",
             icon: MonitorsIcon,
@@ -24,48 +33,76 @@ export default function WhoAre() {
         {
             id: 3,
             title: "Our Strategy",
-            description:
-                "Advance neuroscience research by fostering collaboration within a unified ecosystem designed to improve global health.",
+            description: vedio?.strategy,
             cardBg: "#F8F2FF",
             iconBg: "#E9DDF6",
             icon: StrategyIcon,
         },
     ];
     return (
-        <div className=''>
-            <div className='py-8 md:py-12 lg:py-25'>
-                <div>
-                    <h3 className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-semibold leading-[130%] tracking-[-0.96px] text-[#0B0B0B]">Who We Are?</h3>
-                    <p className="text-center text-base sm:text-[17px] lg:text-lg font-normal leading-[160%] tracking-[-0.5px] text-[#404040] mt-3">Everything you need to build your career in the mind sciences, all in one platform.</p>
+        <div className='w-full py-0 md:py-12 lg:py-25'>
+            <div className='container mx-auto px-4 md:px-6 lg:px-8'>
+
+                <div className='grid grid-cols-1 md:grid-cols-12 gap-8 pb-4  items-center'>
+
+                    <div className='flex col-span-9 md:col-span-4'>
+                        <div className='relative w-full h-80 rounded-lg overflow-hidden'>
+                            <Image
+                                src={aboutUs.photo_url}
+                                alt='Founder'
+                                fill
+                                className='object-contain'
+                            />
+                        </div>
+                    </div>
+
+
+                    <div className='flex flex-col justify-center col-span-8'>
+                        <p className='text-sm font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-blue-500 mb-1'>{aboutUs.name}</span></p>
+
+                        <p className='text-sm font-medium text-[#404040] mb-6'>{aboutUs.designation}</p>
+
+                        <p className='text-sm font-normal leading-relaxed text-[#404040] mb-6'>
+                            {aboutUs.bio}
+                        </p>
+
+                        <p className='text-sm font-normal leading-relaxed text-[#404040] mb-8'>
+                            Together, we can build a stronger, smarter, and more connected global community.
+                        </p>
+
+
+                        <div className='text-2xl font-script text-[#404040] italic'>
+                            Founder Signature
+                        </div>
+                    </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 md:mt-8'>
+
+                {/* Vision, Mission, Strategy Cards */}
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-6 '>
                     {visionMissionStrategy.map((item) => (
                         <div
                             key={item.id}
-                            className="rounded-lg p-6"
+                            className="rounded-2xl p-8"
                             style={{ backgroundColor: item.cardBg }}
                         >
                             <div
-                                className="mb-4.5 flex h-14 w-14 p-3 items-center justify-center rounded-lg"
+                                className="mb-6 flex h-16 w-16 items-center justify-center rounded-lg"
                                 style={{ backgroundColor: item.iconBg }}
                             >
                                 <item.icon />
                             </div>
 
-                            <h3 className="text-2xl font-medium leading-[130%] tracking-[0.12px] text-[#0B0B0B]">
+                            <h3 className="text-xl font-semibold leading-relaxed text-[#0B0B0B]">
                                 {item.title}
                             </h3>
 
-                            <p className="mt-3 text-sm font-normal leading-[140%] tracking-[0.07px] text-[#404040]">
+                            <p className="mt-4 text-sm font-normal leading-relaxed text-[#404040]">
                                 {item.description}
                             </p>
                         </div>
                     ))}
                 </div>
-
             </div>
-
-
         </div>
     )
 }
