@@ -25,8 +25,8 @@ const coinImages = [
 
 export default function ContactUs() {
     return (
-        <div className='py-8 md:py-14 lg:py-25 container'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className='py-8 md:py-14 lg:py-25 '>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 container'>
                 <div className=''>
                     <h4 className='text-[#000] text-[32px] md:text-4xl lg:text-5xl font-semibold leading-normal text-center md:text-start'>Contact Us   </h4>
                     <p className='text-[#494949] text-xl font-normal leading-130% mt-2 max-w-[522px] '>We are committed to processing the information in order to contact you and talk about your project. </p>

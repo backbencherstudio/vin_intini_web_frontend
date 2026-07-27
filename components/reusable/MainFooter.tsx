@@ -1,8 +1,8 @@
-import balckImage from "@/public/black_Logo.png";
-
 import Image from "next/image";
 import Link from "next/link";
+
 import SocialShare from "./SocialShare";
+import balckImage from "@/public/black_Logo.png";
 
 function MainFooter() {
   const year = new Date().getFullYear();
@@ -41,9 +41,17 @@ function MainFooter() {
               <SocialShare />
             </div>
 
-            <p className="sm:text-right text-center text-sm text-[#A5A5AB]">
-              &copy; {year} Mind Unite, All right Reserved.
-            </p>
+            <div >
+              <p className="sm:text-right text-center text-sm text-[#A5A5AB]"> &copy; {year} Mind Unite, All right Reserved.</p>
+              <div className="flex gap-4">
+                <Link href="/term-condition">
+                  Terms & condition
+                </Link>
+                <Link href="">
+                  Privecy Policy
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

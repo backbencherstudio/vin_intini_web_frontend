@@ -8,6 +8,7 @@ import { MonitorsIcon, OurVisionIcon, StrategyIcon } from '@/public/svgIcons/Ico
 
 export default function WhoAre() {
     const { data, error, isLoading } = useGetAboutUsQuery({});
+    console.log(data, "ododoododo")
 
     const aboutUs = data?.data?.founder || [];
     const vedio = data?.data?.core_values || [];
@@ -40,19 +41,18 @@ export default function WhoAre() {
         },
     ];
     return (
-        <div className='w-full py-0 md:py-12 lg:py-25 '>
+        <div className='w-full py-10 md:py-12 lg:py-25 '>
             <div className='container'>
 
                 <div className='grid grid-cols-1 md:grid-cols-12 gap-4 pb-4  items-center'>
 
                     <div className='flex w-full col-span-12 md:col-span-4'>
-                        <div className='relative h-120  rounded-lg overflow-hidden'>
+                        <div className="relative w-full h-[480px] rounded-lg overflow-hidden">
                             <Image
                                 src={aboutUs.photo_url}
-                                alt='Founder'
-                                width={1000}
-                                height={1000}
-                                className='object-contain w-full  rounded-sm '
+                                alt="Founder"
+                                fill
+                                className="object-center"
                             />
                         </div>
                     </div>
@@ -72,7 +72,7 @@ export default function WhoAre() {
 
 
 
-                        <div className='text-[32px] md:text-[40px] lg:text-[64px] font-MonteCarlo text-[#777980] italic'>
+                        <div className="font-great-vibes text-[32px] md:text-[40px] lg:text-[64px] text-[#777980]">
                             {aboutUs.signature}
                         </div>
                     </div>

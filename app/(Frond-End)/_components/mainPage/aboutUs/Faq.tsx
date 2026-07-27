@@ -28,8 +28,8 @@ export default function FAQ() {
                 <Accordion type="single" collapsible defaultValue="item-3" className="space-y-3">
                     {item.map((faq, index) => (
                         <AccordionItem
-                            key={faq.id}
-                            value={`item-${faq.id}`}
+                            key={faq.question}
+                            value={`item-${faq.question}`}
                             className="border border-gray-100 rounded-sm overflow-hidden data-[state=open]:bg-[#ECEFF3]"
                         >
                             <AccordionTrigger className="px-4 md:px-8 py-4 text-left hover:no-underline text-[20px] font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">

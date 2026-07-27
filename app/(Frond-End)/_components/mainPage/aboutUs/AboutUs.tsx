@@ -13,7 +13,7 @@ export default function page() {
 
     return (
         <div className='pt-8 md:pt-10 lg:pt-[64px]'>
-            <div className='bg-[#EDF9FF]  h-[600px] flex flex-col justify-center'>
+            <div className='bg-[#EDF9FF]  py-12 flex flex-col justify-center'>
                 <div className='container'>
                     <div className='   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-10 '>
                         <div className=''>
