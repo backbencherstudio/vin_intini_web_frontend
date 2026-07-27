@@ -40,39 +40,40 @@ export default function WhoAre() {
         },
     ];
     return (
-        <div className='w-full py-0 md:py-12 lg:py-25'>
-            <div className='container mx-auto px-4 md:px-6 lg:px-8'>
+        <div className='w-full py-0 md:py-12 lg:py-25 '>
+            <div className='container'>
 
-                <div className='grid grid-cols-1 md:grid-cols-12 gap-8 pb-4  items-center'>
+                <div className='grid grid-cols-1 md:grid-cols-12 gap-4 pb-4  items-center'>
 
-                    <div className='flex col-span-9 md:col-span-4'>
-                        <div className='relative w-full h-80 rounded-lg overflow-hidden'>
+                    <div className='flex w-full col-span-12 md:col-span-4'>
+                        <div className='relative h-120  rounded-lg overflow-hidden'>
                             <Image
                                 src={aboutUs.photo_url}
                                 alt='Founder'
-                                fill
-                                className='object-contain'
+                                width={1000}
+                                height={1000}
+                                className='object-contain w-full  rounded-sm '
                             />
                         </div>
                     </div>
 
 
-                    <div className='flex flex-col justify-center col-span-8'>
-                        <p className='text-sm font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-blue-500 mb-1'>{aboutUs.name}</span></p>
+                    <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 bg-[#F8FAFB] rounded-sm h-full w-full'>
+                        <div>
+                            <p className='text-[32px] font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-primaryColor '>{aboutUs.name}</span></p>
 
-                        <p className='text-sm font-medium text-[#404040] mb-6'>{aboutUs.designation}</p>
+                            <p className='text-base font-normal text-[#0B0B0B] mb-8'>{aboutUs.designation}</p>
 
-                        <p className='text-sm font-normal leading-relaxed text-[#404040] mb-6'>
-                            {aboutUs.bio}
-                        </p>
-
-                        <p className='text-sm font-normal leading-relaxed text-[#404040] mb-8'>
-                            Together, we can build a stronger, smarter, and more connected global community.
-                        </p>
+                            <p className='text-lg font-normal leading-relaxed text-[#0B0B0B] mb-6'>
+                                {aboutUs.bio}
+                            </p>
+                        </div>
 
 
-                        <div className='text-2xl font-script text-[#404040] italic'>
-                            Founder Signature
+
+
+                        <div className='text-[32px] md:text-[40px] lg:text-[64px] font-MonteCarlo text-[#777980] italic'>
+                            {aboutUs.signature}
                         </div>
                     </div>
                 </div>

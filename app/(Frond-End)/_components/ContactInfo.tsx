@@ -1,5 +1,6 @@
-import SocialShare from "@/components/reusable/SocialShare";
 import { IoMailSharp } from "react-icons/io5";
+
+import SocialShare from "@/components/reusable/SocialShare";
 
 function ContactInfo() {
   return (

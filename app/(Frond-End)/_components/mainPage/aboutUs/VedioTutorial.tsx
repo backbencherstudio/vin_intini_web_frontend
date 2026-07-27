@@ -97,7 +97,7 @@ export default function VideoTutorial() {
     };
 
     return (
-        <div className="w-full ">
+        <div className="w-full container">
             <div className=" mx-auto py-8 md:py-12 lg:py-25  ">
                 {/* Header Section */}
                 <div className="mb-12 flex flex-col justify-center items-center md:items-start">

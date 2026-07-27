@@ -14,7 +14,7 @@ export default function FAQ() {
     const item = data?.data.faqs || [];
     console.log(item, "vai vai")
     return (
-        <div className="w-full py-8 md:py-12 lg:py-25 ">
+        <div className="w-full py-8 md:py-12 lg:py-25 container">
             <div className="mx-auto ">
                 {/* Header */}
                 <div className="text-center mb-12">
