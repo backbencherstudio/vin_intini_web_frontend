@@ -1,8 +1,10 @@
 "use client";
 
-import { Play, ChevronLeft, ChevronRight, Pause, ArrowRight, ArrowLeft } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { Play, ChevronLeft, ChevronRight, Pause, ArrowRight, ArrowLeft } from "lucide-react";
+
+import { useGetAboutUsQuery } from "@/feature/slice/aboutUs/aboutUs";
 
 const videos = [
     {
@@ -48,32 +50,38 @@ const videos = [
 ];
 
 export default function VideoTutorial() {
-    const [selectedVideo, setSelectedVideo] = useState(videos[0]);
     const [isPlaying, setIsPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    const { data, error, isLoading } = useGetAboutUsQuery({});
+
+    const vedio = data?.data?.videos || [];
+    console.log(vedio, "vedio ")
+
+    const [selectedVideo, setSelectedVideo] = useState<any>(null);
+
+    useEffect(() => {
+        if (vedio.length > 0) {
+            setSelectedVideo(vedio[0]);
+        }
+    }, [vedio]);
+
     const togglePlay = () => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
+        if (!videoRef.current) return;
+
+        if (videoRef.current.paused) {
+            videoRef.current.play();
+            setIsPlaying(true);
+        } else {
+            videoRef.current.pause();
+            setIsPlaying(false);
         }
     };
 
     const handleVideoSelect = (video: any) => {
-        if (selectedVideo.id === video.id) {
-            togglePlay();
-        } else {
-            setSelectedVideo(video);
-            setIsPlaying(false);
-            if (videoRef.current) {
-                videoRef.current.load();
-            }
-        }
+        setSelectedVideo(video);
+        setIsPlaying(false);
     };
 
     const scrollLeft = () => {
@@ -89,7 +97,7 @@ export default function VideoTutorial() {
     };
 
     return (
-        <div className="w-full ">
+        <div className="w-full container">
             <div className=" mx-auto py-8 md:py-12 lg:py-25  ">
                 {/* Header Section */}
                 <div className="mb-12 flex flex-col justify-center items-center md:items-start">
@@ -105,48 +113,50 @@ export default function VideoTutorial() {
                 </div>
 
                 {/* Main Video Player */}
-                <div className="relative rounded-3xl overflow-hidden  mb-12 aspect-video bg-[#0A0A0A] group">
-                    <video
-                        ref={videoRef}
-                        key={selectedVideo.id}
-                        src={selectedVideo.videoUrl}
-                        className="w-full h-full object-cover"
-                        poster={selectedVideo.thumbnail}
-                        onClick={togglePlay}
-                        onPlay={() => setIsPlaying(true)}
-                        onPause={() => setIsPlaying(false)}
-                        onEnded={() => setIsPlaying(false)}
-                    />
+                <div className="relative rounded-sm overflow-hidden  mb-12 aspect-video bg-[#0A0A0A] group">
+                    {selectedVideo && (
+                        <>
+                            {selectedVideo.source === "file" ? (
+                                <video
+                                    ref={videoRef}
+                                    key={selectedVideo.file_url}
+                                    src={selectedVideo.file_url}
+                                    poster={selectedVideo.thumbnail_url}
+                                    className="w-full h-full object-cover"
+                                    controls
+                                    onPlay={() => setIsPlaying(true)}
+                                    onPause={() => setIsPlaying(false)}
+                                />
+                            ) : (
+                                <iframe
+                                    key={selectedVideo.url}
+                                    src={selectedVideo.url}
+                                    className="w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            )}
+                        </>
+                    )}
 
                     {/* Play/Pause Overlay Button */}
-                    <button
-                        onClick={togglePlay}
-                        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isPlaying ? "opacity-0 group-hover:opacity-100" : "opacity-100"
-                            }`}
-                    >
-                        <div className=" rounded-full p-5 md:p-7  transition-all duration-300 hover:scale-110">
-                            {isPlaying ? (
-                                <Pause className="w-10 h-10 md:w-14 md:h-14 text-white" />
-                            ) : (
-                                <Play className="w-10 h-10 md:w-14 md:h-14 text-white fill-white ml-1" />
-                            )}
-                        </div>
-                    </button>
+                    {selectedVideo?.source === "file" && (
+                        <button
+                            onClick={togglePlay}
+                            className={`absolute inset-0 flex items-center justify-center ${isPlaying ? "opacity-0 group-hover:opacity-100" : "opacity-100"
+                                }`}
+                        >
+                            <div className="rounded-full p-5">
+                                {isPlaying ? (
+                                    <Pause className="w-10 h-10 text-white" />
+                                ) : (
+                                    <Play className="w-10 h-10 text-white fill-white" />
+                                )}
+                            </div>
+                        </button>
+                    )}
 
-                    {/* Video Info Overlay
-                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                        <p className="text-[#00B2FF] text-xs md:text-sm font-semibold tracking-wide">
-                            {selectedVideo.title}
-                        </p>
-                        <p className="text-white text-lg md:text-2xl font-bold mt-1">
-                            {selectedVideo.edition}
-                        </p>
-                    </div> */}
 
-                    {/* Video Duration Badge */}
-                    <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm text-white text-xs md:text-sm px-3 py-1.5 rounded-lg font-medium">
-                        {selectedVideo.duration}
-                    </div>
                 </div>
 
                 {/* Carousel Section */}
@@ -156,11 +166,11 @@ export default function VideoTutorial() {
                         ref={scrollContainerRef}
                         className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide scroll-smooth"
                     >
-                        {videos.map((video) => (
+                        {vedio.map((video) => (
                             <div
-                                key={video.id}
+                                key={video.file_url || video.url}
                                 onClick={() => handleVideoSelect(video)}
-                                className={`flex-shrink-0 w-[200px] md:w-[260px] bg-white rounded-sm overflow-hidden border-2 cursor-pointer transition-all duration-300  ${selectedVideo.id === video.id
+                                className={`flex-shrink-0 w-[200px] md:w-[260px] bg-white rounded-sm overflow-hidden border-2 cursor-pointer transition-all duration-300  ${selectedVideo?.title === video.title
                                     ? "border-[#04A1B7] "
                                     : "border-[#EDEDED] hover:border-[#04A1B7]/50"
                                     }`}
@@ -168,7 +178,7 @@ export default function VideoTutorial() {
                                 {/* Thumbnail */}
                                 <div className="relative group overflow-hidden">
                                     <Image
-                                        src={video.thumbnail}
+                                        src={video.thumbnail_url}
                                         alt={video.title}
                                         width={260}
                                         height={146}
@@ -197,7 +207,7 @@ export default function VideoTutorial() {
                                     </div>
 
                                     {/* Active Indicator */}
-                                    {selectedVideo.id === video.id && (
+                                    {selectedVideo?.title === video.title && (
                                         <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#04A1B7] " />
                                     )}
                                 </div>

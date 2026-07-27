@@ -216,7 +216,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
               {!profileData?.is_own_profile &&
-              !profileData?.current_position ? (
+                !profileData?.current_position ? (
                 <div>---</div>
               ) : profileData?.current_position ? (
                 <p>
@@ -239,7 +239,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               <PiStudent size={24} className="" />
 
               {!profileData?.is_own_profile &&
-              !profileData?.current_institute ? (
+                !profileData?.current_institute ? (
                 <div>---</div>
               ) : profileData?.current_institute ? (
                 <p>{profileData?.current_institute?.name}</p>

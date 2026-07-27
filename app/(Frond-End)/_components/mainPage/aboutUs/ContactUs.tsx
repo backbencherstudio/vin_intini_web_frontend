@@ -1,6 +1,7 @@
-import ReusableInput from '@/components/reusable/InputFiled/ReusableInput'
-import { Inbox, Mail } from 'lucide-react'
+import React from 'react'
 import Image from 'next/image'
+import { Inbox, Mail } from 'lucide-react'
+
 import coin1 from "../../../../../public/images/coins/coins1.png";
 import coin2 from "../../../../../public/images/coins/coins2.png";
 import coin3 from "../../../../../public/images/coins/coins3.png";
@@ -8,7 +9,8 @@ import coin4 from "../../../../../public/images/coins/coins4.png";
 import coin5 from "../../../../../public/images/coins/coins5.png";
 import coin6 from "../../../../../public/images/coins/coins6.png";
 import coin7 from "../../../../../public/images/coins/coins7.png"
-import React from 'react'
+import ContactForm from '../../ContactForm';
+import ReusableInput from '@/components/reusable/InputFiled/ReusableInput'
 import ReusableTextarea from '@/components/reusable/InputFiled/TextAreaField';
 
 const coinImages = [
@@ -24,8 +26,8 @@ const coinImages = [
 export default function ContactUs() {
     return (
         <div className='py-8 md:py-14 lg:py-25 '>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                <div className='max-w-[612px]'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 container'>
+                <div className=''>
                     <h4 className='text-[#000] text-[32px] md:text-4xl lg:text-5xl font-semibold leading-normal text-center md:text-start'>Contact Us   </h4>
                     <p className='text-[#494949] text-xl font-normal leading-130% mt-2 max-w-[522px] '>We are committed to processing the information in order to contact you and talk about your project. </p>
 
@@ -57,8 +59,8 @@ export default function ContactUs() {
                     </div>
                 </div>
 
-                <div className='space-y-4 bg-[#FFFFFF] max-w-[668px] min-w-full'>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='space-y-4 bg-[#FFFFFF] w-full'>
+                    {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <ReusableInput id="name" label="Full Name*" className='rounded-xl' placeholder='Your full name' />
                         <ReusableInput id="Phone" label="Phone*" className='rounded-xl' placeholder='+1 0000 000 000' />
                         <ReusableInput id="email" label="Email*" className='rounded-xl' placeholder='Enter your email' />
@@ -66,7 +68,9 @@ export default function ContactUs() {
                     </div>
                     <ReusableInput id="subject" label="Subject*" className='rounded-xl' placeholder='Your subject' />
                     <ReusableTextarea id="message" label="Message*" className='rounded-xl h-[140px] px-2 py-3 border w-full' placeholder='Your message here...' />
-                    <button className="w-full py-3 bg-[#04A1B7] rounded-xl text-white text-base font-medium">Send Message</button>
+                    <button className="w-full py-3 bg-[#04A1B7] rounded-xl text-white text-base font-medium">Send Message</button> */}
+
+                    <ContactForm />
                 </div>
             </div>
         </div>

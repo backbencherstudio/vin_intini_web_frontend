@@ -1,11 +1,12 @@
-import AboutUs from '@/app/(Frond-End)/_components/mainPage/aboutUs/AboutUs'
 import React from 'react'
+
 import WhoAre from '../../../_components/mainPage/aboutUs/WhoAre'
+import AboutUs from '@/app/(Frond-End)/_components/mainPage/aboutUs/AboutUs'
 import ConnectingExpertise from '@/app/(Frond-End)/_components/mainPage/aboutUs/ConnectingExpertise'
+import ContactUs from '@/app/(Frond-End)/_components/mainPage/aboutUs/ContactUs'
+import FAQ from '@/app/(Frond-End)/_components/mainPage/aboutUs/Faq'
 import MeetTheTeam from '@/app/(Frond-End)/_components/mainPage/aboutUs/MeetTheTeam'
 import VideoTutorial from '@/app/(Frond-End)/_components/mainPage/aboutUs/VedioTutorial'
-import FAQ from '@/app/(Frond-End)/_components/mainPage/aboutUs/Faq'
-import ContactUs from '@/app/(Frond-End)/_components/mainPage/aboutUs/ContactUs'
 
 export default function page() {
     return (
@@ -20,7 +21,7 @@ export default function page() {
                 <ConnectingExpertise />
             </div>
             <div>
-                <MeetTheTeam />
+                {/* <MeetTheTeam /> */}
             </div>
             <div>
                 <VideoTutorial />

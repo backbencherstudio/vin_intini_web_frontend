@@ -33,10 +33,10 @@ const commentControlOptions: Array<{
   label: string;
   icon: postAccessType["icon"];
 }> = [
-  { value: "anyone", label: "Anyone", icon: GlobalIcon },
-  { value: "connections", label: "Connections only", icon: MultiUserIcon },
-  { value: "no_one", label: "No one", icon: BanIcon },
-];
+    { value: "anyone", label: "Anyone", icon: GlobalIcon },
+    { value: "connections", label: "Connections only", icon: MultiUserIcon },
+    { value: "no_one", label: "No one", icon: BanIcon },
+  ];
 
 function PostAccessModal({
   setPostType,
@@ -133,9 +133,8 @@ function PostAccessModal({
                   </div>
 
                   <span
-                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
-                      isActive ? "border-primaryColor" : "border-grayColor1"
-                    }`}
+                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${isActive ? "border-primaryColor" : "border-grayColor1"
+                      }`}
                   >
                     {isActive && (
                       <span className="h-2 w-2 rounded-full bg-primaryColor" />
@@ -173,9 +172,8 @@ function PostAccessModal({
                   </div>
 
                   <span
-                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${
-                      isActive ? "border-primaryColor" : "border-grayColor1"
-                    }`}
+                    className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 ${isActive ? "border-primaryColor" : "border-grayColor1"
+                      }`}
                   >
                     {isActive && (
                       <span className="h-2 w-2 rounded-full bg-primaryColor" />
