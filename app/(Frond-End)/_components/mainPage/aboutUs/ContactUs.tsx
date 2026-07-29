@@ -1,29 +1,16 @@
+"use client"
 import React from 'react'
 import Image from 'next/image'
 import { Inbox, Mail } from 'lucide-react'
 
-import coin1 from "../../../../../public/images/coins/coins1.png";
-import coin2 from "../../../../../public/images/coins/coins2.png";
-import coin3 from "../../../../../public/images/coins/coins3.png";
-import coin4 from "../../../../../public/images/coins/coins4.png";
-import coin5 from "../../../../../public/images/coins/coins5.png";
-import coin6 from "../../../../../public/images/coins/coins6.png";
-import coin7 from "../../../../../public/images/coins/coins7.png"
 import ContactForm from '../../ContactForm';
-import ReusableInput from '@/components/reusable/InputFiled/ReusableInput'
-import ReusableTextarea from '@/components/reusable/InputFiled/TextAreaField';
+import { useGetAboutUsQuery } from '@/feature/slice/aboutUs/aboutUs';
 
-const coinImages = [
-    coin1,
-    coin2,
-    coin3,
-    coin4,
-    coin5,
-    coin6,
-    coin7,
-];
 
 export default function ContactUs() {
+    const { data, error, isLoading } = useGetAboutUsQuery({});
+    const item = data?.data.leading_institutions || [];
+    console.log(item, "vai vai")
     return (
         <div className='py-8 md:py-14 lg:py-25 '>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6 container'>
@@ -41,21 +28,25 @@ export default function ContactUs() {
 
                     <div className=''>
                         <div className="flex flex-wrap gap-6">
-                            {coinImages.map((coin, index) => (
+                            {item.map((coin, index) => (
                                 <div
                                     key={index}
-                                    className="flex h-12 w-12 items-center justify-center "
+                                    className="flex h-12 w-12 items-center justify-center relative group"
                                 >
                                     <Image
-                                        src={coin}
+                                        src={coin?.logo_url}
                                         alt={`Coin ${index + 1}`}
                                         width={60}
                                         height={60}
                                         className="object-contain"
                                     />
+                                    {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primaryColor text-white text-xs px-2 py-1 rounded">
+                                        {coin.name}
+                                    </div> */}
                                 </div>
                             ))}
                         </div>
+
                     </div>
                 </div>
 

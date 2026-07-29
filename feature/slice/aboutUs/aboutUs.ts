@@ -14,7 +14,23 @@ const AboutUsSlice = baseApiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-   
+
+    //privecy-policy
+    getPrivecyPolicy: builder.query({
+      query: () => ({
+        url: `/pages/privacy-policy`,
+        method: "GET",
+      }),
+    }),
+
+    //terms-and-conditions
+    getTermsAndConditions: builder.query({
+      query: () => ({
+        url: `/pages/terms-and-conditions`,
+        method: "GET",
+      }),
+    }),
+
   }),
 });
 
@@ -23,4 +39,7 @@ export const {
 
   useGetAcademiaByStateQuery,
 
+  useGetPrivecyPolicyQuery,
+
+  useGetTermsAndConditionsQuery,
 } = AboutUsSlice;

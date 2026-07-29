@@ -41,16 +41,17 @@ function MainFooter() {
               <SocialShare />
             </div>
 
-            <div >
+            <div className="flex gap-1.5" >
               <p className="sm:text-right text-center text-sm text-[#A5A5AB]"> &copy; {year} Mind Unite, All right Reserved.</p>
-              <div className="flex gap-4">
-                <Link href="/term-condition">
-                  Terms & condition
-                </Link>
-                <Link href="">
-                  Privecy Policy
-                </Link>
-              </div>
+
+              <Link href="/mu/tearm-condition" className=" text-sm font-normal text-[#4A4C56]">
+                Terms & condition
+              </Link>
+              <hr className="h-5 border-[#4A4C56] border w-[2px]" />
+              <Link href="/mu/privecy-policy" className=" text-sm font-normal text-[#4A4C56]">
+                Privecy Policy
+              </Link>
+
             </div>
           </div>
         </div>
