@@ -12,11 +12,11 @@ export default function page() {
     const { data, error, isLoading } = useGetAboutUsQuery({});
 
     return (
-        <div className='pt-8 md:pt-10 lg:pt-[64px]'>
+        <div className=''>
             <div className='bg-[#EDF9FF]  py-12 flex flex-col justify-center'>
                 <div className='container'>
                     <div className='   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-10 '>
-                        <div className=''>
+                        <div className='flex flex-col justify-center'>
                             <div className='flex justify-center md:justify-start'>
                                 <div className="inline-flex  items-center gap-2 rounded-full bg-[#D6F1F8] px-4 py-1.5 uppercase text-base font-semibold leading-[150%] tracking-[0.08px] text-primaryColor">
                                     <AboutStar className="h-[18px] w-[18px]" />
