@@ -40,9 +40,9 @@ export default function ContactUs() {
                                         height={60}
                                         className="object-contain"
                                     />
-                                    {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primaryColor text-white text-xs px-2 py-1 rounded">
+                                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-primaryColor text-white text-xs px-2 py-1 rounded">
                                         {coin.name}
-                                    </div> */}
+                                    </div>
                                 </div>
                             ))}
                         </div>

@@ -6,53 +6,16 @@ import { Play, ChevronLeft, ChevronRight, Pause, ArrowRight, ArrowLeft } from "l
 
 import { useGetAboutUsQuery } from "@/feature/slice/aboutUs/aboutUs";
 
-const videos = [
-    {
-        id: 1,
-        title: "YOUR QUESTIONS answered!",
-        edition: "March edition",
-        duration: "27:45",
-        thumbnail: "/images/aboutUs/thumble1.png",
-        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4"
-    },
-    {
-        id: 2,
-        title: "YOUR QUESTIONS answered!",
-        edition: "March edition",
-        duration: "27:45",
-        thumbnail: "/images/aboutUs/thumble2.png",
-        videoUrl: "https://www.w3schools.com/html/movie.mp4"
-    },
-    {
-        id: 3,
-        title: "YOUR QUESTIONS answered!",
-        edition: "March edition",
-        duration: "27:45",
-        thumbnail: "/images/aboutUs/thumble3.png",
-        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4"
-    },
-    {
-        id: 4,
-        title: "YOUR QUESTIONS answered!",
-        edition: "March edition",
-        duration: "27:45",
-        thumbnail: "/images/aboutUs/thumble4.png",
-        videoUrl: "https://www.w3schools.com/html/movie.mp4"
-    },
-    {
-        id: 5,
-        title: "YOUR QUESTIONS answered!",
-        edition: "March edition",
-        duration: "27:45",
-        thumbnail: "/images/aboutUs/thumble1.png",
-        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4"
-    },
-];
+
 
 export default function VideoTutorial() {
     const [isPlaying, setIsPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+
+    const [showIframe, setShowIframe] = useState(false);
+
 
     const { data, error, isLoading } = useGetAboutUsQuery({});
 
@@ -82,6 +45,7 @@ export default function VideoTutorial() {
     const handleVideoSelect = (video: any) => {
         setSelectedVideo(video);
         setIsPlaying(false);
+        setShowIframe(false); // ⬅️ NEW - notun video select korle abar thumbnail thk shuru hobe
     };
 
     const scrollLeft = () => {
@@ -113,6 +77,7 @@ export default function VideoTutorial() {
                 </div>
 
                 {/* Main Video Player */}
+                {/* Main Video Player */}
                 <div className="relative rounded-sm overflow-hidden  mb-12 aspect-video bg-[#0A0A0A] group">
                     {selectedVideo && (
                         <>
@@ -127,13 +92,21 @@ export default function VideoTutorial() {
                                     onPlay={() => setIsPlaying(true)}
                                     onPause={() => setIsPlaying(false)}
                                 />
-                            ) : (
+                            ) : showIframe ? (
                                 <iframe
                                     key={selectedVideo.url}
-                                    src={selectedVideo.url}
+                                    src={`${selectedVideo.url}${selectedVideo.url?.includes("?") ? "&" : "?"}autoplay=1`}
                                     className="w-full h-full"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
+                                />
+                            ) : (
+                                <Image
+                                    src={selectedVideo.thumbnail_url}
+                                    alt={selectedVideo.title}
+                                    fill
+                                    unoptimized
+                                    className="w-full h-full object-cover"
                                 />
                             )}
                         </>
@@ -156,7 +129,17 @@ export default function VideoTutorial() {
                         </button>
                     )}
 
-
+                    {/* Youtube Play Overlay Button */}
+                    {selectedVideo?.source !== "file" && !showIframe && (
+                        <button
+                            onClick={() => setShowIframe(true)}
+                            className="absolute inset-0 flex items-center justify-center"
+                        >
+                            <div className="rounded-full p-5">
+                                <Play className="w-10 h-10 text-white fill-white" />
+                            </div>
+                        </button>
+                    )}
                 </div>
 
                 {/* Carousel Section */}

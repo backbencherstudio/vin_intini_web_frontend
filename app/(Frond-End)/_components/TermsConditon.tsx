@@ -4,11 +4,7 @@ import React from 'react'
 
 export default function TermsConditon() {
     const { data, isLoading, isError } = useGetTermsAndConditionsQuery({});
-    if (isLoading) {
-        return <div>
-            loading...
-        </div>
-    }
+
     if (isError) {
         return <div>
             error
@@ -18,7 +14,7 @@ export default function TermsConditon() {
     console.log(terms, "terms")
     return (
         <div className='  py-8 md:py-12 lg:py-15'>
-            <h1>{terms?.title}</h1>
+            <h1 className='text-center items-center font-semibold text-2xl text-primaryColor'>{terms?.title}</h1>
             <div>
                 <div dangerouslySetInnerHTML={{ __html: terms?.content || '' }} />
             </div>
