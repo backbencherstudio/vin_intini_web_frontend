@@ -16,7 +16,7 @@ const studySlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["study"],
     }),
-   
+
     getStudyById: builder.query({
       query: (id) => ({
         url: `/education/edit/${id}`,

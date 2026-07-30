@@ -59,11 +59,10 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
             key={item.slug}
             href={item.slug}
             onClick={onItemClick}
-            className={`flex items-center gap-3 p-2 text-sm transition ${
-              isActive(item.slug)
+            className={`flex items-center gap-3 p-2 text-sm transition ${isActive(item.slug)
                 ? "text-headerColor bg-bgLightColor rounded-md font-medium"
                 : "text-grayColor1 hover:text-headerColor"
-            }`}
+              }`}
           >
             {item.icon && <item.icon className="w-4.5 h-4.5" />}
             {item.label}

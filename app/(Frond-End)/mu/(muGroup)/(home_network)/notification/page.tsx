@@ -62,7 +62,7 @@ function NotificationPage() {
             <div className="flex  items-center gap-3 md:gap-4">
               <div className="h-10 w-10 shrink-0 rounded-full ">
                 {item?.data?.sender_profile_image_url ||
-                item?.data?.acceptor_profile_image_url ? (
+                  item?.data?.acceptor_profile_image_url ? (
                   <Image
                     src={
                       item?.data?.sender_profile_image_url ||
