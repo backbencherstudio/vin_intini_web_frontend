@@ -23,6 +23,7 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
   const [isleaved, setILeaved] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
   const [positionY, setPositionY] = useState(35);
+  const [positionX, setPositionX] = useState(50);
   const [isEdite, setIsEdite] = useState(false);
   const { data, isLoading, isError } = useGetViewByIdGroupQuery({
     id: groupId,
@@ -49,7 +50,7 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
             width={1200}
             height={400}
             style={{
-              objectPosition: `center ${positionY}%`,
+              objectPosition: `${positionX}% ${positionY}%`,
             }}
           />
         )}
