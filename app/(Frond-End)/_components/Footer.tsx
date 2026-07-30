@@ -3,6 +3,7 @@ import SocialShare from "@/components/reusable/SocialShare";
 import bgImage from "@/public/images/landingpage-footer.svg";
 import logo from "@/public/logo.png";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -32,9 +33,31 @@ export default function Footer() {
             </h2>
             <SocialShare />
           </div>
-          <p className="text-center sm:text-start text-[#A5A5AB] text-sm font-light leading-[140%] tracking-[0.07px]">
-            © {new Date().getFullYear()} Mind Unite, All right Reserved.
-          </p>
+          <div>
+            <div className="flex flex-col md:flex-row  items-center gap-1.5">
+              <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block">
+                {" "}
+                © {new Date().getFullYear()} Mind Unite, All right
+                Reserved.{" "}
+              </p>
+
+              <div className="flex gap-1.5">
+                <Link
+                  href="/tearm-condition"
+                  className=" text-sm font-normal text-[#4A4C56]"
+                >
+                  Terms & condition
+                </Link>
+                <hr className="h-5 border-[#4A4C56] border w-[2px]" />
+                <Link
+                  href="/privecy-policy"
+                  className=" text-sm font-normal text-[#4A4C56]"
+                >
+                  Privecy Policy
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
