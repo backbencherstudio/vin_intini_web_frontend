@@ -45,11 +45,11 @@ function MainFooter() {
               <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block"> &copy; {year} Mind Unite, All right Reserved.</p>
 
               <div className="flex gap-1.5">
-                <Link href="/mu/tearm-condition" className=" text-sm font-normal text-[#4A4C56]">
+                <Link href="/tearm-condition" className=" text-sm font-normal text-[#4A4C56]">
                   Terms & condition
                 </Link>
                 <hr className="h-5 border-[#4A4C56] border w-[2px]" />
-                <Link href="/mu/privecy-policy" className=" text-sm font-normal text-[#4A4C56]">
+                <Link href="/privecy-policy" className=" text-sm font-normal text-[#4A4C56]">
                   Privecy Policy
                 </Link>
               </div>

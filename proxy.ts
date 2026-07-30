@@ -59,6 +59,8 @@ export async function proxy(request: NextRequest) {
       pathname.startsWith("/login") ||
       pathname.startsWith("/sign-up") ||
       pathname.startsWith("/forgot-password") ||
+      pathname.startsWith("/privecy-policy") ||
+      pathname.startsWith("/tearm-condition") ||
       pathname.startsWith("/onboarding")
     ) {
       return response;
