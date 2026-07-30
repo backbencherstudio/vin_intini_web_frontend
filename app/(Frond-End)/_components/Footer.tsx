@@ -48,7 +48,7 @@ export default function Footer() {
                 >
                   Terms & condition
                 </Link>
-                <hr className="h-5 border-[#4A4C56] border w-[2px]" />
+                <hr className="h-5 border-[#4A4C56] border w-0.5" />
                 <Link
                   href="/privecy-policy"
                   className=" text-sm font-normal text-[#4A4C56]"

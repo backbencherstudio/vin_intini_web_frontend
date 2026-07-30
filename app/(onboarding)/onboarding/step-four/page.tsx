@@ -7,10 +7,10 @@ import {
   updateFormData,
 } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetInstitutionQuery } from "@/feature/slice/user/userSlice";
+import { monthOptions, yearOptions } from "@/public/demoData/RealData";
 
-import { yearOptions } from "@/public/demoData/RealData";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
@@ -20,6 +20,11 @@ interface StepFourData {
   field_study: string;
   institution: string;
   graduation_year: string;
+  start_month: string;
+  start_year: string;
+  end_month: string;
+  end_year: string;
+  is_current: boolean;
 }
 interface OptionType {
   value: string;
@@ -164,6 +169,8 @@ function page() {
     control,
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<StepFourData>({
     defaultValues: {
@@ -171,13 +178,31 @@ function page() {
       field_study: stepFourData?.field_study || "",
       institution: stepFourData?.institution || "",
       graduation_year: stepFourData?.graduation_year || "",
+      start_month: stepFourData?.start_month || "",
+      start_year: stepFourData?.start_year || "",
+      end_month: stepFourData?.end_month || "",
+      end_year: stepFourData?.end_year || "",
+      is_current: stepFourData?.is_current || false,
     },
   });
+
+  const isCurrent = watch("is_current");
+
+  useEffect(() => {
+    if (isCurrent) {
+      setValue("end_month", "");
+      setValue("end_year", "");
+    }
+  }, [isCurrent, setValue]);
 
   const onSubmit = (data: StepFourData) => {
     setIsLoading(true);
 
-    dispatch(updateFormData(data));
+    dispatch(
+      updateFormData(
+        data.is_current ? { ...data, end_month: "", end_year: "" } : data,
+      ),
+    );
     dispatch(setStep(5));
     router.push("/onboarding/step-five");
 
@@ -276,7 +301,7 @@ function page() {
               </p>
             )}
           </div>
-          <div className="space-y-1.5">
+          {/* <div className="space-y-1.5">
             <label className="text-sm text-headerColor font-medium block">
               Graduated/Expected Graduation Year{" "}
               <span className="text-redColor">*</span>
@@ -302,6 +327,97 @@ function page() {
                 {errors.graduation_year.message}
               </p>
             )}
+          </div> */}
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-headerColor font-medium block">
+              Start date <span className="text-redColor">*</span>
+            </label>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Controller
+                name="start_month"
+                control={control}
+                rules={{ required: "Start month is required" }}
+                render={({ field }) => (
+                  <CreatableSelectField
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    options={monthOptions}
+                    placeholder="Month"
+                    className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
+                  />
+                )}
+              />
+              <Controller
+                name="start_year"
+                control={control}
+                rules={{ required: "Start year is required" }}
+                render={({ field }) => (
+                  <CreatableSelectField
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    type="number"
+                    options={yearOptions}
+                    placeholder="Year"
+                    className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
+                  />
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-headerColor font-medium block">
+              End date <span className="text-redColor">*</span>
+            </label>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Controller
+                name="end_month"
+                control={control}
+                rules={{
+                  required: isCurrent ? false : "End month is required",
+                }}
+                render={({ field }) => (
+                  <CreatableSelectField
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    options={monthOptions}
+                    placeholder="Month"
+                    isDisabled={isCurrent}
+                    className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
+                  />
+                )}
+              />
+              <Controller
+                name="end_year"
+                control={control}
+                rules={{
+                  required: isCurrent ? false : "End year is required",
+                }}
+                render={({ field }) => (
+                  <CreatableSelectField
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                    type="number"
+                    options={yearOptions}
+                    placeholder="Year"
+                    isDisabled={isCurrent}
+                    className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
+                  />
+                )}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="inline-flex cursor-pointer items-center gap-2 text-base text-descriptionColor">
+              <input
+                type="checkbox"
+                {...register("is_current")}
+                className="h-4 w-4"
+              />
+              I&apos;m currently studying here
+            </label>
           </div>
 
           <ButtonReuseable
