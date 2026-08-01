@@ -1,31 +1,41 @@
 "use client";
 
-import { OpenEyeIcon } from "@/public/svgIcons/Icons";
-
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useRegistrationMutation } from "@/feature/slice/auth/authSlice";
+import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FiEyeOff } from "react-icons/fi";
 import SocialShare from "./SociaShare";
 interface RegFromData {
   email: string;
   password: string;
+  terms: boolean;
 }
 function RegistrationForm() {
-  const { register, handleSubmit, watch } = useForm<RegFromData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm<RegFromData>({
     defaultValues: {
       email: "",
       password: "",
+      terms: false,
     },
   });
   const [registration, { isLoading }] = useRegistrationMutation();
   const [showPassword, setShowPassword] = useState(false);
   const route = useRouter();
   const onSubmit = async (data: RegFromData) => {
+    console.log("click");
+
     try {
       const response = await registration(data).unwrap();
       if (response.error) {
@@ -68,6 +78,11 @@ function RegistrationForm() {
               })}
               className=" rounded-lg "
             />
+            {errors.email && (
+              <span className="text-xs text-red-500 mt-1 block">
+                {errors.email.message}
+              </span>
+            )}
           </div>
 
           <div>
@@ -101,22 +116,51 @@ function RegistrationForm() {
                 {showPassword ? <FiEyeOff size={18} /> : <OpenEyeIcon />}
               </button>
             </div>
+            {errors.password && (
+              <span className="text-xs text-red-500 mt-1 block">
+                {errors.password.message}
+              </span>
+            )}
           </div>
+          <div>
+            <div className="flex gap-2">
+              <div className="mt-1">
+                <Controller
+                  name="terms"
+                  control={control} // useForm() থেকে control ডি estructuring করে নেবেন
+                  rules={{
+                    required: "You must agree to the terms and conditions",
+                  }}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="terms"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
 
-          <div className="text-center mx-auto text-sm max-w-91.5 text-descriptionColor pt-1">
-            By clicking <span className="font-medium">Join Now</span>, you agree
-            to the <span className="font-medium">MindUnite</span>{" "}
-            <Link href={"#"} className="text-primaryColor">
-              User Agreement
-            </Link>
-            ,
-            <Link href={"#"} className="text-primaryColor">
-              Privacy Policy
-            </Link>
-            ,{" "}
-            <Link href={"#"} className="text-primaryColor">
+              <div className="  text-sm  text-descriptionColor pt-1">
+                By clicking <span className="font-medium">Join Now</span>, you
+                agree to the <span className="font-medium">MindUnite</span>{" "}
+                <Link href={"/tearm-condition"} className="text-primaryColor">
+                  Terms & Condition
+                </Link>{" "}
+                &{" "}
+                <Link href={"/privecy-policy"} className="text-primaryColor">
+                  Privacy Policy
+                </Link>
+                {/* <Link href={"#"} className="text-primaryColor">
               and Cookie Policy.
-            </Link>
+            </Link> */}
+              </div>
+            </div>
+            {errors.terms && (
+              <span className="text-xs text-red-500 mt-1 block">
+                {errors.terms.message}
+              </span>
+            )}
           </div>
 
           <button
