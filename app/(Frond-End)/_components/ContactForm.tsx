@@ -23,7 +23,9 @@ export default function ContactForm() {
   const { data } = useGetUserProfileQuery("profile");
   const [contactSubmit, { isLoading }] = useContactSubmitMutation();
 
-  const userFullName = (data?.user?.first_name  || "") + (data?.user?.last_name  ? " " + data?.user?.last_name  : "");
+  const userFullName =
+    (data?.user?.first_name || "") +
+    (data?.user?.last_name ? " " + data?.user?.last_name : "");
   const {
     register,
     handleSubmit,
@@ -102,7 +104,7 @@ export default function ContactForm() {
             </label>
             <Input
               id="phone"
-              placeholder="+1 0000 000 000"
+              placeholder="(000) 000-0000 "
               {...register("phone")}
               className={`w-full py-6`}
             />

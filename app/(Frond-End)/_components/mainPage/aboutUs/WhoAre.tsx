@@ -44,7 +44,7 @@ export default function WhoAre() {
         <div className='w-full py-10 md:py-12 lg:py-25 '>
             <div className='container'>
 
-                <div className='grid grid-cols-1 md:grid-cols-12 gap-4 pb-4  items-center'>
+                <div className='grid grid-cols-1 md:grid-cols-12 gap-4 pb-4  items-start'>
 
                     <div className='flex w-full col-span-12 md:col-span-4'>
                         <div className="relative w-full h-[480px] rounded-lg overflow-hidden">
@@ -58,14 +58,14 @@ export default function WhoAre() {
                     </div>
 
 
-                    <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 bg-[#F8FAFB] rounded-sm h-full w-full'>
+                    <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 lg:p-6 bg-[#F8FAFB] rounded-sm h-full w-full'>
                         <div>
                             <p className='text-[32px] font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-primaryColor '>{aboutUs.name}</span></p>
 
                             <p className='text-base font-normal text-[#0B0B0B] mb-8'>{aboutUs.designation}</p>
 
-                            <p className='text-lg font-normal leading-relaxed text-[#0B0B0B] mb-6'>
-                                {aboutUs.bio}
+                            <p className='text-lg font-normal text-justify leading-relaxed text-[#0B0B0B] mb-6'>
+                                {aboutUs.bio} 
                             </p>
                         </div>
 
