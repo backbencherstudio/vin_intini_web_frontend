@@ -30,7 +30,7 @@ export default function ContactUs() {
           </div>
 
           <p className="text-[#0B0B0B] text-base font-medium leading-6 tracking-[0.08px] mb-4">
-           Trusted by Leading Institutions to Trusted by Students/Graduates/Faculty of Leading Institutions
+            Trusted by Students/Graduates/Faculty of Leading Institutions
           </p>
 
           <div className="">
