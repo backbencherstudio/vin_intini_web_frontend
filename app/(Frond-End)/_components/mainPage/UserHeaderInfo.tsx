@@ -13,6 +13,7 @@ import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
   LogoutIcon,
+  MessageIcon,
   NotificationIcon,
   SettingIcon,
   UserCircleIcon,
@@ -59,7 +60,13 @@ function UserHeaderInfo() {
                   : notificationCountData?.data?.unread_count}
               </span>
             )}
-            <NotificationIcon />
+            <NotificationIcon className="text-grayColor1" />
+          </Link>
+          <Link
+            href={`/mu/message`}
+            className="flex justify-center items-center"
+          >
+            <MessageIcon className="text-grayColor1" />
           </Link>
 
           <div className="  relative sm:ml-0">
