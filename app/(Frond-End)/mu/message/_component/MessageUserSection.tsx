@@ -5,7 +5,6 @@ import { truncateText } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-
 function MessageUserSection({
   user,
   chatMessages,
@@ -22,27 +21,41 @@ function MessageUserSection({
     params.set("tab", tab);
     router.push(`${pathname}?${params.toString()}`);
   };
+  const messageType = [
+    {
+      id: 1,
+      name: "all",
+    },
+    {
+      id: 2,
+      name: "recruiter",
+    },
+    {
+      id: 3,
+      name: "unread",
+    },
+    {
+      id: 4,
+      name: "Archived",
+    },
+  ];
 
   return (
     <div>
       <div className="w-full h-full  flex flex-col">
-        <div className="p-4 ">
-          <Search placeHolder="Search messages..." />
+        <div className="pb-4 ">
+          <Search placeHolder="Search messages..." className="rounded-sm! py-3!" />
         </div>
 
-        <div className="flex px-4 gap-6 border-b text-base font-medium text-blackColor">
-          <button
-            onClick={() => setTab("admin")}
-            className={`py-2 px-2 border-b-2 cursor-pointer ${activeTab === "admin" ? " border-black font-medium" : "text-gray-500 border-white"}`}
-          >
-            Admin
-          </button>
-          <button
-            onClick={() => setTab("user")}
-            className={`py-2 px-2 border-b-2 cursor-pointer capitalize ${activeTab === "user" ? " border-black font-medium" : "text-gray-500 border-white"}`}
-          >
-            {user}(2)
-          </button>
+        <div className="flex  gap-2 overflow-x-auto mb-3 justify-between  text-base font-medium text-blackColor">
+          {messageType.map((item) => (
+            <button
+              onClick={() => setTab(item.name)}
+              className={`py-1 rounded-sm px-4 border text-sm border-liteDescriptionColor/80 text-liteDescriptionColor  cursor-pointer ${activeTab === item?.name ? " bg-primaryColor text-whiteColor border-0 font-medium" : " "}`}
+            >
+              {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+            </button>
+          ))}
         </div>
 
         {/* User */}

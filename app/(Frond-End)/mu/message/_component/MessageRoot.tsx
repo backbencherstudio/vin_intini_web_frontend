@@ -10,7 +10,7 @@ import { IoClose } from "react-icons/io5";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageUserSection from "./MessageUserSection";
 
-const chatMessages = [
+const initialChatMessages = [
   {
     id: 1,
     receiver_user: "Utso Sarkar",
@@ -58,7 +58,8 @@ const chatMessages = [
 ];
 
 function MessageRoot() {
-  const [selectedId, setSelectedId] = useState(chatMessages[0].id);
+  const [chatMessages, setChatMessages] = useState(initialChatMessages);
+  const [selectedId, setSelectedId] = useState(initialChatMessages[0].id);
   const [inputValue, setInputValue] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState({ emoji: "", id: null });
   const [sidarOpen, setSiderOpen] = useState(false);
@@ -67,6 +68,21 @@ function MessageRoot() {
     setSiderOpen(false);
   };
   const activeChat = chatMessages.find((c) => c.id === selectedId)!;
+  const handleSendMessage = () => {
+    const content = inputValue.trim();
+    if (!content) return;
+    setChatMessages((prev) =>
+      prev.map((chat) => {
+        if (chat.id !== selectedId) return chat;
+        const nextId = chat.message.length + 1;
+        return {
+          ...chat,
+          message: [...chat.message, { type: "receiver", content, id: nextId }],
+        };
+      }),
+    );
+    setInputValue("");
+  };
   return (
     <div>
       <div>
@@ -95,9 +111,9 @@ function MessageRoot() {
             </div>
           </div>
         </div>
-        <div className="h-full bg-white rounded-2xl border flex ">
+        <div className="h-full bg-white flex ">
           {/* Sidebar */}
-          <div className="max-w-75 hidden  w-full  md:flex flex-col">
+          <div className="max-w-90 hidden md:border-r pr-4 w-full  md:flex flex-col">
             <MessageUserSection
               chatMessages={chatMessages}
               setSelectedId={setSelectedId}
@@ -107,9 +123,9 @@ function MessageRoot() {
           </div>
 
           {/* Chat Section */}
-          <div className="md:border-l w-full flex flex-col">
+          <div className=" border ml-4 rounded-2xl w-full flex flex-col">
             {/* Header */}
-            <div className="flex p-3! md:p-4! w-full items-center justify-between">
+            <div className="flex p-3! md:p-4!  w-full items-center justify-between">
               <div className=" flex items-center gap-2! md:gap-3!">
                 <button
                   className="md:hidden  rounded-full"
@@ -128,13 +144,13 @@ function MessageRoot() {
                   <p className="font-semibold text-lg text-headerColor">
                     {activeChat.receiver_user}
                   </p>
-                  <p className="text-xs text-secondaryColor!">
+                  <p className="text-xs text-descriptionColor!">
                     {activeChat.last_seen}
                   </p>
                 </div>
               </div>
               <button className="cursor-pointer text-secondaryColor!">
-                <BsThreeDotsVertical />
+                <BsThreeDotsVertical className="text-blackColor" />
               </button>
             </div>
 
@@ -157,6 +173,7 @@ function MessageRoot() {
                     <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
                       <MessageReactEmojiAction
                         setSelectedEmoji={setSelectedEmoji}
+                        type="receiver"
                         id={msg.id}
                       />
                     </div>
@@ -167,6 +184,7 @@ function MessageRoot() {
                       <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
                         <MessageReactEmojiAction
                           setSelectedEmoji={setSelectedEmoji}
+                          type="sender"
                           id={msg.id}
                         />
                       </div>
@@ -195,7 +213,10 @@ function MessageRoot() {
                 placeholder="Write message here..."
                 className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
               />
-              <button className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer">
+              <button
+                onClick={handleSendMessage}
+                className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer"
+              >
                 <SendIcon />
               </button>
             </div>
