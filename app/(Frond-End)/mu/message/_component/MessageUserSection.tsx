@@ -39,7 +39,7 @@ function MessageUserSection({
     },
     {
       id: 4,
-      name: "Archived",
+      name: "archived",
     },
   ];
 
@@ -66,9 +66,9 @@ function MessageUserSection({
           {messageType.map((item) => (
             <button
               onClick={() => setTab(item.name)}
-              className={`py-1 rounded-sm px-4 border text-sm border-liteDescriptionColor/80 text-liteDescriptionColor  cursor-pointer ${activeTab === item?.name ? " bg-primaryColor text-whiteColor border-0 font-medium" : " "}`}
+              className={`py-1 rounded-sm px-4 border capitalize  text-sm border-liteDescriptionColor/80 text-liteDescriptionColor  cursor-pointer ${activeTab === item?.name ? " bg-primaryColor text-whiteColor border-0 font-medium" : " "}`}
             >
-              {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+              {item.name}
             </button>
           ))}
         </div>
@@ -92,7 +92,9 @@ function MessageUserSection({
               <div className="flex-1">
                 <p className="font-medium text-sm flex justify-between">
                   {msg?.user?.name}{" "}
-                  <span className="text-xs text-gray-400">{dayjs(msg?.last_message?.created_at).fromNow()}</span>
+                  <span className="text-xs text-gray-400">
+                    {dayjs(msg?.last_message?.created_at).fromNow()}
+                  </span>
                 </p>
                 <p className="text-xs flex justify-between text-gray-500 truncate">
                   {msg.last_message?.message

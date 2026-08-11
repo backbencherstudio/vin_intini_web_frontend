@@ -3,9 +3,10 @@ import baseApiSlice from "../baseApi";
 const messageSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getConversationList: builder.query({
-      query: () => ({
-        url: "/conversations",
+      query: (params) => ({
+        url: `/conversations?status=${params}`,
         method: "GET",
+        
       }),
       providesTags: ["message"],
     }),

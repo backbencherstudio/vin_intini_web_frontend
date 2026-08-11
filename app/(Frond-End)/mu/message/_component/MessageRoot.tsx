@@ -9,15 +9,21 @@ import {
 import emptyImage from "@/public/empty_user.jpg";
 import { AttatchIcon, SendIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useRef, useState, type ChangeEvent } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageUserSection from "./MessageUserSection";
+import { skip } from "node:test";
 
 function MessageRoot() {
-  const { data } = useGetConversationListQuery("conversationList");
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") ?? "admin";
+   console.log(activeTab, "activeTab");
+
+  const { data } = useGetConversationListQuery(activeTab, { skip: activeTab === null });
   const [selectedId, setSelectedId] = useState<number | null>(
     data?.data?.[0]?.id || null,
   );
@@ -173,7 +179,7 @@ function MessageRoot() {
                           <img
                             src={msg?.file_url}
                             alt={msg?.file_name || "attachment"}
-                            className=" max-h-40 rounded-lg object-cover"
+                            className=" max-h-60 rounded-lg object-cover"
                           />
                         ) : (
                           <div className="mt-2 flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs">
@@ -217,7 +223,7 @@ function MessageRoot() {
                             <img
                               src={msg?.file_url}
                               alt={msg?.file_name || "attachment"}
-                              className="max-h-40 rounded-lg object-cover"
+                              className="max-h-60 rounded-lg object-cover"
                             />
                           ) : (
                             <div className="mt-2 flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs">
@@ -260,7 +266,10 @@ function MessageRoot() {
                 </div>
               )}
               <div className="flex items-start gap-3">
-                <button onClick={handleAttachClick} className="cursor-pointer p-1">
+                <button
+                  onClick={handleAttachClick}
+                  className="cursor-pointer p-1"
+                >
                   <AttatchIcon className="w-4.5 h-4.5" />
                 </button>
                 <SmartEmojiPicker
