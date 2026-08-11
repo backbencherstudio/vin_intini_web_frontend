@@ -1,10 +1,13 @@
 "use client";
 
 import Search from "@/components/reusable/Search";
+import { useMarkReadMessageMutation } from "@/feature/slice/message/messageSlice";
 import { truncateText } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
+import dayjs from "dayjs";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { IoMdDoneAll } from "react-icons/io";
 function MessageUserSection({
   user,
   chatMessages,
@@ -15,7 +18,7 @@ function MessageUserSection({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "admin";
-
+  const [markReadMessage] = useMarkReadMessageMutation();
   const setTab = (tab: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", tab);
@@ -39,6 +42,15 @@ function MessageUserSection({
       name: "Archived",
     },
   ];
+
+  const handleReadMessage = async (messageId: number) => {
+    setSelectedId(messageId);
+    try {
+      await markReadMessage(messageId).unwrap();
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  };
 
   return (
     <div>
@@ -65,7 +77,7 @@ function MessageUserSection({
         {chatMessages?.length > 0 ? (
           chatMessages.map((msg: any, index: number) => (
             <div
-              onClick={() => setSelectedId(msg.id)}
+              onClick={() => handleReadMessage(msg.id)}
               className={`p-4 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors ${
                 selectedId === msg.id ? "bg-gray-100" : ""
               }`}
@@ -74,19 +86,27 @@ function MessageUserSection({
                 src={msg?.user?.profile_image_url || emptyImage}
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="rounded-sm"
                 alt=""
               />
               <div className="flex-1">
                 <p className="font-medium text-sm flex justify-between">
                   {msg?.user?.name}{" "}
-                  <span className="text-xs text-gray-400">2m ago</span>
+                  <span className="text-xs text-gray-400">{dayjs(msg?.last_message?.created_at).fromNow()}</span>
                 </p>
                 <p className="text-xs flex justify-between text-gray-500 truncate">
-                  {truncateText(msg.last_message?.message, 30)}
-                  <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
-                    2
-                  </span>
+                  {msg.last_message?.message
+                    ? truncateText(msg.last_message?.message, 30)
+                    : msg.last_message?.file_url
+                      ? "Send a photo"
+                      : "No message available"}
+                  {msg?.unread_count > 0 ? (
+                    <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
+                      {msg?.unread_count}
+                    </span>
+                  ) : (
+                    <IoMdDoneAll className="text-primaryColor" />
+                  )}
                 </p>
               </div>
             </div>

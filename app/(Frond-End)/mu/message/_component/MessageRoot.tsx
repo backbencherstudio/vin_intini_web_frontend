@@ -18,7 +18,9 @@ import MessageUserSection from "./MessageUserSection";
 
 function MessageRoot() {
   const { data } = useGetConversationListQuery("conversationList");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(
+    data?.data?.[0]?.id || null,
+  );
   const { data: conversationList } = useGetConversationMessagesQuery(
     selectedId,
     {
@@ -124,7 +126,7 @@ function MessageRoot() {
             <div className="flex p-3! md:p-4!  w-full items-center justify-between">
               <div className=" flex items-center gap-2! md:gap-3!">
                 <button
-                  className="md:hidden  rounded-full"
+                  className="md:hidden  rounded-sm"
                   onClick={() => setSiderOpen((prev) => !prev)}
                 >
                   <FaBars />
@@ -136,7 +138,7 @@ function MessageRoot() {
                   }
                   width={40}
                   height={40}
-                  className="rounded-full"
+                  className="rounded-sm"
                   alt=""
                 />
                 <div>
@@ -171,7 +173,7 @@ function MessageRoot() {
                           <img
                             src={msg?.file_url}
                             alt={msg?.file_name || "attachment"}
-                            className="mt-2 max-h-40 rounded-lg object-cover"
+                            className=" max-h-40 rounded-lg object-cover"
                           />
                         ) : (
                           <div className="mt-2 flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs">
@@ -215,7 +217,7 @@ function MessageRoot() {
                             <img
                               src={msg?.file_url}
                               alt={msg?.file_name || "attachment"}
-                              className="mt-2 max-h-40 rounded-lg object-cover"
+                              className="max-h-40 rounded-lg object-cover"
                             />
                           ) : (
                             <div className="mt-2 flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs">
@@ -258,7 +260,7 @@ function MessageRoot() {
                 </div>
               )}
               <div className="flex items-start gap-3">
-                <button onClick={handleAttachClick}>
+                <button onClick={handleAttachClick} className="cursor-pointer p-1">
                   <AttatchIcon className="w-4.5 h-4.5" />
                 </button>
                 <SmartEmojiPicker
