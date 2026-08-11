@@ -1,100 +1,51 @@
 "use client";
 
+import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
+import {
+  useGetConversationListQuery,
+  useGetConversationMessagesQuery,
+  useSendMessageMutation,
+} from "@/feature/slice/message/messageSlice";
+import emptyImage from "@/public/empty_user.jpg";
+import { AttatchIcon, SendIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useRef, useState, type ChangeEvent } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-
-import { AttatchIcon, SendIcon } from "@/public/svgIcons/Icons";
 import { FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageUserSection from "./MessageUserSection";
-import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
-
-type MessageAttachment = { name: string; size: number; url: string };
-type ChatMessage = {
-  type: "sender" | "receiver";
-  content: string;
-  id: number;
-  attachments?: MessageAttachment[];
-};
-type Chat = {
-  id: number;
-  receiver_user: string;
-  avatar: string;
-  last_seen: string;
-  message: ChatMessage[];
-};
-
-const initialChatMessages: Chat[] = [
-  {
-    id: 1,
-    receiver_user: "Utso Sarkar",
-    avatar: "https://i.pravatar.cc/40?img=5",
-    last_seen: "Last Seen 09:40",
-    message: [
-      { type: "sender", content: "Hi", id: 1 },
-      { type: "receiver", content: "Hello ", id: 2 },
-      { type: "sender", content: "How are you?", id: 3 },
-      {
-        type: "receiver",
-        content: "I'm doing well, thank you! How about you?",
-        id: 4,
-      },
-      {
-        type: "sender",
-        content: "Fames eros urna, felis morbi a est est.",
-        id: 5,
-      },
-      {
-        type: "receiver",
-        content: "Fames eros urna, felis morbi a est est.",
-        id: 6,
-      },
-    ],
-  },
-  {
-    id: 2,
-    receiver_user: "Marilyn George",
-    avatar: "https://i.pravatar.cc/40?img=10",
-    last_seen: "Last Seen 10:20",
-    message: [
-      {
-        type: "sender",
-        content: "Fames eros urna, felis morbi a est est.",
-        id: 7,
-      },
-      {
-        type: "receiver",
-        content: "Fames eros urna, felis morbi a est est.",
-        id: 8,
-      },
-    ],
-  },
-];
 
 function MessageRoot() {
-  const [chatMessages, setChatMessages] = useState(initialChatMessages);
-  const [selectedId, setSelectedId] = useState(initialChatMessages[0].id);
+  const { data } = useGetConversationListQuery("conversationList");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { data: conversationList } = useGetConversationMessagesQuery(
+    selectedId,
+    {
+      skip: selectedId === null,
+    },
+  );
+  const chatMessages = conversationList?.data || [];
+  const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
   const [inputValue, setInputValue] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState({ emoji: "", id: null });
   const [sidarOpen, setSiderOpen] = useState(false);
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<File | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleAttachClick = () => {
     fileInputRef.current?.click();
   };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length) setAttachments((prev) => [...prev, ...files]);
+    const file = e.target.files?.[0];
+    if (file) setAttachments(file);
     e.target.value = "";
   };
   const handleUserSelect = (id) => {
     setSelectedId(id);
     setSiderOpen(false);
   };
-
   const handleEmojiSelect = (emoji: string) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -109,34 +60,24 @@ function MessageRoot() {
     });
   };
 
-  const activeChat = chatMessages.find((c) => c.id === selectedId)!;
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const content = inputValue.trim();
-    if (!content && attachments.length === 0) return;
-    setChatMessages((prev) =>
-      prev.map((chat) => {
-        if (chat.id !== selectedId) return chat;
-        const nextId = chat.message.length + 1;
-        return {
-          ...chat,
-          message: [
-            ...chat.message,
-            {
-              type: "receiver",
-              content,
-              id: nextId,
-              attachments: attachments.map((file) => ({
-                name: file.name,
-                size: file.size,
-                url: URL.createObjectURL(file),
-              })),
-            },
-          ],
-        };
-      }),
-    );
-    setInputValue("");
-    setAttachments([]);
+    if (!content && !attachments) return;
+    if (selectedId === null) return;
+    const formData = new FormData();
+    formData.append("type", attachments ? "file" : "text");
+    formData.append("message", content);
+    if (attachments) formData.append("file", attachments);
+    try {
+      await sendMessage({
+        conversationId: selectedId,
+        data: formData,
+      }).unwrap();
+      setInputValue("");
+      setAttachments(null);
+    } catch (error) {
+      console.error("Failed to send message", error);
+    }
   };
   return (
     <div>
@@ -157,7 +98,7 @@ function MessageRoot() {
               </div>
               <div className="pt-2!">
                 <MessageUserSection
-                  chatMessages={chatMessages}
+                  chatMessages={data?.data || []}
                   setSelectedId={handleUserSelect}
                   selectedId={selectedId}
                   user={"client"}
@@ -170,7 +111,7 @@ function MessageRoot() {
           {/* Sidebar */}
           <div className="max-w-90 hidden md:border-r pr-4 w-full  md:flex flex-col">
             <MessageUserSection
-              chatMessages={chatMessages}
+              chatMessages={data?.data || []}
               setSelectedId={setSelectedId}
               selectedId={selectedId}
               user={"client"}
@@ -189,7 +130,10 @@ function MessageRoot() {
                   <FaBars />
                 </button>
                 <Image
-                  src={activeChat.avatar}
+                  src={
+                    conversationList?.other_user?.profile_image_url ||
+                    emptyImage
+                  }
                   width={40}
                   height={40}
                   className="rounded-full"
@@ -197,10 +141,10 @@ function MessageRoot() {
                 />
                 <div>
                   <p className="font-semibold text-lg text-headerColor">
-                    {activeChat.receiver_user}
+                    {conversationList?.other_user?.name}
                   </p>
                   <p className="text-xs text-descriptionColor!">
-                    {activeChat.last_seen}
+                    {conversationList?.other_user?.title || "No title"}
                   </p>
                 </div>
               </div>
@@ -211,36 +155,32 @@ function MessageRoot() {
 
             {/* Messages */}
             <div className="h-135 border-t overflow-y-auto p-3! md:p-6! space-y-4">
-              {activeChat.message.map((msg) =>
-                msg.type === "sender" ? (
+              {chatMessages?.map((msg) =>
+                !msg.is_mine ? (
                   <div
                     key={msg.id}
                     className="flex group/message items-center gap-2"
                   >
                     <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-3 rounded-t-xl rounded-r-xl text-sm">
-                      {msg?.content}
-                      {msg?.attachments?.length > 0 && (
-                        <div className="mt-2 space-y-1.5">
-                          {msg?.attachments?.map((att, i) =>
-                            /\.(png|jpe?g|gif|webp|svg)$/i.test(att.name) ? (
-                              <img
-                                key={i}
-                                src={att?.url}
-                                alt={att?.name}
-                                className="max-h-40 rounded-lg object-cover"
-                              />
-                            ) : (
-                              <div
-                                key={i}
-                                className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs"
-                              >
-                                <AttatchIcon className="w-4 h-4" />
-                                <span className="truncate">{att?.name}</span>
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      )}
+                      {msg?.message}
+                      {msg?.type === "file" &&
+                        msg?.file_url &&
+                        (/\.(png|jpe?g|gif|webp|svg)$/i.test(
+                          msg?.file_name || msg?.file_url,
+                        ) ? (
+                          <img
+                            src={msg?.file_url}
+                            alt={msg?.file_name || "attachment"}
+                            className="mt-2 max-h-40 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="mt-2 flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs">
+                            <AttatchIcon className="w-4 h-4" />
+                            <span className="truncate">
+                              {msg?.file_name || "File"}
+                            </span>
+                          </div>
+                        ))}
                       {selectedEmoji.id === msg.id && (
                         <p className="p-0.5 rounded-full shadow-md absolute -bottom-3 -right-2 bg-whiteColor">
                           {selectedEmoji.emoji}
@@ -266,29 +206,25 @@ function MessageRoot() {
                         />
                       </div>
                       <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-3 rounded-t-xl rounded-l-xl text-sm">
-                        {msg?.content}
-                        {msg?.attachments?.length > 0 && (
-                          <div className="mt-2 space-y-1.5">
-                            {msg?.attachments?.map((att, i) =>
-                              /\.(png|jpe?g|gif|webp|svg)$/i.test(att?.name) ? (
-                                <img
-                                  key={i}
-                                  src={att?.url}
-                                  alt={att?.name}
-                                  className="max-h-40 rounded-lg object-cover"
-                                />
-                              ) : (
-                                <div
-                                  key={i}
-                                  className="flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs"
-                                >
-                                  <AttatchIcon className="w-4 h-4" />
-                                  <span className="truncate">{att?.name}</span>
-                                </div>
-                              ),
-                            )}
-                          </div>
-                        )}
+                        {msg?.message}
+                        {msg?.type === "file" &&
+                          msg?.file_url &&
+                          (/\.(png|jpe?g|gif|webp|svg)$/i.test(
+                            msg?.file_name || msg?.file_url,
+                          ) ? (
+                            <img
+                              src={msg?.file_url}
+                              alt={msg?.file_name || "attachment"}
+                              className="mt-2 max-h-40 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="mt-2 flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs">
+                              <AttatchIcon className="w-4 h-4" />
+                              <span className="truncate">
+                                {msg?.file_name || "File"}
+                              </span>
+                            </div>
+                          ))}
                         {selectedEmoji.id === msg.id && (
                           <p className="p-0.5  rounded-full shadow-md absolute -bottom-3 -left-2 bg-whiteColor">
                             {selectedEmoji.emoji}
@@ -305,32 +241,20 @@ function MessageRoot() {
             <input
               ref={fileInputRef}
               type="file"
-              multiple
               className="hidden"
               onChange={handleFileChange}
             />
             <div className="p-3 border-t flex flex-col mt-auto">
-              {attachments?.length > 0 && (
-                <div className="flex flex-wrap gap-2 pb-2">
-                  {attachments?.map((file, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 bg-[#F3F4F6] rounded-lg px-3 py-2 text-xs max-w-45"
-                    >
-                      <AttatchIcon className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{file?.name}</span>
-                      <button
-                        onClick={() =>
-                          setAttachments((prev) =>
-                            prev.filter((_, index) => index !== i),
-                          )
-                        }
-                        className="text-red-500 cursor-pointer"
-                      >
-                        <IoClose className="text-sm" />
-                      </button>
-                    </div>
-                  ))}
+              {attachments && (
+                <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-lg px-3 py-2 text-xs max-w-45 mb-2">
+                  <AttatchIcon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{attachments.name}</span>
+                  <button
+                    onClick={() => setAttachments(null)}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    <IoClose className="text-sm" />
+                  </button>
                 </div>
               )}
               <div className="flex items-start gap-3">
@@ -343,18 +267,19 @@ function MessageRoot() {
                   height={250}
                 />
                 <textarea
-                ref={textareaRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e?.target?.value)}
-                placeholder="Write message here..."
-                className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
-              />
-              <button
-                onClick={handleSendMessage}
-                className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer"
-              >
-                <SendIcon />
-              </button>
+                  ref={textareaRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e?.target?.value)}
+                  placeholder="Write message here..."
+                  className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
+                />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={sendingMessage}
+                  className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer disabled:opacity-50"
+                >
+                  <SendIcon />
+                </button>
               </div>
             </div>
           </div>

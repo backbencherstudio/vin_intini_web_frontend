@@ -2,9 +2,9 @@
 
 import Search from "@/components/reusable/Search";
 import { truncateText } from "@/lib/utils";
+import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 function MessageUserSection({
   user,
   chatMessages,
@@ -44,7 +44,10 @@ function MessageUserSection({
     <div>
       <div className="w-full h-full  flex flex-col">
         <div className="pb-4 ">
-          <Search placeHolder="Search messages..." className="rounded-sm! py-3!" />
+          <Search
+            placeHolder="Search messages..."
+            className="rounded-sm! py-3!"
+          />
         </div>
 
         <div className="flex  gap-2 overflow-x-auto mb-3 justify-between  text-base font-medium text-blackColor">
@@ -68,7 +71,7 @@ function MessageUserSection({
               }`}
             >
               <Image
-                src={msg.avatar}
+                src={msg?.user?.profile_image_url || emptyImage}
                 width={40}
                 height={40}
                 className="rounded-full"
@@ -76,14 +79,11 @@ function MessageUserSection({
               />
               <div className="flex-1">
                 <p className="font-medium text-sm flex justify-between">
-                  {msg.receiver_user}{" "}
+                  {msg?.user?.name}{" "}
                   <span className="text-xs text-gray-400">2m ago</span>
                 </p>
                 <p className="text-xs flex justify-between text-gray-500 truncate">
-                  {truncateText(
-                    msg.message[msg.message.length - 1]?.content,
-                    30,
-                  )}
+                  {truncateText(msg.last_message?.message, 30)}
                   <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
                     2
                   </span>

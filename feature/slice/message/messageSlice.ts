@@ -31,10 +31,11 @@ const messageSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["message"],
     }),
     sendMessage: builder.mutation({
-      query: ({ conversationId, content, attachments }) => ({
+      query: ({ conversationId, data }) => ({
         url: `/conversations/${conversationId}/messages`,
         method: "POST",
-        body: { content, attachments },
+        body: data,
+        formData: true,
       }),
       invalidatesTags: ["message"],
     }),
