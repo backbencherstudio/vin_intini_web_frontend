@@ -140,6 +140,7 @@ export const baseApiSlice = createApi({
     "Notifications",
     "psychology",
     "neuroscience",
+    "message",
   ],
 });
 
