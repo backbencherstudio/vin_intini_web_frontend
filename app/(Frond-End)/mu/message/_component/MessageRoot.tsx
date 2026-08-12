@@ -10,19 +10,18 @@ import emptyImage from "@/public/empty_user.jpg";
 import { AttatchIcon, SendIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageUserSection from "./MessageUserSection";
+import MessageFileRenderer from "./MessageFileRenderer";
 import { skip } from "node:test";
 
 function MessageRoot() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "admin";
-   console.log(activeTab, "activeTab");
-
   const { data } = useGetConversationListQuery(activeTab, { skip: activeTab === null });
   const [selectedId, setSelectedId] = useState<number | null>(
     data?.data?.[0]?.id || null,
@@ -41,6 +40,20 @@ function MessageRoot() {
   const [attachments, setAttachments] = useState<File | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages?.length]);
+
+  const handleViewFile = (url: string) => {
+    scrollToBottom();
+    window.open(url, "_blank");
+  };
 
   const handleAttachClick = () => {
     fileInputRef.current?.click();
@@ -171,24 +184,13 @@ function MessageRoot() {
                   >
                     <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-3 rounded-t-xl rounded-r-xl text-sm">
                       {msg?.message}
-                      {msg?.type === "file" &&
-                        msg?.file_url &&
-                        (/\.(png|jpe?g|gif|webp|svg)$/i.test(
-                          msg?.file_name || msg?.file_url,
-                        ) ? (
-                          <img
-                            src={msg?.file_url}
-                            alt={msg?.file_name || "attachment"}
-                            className=" max-h-60 rounded-lg object-cover"
-                          />
-                        ) : (
-                          <div className="mt-2 flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs">
-                            <AttatchIcon className="w-4 h-4" />
-                            <span className="truncate">
-                              {msg?.file_name || "File"}
-                            </span>
-                          </div>
-                        ))}
+                      {msg?.type === "file" && msg?.file_url && (
+                        <MessageFileRenderer
+                          msg={msg}
+                          variant="receiver"
+                          onViewFile={handleViewFile}
+                        />
+                      )}
                       {selectedEmoji.id === msg.id && (
                         <p className="p-0.5 rounded-full shadow-md absolute -bottom-3 -right-2 bg-whiteColor">
                           {selectedEmoji.emoji}
@@ -215,24 +217,13 @@ function MessageRoot() {
                       </div>
                       <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-3 rounded-t-xl rounded-l-xl text-sm">
                         {msg?.message}
-                        {msg?.type === "file" &&
-                          msg?.file_url &&
-                          (/\.(png|jpe?g|gif|webp|svg)$/i.test(
-                            msg?.file_name || msg?.file_url,
-                          ) ? (
-                            <img
-                              src={msg?.file_url}
-                              alt={msg?.file_name || "attachment"}
-                              className="max-h-60 rounded-lg object-cover"
-                            />
-                          ) : (
-                            <div className="mt-2 flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs">
-                              <AttatchIcon className="w-4 h-4" />
-                              <span className="truncate">
-                                {msg?.file_name || "File"}
-                              </span>
-                            </div>
-                          ))}
+                        {msg?.type === "file" && msg?.file_url && (
+                          <MessageFileRenderer
+                            msg={msg}
+                            variant="sender"
+                            onViewFile={handleViewFile}
+                          />
+                        )}
                         {selectedEmoji.id === msg.id && (
                           <p className="p-0.5  rounded-full shadow-md absolute -bottom-3 -left-2 bg-whiteColor">
                             {selectedEmoji.emoji}
@@ -243,6 +234,7 @@ function MessageRoot() {
                   </div>
                 ),
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}

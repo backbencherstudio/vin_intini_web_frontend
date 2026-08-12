@@ -1456,16 +1456,16 @@ export const DoubleArrowIcon = ({ className }: { className?: string }) => (
     <path
       d="M10.4141 15C10.4141 15 15.4141 11.3176 15.4141 10C15.4141 8.68233 10.4141 5 10.4141 5"
       stroke="currentColor"
-      stroke-width="1.25"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M4.58598 15C4.58598 15 9.58594 11.3176 9.58594 10C9.58594 8.68233 4.58594 5 4.58594 5"
       stroke="currentColor"
-      stroke-width="1.25"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
