@@ -54,6 +54,14 @@ const messageSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["message"],
     }),
+    reactForeMessage: builder.mutation({
+      query: ({data, messageId}) => ({
+        url: `/messages/${messageId}/react`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["message"],
+    }),
     unarchiveMessage: builder.mutation({
       query: (messageId) => ({
         url: `/conversations/${messageId}/unarchive`,
@@ -89,4 +97,5 @@ export const {
   useUnarchiveMessageMutation,
   useDeleteConversationMutation,
   useDeleteMessageMutation,
+  useReactForeMessageMutation
 } = messageSlice;

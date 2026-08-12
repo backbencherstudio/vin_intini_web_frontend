@@ -10,33 +10,36 @@ const EmojiPicker = dynamic(() => import("emoji-picker-react"), {
 
 function MessageReactEmojiAction({
   setSelectedEmoji,
+  onReact,
   id,
-  type
+  type,
 }: {
   setSelectedEmoji: (data: { emoji: string; id: any }) => void;
+  onReact?: (id: number, emoji: string) => void;
   id: number;
   type: "sender" | "receiver";
 }) {
-  const [message, setMessage] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [messageId, setMessageId] = useState(null);
   const handleEmojiClick = (emojiData: any) => {
-    setMessage((prev) => prev + emojiData.emoji);
     setSelectedEmoji({ emoji: emojiData.emoji, id: id });
+    onReact?.(id, emojiData.emoji);
     setShowPicker(false);
   };
-  const handleShowPicker = (id) => () => {
+  const handleShowPicker = (id) => {
     setMessageId(id);
     setShowPicker((prev) => !prev);
   };
 
   return (
     <div className=" relative ">
-      <button onClick={handleShowPicker(id)} className=" cursor-pointer">
+      <button onClick={()=>handleShowPicker(id)} className=" cursor-pointer">
         <EmojiIcon className="stroke-bgColor!" />
       </button>
       {showPicker && messageId === id && (
-        <div className={`rounded-full border z-20 absolute bottom-20px ${type === "receiver" ? "-left-2" : "-left-20"} shadow-gray-500 shadow-2xl bg-white  px-2`}>
+        <div
+          className={`rounded-full border z-20 absolute bottom-20px ${type === "receiver" ? "-left-2" : "-left-20"} shadow-gray-500 shadow-2xl bg-white  px-2`}
+        >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
             reactionsDefaultOpen
