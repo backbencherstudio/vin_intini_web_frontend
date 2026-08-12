@@ -146,7 +146,7 @@ function MessageRoot() {
         </div>
         <div className="h-full bg-white flex ">
           {/* Sidebar */}
-          <div className="max-w-90 hidden md:border-r pr-4 w-full  md:flex flex-col">
+          <div className="lg:max-w-90 max-w-80 hidden md:border-r pr-4 w-full  md:flex flex-col">
             <MessageUserSection
               chatMessages={data?.data || []}
               setSelectedId={setSelectedId}
@@ -178,7 +178,7 @@ function MessageRoot() {
                       className="rounded-sm"
                       alt=""
                     />
-                    <div>
+                    <div className="space-y-1">
                       <p className="font-semibold text-lg text-headerColor">
                         {conversationList?.other_user?.name}
                       </p>
@@ -342,13 +342,17 @@ function MessageRoot() {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center p-4 md:p-6 items-center">
+                <div className="flex md:hidden  rounded-sm  justify-between w-full items-center mb-4">
+
                 <button
-                  className="md:hidden rounded-sm"
+                  className=""
                   onClick={() => setSiderOpen((prev) => !prev)}
                 >
                   <FaBars />
                 </button>
+                <p className="font-semibold">Open Chat</p>
+                </div>
                 <div className="h-135 flex flex-col px-4 max-w-134.75 w-full items-center justify-center gap-2">
                   <BsEmojiFrown size={24} />
                   <p className="text-center text-headerColor font-semibold">
