@@ -14,7 +14,7 @@ function MessageReactEmojiAction({
   id,
   type,
 }: {
-  setSelectedEmoji: (data: { emoji: string; id: any }) => void;
+  setSelectedEmoji?: (data: { emoji: string; id: any }) => void;
   onReact?: (id: number, emoji: string) => void;
   id: number;
   type: "sender" | "receiver";
@@ -22,7 +22,7 @@ function MessageReactEmojiAction({
   const [showPicker, setShowPicker] = useState(false);
   const [messageId, setMessageId] = useState(null);
   const handleEmojiClick = (emojiData: any) => {
-    setSelectedEmoji({ emoji: emojiData.emoji, id: id });
+    setSelectedEmoji?.({ emoji: emojiData.emoji, id: id });
     onReact?.(id, emojiData.emoji);
     setShowPicker(false);
   };
@@ -33,7 +33,7 @@ function MessageReactEmojiAction({
 
   return (
     <div className=" relative ">
-      <button onClick={()=>handleShowPicker(id)} className=" cursor-pointer">
+      <button onClick={() => handleShowPicker(id)} className=" cursor-pointer">
         <EmojiIcon className="stroke-bgColor!" />
       </button>
       {showPicker && messageId === id && (

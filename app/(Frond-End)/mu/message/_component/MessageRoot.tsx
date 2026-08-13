@@ -7,6 +7,7 @@ import {
   useReactForeMessageMutation,
   useSendMessageMutation,
 } from "@/feature/slice/message/messageSlice";
+import echo from "@/lib/echo";
 import emptyImage from "@/public/empty_user.jpg";
 import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
@@ -15,11 +16,13 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { BsEmojiFrown, BsThreeDotsVertical } from "react-icons/bs";
 import { FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
+import { useDispatch } from "react-redux";
 import MessageFileRenderer from "./MessageFileRenderer";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageUserSection from "./MessageUserSection";
 
 function MessageRoot() {
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "admin";
   const { data } = useGetConversationListQuery(activeTab, {
@@ -35,11 +38,11 @@ function MessageRoot() {
     },
   );
 
-  const chatMessages = conversationList?.data || [];
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
   const [reactForeMessage] = useReactForeMessageMutation();
   const [inputValue, setInputValue] = useState("");
-  const [selectedEmoji, setSelectedEmoji] = useState({ emoji: "", id: null });
+
   const [sidarOpen, setSiderOpen] = useState(false);
   const [attachments, setAttachments] = useState<File | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -62,11 +65,53 @@ function MessageRoot() {
   }, [selectedId, chatMessages?.length]);
 
   useEffect(() => {
+    setChatMessages(conversationList?.data || []);
+  }, [selectedId, conversationList]);
+
+  useEffect(() => {
     return () => {
       if (recorderTimerRef.current) clearInterval(recorderTimerRef.current);
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
+
+  useEffect(() => {
+    if (!echo || selectedId === null) return;
+    const channelName = `conversation.${selectedId}`;
+    const channel = echo.private(channelName);
+
+    const handleMessageSent = (data: any) => {
+      const newMsg = data?.message?.id ? data.message : data;
+      setChatMessages((prevMessages) => {
+        if (!newMsg?.id) return prevMessages;
+        const exists = prevMessages.some((m) => m.id === newMsg.id);
+        if (exists) return prevMessages;
+        return [...prevMessages, newMsg];
+      });
+    };
+
+    const handleMessageReactionChanged = (data: any) => {
+      console.log("first", data);
+      const messageId = data?.message_id;
+      const reactions = data?.reactions;
+      if (!messageId || !reactions) return;
+      setChatMessages((prevMessages) =>
+        prevMessages.map((m) => (m.id === messageId ? { ...m, reactions } : m)),
+      );
+    };
+
+    channel.listen(".MessageSent", handleMessageSent);
+    channel.listen(".MessageReactionChanged", handleMessageReactionChanged);
+
+    return () => {
+      channel.stopListening(".MessageSent", handleMessageSent);
+      channel.stopListening(
+        ".MessageReactionChanged",
+        handleMessageReactionChanged,
+      );
+      echo.leave(channelName);
+    };
+  }, [selectedId, dispatch]);
 
   const handleViewFile = (url: string) => {
     scrollToBottom();
@@ -133,7 +178,7 @@ function MessageRoot() {
   const sendAudioBlob = async (blob: Blob) => {
     if (selectedId === null) return;
     const mime = blob.type || "audio/webm";
-    const ext = mime.includes("mp4")
+    const ext = mime.includes("mp3")
       ? "m4a"
       : mime.includes("aac")
         ? "aac"
@@ -156,7 +201,10 @@ function MessageRoot() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const preferredMimes = ["audio/mp4", "audio/m4a", "audio/aac", "audio/webm"];
+      const preferredMimes = [
+        "audio/mp3",
+        "audio/m4a",
+      ];
       const mimeType =
         typeof MediaRecorder.isTypeSupported === "function"
           ? preferredMimes.find((m) => MediaRecorder.isTypeSupported(m))
@@ -326,7 +374,6 @@ function MessageRoot() {
                         </div>
                         <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
                           <MessageReactEmojiAction
-                            setSelectedEmoji={setSelectedEmoji}
                             onReact={handleReactMessage}
                             type="receiver"
                             id={msg.id}
@@ -341,7 +388,6 @@ function MessageRoot() {
                         <div className="flex items-center justify-end w-full   gap-2">
                           <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
                             <MessageReactEmojiAction
-                              setSelectedEmoji={setSelectedEmoji}
                               onReact={handleReactMessage}
                               type="sender"
                               id={msg.id}

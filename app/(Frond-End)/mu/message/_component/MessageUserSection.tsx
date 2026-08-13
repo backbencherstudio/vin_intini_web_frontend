@@ -104,7 +104,7 @@ function MessageUserSection({
     }
   };
 
-  console.log(chatMessages, "chatMessages");
+
 
   return (
     <div>
