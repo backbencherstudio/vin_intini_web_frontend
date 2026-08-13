@@ -20,15 +20,14 @@ function MessageFileRenderer({
     /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(msg?.file_name || msg?.file_url);
   const isAudio =
     category === "audio" ||
-    /\.(mp3|wav|ogg|m4a|aac)$/i.test(msg?.file_name || msg?.file_url);
+    /\.(mp3|wav|ogg|m4a|aac|webm)$/i.test(msg?.file_name || msg?.file_url);
   const isPdf =
-    category === "pdf" ||
-    /\.pdf$/i.test(msg?.file_name || msg?.file_url);
+    category === "pdf" || /\.pdf$/i.test(msg?.file_name || msg?.file_url);
 
   const chipClass =
     variant === "sender"
-      ? "mt-2 flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs cursor-pointer"
-      : "mt-2 flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs cursor-pointer";
+      ? " flex items-center gap-2 bg-white text-headerColor rounded-lg px-3 py-2 text-xs cursor-pointer"
+      : " flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-xs cursor-pointer";
 
   if (isImage) {
     return (
@@ -57,19 +56,25 @@ function MessageFileRenderer({
 
   if (isAudio) {
     return (
-      <div className="mt-2 flex items-center gap-2 bg-white/40 rounded-lg px-2 py-2">
+      <div className="flex items-center gap-2 bg-white/40 rounded-lg px-1 py-1">
         <Headphones className="shrink-0" />
-        <audio src={msg?.file_url} controls preload="metadata" className="h-8 w-52" />
+        <audio
+          src={msg?.file_url}
+          controls
+          preload="metadata"
+          className="h-8 w-52"
+        />
       </div>
     );
   }
 
   return (
-    <div
-      className={chipClass}
-      onClick={() => onViewFile?.(msg?.file_url)}
-    >
-      {isPdf ? <FileText className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
+    <div className={chipClass} onClick={() => onViewFile?.(msg?.file_url)}>
+      {isPdf ? (
+        <FileText className="w-4 h-4" />
+      ) : (
+        <ImageIcon className="w-4 h-4" />
+      )}
       <span className="truncate max-w-40">
         {msg?.file_name || (isPdf ? "PDF File" : "File")}
       </span>

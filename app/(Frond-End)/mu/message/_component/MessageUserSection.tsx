@@ -155,8 +155,9 @@ function MessageUserSection({
                     <p className="text-xs flex justify-between text-gray-500 truncate">
                       {msg.last_message?.message
                         ? truncateText(msg.last_message?.message, 30)
-                        : msg.last_message?.file_url
-                          ? "Send a photo"
+                        : msg.last_message?.type === "audio"
+                          ? "Send an voice" : msg.last_message?.type === "file"
+                            ? "Send a file" : msg.last_message?.type === "vedio" ? "Send a video"
                           : "No message available"}
                       {msg?.unread_count > 0 ? (
                         <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">

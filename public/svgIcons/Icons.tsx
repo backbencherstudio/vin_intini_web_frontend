@@ -1533,24 +1533,25 @@ export const ProfessionalIcon = ({ className }: { className?: string }) => (
     height="24"
     viewBox="0 0 24 24"
     fill="none"
+    className={className}
   >
     <path
       d="M15.5 10.5C15.5 8.567 13.933 7 12 7C10.067 7 8.5 8.567 8.5 10.5C8.5 12.433 10.067 14 12 14C13.933 14 15.5 12.433 15.5 10.5Z"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M18 20C18 16.6863 15.3137 14 12 14C8.68629 14 6 16.6863 6 20"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1564,24 +1565,25 @@ export const ResearcherIcon = ({ className }: { className?: string }) => (
     height="24"
     viewBox="0 0 24 24"
     fill="none"
+    className={className}
   >
     <path
       d="M15 7.5C15 4.73858 12.7614 2.5 10 2.5C7.23858 2.5 5 4.73858 5 7.5C5 10.2614 7.23858 12.5 10 12.5C12.7614 12.5 15 10.2614 15 7.5Z"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M21 21.5L19.5 20M20 17.5C20 15.8431 18.6569 14.5 17 14.5C15.3431 14.5 14 15.8431 14 17.5C14 19.1569 15.3431 20.5 17 20.5C18.6569 20.5 20 19.1569 20 17.5Z"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M3 19.5C3 15.634 6.13401 12.5 10 12.5C11.0736 12.5 12.0907 12.7417 13 13.1736"
-      stroke="#04A1B7"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -1613,6 +1615,23 @@ export const ClinicalIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const VoiceIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="21"
+    viewBox="0 0 18 21"
+    fill="none"
+    className={className}
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M3 5.75C3 2.57436 5.57436 0 8.75 0C11.9256 0 14.5 2.57436 14.5 5.75V8.75C14.5 11.9256 11.9256 14.5 8.75 14.5C5.57436 14.5 3 11.9256 3 8.75V5.75ZM4.56597 5H5.75C6.16421 5 6.5 5.33579 6.5 5.75C6.5 6.16421 6.16421 6.5 5.75 6.5H4.5V8H5.75C6.16421 8 6.5 8.33579 6.5 8.75C6.5 9.16421 6.16421 9.5 5.75 9.5H4.56597C4.9202 11.4895 6.6587 13 8.75 13C10.8413 13 12.5798 11.4895 12.934 9.5L10.25 9.5C9.83579 9.5 9.5 9.16421 9.5 8.75C9.5 8.33579 9.83579 8 10.25 8L13 8V6.5H10.25C9.83579 6.5 9.5 6.16421 9.5 5.75C9.5 5.33579 9.83579 5 10.25 5H12.934C12.5798 3.01049 10.8413 1.5 8.75 1.5C6.6587 1.5 4.9202 3.01049 4.56597 5ZM0.75 7C1.16421 7 1.5 7.33579 1.5 7.75V8.75C1.5 12.7541 4.74594 16 8.75 16C12.7541 16 16 12.7541 16 8.75V7.75C16 7.33579 16.3358 7 16.75 7C17.1642 7 17.5 7.33579 17.5 7.75V8.75C17.5 13.3298 13.9814 17.0879 9.5 17.4683V19.75C9.5 20.1642 9.16421 20.5 8.75 20.5C8.33579 20.5 8 20.1642 8 19.75V17.4683C3.5186 17.0879 0 13.3298 0 8.75V7.75C0 7.33579 0.335786 7 0.75 7Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 export const IndustryIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1639,6 +1658,7 @@ export const UploadUserIcon = ({ className }: { className?: string }) => (
     height="32"
     viewBox="0 0 32 32"
     fill="none"
+    className={className}
   >
     <path
       d="M19.9993 10.6667C19.9993 6.98477 17.0145 4 13.3327 4C9.65079 4 6.66602 6.98477 6.66602 10.6667C6.66602 14.3485 9.65079 17.3333 13.3327 17.3333C17.0145 17.3333 19.9993 14.3485 19.9993 10.6667Z"

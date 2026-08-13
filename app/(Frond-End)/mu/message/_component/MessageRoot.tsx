@@ -8,7 +8,7 @@ import {
   useSendMessageMutation,
 } from "@/feature/slice/message/messageSlice";
 import emptyImage from "@/public/empty_user.jpg";
-import { AttatchIcon, SendIcon } from "@/public/svgIcons/Icons";
+import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
@@ -42,9 +42,15 @@ function MessageRoot() {
   const [selectedEmoji, setSelectedEmoji] = useState({ emoji: "", id: null });
   const [sidarOpen, setSiderOpen] = useState(false);
   const [attachments, setAttachments] = useState<File | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -54,6 +60,13 @@ function MessageRoot() {
     const id = requestAnimationFrame(() => scrollToBottom());
     return () => cancelAnimationFrame(id);
   }, [selectedId, chatMessages?.length]);
+
+  useEffect(() => {
+    return () => {
+      if (recorderTimerRef.current) clearInterval(recorderTimerRef.current);
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
 
   const handleViewFile = (url: string) => {
     scrollToBottom();
@@ -115,6 +128,89 @@ function MessageRoot() {
     } catch (error) {
       console.error("Failed to send message", error);
     }
+  };
+
+  const sendAudioBlob = async (blob: Blob) => {
+    if (selectedId === null) return;
+    const mime = blob.type || "audio/webm";
+    const ext = mime.includes("mp4")
+      ? "m4a"
+      : mime.includes("aac")
+        ? "aac"
+        : "webm";
+    const formData = new FormData();
+    formData.append("type", "voice");
+    formData.append("message", "");
+    formData.append("file", blob, `voice-message.${ext}`);
+    try {
+      await sendMessage({
+        conversationId: selectedId,
+        data: formData,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to send voice message", error);
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const preferredMimes = ["audio/mp4", "audio/m4a", "audio/aac", "audio/webm"];
+      const mimeType =
+        typeof MediaRecorder.isTypeSupported === "function"
+          ? preferredMimes.find((m) => MediaRecorder.isTypeSupported(m))
+          : undefined;
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, {
+          type: mediaRecorder.mimeType || "audio/webm",
+        });
+        stream.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+        if (blob.size > 0) sendAudioBlob(blob);
+      };
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingSeconds(0);
+      recorderTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
+    } catch (error) {
+      console.error("Failed to start voice recording", error);
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+    if (recorderTimerRef.current) {
+      clearInterval(recorderTimerRef.current);
+      recorderTimerRef.current = null;
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
   return (
     <div>
@@ -200,15 +296,16 @@ function MessageRoot() {
                         key={msg.id}
                         className="flex group/message items-center gap-2"
                       >
-                        <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-3 rounded-t-xl rounded-r-xl text-sm">
+                        <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
                           {msg?.message}
-                          {msg?.type === "file" && msg?.file_url && (
-                            <MessageFileRenderer
-                              msg={msg}
-                              variant="receiver"
-                              onViewFile={handleViewFile}
-                            />
-                          )}
+                          {(msg?.type === "file" || msg?.type === "voice") &&
+                            msg?.file_url && (
+                              <MessageFileRenderer
+                                msg={msg}
+                                variant="receiver"
+                                onViewFile={handleViewFile}
+                              />
+                            )}
                           {msg?.reactions && msg.reactions.length > 0 && (
                             <div className="flex items-center gap-1 absolute -bottom-3 -right-2 z-10">
                               {msg.reactions.map((react: any, idx: number) => (
@@ -250,15 +347,16 @@ function MessageRoot() {
                               id={msg.id}
                             />
                           </div>
-                          <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-3 rounded-t-xl rounded-l-xl text-sm">
+                          <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
                             {msg?.message}
-                            {msg?.type === "file" && msg?.file_url && (
-                              <MessageFileRenderer
-                                msg={msg}
-                                variant="sender"
-                                onViewFile={handleViewFile}
-                              />
-                            )}
+                            {(msg?.type === "file" || msg?.type === "voice") &&
+                              msg?.file_url && (
+                                <MessageFileRenderer
+                                  msg={msg}
+                                  variant="sender"
+                                  onViewFile={handleViewFile}
+                                />
+                              )}
                             {msg?.reactions && msg.reactions.length > 0 && (
                               <div className="flex items-center gap-1 absolute -bottom-3 -left-2 z-10">
                                 {msg.reactions.map(
@@ -306,12 +404,34 @@ function MessageRoot() {
                       </button>
                     </div>
                   )}
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-1 md:gap-3">
                     <button
                       onClick={handleAttachClick}
                       className="cursor-pointer p-1"
                     >
                       <AttatchIcon className="w-4.5 h-4.5" />
+                    </button>
+                    <button
+                      onClick={toggleRecording}
+                      className={`p-1 flex items-center gap-1.5 rounded-md transition-colors ${
+                        isRecording
+                          ? "bg-red-50 text-red-500 px-2"
+                          : "text-descriptionColor"
+                      }`}
+                    >
+                      {isRecording ? (
+                        <>
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                          </span>
+                          <span className="text-xs font-medium tabular-nums">
+                            {formatRecordingTime(recordingSeconds)}
+                          </span>
+                        </>
+                      ) : (
+                        <VoiceIcon className="w-4.5 h-4.5" />
+                      )}
                     </button>
                     <SmartEmojiPicker
                       onEmojiSelect={handleEmojiSelect}
@@ -344,14 +464,13 @@ function MessageRoot() {
             ) : (
               <div className="flex flex-col justify-center p-4 md:p-6 items-center">
                 <div className="flex md:hidden  rounded-sm  justify-between w-full items-center mb-4">
-
-                <button
-                  className=""
-                  onClick={() => setSiderOpen((prev) => !prev)}
-                >
-                  <FaBars />
-                </button>
-                <p className="font-semibold">Open Chat</p>
+                  <button
+                    className=""
+                    onClick={() => setSiderOpen((prev) => !prev)}
+                  >
+                    <FaBars />
+                  </button>
+                  <p className="font-semibold">Open Chat</p>
                 </div>
                 <div className="h-135 flex flex-col px-4 max-w-134.75 w-full items-center justify-center gap-2">
                   <BsEmojiFrown size={24} />
