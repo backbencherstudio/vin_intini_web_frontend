@@ -5,7 +5,6 @@
 @import "leaflet.markercluster/dist/MarkerCluster.css";
 @import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-
 @custom-variant dark (&:is(.dark *));
 
 .container {
@@ -311,7 +310,6 @@ body {
   padding-top: 4px;
   box-sizing: border-box;
 }
-
 
 .leaflet-popup-content{
   margin: 0 !important;
