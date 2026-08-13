@@ -18,7 +18,7 @@ const routeMeta: Record<
 
   "/dashboard/cleaners": {
     title: "Cleaners",
-    desc: "Manage all cleaner accounts and their activities.",
+    desc: "Manage all cleaner accounts the and their activities.",
   },
 
   "/dashboard/cleaner-request": {
