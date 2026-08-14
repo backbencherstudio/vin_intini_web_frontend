@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, Film, ImageIcon } from "lucide-react";
+import SmartVideoPlayer from "./SmartVideoPlayer";
 import VoiceMessagePlayer from "./VoiceMessagePlayer";
 
 function MessageFileRenderer({
@@ -32,8 +33,7 @@ function MessageFileRenderer({
     (category === "video" ||
       /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(fileName || fileUrl));
 
-  const isPdf =
-    category === "pdf" || /\.pdf$/i.test(fileName || fileUrl);
+  const isPdf = category === "pdf" || /\.pdf$/i.test(fileName || fileUrl);
 
   const chipClass =
     variant === "sender"
@@ -66,16 +66,7 @@ function MessageFileRenderer({
 
   // Video
   if (isVideo) {
-    return (
-      <video
-        src={fileUrl}
-        controls
-        preload="metadata"
-        className="max-h-60 rounded-lg bg-black w-72"
-      >
-        <track kind="captions" />
-      </video>
-    );
+    return <SmartVideoPlayer src={fileUrl} onViewFile={onViewFile} />;
   }
 
   // Fallback / Other Files
