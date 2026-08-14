@@ -8,18 +8,17 @@ import {
   useSendMessageMutation,
 } from "@/feature/slice/message/messageSlice";
 import echo from "@/lib/echo";
-import emptyImage from "@/public/empty_user.jpg";
 import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import { BsEmojiFrown, BsThreeDotsVertical } from "react-icons/bs";
+import { BsEmojiFrown } from "react-icons/bs";
 import { FaBars } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { useDispatch } from "react-redux";
-import MessageFileRenderer from "./MessageFileRenderer";
-import MessageReactEmojiAction from "./MessageReactEmojiAction";
+import ChatHeader from "./ChatHeader";
+import MessageBubble from "./MessageBubble";
 import MessageUserSection from "./MessageUserSection";
+import { useVoiceRecorder } from "./useVoiceRecorder";
 
 function MessageRoot() {
   const dispatch = useDispatch();
@@ -42,18 +41,11 @@ function MessageRoot() {
   const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
   const [reactForeMessage] = useReactForeMessageMutation();
   const [inputValue, setInputValue] = useState("");
-
   const [sidarOpen, setSiderOpen] = useState(false);
   const [attachments, setAttachments] = useState<File | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
-  const recorderTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,13 +59,6 @@ function MessageRoot() {
   useEffect(() => {
     setChatMessages(conversationList?.data || []);
   }, [selectedId, conversationList]);
-
-  useEffect(() => {
-    return () => {
-      if (recorderTimerRef.current) clearInterval(recorderTimerRef.current);
-      streamRef.current?.getTracks().forEach((track) => track.stop());
-    };
-  }, []);
 
   useEffect(() => {
     if (!echo || selectedId === null) return;
@@ -91,7 +76,6 @@ function MessageRoot() {
     };
 
     const handleMessageReactionChanged = (data: any) => {
-      console.log("first", data);
       const messageId = data?.message_id;
       const reactions = data?.reactions;
       if (!messageId || !reactions) return;
@@ -155,10 +139,48 @@ function MessageRoot() {
     });
   };
 
+  const sendAudioBlob = async (blob: Blob) => {
+    if (selectedId === null) return;
+    const mime = blob.type || "";
+    let ext = "";
+    if (mime.includes("mp3")) ext = "mp3";
+    else if (mime.includes("mp4") || mime.includes("m4a")) ext = "m4a";
+    else return;
+    const uploadBlob = new Blob([blob], {
+      type: ext === "mp3" ? "audio/mp3" : "audio/m4a",
+    });
+    const formData = new FormData();
+    formData.append("type", "voice");
+    formData.append("message", "");
+    formData.append("file", uploadBlob, `voice-message.${ext}`);
+    try {
+      await sendMessage({
+        conversationId: selectedId,
+        data: formData,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to send voice message", error);
+    }
+  };
+
+  const {
+    isRecording,
+    recordingSeconds,
+    recordingBlob,
+    toggleRecording,
+    sendRecording,
+    discardRecording,
+    formatRecordingTime,
+  } = useVoiceRecorder(sendAudioBlob);
+
   const handleSendMessage = async () => {
+    if (selectedId === null) return;
+    if (recordingBlob) {
+      await sendRecording();
+      return;
+    }
     const content = inputValue.trim();
     if (!content && !attachments) return;
-    if (selectedId === null) return;
     const formData = new FormData();
     formData.append("type", attachments ? "file" : "text");
     formData.append("message", content);
@@ -175,91 +197,6 @@ function MessageRoot() {
     }
   };
 
-  const sendAudioBlob = async (blob: Blob) => {
-    if (selectedId === null) return;
-    const mime = blob.type || "audio/webm";
-    const ext = mime.includes("mp3")
-      ? "m4a"
-      : mime.includes("aac")
-        ? "aac"
-        : "webm";
-    const formData = new FormData();
-    formData.append("type", "voice");
-    formData.append("message", "");
-    formData.append("file", blob, `voice-message.${ext}`);
-    try {
-      await sendMessage({
-        conversationId: selectedId,
-        data: formData,
-      }).unwrap();
-    } catch (error) {
-      console.error("Failed to send voice message", error);
-    }
-  };
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-      const preferredMimes = [
-        "audio/mp3",
-        "audio/m4a",
-      ];
-      const mimeType =
-        typeof MediaRecorder.isTypeSupported === "function"
-          ? preferredMimes.find((m) => MediaRecorder.isTypeSupported(m))
-          : undefined;
-      const mediaRecorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, {
-          type: mediaRecorder.mimeType || "audio/webm",
-        });
-        stream.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-        if (blob.size > 0) sendAudioBlob(blob);
-      };
-      mediaRecorder.start();
-      setIsRecording(true);
-      setRecordingSeconds(0);
-      recorderTimerRef.current = setInterval(() => {
-        setRecordingSeconds((prev) => prev + 1);
-      }, 1000);
-    } catch (error) {
-      console.error("Failed to start voice recording", error);
-    }
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setIsRecording(false);
-    if (recorderTimerRef.current) {
-      clearInterval(recorderTimerRef.current);
-      recorderTimerRef.current = null;
-    }
-  };
-
-  const toggleRecording = () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
-  };
-
-  const formatRecordingTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
   return (
     <div>
       <div>
@@ -289,7 +226,6 @@ function MessageRoot() {
           </div>
         </div>
         <div className="h-full bg-white flex ">
-          {/* Sidebar */}
           <div className="lg:max-w-90 max-w-80 hidden md:border-r pr-4 w-full  md:flex flex-col">
             <MessageUserSection
               chatMessages={data?.data || []}
@@ -299,138 +235,26 @@ function MessageRoot() {
             />
           </div>
 
-          {/* Chat Section */}
           <div className=" border md:ml-4 rounded-2xl w-full flex flex-col">
-            {/* Header */}
             {chatMessages.length > 0 ? (
               <>
-                <div className="flex p-3! md:p-4!  w-full items-center justify-between">
-                  <div className=" flex items-center gap-2! md:gap-3!">
-                    <button
-                      className="md:hidden  rounded-sm"
-                      onClick={() => setSiderOpen((prev) => !prev)}
-                    >
-                      <FaBars />
-                    </button>
-                    <Image
-                      src={
-                        conversationList?.other_user?.profile_image_url ||
-                        emptyImage
-                      }
-                      width={40}
-                      height={40}
-                      className="rounded-sm"
-                      alt=""
-                    />
-                    <div className="space-y-1">
-                      <p className="font-semibold text-lg text-headerColor">
-                        {conversationList?.other_user?.name}
-                      </p>
-                      <p className="text-xs text-descriptionColor!">
-                        {conversationList?.other_user?.title || "No title"}
-                      </p>
-                    </div>
-                  </div>
-                  <button className="cursor-pointer text-secondaryColor!">
-                    <BsThreeDotsVertical className="text-blackColor" />
-                  </button>
-                </div>
+                <ChatHeader
+                  otherUser={conversationList?.other_user}
+                  onToggleSidebar={() => setSiderOpen((prev) => !prev)}
+                />
 
-                {/* Messages */}
                 <div className="md:h-135 h-100 border-t overflow-y-auto p-3! md:p-6! space-y-4">
-                  {chatMessages?.map((msg) =>
-                    !msg.is_mine ? (
-                      <div
-                        key={msg.id}
-                        className="flex group/message items-center gap-2"
-                      >
-                        <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
-                          {msg?.message}
-                          {(msg?.type === "file" || msg?.type === "voice") &&
-                            msg?.file_url && (
-                              <MessageFileRenderer
-                                msg={msg}
-                                variant="receiver"
-                                onViewFile={handleViewFile}
-                              />
-                            )}
-                          {msg?.reactions && msg.reactions.length > 0 && (
-                            <div className="flex items-center gap-1 absolute -bottom-3 -right-2 z-10">
-                              {msg.reactions.map((react: any, idx: number) => (
-                                <span
-                                  key={idx}
-                                  className="px-1.5 py-0.5 rounded-full shadow-md bg-white border border-gray-100 text-xs flex items-center gap-0.5"
-                                >
-                                  <span>{react.reaction}</span>
-                                  {react.count > 1 && (
-                                    <span className="text-[10px] font-semibold text-gray-600">
-                                      {react.count}
-                                    </span>
-                                  )}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
-                          <MessageReactEmojiAction
-                            onReact={handleReactMessage}
-                            type="receiver"
-                            id={msg.id}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div
-                        key={msg.id}
-                        className="max-w-xs group/message ml-auto"
-                      >
-                        <div className="flex items-center justify-end w-full   gap-2">
-                          <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
-                            <MessageReactEmojiAction
-                              onReact={handleReactMessage}
-                              type="sender"
-                              id={msg.id}
-                            />
-                          </div>
-                          <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
-                            {msg?.message}
-                            {(msg?.type === "file" || msg?.type === "voice") &&
-                              msg?.file_url && (
-                                <MessageFileRenderer
-                                  msg={msg}
-                                  variant="sender"
-                                  onViewFile={handleViewFile}
-                                />
-                              )}
-                            {msg?.reactions && msg.reactions.length > 0 && (
-                              <div className="flex items-center gap-1 absolute -bottom-3 -left-2 z-10">
-                                {msg.reactions.map(
-                                  (react: any, idx: number) => (
-                                    <span
-                                      key={idx}
-                                      className="px-1.5 py-0.5 rounded-full shadow-md bg-white border border-gray-100 text-xs flex items-center gap-0.5"
-                                    >
-                                      <span>{react.reaction}</span>
-                                      {react.count > 1 && (
-                                        <span className="text-[10px] font-semibold text-gray-600">
-                                          {react.count}
-                                        </span>
-                                      )}
-                                    </span>
-                                  ),
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ),
-                  )}
+                  {chatMessages?.map((msg) => (
+                    <MessageBubble
+                      key={msg.id}
+                      msg={msg}
+                      onViewFile={handleViewFile}
+                      onReact={handleReactMessage}
+                    />
+                  ))}
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -457,28 +281,42 @@ function MessageRoot() {
                     >
                       <AttatchIcon className="w-4.5 h-4.5" />
                     </button>
-                    <button
-                      onClick={toggleRecording}
-                      className={`p-1 flex items-center gap-1.5 rounded-md transition-colors ${
-                        isRecording
-                          ? "bg-red-50 text-red-500 px-2"
-                          : "text-descriptionColor"
-                      }`}
-                    >
-                      {isRecording ? (
-                        <>
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-                          </span>
-                          <span className="text-xs font-medium tabular-nums">
-                            {formatRecordingTime(recordingSeconds)}
-                          </span>
-                        </>
-                      ) : (
-                        <VoiceIcon className="w-4.5 h-4.5" />
-                      )}
-                    </button>
+                    {recordingBlob ? (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={discardRecording}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded-full cursor-pointer"
+                        >
+                          <IoClose className="text-base" />
+                        </button>
+                        <span className="px-2 py-1 bg-[#F3F4F6] rounded-lg text-xs tabular-nums text-headerColor">
+                          {formatRecordingTime(recordingSeconds)}
+                        </span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={toggleRecording}
+                        className={`p-1 flex items-center gap-1.5 rounded-md transition-colors ${
+                          isRecording
+                            ? "bg-red-50 text-red-500 px-2"
+                            : "text-descriptionColor"
+                        }`}
+                      >
+                        {isRecording ? (
+                          <>
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                            </span>
+                            <span className="text-xs font-medium tabular-nums">
+                              {formatRecordingTime(recordingSeconds)}
+                            </span>
+                          </>
+                        ) : (
+                          <VoiceIcon className="w-4.5 h-4.5" />
+                        )}
+                      </button>
+                    )}
                     <SmartEmojiPicker
                       onEmojiSelect={handleEmojiSelect}
                       iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
