@@ -1,62 +1,76 @@
 "use client"
 import React from 'react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
-import { ArrowUpRight, RefreshCw } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { RotateCw, ArrowUp } from 'lucide-react';
 
-const userGrowthData = [
-    { month: 'Jan', users: 8500 },
-    { month: 'Feb', users: 10000 },
-    { month: 'Mar', users: 6500 },
-    { month: 'Apr', users: 11567 },
-    { month: 'May', users: 9500 },
-    { month: 'Jun', users: 12500 },
-];
-
-export const UserGrowthCard = () => {
+export default function UserGrowthCard({ data = defaultData, onRefresh = () => { } }) {
     return (
-        <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm w-full max-w-sm">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full  ">
             {/* Header */}
-            <div className="flex justify-between items-center mb-1">
-                <h3 className="font-bold text-gray-800 text-lg">User Growth</h3>
-                <button className="p-1.5 text-gray-400 border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <RefreshCw size={14} />
+            <div className="flex justify-between items-start mb-2">
+                <div>
+                    <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">User Growth</h3>
+                    <p className="text-[#6C6C6D] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-0.5">Total users</p>
+                </div>
+                <button
+                    onClick={onRefresh}
+                    className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-500 transition-colors"
+                >
+                    <RotateCw className="w-4 h-4" />
                 </button>
             </div>
 
-            <p className="text-xs text-gray-400 mb-2">Total users</p>
-
-            {/* Stats */}
-            <div className="flex items-center justify-between mb-4">
-                <span className="text-2xl font-bold text-gray-900">112,420 users</span>
-                <span className="flex items-center text-xs font-semibold text-teal-500">
-                    <ArrowUpRight size={14} /> 2.9%
-                </span>
+            {/* Metric & Growth Badge */}
+            <div className="flex items-baseline justify-between mb-4">
+                <h4 className="text-[#0D0D12] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">{data.totalUsers.toLocaleString()} users</h4>
+                <div className="flex items-center text-[#04A1B7] font-['Inter_Tight'] text-[14px] font-semibold leading-[150%] tracking-[0.28px]">
+                    <ArrowUp className="w-3.5 h-3.5 mr-1" />
+                    {data.growthRate}%
+                </div>
             </div>
 
             {/* Chart */}
-            <div className="h-56 w-full relative">
+            <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={userGrowthData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <AreaChart data={data.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
-                            <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.25} />
-                                <stop offset="95%" stopColor="#06B6D4" stopOpacity={0.01} />
+                            <linearGradient id="userGrowthGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#00A8B5" stopOpacity={0.25} />
+                                <stop offset="95%" stopColor="#00A8B5" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v) => `${v / 1000}K`} />
+                        <CartesianGrid vertical={false} stroke="#F3F4F6" />
+                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} domain={[0, 12]} ticks={[0, 3, 6, 9, 12]} tickFormatter={(val) => `${val}K`} />
                         <Tooltip
-                            cursor={{ stroke: '#06B6D4', strokeWidth: 1, strokeDasharray: '3 3' }}
-                            content={({ payload }) => payload?.[0] ? (
-                                <div className="bg-white px-3 py-1 rounded-full shadow-md border text-xs font-bold text-gray-700">
-                                    {payload[0].value.toLocaleString()}
-                                </div>
-                            ) : null}
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    return (
+                                        <div className="bg-white px-3 py-1.5 shadow-lg rounded-xl border border-gray-100 text-sm font-semibold text-gray-900">
+                                            {payload[0].value.toLocaleString()}
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            }}
                         />
-                        <Area type="monotone" dataKey="users" stroke="#06B6D4" strokeWidth={2.5} fill="url(#userGrad)" />
+                        <Area type="monotone" dataKey="users" stroke="#00A8B5" strokeWidth={2.5} fillOpacity={1} fill="url(#userGrowthGradient)" />
                     </AreaChart>
                 </ResponsiveContainer>
             </div>
         </div>
     );
+}
+
+const defaultData = {
+    totalUsers: 112420,
+    growthRate: 2.9,
+    chartData: [
+        { month: 'Jan', users: 8.2 },
+        { month: 'Feb', users: 9.1 },
+        { month: 'Mar', users: 6.8 },
+        { month: 'Apr', users: 11.5 },
+        { month: 'May', users: 8.8 },
+        { month: 'Jun', users: 10.4 },
+    ]
 };
