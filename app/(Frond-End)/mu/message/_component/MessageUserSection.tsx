@@ -10,6 +10,7 @@ import {
 import {
   useArchiveMessageMutation,
   useDeleteConversationMutation,
+  useGetConversationListQuery,
   useMarkReadMessageMutation,
   useMarkUnReadMessageMutation,
   useUnarchiveMessageMutation,
@@ -19,18 +20,22 @@ import emptyImage from "@/public/empty_user.jpg";
 import dayjs from "dayjs";
 import { Archive, ArchiveRestore, Check, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { IoMdDoneAll } from "react-icons/io";
-function MessageUserSection({
-  user,
-  chatMessages,
-  setSelectedId,
-  selectedId,
-}: any) {
+function MessageUserSection() {
   const router = useRouter();
+  const params = useParams();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab") ?? "admin";
+  const activeTab = searchParams.get("tab") ?? "all";
+  const { data } = useGetConversationListQuery(activeTab, {
+    skip: activeTab === null,
+  });
   const [markReadMessage] = useMarkReadMessageMutation();
   const [markUnReadMessage] = useMarkUnReadMessageMutation();
   const [archiveMessage] = useArchiveMessageMutation();
@@ -47,12 +52,12 @@ function MessageUserSection({
       name: "all",
     },
     {
-      id: 2,
-      name: "recruiter",
-    },
-    {
       id: 3,
       name: "unread",
+    },
+    {
+      id: 2,
+      name: "recruiter",
     },
     {
       id: 4,
@@ -61,7 +66,7 @@ function MessageUserSection({
   ];
 
   const handleReadMessage = async (messageId: number) => {
-    setSelectedId(messageId);
+    router.push(`/mu/message/${messageId}`);
     try {
       await markReadMessage(messageId).unwrap();
     } catch (error) {
@@ -73,7 +78,6 @@ function MessageUserSection({
     try {
       if (msg.unread_count > 0) {
         await markReadMessage(msg.id).unwrap();
-        setSelectedId(msg.id);
       } else {
         await markUnReadMessage(msg.id).unwrap();
       }
@@ -104,8 +108,6 @@ function MessageUserSection({
     }
   };
 
-
-
   return (
     <div>
       <div className="w-full h-full  flex flex-col">
@@ -128,14 +130,14 @@ function MessageUserSection({
         </div>
 
         {/* User */}
-        {chatMessages?.length > 0 ? (
-          chatMessages.map((msg: any, index: number) => (
+        {data?.data?.length > 0 ? (
+          data?.data?.map((msg: any, index: number) => (
             <ContextMenu key={msg.id}>
               <ContextMenuTrigger asChild>
                 <div
                   onClick={() => handleReadMessage(msg.id)}
                   className={`p-4 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors ${
-                    selectedId === msg.id ? "bg-gray-100" : ""
+                    params?.id === msg.id ? "bg-gray-100" : ""
                   }`}
                 >
                   <Image
@@ -156,9 +158,12 @@ function MessageUserSection({
                       {msg.last_message?.message
                         ? truncateText(msg.last_message?.message, 30)
                         : msg.last_message?.type === "audio"
-                          ? "Send an voice" : msg.last_message?.type === "file"
-                            ? "Send a file" : msg.last_message?.type === "vedio" ? "Send a video"
-                          : "No message available"}
+                          ? "Send an voice"
+                          : msg.last_message?.type === "file"
+                            ? "Send a file"
+                            : msg.last_message?.type === "vedio"
+                              ? "Send a video"
+                              : "No message available"}
                       {msg?.unread_count > 0 ? (
                         <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
                           {msg?.unread_count}
