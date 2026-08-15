@@ -9,9 +9,11 @@ import {
   useFollowUserMutation,
   useUnfollowUserMutation,
 } from "@/feature/slice/connect/followSlice";
-import { UserMinusIcon } from "@/public/svgIcons/Icons";
+import { useStartConversationMutation } from "@/feature/slice/message/messageSlice";
+import { MessageIcon, UserMinusIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import UserUnfollowDialog from "../UserUnfollowDialog";
@@ -33,17 +35,18 @@ export const ConnectionActionButtons = ({
   isfollowedBack,
 }: ActionProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const [isUnfriend, setIsUnfriend] = useState(false);
   const [identyConnection, setIdentyConnection] = useState("");
   const [requestAccept, { isLoading: isAccepting }] =
     useRequestAcceptMutation();
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
-
+  const [startConversation, { isLoading: isStartingConversation }] =
+    useStartConversationMutation();
   const [unfollowUser, { isLoading: isUnfollowing }] =
     useUnfollowUserMutation();
   const [followUser, { isLoading: isFollowing }] = useFollowUserMutation();
-
   const handleConnectionAction = async (type: "accept" | "ignore") => {
     try {
       if (type === "accept") {
@@ -68,6 +71,7 @@ export const ConnectionActionButtons = ({
       toast.success(result.message || "Unfollowed successfully.");
     } catch (error) {
       console.error("Error opening unfollow dialog:", error);
+      toast.error(error?.data?.message || "Failed to unfollow user.");
     }
   };
   const handleUserfollow = async () => {
@@ -76,6 +80,16 @@ export const ConnectionActionButtons = ({
       toast.success(result.message || "Followed successfully.");
     } catch (error) {
       console.error("Error following user:", error);
+      toast.error(error?.data?.message || "Failed to follow user.");
+    }
+  };
+  const handleMessageCreate = async () => {
+    try {
+      const response = await startConversation(userId).unwrap();
+      router.push(`/mu/message/${response.data.id}`);
+      
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to start conversation.");
     }
   };
 
@@ -83,12 +97,18 @@ export const ConnectionActionButtons = ({
     switch (status) {
       case "accepted":
         return (
-          <button
-            onClick={() => setIsUnfriend(true)}
-            className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
-          >
-            <UserMinusIcon className="w-4.5 h-4.5" />
-          </button>
+          <div className="flex items-center gap-4">
+            <button onClick={handleMessageCreate} title="Message" className="cursor-pointer">
+              <MessageIcon className="w-4.5 h-4.5" />
+            </button>
+            <button
+              onClick={() => setIsUnfriend(true)}
+              title="Unfriend"
+              className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
+            >
+              <UserMinusIcon className="w-4.5 h-4.5" />
+            </button>
+          </div>
         );
 
       case "pending":
