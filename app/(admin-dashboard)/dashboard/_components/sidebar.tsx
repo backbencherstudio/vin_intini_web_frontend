@@ -21,12 +21,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import logo from "@/public/images/admin/Vector (1).png";
 
 import { SidebarData } from "./Dashboard-sidebar";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const { state, isMobile, setOpenMobile } = useSidebar();
 
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
@@ -65,11 +68,12 @@ export default function DashboardSidebar() {
           {/* Logo */}
           <div className="mb-5 flex justify-center border-b pb-5">
             <Image
-              src="/assets/images/logo (2).png"
-              width={180}
-              height={50}
+              src={logo}
               alt="Logo"
-              className="w-[180px] object-contain"
+              width={250}
+              height={30}
+              className="md:max-w-59.5 max-w-40 w-full h-auto"
+              priority
             />
           </div>
 
@@ -96,13 +100,13 @@ export default function DashboardSidebar() {
                         <SidebarMenuButton
                           onClick={() => toggleMenu(item.id)}
                           className={`h-9 rounded-lg ${active
-                            ? "bg-[#D3F4EF] text-[#111827]"
+                            ? " text-[#111827]  border "
                             : "text-[#374151] hover:bg-gray-50"
                             }`}
                         >
                           <Icon className="h-4 w-4" />
 
-                          <span>{item.name}</span>
+                          <span className="text-[#1D1F2C] font-['Segoe_UI'] text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
 
                           <ChevronDown
                             className={`ml-auto h-4 w-4 ${isOpen ? "rotate-180" : ""
@@ -113,20 +117,20 @@ export default function DashboardSidebar() {
                         <SidebarMenuButton
                           asChild
                           className={`h-9 rounded-lg ${active
-                            ? "bg-[#D3F4EF] text-[#111827]"
+                            ? "bg-[#D3F4EF] text-[#111827] border border-[#04A1B7]"
                             : "text-[#374151] hover:bg-gray-50"
                             }`}
                         >
-                          <Link href={item.href!}>
+                          <Link href={item.href!} onClick={() => { if (isMobile) setOpenMobile(false); }}>
                             <Icon className="h-4 w-4" />
-                            <span>{item.name}</span>
+                            <span className="text-[#1D1F2C] font-['Segoe_UI'] text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
                           </Link>
                         </SidebarMenuButton>
                       )}
                     </SidebarMenuItem>
 
                     {/* Submenu */}
-                    {hasChildren && isOpen && (
+                    {hasChildren && isOpen && state === "expanded" && (
                       <div className="ml-5 space-y-1">
                         {item.children?.map((child) => {
                           const ChildIcon = child.icon;
@@ -137,13 +141,20 @@ export default function DashboardSidebar() {
                               <SidebarMenuButton
                                 asChild
                                 className={`h-8 rounded-md ${active
-                                  ? "bg-[#D3F4EF] text-[#111827]"
+                                  ? "bg-[#D3F4EF] text-[#1D1F2C] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] border border-[#04A1B7]"
                                   : "text-[#6B7280] hover:bg-gray-50"
                                   }`}
                               >
-                                <Link href={child.href}>
+                                <Link
+                                  href={child.href}
+                                  onClick={() => {
+                                    if (isMobile) {
+                                      setOpenMobile(false);
+                                    }
+                                  }}
+                                >
                                   <ChildIcon className="h-3.5 w-3.5" />
-                                  <span>{child.name}</span>
+                                  <span className="text-[#1D1F2C] font-['Segoe_UI'] text-[16px] font-normal leading-[24px] tracking-[0.08px]">{child.name}</span>
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -174,7 +185,7 @@ export default function DashboardSidebar() {
                 : "text-[#374151] hover:bg-gray-50"
                 }`}
             >
-              <Link href="/dashboard/settings">
+              <Link href="/dashboard/settings" onClick={() => { if (isMobile) setOpenMobile(false); }}>
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </Link>
@@ -190,7 +201,7 @@ export default function DashboardSidebar() {
                 : "text-[#374151] hover:bg-gray-50"
                 }`}
             >
-              <Link href="/dashboard/analytics">
+              <Link href="/dashboard/analytics" onClick={() => { if (isMobile) setOpenMobile(false); }}>
                 <BarChart3 className="h-4 w-4" />
                 <span>Analytics</span>
               </Link>
@@ -221,6 +232,7 @@ export default function DashboardSidebar() {
           <Link
             href="/dashboard/subscription"
             className="mt-3 flex h-9 items-center justify-center rounded-lg bg-white text-xs font-medium text-[#0EA5B7]"
+            onClick={() => { if (isMobile) setOpenMobile(false); }}
           >
             Upgrade Now
           </Link>

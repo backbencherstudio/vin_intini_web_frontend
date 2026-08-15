@@ -1,3 +1,4 @@
+import { AcademicIcon, AdvertizementIcon, BasicUserIcon, CategoryIcon, EmploymentIcon, FacilitesIcon, NeuroscienceIcon, PartnerIcon, PaymentManagementIcon, PlatFromIcon, PremiumUserIcon, ProUserIcon, PsychologyIcon, ResendenceIcon, SubPlanIcon, SubscriptIcon, SubTranscIcon, UniversitiseIcon, UserManagementIcon } from "@/public/svgIcons/AdminIcon";
 import {
   LayoutDashboard,
   UsersRound,
@@ -16,6 +17,8 @@ import {
   Crown,
   BriefcaseBusiness,
 } from "lucide-react";
+import { LuChartNoAxesColumn, LuUsers } from "react-icons/lu";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 export interface SidebarChild {
   id: string;
@@ -37,31 +40,31 @@ export const SidebarData: SidebarItem[] = [
     id: "dashboard",
     name: "Dashboard",
     href: "/dashboard",
-    icon: LayoutDashboard,
+    icon: MdOutlineDashboardCustomize,
   },
 
   {
     id: "users",
     name: "Users Management",
-    icon: UsersRound,
+    icon: UserManagementIcon,
     children: [
       {
         id: "basic-users",
         name: "Basic Users",
         href: "/dashboard/user-management/basic-user",
-        icon: UserRound,
+        icon: BasicUserIcon,
       },
       {
         id: "premium-users",
         name: "Premium Users",
         href: "/dashboard/users/premium",
-        icon: Crown,
+        icon: PremiumUserIcon,
       },
       {
         id: "pro-users",
         name: "Pro Industry Users",
         href: "/dashboard/users/pro",
-        icon: BriefcaseBusiness,
+        icon: ProUserIcon,
       },
     ],
   },
@@ -69,28 +72,48 @@ export const SidebarData: SidebarItem[] = [
   {
     id: "subscription",
     name: "Subscription",
-    href: "/dashboard/subscription",
-    icon: Tag,
+    // href: "/dashboard/subscription",
+    icon: SubscriptIcon,
+    children: [
+      {
+        id: "subscription-overview",
+        name: "Overview",
+        href: "/dashboard/subscription",
+        icon: LuChartNoAxesColumn,
+      },
+      {
+        id: "plan-pricing",
+        name: "Plan and Pricing",
+        href: "/dashboard/subscription/plan-and-pricing",
+        icon: SubPlanIcon,
+      },
+      {
+        id: "transactions",
+        name: "Transactions",
+        href: "/dashboard/payments",
+        icon: SubTranscIcon,
+      },
+    ]
   },
 
   {
     id: "payments",
     name: "Payment Management",
     href: "/dashboard/payments",
-    icon: DollarSign,
+    icon: PaymentManagementIcon,
   },
 
   {
     id: "advertise",
     name: "Advertise Management",
     href: "/dashboard/advertisement",
-    icon: Megaphone,
+    icon: AdvertizementIcon,
   },
 
   {
     id: "platform-content",
     name: "Platform Content",
-    icon: List,
+    icon: PlatFromIcon,
     children: [
       {
         id: "content",
@@ -110,19 +133,31 @@ export const SidebarData: SidebarItem[] = [
   {
     id: "academia",
     name: "Academia",
-    icon: GraduationCap,
+    icon: AcademicIcon,
     children: [
       {
-        id: "courses",
-        name: "Courses",
-        href: "/dashboard/academia/courses",
-        icon: GraduationCap,
+        id: "universities",
+        name: "Universities",
+        href: "/dashboard/academia/universities",
+        icon: UniversitiseIcon,
       },
       {
-        id: "students",
-        name: "Students",
-        href: "/dashboard/academia/students",
-        icon: UserRound,
+        id: "residencies",
+        name: "Residencies",
+        href: "/dashboard/academia/residencies",
+        icon: ResendenceIcon,
+      },
+      {
+        id: "facilities",
+        name: "Facilities",
+        href: "/dashboard/academia/facilities",
+        icon: FacilitesIcon,
+      },
+      {
+        id: "employment",
+        name: "Employment",
+        href: "/dashboard/academia/employment",
+        icon: EmploymentIcon,
       },
     ],
   },
@@ -130,13 +165,20 @@ export const SidebarData: SidebarItem[] = [
   {
     id: "categories",
     name: "Categories",
-    icon: Shapes,
+    icon: CategoryIcon,
     children: [
       {
-        id: "all-categories",
-        name: "All Categories",
+        id: "psychology",
+        name: "Psychology",
+        href: "/dashboard/categories/psychology",
+        icon: Brain,
+      },
+
+      {
+        id: "neuroscience",
+        name: "Neuroscience",
         href: "/dashboard/categories",
-        icon: Shapes,
+        icon: NeuroscienceIcon,
       },
     ],
   },
@@ -158,7 +200,7 @@ export const SidebarData: SidebarItem[] = [
   {
     id: "neuroscience",
     name: "Neuroscience",
-    icon: BrainCircuit,
+    icon: NeuroscienceIcon,
     children: [
       {
         id: "neuroscience-content",
@@ -167,5 +209,12 @@ export const SidebarData: SidebarItem[] = [
         icon: BrainCircuit,
       },
     ],
+  },
+
+  {
+    id: "partner-program",
+    name: "Partners",
+    href: "/dashboard/partners",
+    icon: PartnerIcon,
   },
 ];
