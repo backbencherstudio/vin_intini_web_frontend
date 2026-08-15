@@ -128,107 +128,110 @@ function MessageUserSection() {
             </button>
           ))}
         </div>
-
-        {/* User */}
-        {data?.data?.length > 0 ? (
-          data?.data?.map((msg: any, index: number) => (
-            <ContextMenu key={msg.id}>
-              <ContextMenuTrigger asChild>
-                <div
-                  onClick={() => handleReadMessage(msg.id)}
-                  className={`p-4 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors ${
-                    params?.id === msg.id ? "bg-gray-100" : ""
-                  }`}
-                >
-                  <Image
-                    src={msg?.user?.profile_image_url || emptyImage}
-                    width={40}
-                    height={40}
-                    className="rounded-sm"
-                    alt=""
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium text-sm flex justify-between">
-                      {msg?.user?.name}{" "}
-                      <span className="text-xs text-gray-400">
-                        {dayjs(msg?.last_message?.created_at).fromNow()}
-                      </span>
-                    </p>
-                    <p className="text-xs flex justify-between text-gray-500 truncate">
-                      {msg.last_message?.message
-                        ? truncateText(msg.last_message?.message, 30)
-                        : msg.last_message?.type === "audio"
-                          ? "Send an voice"
-                          : msg.last_message?.type === "file"
-                            ? "Send a file"
-                            : msg.last_message?.type === "vedio"
-                              ? "Send a video"
-                              : "No message available"}
-                      {msg?.unread_count > 0 ? (
-                        <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
-                          {msg?.unread_count}
+        <div className="md:h-135 h-120 border-t overflow-y-auto">
+          {/* User */}
+          {data?.data?.length > 0 ? (
+            data?.data?.map((msg: any, index: number) => (
+              <ContextMenu key={msg.id}>
+                <ContextMenuTrigger asChild>
+                  <div
+                    onClick={() => handleReadMessage(msg.id)}
+                    className={`p-2 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors ${
+                      params?.id === msg.id ? "bg-gray-100" : ""
+                    }`}
+                  >
+                    <div className="w-10 h-10 overflow-hidden rounded-sm">
+                      <Image
+                        src={msg?.user?.profile_image_url || emptyImage}
+                        width={40}
+                        height={40}
+                        className="rounded-sm w-full h-full object-center object-cover"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-sm flex justify-between">
+                        {msg?.user?.name}{" "}
+                        <span className="text-xs text-gray-400">
+                          {dayjs(msg?.last_message?.created_at).fromNow()}
                         </span>
-                      ) : (
-                        <IoMdDoneAll className="text-primaryColor" />
-                      )}
-                    </p>
+                      </p>
+                      <p className="text-xs flex justify-between text-gray-500 truncate">
+                        {msg.last_message?.message
+                          ? truncateText(msg.last_message?.message, 30)
+                          : msg.last_message?.type === "audio"
+                            ? "Send an voice"
+                            : msg.last_message?.type === "file"
+                              ? "Send a file"
+                              : msg.last_message?.type === "vedio"
+                                ? "Send a video"
+                                : "No message available"}
+                        {msg?.unread_count > 0 ? (
+                          <span className="bg-redColor inline text-white text-xs  px-2 rounded-full">
+                            {msg?.unread_count}
+                          </span>
+                        ) : (
+                          <IoMdDoneAll className="text-primaryColor" />
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className="w-48">
-                <ContextMenuItem className="cursor-pointer flex items-center gap-2">
-                  <button
-                    onClick={() => handleToggleArchive(msg)}
-                    className="flex items-center gap-2"
-                  >
-                    {msg?.is_archived ? (
-                      <>
-                        <ArchiveRestore className="w-4 h-4 text-gray-600" />
-                        <span>Unarchive Chat</span>
-                      </>
-                    ) : (
-                      <>
-                        <Archive className="w-4 h-4 text-gray-600" />
-                        <span>Archive Chat</span>
-                      </>
-                    )}
-                  </button>
-                </ContextMenuItem>
-                <ContextMenuItem className="cursor-pointer flex items-center gap-2">
-                  <button
-                    onClick={() => handleToggleRead(msg)}
-                    className="flex items-center gap-2"
-                  >
-                    {msg?.unread_count > 0 ? (
-                      <>
-                        <Check className="w-4 h-4 text-gray-600" />
-                        <span>Mark as Read</span>
-                      </>
-                    ) : (
-                      <>
-                        <IoMdDoneAll className="w-4 h-4 text-gray-600" />
-                        <span>Mark as Unread</span>
-                      </>
-                    )}
-                  </button>
-                </ContextMenuItem>
-                <ContextMenuItem className="cursor-pointer flex items-center gap-2">
-                  <button
-                    onClick={() => handleDeleteConversation(msg)}
-                    className="flex items-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4 text-red-500" />
-                    <span className="text-red-500">Delete Chat</span>
-                  </button>
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          ))
-        ) : (
-          <div className="p-4 text-center text-gray-500">
-            No messages found.
-          </div>
-        )}
+                </ContextMenuTrigger>
+                <ContextMenuContent className="w-48">
+                  <ContextMenuItem className="cursor-pointer flex items-center gap-2">
+                    <button
+                      onClick={() => handleToggleArchive(msg)}
+                      className="flex items-center gap-2"
+                    >
+                      {msg?.is_archived ? (
+                        <>
+                          <ArchiveRestore className="w-4 h-4 text-gray-600" />
+                          <span>Unarchive Chat</span>
+                        </>
+                      ) : (
+                        <>
+                          <Archive className="w-4 h-4 text-gray-600" />
+                          <span>Archive Chat</span>
+                        </>
+                      )}
+                    </button>
+                  </ContextMenuItem>
+                  <ContextMenuItem className="cursor-pointer flex items-center gap-2">
+                    <button
+                      onClick={() => handleToggleRead(msg)}
+                      className="flex items-center gap-2"
+                    >
+                      {msg?.unread_count > 0 ? (
+                        <>
+                          <Check className="w-4 h-4 text-gray-600" />
+                          <span>Mark as Read</span>
+                        </>
+                      ) : (
+                        <>
+                          <IoMdDoneAll className="w-4 h-4 text-gray-600" />
+                          <span>Mark as Unread</span>
+                        </>
+                      )}
+                    </button>
+                  </ContextMenuItem>
+                  <ContextMenuItem className="cursor-pointer flex items-center gap-2">
+                    <button
+                      onClick={() => handleDeleteConversation(msg)}
+                      className="flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                      <span className="text-red-500">Delete Chat</span>
+                    </button>
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            ))
+          ) : (
+            <div className="p-4 text-center text-gray-500">
+              No messages found.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

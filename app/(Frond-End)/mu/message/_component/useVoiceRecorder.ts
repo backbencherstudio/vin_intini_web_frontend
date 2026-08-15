@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const SUPPORTED_MIMES = ["audio/mp3", "audio/m4a", "audio/mp4"];
+import { Mp3Encoder } from "@breezystack/lamejs";
 
 export function useVoiceRecorder(
   onSend?: (blob: Blob) => Promise<void> | void,
@@ -10,16 +9,19 @@ export function useVoiceRecorder(
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [recordingBlob, setRecordingBlob] = useState<Blob | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const recorderTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const processorRef = useRef<ScriptProcessorNode | null>(null);
+  const mp3EncoderRef = useRef<Mp3Encoder | null>(null);
+  const mp3ChunksRef = useRef<BlobPart[]>([]);
   const onSendRef = useRef(onSend);
   onSendRef.current = onSend;
 
   useEffect(() => {
     return () => {
       if (recorderTimerRef.current) clearInterval(recorderTimerRef.current);
+      audioContextRef.current?.close();
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
@@ -29,37 +31,34 @@ export function useVoiceRecorder(
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      const mimeType =
-        typeof MediaRecorder.isTypeSupported === "function"
-          ? SUPPORTED_MIMES.find((m) => MediaRecorder.isTypeSupported(m))
-          : undefined;
+      const AudioCtx = window.AudioContext;
+      const audioContext = new AudioCtx();
+      audioContextRef.current = audioContext;
 
-      if (!mimeType) {
-        stream.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-        console.error(
-          "Voice recording: this browser does not support MP3/M4A recording",
-        );
-        return;
-      }
+      const source = audioContext.createMediaStreamSource(stream);
+      const processor = audioContext.createScriptProcessor(4096, 1, 1);
+      const encoder = new Mp3Encoder(1, audioContext.sampleRate, 128);
+      const silenceGain = audioContext.createGain();
+      silenceGain.gain.value = 0;
 
-      const mediaRecorder = new MediaRecorder(stream, { mimeType });
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
+      processorRef.current = processor;
+      mp3EncoderRef.current = encoder;
+      mp3ChunksRef.current = [];
 
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, {
-          type: mediaRecorder.mimeType || "audio/m4a",
-        });
-        stream.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-        if (blob.size > 0) setRecordingBlob(blob);
+      processor.onaudioprocess = (e) => {
+        const pcm = e.inputBuffer.getChannelData(0);
+        const ints = new Int16Array(pcm.length);
+        for (let i = 0; i < pcm.length; i++) {
+          ints[i] = Math.max(-1, Math.min(1, pcm[i])) * 0x7fff;
+        }
+        const mp3 = encoder.encodeBuffer(ints);
+        if (mp3.length > 0) mp3ChunksRef.current.push(new Uint8Array(mp3));
       };
 
-      mediaRecorder.start();
+      source.connect(processor);
+      processor.connect(silenceGain);
+      silenceGain.connect(audioContext.destination);
+
       setIsRecording(true);
       setRecordingSeconds(0);
       recorderTimerRef.current = setInterval(() => {
@@ -71,12 +70,31 @@ export function useVoiceRecorder(
   };
 
   const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
     setIsRecording(false);
     if (recorderTimerRef.current) {
       clearInterval(recorderTimerRef.current);
       recorderTimerRef.current = null;
     }
+
+    const processor = processorRef.current;
+    const encoder = mp3EncoderRef.current;
+    const audioContext = audioContextRef.current;
+    const stream = streamRef.current;
+    if (!processor || !encoder || !audioContext) return;
+
+    setTimeout(() => {
+      processor.disconnect();
+      const tail = encoder.flush();
+      if (tail.length > 0) mp3ChunksRef.current.push(new Uint8Array(tail));
+      const blob = new Blob(mp3ChunksRef.current, { type: "audio/mp3" });
+      processorRef.current = null;
+      mp3EncoderRef.current = null;
+      audioContextRef.current = null;
+      audioContext.close();
+      stream?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+      if (blob.size > 0) setRecordingBlob(blob);
+    }, 300);
   };
 
   const toggleRecording = () => {
