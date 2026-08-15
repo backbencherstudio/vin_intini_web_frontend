@@ -63,12 +63,12 @@ export default function StatusCard() {
                             </p>
 
                             <div className="flex gap-2.5 ">
-                                <div className="flex items-center gap-1 rounded-full bg-[#E9FAF7] p-1">
+                                <div className={`flex items-center gap-1 rounded-full ${isDown ? "bg-[#FEECEE]" : "bg-[#E9FAF7]"}  p-1`}>
                                     <Icon
                                         size={20}
                                         className={
                                             isDown
-                                                ? "text-[#EB3D4D] rotate-120"
+                                                ? "text-[#EB3D4D] rotate-120 "
                                                 : "text-[#04A1B7] "
                                         }
                                     />

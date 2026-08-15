@@ -28,7 +28,7 @@ export default function PendingApproval() {
     ]
     return (
         <div>
-            <div className='border p-3 rounded-lg'>
+            <div className='border p-3 rounded-lg w-full h-full '>
                 <p className="text-[#1D1F2C] font-['Segoe_UI'] text-[18px] font-semibold leading-[160%] pb-2">Pending Approval</p>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                     {
