@@ -57,13 +57,13 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "premium-users",
         name: "Premium Users",
-        href: "/dashboard/users/premium",
+        href: "/dashboard/user-management/premium-users",
         icon: PremiumUserIcon,
       },
       {
         id: "pro-users",
         name: "Pro Industry Users",
-        href: "/dashboard/users/pro",
+        href: "/dashboard/user-management/pro-users",
         icon: ProUserIcon,
       },
     ],
@@ -138,7 +138,7 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "universities",
         name: "Universities",
-        href: "/dashboard/academia/universities",
+        href: "/dashboard/academia/universites",
         icon: UniversitiseIcon,
       },
       {

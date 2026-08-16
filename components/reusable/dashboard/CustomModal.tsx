@@ -63,7 +63,7 @@ export default function CustomModal(props: CustomModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                showCloseButton={false}
+                // showCloseButton={false}
                 className={clsx(
                     "flex flex-col items-start gap-6 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-8 md:py-8 rounded-2xl",
                     // Allow max-h-[90vh] across ALL screens (including md and up)
@@ -73,37 +73,39 @@ export default function CustomModal(props: CustomModalProps) {
                 )}
             >
                 {/* Header Section */}
-                {title && (
-                    <div className="flex justify-between items-center w-full">
-                        <h3 className="text-2xl font-medium tracking-[-0.36px]">{title}</h3>
-                    </div>
-                )}
+                <div className="flex justify-between items-center w-full">
+                    {title && (
+                        <div className="flex justify-between items-center w-full -mt-3">
+                            <h3 className="text-[#0B0B0B] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">{title}</h3>
+                        </div>
+                    )}
 
-                {/* Close Button - Placed Top Right */}
-                {showCloseButton && (
-                    closeButtonType === "shadcn" ? (
-                        <DialogClose
-                            className={clsx(
-                                "absolute top-2 right-2 p-1 border-gray/10 hover:bg-white/10 transition-colors",
-                                shadcnCloseClassName
-                            )}
-                            {...shadcnCloseRest}
-                        >
-                            <XIcon size={20} />
-                        </DialogClose>
-                    ) : (
-                        <button
-                            type="button"
-                            className={clsx(
-                                "absolute top-6 right-6 p-2 rounded-full border border-white/10 hover:bg-white/10 transition-colors",
-                                customCloseClassName
-                            )}
-                            {...customCloseRest}
-                        >
-                            <XIcon size={20} />
-                        </button>
-                    )
-                )}
+                    {/* Close Button - Placed Top Right */}
+                    {showCloseButton && (
+                        closeButtonType === "shadcn" ? (
+                            <DialogClose
+                                className={clsx(
+
+                                    shadcnCloseClassName
+                                )}
+                                {...shadcnCloseRest}
+                            >
+                                {/* <XIcon size={20} /> */}
+                            </DialogClose>
+                        ) : (
+                            <button
+                                type="button"
+                                className={clsx(
+                                    "absolute top-6 right-6 p-2  rounded-full border border-white/10 hover:bg-white/10 transition-colors",
+                                    customCloseClassName
+                                )}
+                                {...customCloseRest}
+                            >
+                                {/* <XIcon size={20} /> */}
+                            </button>
+                        )
+                    )}
+                </div>
                 {/* Content Area */}
                 {/* Content Area - Enable scroll dynamically */}
                 <div className="w-full min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[rgba(8,14,30,0.15)]">

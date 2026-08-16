@@ -24,6 +24,7 @@ const routeNames: Record<string, string> = {
 
 const nonClickableRoutes = [
     "user-management",
+    "academia"
 ];
 
 export default function Breadcrumb() {

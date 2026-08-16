@@ -24,12 +24,12 @@ export default function page() {
                     <TotalRevenuePieCard onRefresh={() => { }} />
                 </div>
             </div>
-            <div className="flex h-full w-full flex-col gap-6 py-6 md:flex-row">
-                <div className="w-full md:max-w-[600px] h-full">
+            <div className="flex   w-full flex-col gap-6  md:flex-row items-stretch">
+                <div className="w-full md:max-w-[600px] flex flex-col ">
                     <PendingApproval />
                 </div>
 
-                <div className="w-full  ">
+                <div className="w-full  flex flex-col">
                     <RecentlyActivity />
                 </div>
             </div>

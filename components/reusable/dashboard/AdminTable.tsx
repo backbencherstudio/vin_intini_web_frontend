@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { DeletIcon, EditIcon, ViewIcon } from "@/public/svgIcons/AdminIcon";
 
 export type Column<T> = {
     header: string;
@@ -24,6 +25,7 @@ type DataTableProps<T> = {
     defaultPageSize?: number;
     onEdit?: (row: T) => void;
     onDelete?: (row: T) => void;
+    onView?: (row: T) => void;
 };
 
 export default function DataTable<T extends { id: string | number }>({
@@ -112,26 +114,26 @@ export default function DataTable<T extends { id: string | number }>({
                                                     onView && (
                                                         <button
                                                             onClick={() => onView(row)}
-                                                            className="text-gray-400 hover:text-blue-600 transition-colors"
+                                                            className="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
                                                         >
-                                                            <Eye className="w-4 h-4" />
+                                                            <ViewIcon className="w-4 h-4" />
                                                         </button>
                                                     )
                                                 }
                                                 {onEdit && (
                                                     <button
                                                         onClick={() => onEdit(row)}
-                                                        className="text-gray-400 hover:text-blue-600 transition-colors"
+                                                        className="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
                                                     >
-                                                        <Pencil className="w-4 h-4" />
+                                                        <EditIcon className="w-4 h-4" />
                                                     </button>
                                                 )}
                                                 {onDelete && (
                                                     <button
                                                         onClick={() => onDelete(row)}
-                                                        className="text-gray-400 hover:text-red-600 transition-colors"
+                                                        className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
                                                     >
-                                                        <Trash2 className="w-4 h-4" />
+                                                        <DeletIcon className="w-4 h-4" />
                                                     </button>
                                                 )}
                                             </div>

@@ -55,11 +55,11 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
                             />
-                            <span className="font-medium text-gray-700">{item.name}</span>
+                            <span className="text-[#121212] font-['Segoe_UI'] text-xs font-semibold leading-[132%] tracking-[0.06px]">{item.name}</span>
                         </div>
                         <div className="flex space-x-6 text-gray-600">
-                            <span className="w-16 text-right">{item.percentage}%</span>
-                            <span className="w-20 text-right font-medium text-gray-900">${item.amount.toLocaleString()}</span>
+                            <span className="w-16 text-[#121212] font-['Segoe_UI'] text-xs font-semibold leading-[132%] tracking-[0.06px]">{item.percentage}%</span>
+                            <span className="w-20 text-[#121212] font-['Segoe_UI'] text-xs font-semibold leading-[132%] tracking-[0.06px]">${item.amount.toLocaleString()}</span>
                         </div>
                     </div>
                 ))}
