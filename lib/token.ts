@@ -3,16 +3,21 @@ import nookies from "nookies";
 const ACCESS_TOKEN_KEY = "accessToken";
 const ACCESS_TOKEN_ISSUED_AT_KEY = "accessTokenIssuedAt";
 
+// 7 days in seconds: 7 * 24 * 60 * 60 = 604800 seconds
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
+
 export async function setToken(token: string) {
   const now = Date.now().toString();
 
-  nookies.set(null, ACCESS_TOKEN_KEY, token, {
+  const cookieOptions = {
     path: "/",
-  });
+    maxAge: COOKIE_MAX_AGE,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+  };
 
-  nookies.set(null, ACCESS_TOKEN_ISSUED_AT_KEY, now, {
-    path: "/",
-  });
+  nookies.set(null, ACCESS_TOKEN_KEY, token, cookieOptions);
+  nookies.set(null, ACCESS_TOKEN_ISSUED_AT_KEY, now, cookieOptions);
 }
 
 export async function getToken() {

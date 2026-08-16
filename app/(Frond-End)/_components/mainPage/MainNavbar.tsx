@@ -39,7 +39,7 @@ type MenuItem = {
 export default function MainNavbar() {
   const pathname = usePathname();
   const params = useParams();
-
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
   const [openMobileDropdownSlug, setOpenMobileDropdownSlug] = useState<
