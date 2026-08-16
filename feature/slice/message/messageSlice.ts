@@ -6,7 +6,6 @@ const messageSlice = baseApiSlice.injectEndpoints({
       query: (params) => ({
         url: `/conversations?status=${params}`,
         method: "GET",
-        
       }),
       providesTags: ["message"],
     }),
@@ -38,7 +37,6 @@ const messageSlice = baseApiSlice.injectEndpoints({
         body: data,
         formData: true,
       }),
-      invalidatesTags: ["message"],
     }),
     markUnReadMessage: builder.mutation({
       query: (messageId) => ({
@@ -55,12 +53,11 @@ const messageSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["message"],
     }),
     reactForeMessage: builder.mutation({
-      query: ({data, messageId}) => ({
+      query: ({ data, messageId }) => ({
         url: `/messages/${messageId}/react`,
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["message"],
     }),
     unarchiveMessage: builder.mutation({
       query: (messageId) => ({
@@ -97,5 +94,5 @@ export const {
   useUnarchiveMessageMutation,
   useDeleteConversationMutation,
   useDeleteMessageMutation,
-  useReactForeMessageMutation
+  useReactForeMessageMutation,
 } = messageSlice;
