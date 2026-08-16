@@ -8,97 +8,85 @@ import userIcon from "@/public/images/admin/parterner.png";
 
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowDownToLine, ArrowUpDown, Download, FilterIcon, MoveUpRight, Plus, SearchIcon } from "lucide-react";
+import { ArrowDownToLine, ArrowUpDown, Download, FilterIcon, Plus, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
-import { neuroscienceFields } from "@/app/(Frond-End)/mu/(muGroup)/neuroscience-network/_mock/neuroscienceData";
-import { spawn } from "child_process";
+import { sankeyPayloadSearcher } from "recharts/types/chart/Sankey";
 
 type Job = {
     id: number;
-    state: string;
-    category: string;
-    mapPin: string;
-    jobtitle: string;
-    city: string;
-    companyName: string;
-    typemode: string[];
-    saleryrange: string
-
+    network: string;
+    industry: string;
+    img: string;
+    partnerName: string;
+    tag: string;
+    description: string;
 };
 
 const initialJobs: Job[] = [
     {
         id: 1,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "State Institution",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
+        network: "Psychology",
+        industry: "Publications",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
     },
     {
-        id: 2,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "State Institution",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
-    }, {
-        id: 3,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "University",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
-    }, {
-        id: 4,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "State Institution",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
-    }, {
-        id: 5,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "VA Facility",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
-    }, {
-        id: 6,
-        jobtitle: "Clinical Psychologist",
-        companyName:
-            "University of Alabama Birmingham (UAB) Psychiatry Residency Program",
-        state: "Alabama",
-        city: "Montgomery",
-        category: "State Institution",
-        mapPin: "Montgomery, Alabama",
-        typemode: ["Full Time", "Hybrid"],
-        saleryrange: "$80k-$85k"
+        id: 1,
+        network: "Psychology",
+        industry: "Publications",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
+    },
+    {
+        id: 1,
+        network: "Psychology",
+        industry: "Biotechnology",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
+    },
+    {
+        id: 1,
+        network: "Neuroscience",
+        industry: "Publications",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
+    },
+    {
+        id: 1,
+        network: "Psychology",
+        industry: "Biotechnology",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
+    },
+    {
+        id: 1,
+        network: "Neuroscience",
+        industry: "Publications",
+        img: userIcon.src,
+        partnerName: "Clinical Psychologist",
+        tag: "MS",
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text"
+
     },
 ];
 
-export default function Employment() {
+export default function Partner() {
     const [jobs, setJobs] = useState<Job[]>(initialJobs);
     const [viewOpen, setViewOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
@@ -136,98 +124,70 @@ export default function Employment() {
         {
             header: "No.",
             cell: (row) => (
-                <span className="overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">{row.id}</span>
+                <span className="text-gray-500">{row.id}</span>
             ),
         },
-
         {
-            header: "Job Title ",
-            accessor: "jobtitle",
-            cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+            header: "Network",
+            accessor: "network",
+            cell: (row: any) => (
+                row.network === "Psychology" ? (
+                    <CustomBadge color="blue">{row.network}</CustomBadge>
+                ) : (
+                    <CustomBadge color="green">{row.network}</CustomBadge>
+                )
+            )
+        },
+        {
+            header: "Industry",
+            accessor: "industry",
+            cell: (row) => {
+                return (
+                    <div className="text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                        {row.industry}
+                    </div>
+                )
+            }
 
-                    {row.jobtitle}
+        },
+        {
+            header: "Partner Name",
+            accessor: "partnerName",
+            cell: (row) => (
+                <span className="flex items-center gap-2 text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    {row.img && (
+                        <Image
+                            src={row.img}
+                            alt={row.partnerName}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                        />
+                    )}
+                    {row.partnerName}
                 </span>
             ),
         },
         {
-            header: "Company Name ",
-            accessor: "companyName",
+            header: "Tag",
+            accessor: "tag",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
-
-                    {row.companyName}
-                </span>
-            ),
-        },
-        {
-            header: "State",
-            accessor: "state",
-            cell: (row) => (
-                <CustomBadge color="gray">
-                    {row.state}
+                <CustomBadge color="yellow" className="font-medium">
+                    {row.tag}
                 </CustomBadge>
             ),
         },
         {
-            header: "City",
-            accessor: "city",
+            header: "Descriptions",
+            accessor: "description",
             cell: (row) => (
-                <CustomBadge color="yellow">
-                    {row.city}
-                </CustomBadge>
-            ),
-        },
-
-        {
-            header: "Category",
-            accessor: "category",
-            cell: (row) => (
-                <CustomBadge color={row.category === "State Institution" ? "orange" : row.category === "University Hospital" ? "blue" : "green"}>
-                    {row.category}
-                </CustomBadge>
-
-            ),
-        },
-
-
-
-
-
-
-        {
-            header: "Type and Mode",
-            cell: (row) => (
-                <div className="flex gap-2">
-                    {row.typemode.map((mode, index) => (
-                        <CustomBadge key={index} color="blue">
-                            {mode}
-                        </CustomBadge>
-                    ))}
-                </div>
-            ),
-        },
-
-        {
-            header: "Salary Range",
-            accessor: "saleryrange",
-            cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#04A1B7] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
-                    {row.saleryrange}
+                <span className="text-[#4A4C56]  max-w-[400px] line-clamp-2 whitespace-pre-line text-ellipsis font-['Segoe_UI'] text-[14px] leading-[140%] tracking-[0.07px]">
+                    {
+                        row.description
+                    }
                 </span>
             )
-
-        }
-
-        // {
-        //     header: "Website",
-        //     accessor: "website",
-        //     cell: (row) => (
-        //         <span className="flex gap-1 text-[#006EFF] items-center ext-[#006EFF] text-right font-['Segoe_UI'] text-[14px] font-semibold leading-[132%] tracking-[0.06px] cursor-pointer">
-        //             <MoveUpRight className="h-5 w-5" />  {row.website}
-        //         </span>
-        //     ),
-        // },
+        },
 
     ];
 
@@ -237,8 +197,8 @@ export default function Employment() {
                 {/* Title */}
                 <div className="mb-6  w-full">
                     <CustomTitleDescription
-                        title="Manage Job Openings"
-                        description="Showing 1-20 of 456 Programs"
+                        title="Manage Universities"
+                        description="Showing 1-20 of 1697 Records"
                     />
                 </div>
 
@@ -291,7 +251,7 @@ export default function Employment() {
 
                         <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                             <Plus className="h-4 w-4" />
-                            Add New Job
+                            Add New University
                         </button>
 
                     </div>
@@ -302,13 +262,22 @@ export default function Employment() {
                     columns={columns}
                     data={jobs}
                     defaultPageSize={10}
-
+                    onView={openView}
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
 
                 {/* View Job Details */}
+                <CustomModal
+                    open={viewOpen}
+                    onOpenChange={setViewOpen}
+                    showCloseButton={false}
+                    size="lg"
+                >
+                    <div>
 
+                    </div>
+                </CustomModal>
 
                 {/* Edit Job */}
                 <CustomModal
@@ -318,7 +287,7 @@ export default function Employment() {
                 >
                     {selectedJob && (
                         <div className="p-6">
-                            {/* Edit content here for {selectedJob.programName} */}
+                            Edit content here for {selectedJob.partnerName}
                         </div>
                     )}
                 </CustomModal>

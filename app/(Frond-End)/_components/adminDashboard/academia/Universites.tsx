@@ -13,6 +13,7 @@ import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import { neuroscienceFields } from "@/app/(Frond-End)/mu/(muGroup)/neuroscience-network/_mock/neuroscienceData";
 import { spawn } from "child_process";
+import AddUniversity from "./AddUniversity";
 
 type Job = {
     id: number;
@@ -71,6 +72,7 @@ const initialJobs: Job[] = [
 export default function Universites() {
     const [jobs, setJobs] = useState<Job[]>(initialJobs);
     const [viewOpen, setViewOpen] = useState(false);
+    const [addOpen, setAddOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [sort, setSort] = useState("default");
@@ -247,7 +249,7 @@ export default function Universites() {
                             </SelectContent>
                         </Select>
 
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <button onClick={() => setAddOpen(true)} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                             <Plus className="h-4 w-4" />
                             Add New University
                         </button>
@@ -264,8 +266,17 @@ export default function Universites() {
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
+                {/* //add university */}
+                <CustomModal
+                    open={addOpen}
+                    onOpenChange={setAddOpen}
+                    title="Add New University"
+                    size="lg"
+                >
+                    <AddUniversity />
+                </CustomModal>
 
-                {/* View Job Details */}
+
 
 
                 {/* Edit Job */}

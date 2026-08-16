@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Label } from 'recharts';
 import { RotateCw } from 'lucide-react';
 
 const COLORS = ['#00A8B5', '#00B8D9', '#FF9F0A']; // Teal, Cyan, Orange
@@ -20,7 +20,7 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
             </div>
 
             {/* Donut Chart with Center Text */}
-            <div className="relative h-64 w-full flex items-center justify-center">
+            <div className="relative h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
@@ -33,17 +33,36 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
                             endAngle={-270}
                         >
                             {data.items.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                />
                             ))}
+
+                            {/* Center Labels */}
+                            <Label
+                                value="Total Revenue"
+                                position="center"
+                                dy={-12}
+                                style={{
+                                    fontSize: "12px",
+                                    fill: "#9CA3AF",
+                                    fontWeight: 500,
+                                }}
+                            />
+                            <Label
+                                value={`$${data.total.toLocaleString()}`}
+                                position="center"
+                                dy={12}
+                                style={{
+                                    fontSize: "24px",
+                                    fill: "#0D0D12",
+                                    fontWeight: 600,
+                                }}
+                            />
                         </Pie>
                     </PieChart>
                 </ResponsiveContainer>
-
-                {/* Center Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-xs font-medium text-gray-400">Total Revenue</span>
-                    <span className="text-[#0D0D12] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">${data.total.toLocaleString()}</span>
-                </div>
             </div>
 
             {/* Legend / Breakdown List */}

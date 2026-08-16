@@ -13,7 +13,7 @@ export default function page() {
             <div>
                 <StatusCard />
             </div>
-            <div className="flex flex-col md:flex-row w-full gap-6 h-full py-6">
+            <div className="flex flex-col lg:flex-row w-full gap-6 h-full py-6">
                 <div className="w-full">
                     <RevenueReportCard />
                 </div>
@@ -24,7 +24,7 @@ export default function page() {
                     <TotalRevenuePieCard onRefresh={() => { }} />
                 </div>
             </div>
-            <div className="flex   w-full flex-col gap-6  md:flex-row items-stretch">
+            <div className="flex   w-full flex-col gap-6  lg:flex-row items-stretch">
                 <div className="w-full md:max-w-[600px] flex flex-col ">
                     <PendingApproval />
                 </div>

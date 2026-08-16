@@ -37,7 +37,7 @@ export default function StatusCard() {
 
     return (
         <div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
                 {CardData.map((item, index) => {
                     const Icon = item.icon;
 
