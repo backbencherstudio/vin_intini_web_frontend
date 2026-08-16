@@ -13,6 +13,7 @@ import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import { neuroscienceFields } from "@/app/(Frond-End)/mu/(muGroup)/neuroscience-network/_mock/neuroscienceData";
 import { spawn } from "child_process";
+import FacilityForm from "./FacilitiesModal";
 
 type Job = {
     id: number;
@@ -68,12 +69,12 @@ export default function Facilites() {
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [sort, setSort] = useState("default");
+    const [addOpen, setAddOpen] = useState(false);
 
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
-    const openView = (job: Job) => {
-        setSelectedJob(job);
-        setViewOpen(true);
+    const openAdd = () => {
+        setAddOpen(true);
     };
 
     const openEdit = (job: Job) => {
@@ -220,7 +221,7 @@ export default function Facilites() {
                             </SelectContent>
                         </Select>
 
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <button onClick={() => setAddOpen(true)} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                             <Plus className="h-4 w-4" />
                             Add New Facilities
                         </button>
@@ -239,19 +240,26 @@ export default function Facilites() {
                 />
 
                 {/* View Job Details */}
-
-
+                <CustomModal
+                    open={addOpen}
+                    onOpenChange={setAddOpen}
+                    title="Add New Facility"
+                    size="lg"
+                >
+                    <FacilityForm mode="add" onClose={() => setAddOpen(false)} />
+                </CustomModal>
                 {/* Edit Job */}
                 <CustomModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
+                    title="Edit New Facility"
                     size="lg"
                 >
-                    {selectedJob && (
-                        <div className="p-6">
-                            Edit content here for {selectedJob.programName}
-                        </div>
-                    )}
+                    <FacilityForm
+                        mode="edit"
+                        onClose={() => setEditOpen(false)}
+                        initialData={selectedJob!}
+                    />
                 </CustomModal>
 
                 {/* Delete Job */}

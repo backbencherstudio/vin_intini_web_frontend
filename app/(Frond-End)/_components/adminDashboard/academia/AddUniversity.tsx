@@ -4,7 +4,11 @@ import { useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 
-export default function AddUniversity() {
+
+interface AddUniversityProps {
+    onClose?: () => void;
+}
+export default function AddUniversity({ onClose }: AddUniversityProps) {
     const [formData, setFormData] = useState({
         name: "",
         state: "",
@@ -16,6 +20,25 @@ export default function AddUniversity() {
         phoneNumber: "",
         website: "",
     });
+
+    const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        console.log(formData);
+        reset()
+    }
+    const reset = () => {
+        setFormData({
+            name: "",
+            state: "",
+            latitude: "",
+            longitude: "",
+            psychologyDegrees: "",
+            counselingDegrees: "",
+            neuroscienceDegrees: "",
+            phoneNumber: "",
+            website: "",
+        });
+    };
 
     return (
         <div className="p-4">
@@ -51,8 +74,8 @@ export default function AddUniversity() {
                 </div>
 
                 {/* Map Coordinates */}
-                <div className="bg-teal-50 rounded-xl p-4">
-                    <p className="text-sm font-medium text-gray-700 mb-3">
+                <div className="bg-[#D3F4EF] rounded-xl p-4">
+                    <p className="text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px] mb-4">
                         Map Coordinates
                     </p>
                     <div className="grid grid-cols-2 gap-4">
@@ -80,7 +103,7 @@ export default function AddUniversity() {
 
                 </div>
                 <div>
-                    <div>
+                    <div className="flex flex-col  space-y-4">
                         <CustomInput
                             label="Psychology Degrees (BA, MS, PhD)"
                             required
@@ -129,6 +152,11 @@ export default function AddUniversity() {
                                 }
                             />
                         </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2.5 py-4">
+                        <button className="border border-[#B6B6B6] rounded-lg px-3 py-2 cursor-pointer " onClick={onClose} type="button"  >Cancel</button>
+                        <button onClick={handleSubmit} className="border cursor-pointer bg-[#04A1B7] text-white rounded-lg px-3 py-2" type="button">Save University</button>
                     </div>
                 </div>
             </div>

@@ -273,7 +273,7 @@ export default function Universites() {
                     title="Add New University"
                     size="lg"
                 >
-                    <AddUniversity />
+                    <AddUniversity onClose={() => setAddOpen(false)} />
                 </CustomModal>
 
 

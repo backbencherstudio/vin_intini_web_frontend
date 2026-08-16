@@ -29,10 +29,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                 {label && (
                     <label
                         htmlFor={inputId}
-                        className="mb-1.5 block text-sm font-medium text-gray-700"
+                        className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px]"
                     >
                         {label}
-                        {required && <span className="text-red-500 ml-0.5">*</span>}
+                        {required && <span className=" ml-0.5">*</span>}
                     </label>
                 )}
 
@@ -40,7 +40,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                     ref={ref}
                     id={inputId}
                     className={`
-            w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900
+            w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900
             placeholder:text-gray-400
             focus:outline-none  focus:border-gray-500
             disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed

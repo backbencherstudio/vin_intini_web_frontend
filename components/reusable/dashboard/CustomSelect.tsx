@@ -61,9 +61,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     return (
         <div className={`w-full relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px]">
                     {label}
-                    {required && <span className="text-red-500 ml-0.5">*</span>}
+                    {required && <span className=" ml-0.5">*</span>}
                 </label>
             )}
 
@@ -71,7 +71,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             <div
                 onClick={() => !disabled && setIsOpen((prev) => !prev)}
                 className={`
-          flex items-center justify-between w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm cursor-pointer transition-all select-none
+          flex items-center justify-between w-full rounded-lg border bg-white px-3.5 py-3 text-sm cursor-pointer transition-all select-none
           ${disabled ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "border-gray-300 hover:border-gray-400"}
           ${error ? "border-red-500" : ""}
           ${isOpen ? "border-gray-400 ring-1 ring-gray-400/20" : ""}
