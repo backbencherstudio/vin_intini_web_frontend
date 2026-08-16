@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, Film, ImageIcon } from "lucide-react";
+import Image from "next/image";
 import SmartVideoPlayer from "./SmartVideoPlayer";
 import VoiceMessagePlayer from "./VoiceMessagePlayer";
 
@@ -18,7 +19,6 @@ function MessageFileRenderer({
   const category = (msg?.file_category || "").toLowerCase();
   const msgType = (msg?.type || "").toLowerCase();
 
-  // 1. ভয়েস/অডিও সবার আগে চেক করা (কারণ backend থেকে voice message .mp4 এক্সটেনশনে আসতে পারে)
   const isVoiceOrAudio =
     msgType === "voice" ||
     category === "audio" ||
@@ -54,13 +54,17 @@ function MessageFileRenderer({
   // Image
   if (isImage) {
     return (
-      <img
-        src={fileUrl}
-        alt={fileName || "image"}
-        loading="lazy"
-        onClick={() => onViewFile?.(fileUrl)}
-        className="max-h-60 rounded-lg object-cover cursor-pointer"
-      />
+      <div className="w-50 h-auto md:w-75 ">
+        <Image
+          src={fileUrl}
+          alt={fileName || "image"}
+          width={600}
+          height={600}
+          loading="lazy"
+          onClick={() => onViewFile?.(fileUrl)}
+          className="max-h-60 w-full h-full rounded-lg object-cover cursor-pointer"
+        />
+      </div>
     );
   }
 
