@@ -88,7 +88,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
             {/* Dropdown - inline absolute */}
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden z-[9999]">
+                <div className="absolute top-full left-0 right-0 -mt-12 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden z-[9999]">
                     <div className="py-1">
                         {visibleOptions.map((option) => (
                             <div

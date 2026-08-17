@@ -176,34 +176,25 @@ export default function DashboardSidebar() {
       <SidebarFooter className="bg-white px-3 pb-4">
         <SidebarMenu className="space-y-1">
 
-          {/* Settings */}
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className={`h-9 rounded-lg ${pathname === "/dashboard/settings"
-                ? "bg-[#D3F4EF] text-[#111827]"
-                : "text-[#374151] hover:bg-gray-50"
-                }`}
-            >
-              <Link href="/dashboard/settings" onClick={() => { if (isMobile) setOpenMobile(false); }}>
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
           {/* Analytics */}
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               className={`h-9 rounded-lg ${pathname === "/dashboard/analytics"
-                ? "bg-[#D3F4EF] text-[#111827]"
+                ? "bg-[#D3F4EF] text-[#111827] border border-[#04A1B7]"
                 : "text-[#374151] hover:bg-gray-50"
                 }`}
             >
-              <Link href="/dashboard/analytics" onClick={() => { if (isMobile) setOpenMobile(false); }}>
+              <Link
+                href="/dashboard/analytics"
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                }}
+              >
                 <BarChart3 className="h-4 w-4" />
-                <span>Analytics</span>
+                <span className="text-[#1D1F2C] font-['Segoe_UI'] text-[16px] font-normal leading-[24px] tracking-[0.08px]">
+                  Analytics
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -218,25 +209,7 @@ export default function DashboardSidebar() {
               <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-
         </SidebarMenu>
-
-        {/* Subscription */}
-        <div className="mt-6 rounded-xl bg-[#18AFC0] p-4 text-center text-white">
-          <h3 className="font-semibold">Subscription</h3>
-
-          <p className="mt-1 text-xs text-white/90">
-            Try our experience for using more features
-          </p>
-
-          <Link
-            href="/dashboard/subscription"
-            className="mt-3 flex h-9 items-center justify-center rounded-lg bg-white text-xs font-medium text-[#0EA5B7]"
-            onClick={() => { if (isMobile) setOpenMobile(false); }}
-          >
-            Upgrade Now
-          </Link>
-        </div>
       </SidebarFooter>
 
     </Sidebar>

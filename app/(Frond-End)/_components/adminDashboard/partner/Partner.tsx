@@ -12,6 +12,7 @@ import { ArrowDownToLine, ArrowUpDown, Download, FilterIcon, Plus, SearchIcon } 
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import { sankeyPayloadSearcher } from "recharts/types/chart/Sankey";
+import PartnerForm from "./Add&EditPartner";
 
 type Job = {
     id: number;
@@ -35,7 +36,7 @@ const initialJobs: Job[] = [
 
     },
     {
-        id: 1,
+        id: 2,
         network: "Psychology",
         industry: "Publications",
         img: userIcon.src,
@@ -45,7 +46,7 @@ const initialJobs: Job[] = [
 
     },
     {
-        id: 1,
+        id: 3,
         network: "Psychology",
         industry: "Biotechnology",
         img: userIcon.src,
@@ -55,7 +56,7 @@ const initialJobs: Job[] = [
 
     },
     {
-        id: 1,
+        id: 4,
         network: "Neuroscience",
         industry: "Publications",
         img: userIcon.src,
@@ -65,7 +66,7 @@ const initialJobs: Job[] = [
 
     },
     {
-        id: 1,
+        id: 5,
         network: "Psychology",
         industry: "Biotechnology",
         img: userIcon.src,
@@ -75,7 +76,7 @@ const initialJobs: Job[] = [
 
     },
     {
-        id: 1,
+        id: 6,
         network: "Neuroscience",
         industry: "Publications",
         img: userIcon.src,
@@ -88,17 +89,12 @@ const initialJobs: Job[] = [
 
 export default function Partner() {
     const [jobs, setJobs] = useState<Job[]>(initialJobs);
-    const [viewOpen, setViewOpen] = useState(false);
+
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [sort, setSort] = useState("default");
-
+    const [addOpen, setAddOpen] = useState(false);
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-
-    const openView = (job: Job) => {
-        setSelectedJob(job);
-        setViewOpen(true);
-    };
 
     const openEdit = (job: Job) => {
         setSelectedJob(job);
@@ -193,18 +189,18 @@ export default function Partner() {
 
     return (
         <div>
-            <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div className="flex flex-col items-start justify-between gap-4 lg:flex-row md:items-center">
                 {/* Title */}
                 <div className="mb-6  w-full">
                     <CustomTitleDescription
-                        title="Manage Universities"
+                        title="Partners Management"
                         description="Showing 1-20 of 1697 Records"
                     />
                 </div>
 
                 {/* Actions */}
                 <div className="mb-6 flex w-full justify-end">
-                    <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
+                    <div className="flex w-full flex-col items-start gap-4 lg:w-auto lg:flex-row lg:items-center">
 
 
 
@@ -216,7 +212,7 @@ export default function Partner() {
                             <input
                                 className="h-10 w-full rounded-md border p-2 pl-7"
                                 type="text"
-                                placeholder="Search University Name"
+                                placeholder="Search Partner Name"
                             />
                         </div>
 
@@ -227,31 +223,29 @@ export default function Partner() {
                         >
                             <SelectTrigger className="h-10 py-5 w-full cursor-pointer gap-2 md:w-[170px]">
                                 < FilterIcon className="h-4 w-4" />
-                                <SelectValue placeholder="Filter by state" />
+                                <SelectValue placeholder="Filter by Network" />
                             </SelectTrigger>
 
                             <SelectContent>
                                 <SelectItem value="default">
-                                    Filter by state
+                                    Filter by Network
                                 </SelectItem>
 
-                                <SelectItem value="connections">
-                                    Connections
+                                <SelectItem value="Psychology">
+                                    Psychology
                                 </SelectItem>
 
-                                <SelectItem value="z-a">
-                                    Alphabet Z-A
+                                <SelectItem value="Neuroscience">
+                                    Neuroscience
                                 </SelectItem>
 
-                                <SelectItem value="a-z">
-                                    Alphabet A-Z
-                                </SelectItem>
+
                             </SelectContent>
                         </Select>
 
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <button onClick={() => setAddOpen(true)} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                             <Plus className="h-4 w-4" />
-                            Add New University
+                            Add New Partner
                         </button>
 
                     </div>
@@ -262,33 +256,36 @@ export default function Partner() {
                     columns={columns}
                     data={jobs}
                     defaultPageSize={10}
-                    onView={openView}
+
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
 
-                {/* View Job Details */}
                 <CustomModal
-                    open={viewOpen}
-                    onOpenChange={setViewOpen}
-                    showCloseButton={false}
+                    open={addOpen}
+                    onOpenChange={setAddOpen}
+                    title="Add Partner"
                     size="lg"
                 >
-                    <div>
-
-                    </div>
+                    <PartnerForm
+                        mode="add"
+                        onClose={() => setAddOpen(false)}
+                    />
                 </CustomModal>
 
                 {/* Edit Job */}
                 <CustomModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
+                    title="Edit Partner"
                     size="lg"
                 >
                     {selectedJob && (
-                        <div className="p-6">
-                            Edit content here for {selectedJob.partnerName}
-                        </div>
+                        <PartnerForm
+                            mode="edit"
+                            data={selectedJob}
+                            onClose={() => setEditOpen(false)}
+                        />
                     )}
                 </CustomModal>
 

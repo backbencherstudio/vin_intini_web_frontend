@@ -35,7 +35,7 @@ export default function MedicalResidencyForm({
         website: "",
     });
 
-    // Edit মোডে initialData সেট হবে
+
     useEffect(() => {
         if (mode === "edit" && initialData) {
             setFormData({
@@ -50,6 +50,8 @@ export default function MedicalResidencyForm({
             });
         }
     }, [mode, initialData]);
+    console.log("Mode:", mode);
+    console.log("Form Data:", formData);
 
     const handleSave = () => {
         console.log("Mode:", mode);

@@ -14,7 +14,7 @@ import {
 import { FilterIcon, MoveUpRight, Plus, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
-import MedicalResidencyForm from "./EditResencesModal";
+import MedicalResidencyForm from "./Edit&PostResencesModal";
 
 type Job = {
     id: number;

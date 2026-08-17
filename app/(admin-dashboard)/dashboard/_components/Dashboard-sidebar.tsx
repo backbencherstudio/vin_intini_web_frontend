@@ -16,6 +16,8 @@ import {
   UserRound,
   Crown,
   BriefcaseBusiness,
+  Bell,
+  Shield,
 } from "lucide-react";
 import { LuChartNoAxesColumn, LuUsers } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -216,5 +218,30 @@ export const SidebarData: SidebarItem[] = [
     name: "Partners",
     href: "/dashboard/partners",
     icon: PartnerIcon,
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    icon: Settings,
+    children: [
+      {
+        id: "general-settings",
+        name: "General Settings",
+        href: "/dashboard/settings/general-settings",
+        icon: Settings,
+      },
+      {
+        id: "notification-settings",
+        name: "Notification Settings",
+        href: "/dashboard/settings/notification-settings",
+        icon: Bell,
+      },
+      {
+        id: "security-settings",
+        name: "Security Settings",
+        href: "/dashboard/settings/security",
+        icon: Shield,
+      },
+    ],
   },
 ];

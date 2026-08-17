@@ -14,6 +14,7 @@ import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleD
 import { neuroscienceFields } from "@/app/(Frond-End)/mu/(muGroup)/neuroscience-network/_mock/neuroscienceData";
 import { spawn } from "child_process";
 import AddUniversity from "./AddUniversity";
+import EditUniversity from "./EditUniversity";
 
 type Job = {
     id: number;
@@ -193,7 +194,7 @@ export default function Universites() {
 
     return (
         <div>
-            <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div className="flex flex-col items-start justify-between gap-4 lg:flex-row md:items-center">
                 {/* Title */}
                 <div className="mb-6  w-full">
                     <CustomTitleDescription
@@ -204,7 +205,7 @@ export default function Universites() {
 
                 {/* Actions */}
                 <div className="mb-6 flex w-full justify-end">
-                    <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
+                    <div className="flex w-full flex-col items-start gap-4 lg:w-auto lg:flex-row lg:items-center">
 
 
 
@@ -283,12 +284,11 @@ export default function Universites() {
                 <CustomModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
+                    title="Edit University"
                     size="lg"
                 >
                     {selectedJob && (
-                        <div className="p-6">
-                            Edit content here for {selectedJob.university}
-                        </div>
+                        <EditUniversity onClose={() => setEditOpen(false)} data={selectedJob} />
                     )}
                 </CustomModal>
 

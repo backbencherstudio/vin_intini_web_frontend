@@ -65,7 +65,7 @@ export default function CustomModal(props: CustomModalProps) {
             <DialogContent
                 // showCloseButton={false}
                 className={clsx(
-                    "flex flex-col items-start gap-6 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-8 md:py-8 rounded-2xl",
+                    "flex flex-col items-start gap-6 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-4 md:py-8 rounded-2xl",
                     // Allow max-h-[90vh] across ALL screens (including md and up)
                     "max-h-[95vh] overflow-hidden",
                     sizeClasses[size],
@@ -73,7 +73,7 @@ export default function CustomModal(props: CustomModalProps) {
                 )}
             >
                 {/* Header Section */}
-                <div className="flex justify-between items-center w-full">
+                <div className="flex justify-between items-center w-full px-3">
                     {title && (
                         <div className="flex justify-between items-center w-full -mt-3">
                             <h3 className="text-[#0B0B0B] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">{title}</h3>
