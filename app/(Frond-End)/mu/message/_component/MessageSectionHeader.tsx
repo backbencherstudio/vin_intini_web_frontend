@@ -1,8 +1,11 @@
 import emptyImage from "@/public/empty_user.jpg";
+import { VerifyBadgeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
+  console.log(conversationList, "conversationList");
+
   return (
     <div>
       <div className="flex p-3! md:p-4! w-full items-center justify-between">
@@ -20,9 +23,14 @@ function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
           </div>
 
           <div className="space-y-0.5">
-            <p className="font-semibold text-lg text-headerColor">
-              {conversationList?.other_user?.name}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-lg text-headerColor">
+                {conversationList?.other_user?.name}
+              </p>
+              {conversationList?.other_user?.has_premium && (
+                <VerifyBadgeIcon className="w-4.5 h-4.5 mt-0.5 text-primaryColor" />
+              )}
+            </div>
             <p className="text-xs">
               {isOtherUserTyping ? (
                 <span className="text-primaryColor font-medium animate-pulse">
