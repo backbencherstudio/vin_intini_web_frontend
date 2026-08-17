@@ -7,13 +7,18 @@ function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
     <div>
       <div className="flex p-3! md:p-4! w-full items-center justify-between">
         <div className="flex items-center gap-2! md:gap-3!">
-          <Image
-            src={conversationList?.other_user?.profile_image_url || emptyImage}
-            width={40}
-            height={40}
-            className="rounded-sm"
-            alt=""
-          />
+          <div className="w-10 h-10 overflow-hidden rounded-sm">
+            <Image
+              src={
+                conversationList?.other_user?.profile_image_url || emptyImage
+              }
+              width={40}
+              height={40}
+              className="rounded-sm w-full h-full object-center object-cover"
+              alt=""
+            />
+          </div>
+
           <div className="space-y-0.5">
             <p className="font-semibold text-lg text-headerColor">
               {conversationList?.other_user?.name}
