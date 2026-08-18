@@ -2,7 +2,6 @@
 import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSkeleton";
 import RootDialog from "@/components/reusable/RootDialog";
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
-import { useStartConversationMutation } from "@/feature/slice/message/messageSlice";
 import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
@@ -14,18 +13,15 @@ import {
   EditeIcon,
   EditeSquareIcon,
   GroupUserIcon,
-  MessageIcon,
-  UserMinusIcon,
 } from "@/public/svgIcons/Icons";
 import { Plus } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
-import ConnectionUnfriendDialog from "../network/connectionRequests/ConnectionUnfriendDialog";
 import ProfileEducationForm from "./Education/ProfileEducationForm";
+import ProfileConnectionAction from "./ProfileConnectionAction";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
@@ -33,10 +29,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
-  const [startConversation, { isLoading: isStartingConversation }] =
-    useStartConversationMutation();
-  const router = useRouter();
-  const [isUnfriend, setIsUnfriend] = useState(false);
+
   const [profileImageUpdate] = useProfileImageUpdateMutation();
   const [openEducationForm, setOpenEducationForm] = useState(false);
   const [openExperienceForm, setOpenExperienceForm] = useState(false);
@@ -115,14 +108,6 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
 
     setProfileImageFile(file);
     setProfileImage(URL.createObjectURL(file));
-  };
-  const handleMessageCreate = async () => {
-    try {
-      const response = await startConversation(userId).unwrap();
-      router.push(`/mu/message/${response.data.id}`);
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to start conversation.");
-    }
   };
 
   if (isLoading) {
@@ -204,7 +189,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           )}
         </div>
       </div>
-      <div className="mt-12 border-b border-borderColor pb-4">
+      <div className="mt-12 border-b border-borderColor pb-3">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
           <div className="col-span-2">
             <h4 className="text-lg font-semibold text-headerColor leading-[150%]">
@@ -222,30 +207,6 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               <p className="text-sm   line-clamp-3">
                 {profileData?.total_connections || 0} Connection
               </p>
-            </div>
-            {!profileData?.is_own_profile && (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleMessageCreate}
-                  title="Message"
-                  className="cursor-pointer"
-                >
-                  <MessageIcon className="w-4.5 h-4.5 text-primaryColor" />
-                </button>
-                <button
-                  onClick={() => setIsUnfriend(true)}
-                  title="Unfriend"
-                  className={` cursor-pointer  disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor  transition-all duration-200 `}
-                >
-                  <UserMinusIcon className="w-5.5 h-5.5 text-redColor!" />
-                </button>
-              </div>
-            )}
-
-            <div>
-              {/* {
-                !profileData?.connection_status?.is_connected 
-              } */}
             </div>
           </div>
           <div className="space-y-3 col-span-1">
@@ -293,6 +254,9 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           </div>
         </div>
       </div>
+      <div className="mt-4 lg:mt-5">
+        <ProfileConnectionAction profileData={profileData} userId={userId} />
+      </div>
 
       {showImagePreview && (
         <RootDialog
@@ -310,13 +274,6 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             />
           </div>
         </RootDialog>
-      )}
-      {isUnfriend && (
-        <ConnectionUnfriendDialog
-          setOpen={setIsUnfriend}
-          open={isUnfriend}
-          userId={userId}
-        />
       )}
 
       {openEducationForm && (

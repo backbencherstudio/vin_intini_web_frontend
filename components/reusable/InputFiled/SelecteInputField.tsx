@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Option = { iso_code: string; country: string };
+type Option = { value: string; label: string };
 
 interface SelecteInputFieldProps {
   value?: string;
@@ -31,15 +31,15 @@ export default function SelecteInputField({
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger
         id={id}
-        className={`${className} cursor-pointer h-12! md:h-13!  w-full`}
+        className={` cursor-pointer   w-full ${className}`}
         disabled={disabled}
       >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {options.map((opt) => (
-          <SelectItem key={opt.iso_code} value={opt.iso_code}>
-            {opt.country}
+          <SelectItem key={opt.value} value={opt.value}>
+            {opt.label}
           </SelectItem>
         ))}
       </SelectContent>

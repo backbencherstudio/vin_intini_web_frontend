@@ -6,7 +6,6 @@ const connectSlice = baseApiSlice.injectEndpoints({
       query: ({ query }) => ({
         url: `/connections/requests${query}`,
         method: "GET",
-        
       }),
     }),
     getMyConnections: builder.query({
@@ -37,7 +36,7 @@ const connectSlice = baseApiSlice.injectEndpoints({
         url: `/connections/${id}/remove`,
         method: "DELETE",
       }),
-      invalidatesTags: ["connect"],
+      invalidatesTags: ["connect", "User"],
     }),
     requestAccept: builder.mutation({
       query: ({ id }) => ({

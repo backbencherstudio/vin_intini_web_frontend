@@ -416,8 +416,8 @@ function MessageRoot() {
                   </button>
                 </div>
               )}
-
-              <div className="flex items-start gap-1 md:gap-3">
+              {
+                conversationList?.is_connected ?  <div className="flex items-start gap-1 md:gap-3">
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="cursor-pointer p-1"
@@ -489,7 +489,12 @@ function MessageRoot() {
                 >
                   <SendIcon />
                 </button>
+              </div> : <div className="text-center text-sm text-gray-500 py-3">
+                You can only send messages to connected users. Please connect with this user to start a conversation.
               </div>
+              }
+
+             
             </div>
           </>
         </div>
