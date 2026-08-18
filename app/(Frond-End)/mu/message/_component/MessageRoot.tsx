@@ -3,6 +3,7 @@
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import {
   useGetConversationMessagesQuery,
+  useMarkReadMessageMutation,
   useReactForeMessageMutation,
   useSendMessageMutation,
 } from "@/feature/slice/message/messageSlice";
@@ -10,7 +11,7 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import echo from "@/lib/echo";
 import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDispatch } from "react-redux";
@@ -18,6 +19,7 @@ import MessageFileRenderer from "./MessageFileRenderer";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageSectionHeader from "./MessageSectionHeader";
 import { useVoiceRecorder } from "./useVoiceRecorder";
+import baseApiSlice from "@/feature/slice/baseApi";
 
 function MessageRoot() {
   const dispatch = useDispatch();
@@ -32,6 +34,7 @@ function MessageRoot() {
   );
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
+  const [markReadMessage] = useMarkReadMessageMutation();
   const [reactForeMessage] = useReactForeMessageMutation();
   const [inputValue, setInputValue] = useState("");
   const [attachments, setAttachments] = useState<File | null>(null);
@@ -94,12 +97,24 @@ function MessageRoot() {
     const channelName = `conversation.${conversationId}`;
     const channel = echo.private(channelName);
 
-    const handleMessageSent = (data: any) => {
+    const handleMessageSent = async (data: any) => {
       const newMsg = data?.message?.id ? data.message : data;
       setChatMessages((prev) => {
         if (!newMsg?.id || prev.some((m) => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
       });
+      if (data) {
+        try {
+          await markReadMessage(newMsg.conversation_id).unwrap();
+          dispatch(baseApiSlice.util.invalidateTags(["conversationList"]));
+        } catch (error) {
+          console.log(
+            error?.message,
+            "error occurs while marking message as read",
+          );
+        }
+      }
+
       setIsOtherUserTyping(false);
     };
 
@@ -401,8 +416,8 @@ function MessageRoot() {
                   </button>
                 </div>
               )}
-
-              <div className="flex items-start gap-1 md:gap-3">
+              {
+                conversationList?.is_connected ?  <div className="flex items-start gap-1 md:gap-3">
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="cursor-pointer p-1"
@@ -474,7 +489,12 @@ function MessageRoot() {
                 >
                   <SendIcon />
                 </button>
+              </div> : <div className="text-center text-sm text-gray-500 py-3">
+                You can only send messages to connected users. Please connect with this user to start a conversation.
               </div>
+              }
+
+             
             </div>
           </>
         </div>
