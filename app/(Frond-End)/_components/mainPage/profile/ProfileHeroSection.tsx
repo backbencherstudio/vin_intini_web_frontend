@@ -25,11 +25,21 @@ import ProfileConnectionAction from "./ProfileConnectionAction";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
-function ProfileHeroSection({ userId }: { userId?: string }) {
+function ProfileHeroSection({
+  userId,
+  protect,
+  isprofile
+}: {
+  userId?: string;
+  protect?: boolean;
+  isprofile?: boolean;
+}) {
   const { data, isLoading } = userId
     ? useGetProfileByIdQuery(userId)
     : useGetMyProfileQuery("profile");
 
+  protect = data?.is_private_profile;
+  isprofile = data?.is_own_profile;
   const [profileImageUpdate] = useProfileImageUpdateMutation();
   const [openEducationForm, setOpenEducationForm] = useState(false);
   const [openExperienceForm, setOpenExperienceForm] = useState(false);
