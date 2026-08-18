@@ -80,19 +80,19 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "subscription-overview",
         name: "Overview",
-        href: "/dashboard/subscription",
+        href: "/dashboard/subscription/overview",
         icon: LuChartNoAxesColumn,
       },
       {
         id: "plan-pricing",
         name: "Plan and Pricing",
-        href: "/dashboard/subscription/plan-and-pricing",
+        href: "/dashboard/subscription/plan-pricing",
         icon: SubPlanIcon,
       },
       {
         id: "transactions",
         name: "Transactions",
-        href: "/dashboard/payments",
+        href: "/dashboard/subscription/transactions",
         icon: SubTranscIcon,
       },
     ]

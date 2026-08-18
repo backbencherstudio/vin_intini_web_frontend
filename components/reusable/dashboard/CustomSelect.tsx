@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 
 interface SelectOption {
     label: string;
@@ -59,7 +60,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     };
 
     return (
-        <div className={`w-full relative ${className}`} ref={containerRef}>
+        <div className="relative w-full" ref={containerRef}>
             {label && (
                 <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px]">
                     {label}
@@ -70,12 +71,23 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             {/* Trigger */}
             <div
                 onClick={() => !disabled && setIsOpen((prev) => !prev)}
-                className={`
-          flex items-center justify-between w-full rounded-lg border bg-white px-3.5 py-3 text-sm cursor-pointer transition-all select-none
-          ${disabled ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "border-gray-300 hover:border-gray-400"}
-          ${error ? "border-red-500" : ""}
-          ${isOpen ? "border-gray-400 ring-1 ring-gray-400/20" : ""}
-        `}
+                className={twMerge(
+                    `
+    flex items-center justify-between
+    w-full h-[48px]
+    rounded-lg border bg-white
+    px-3.5 text-sm cursor-pointer
+    transition-all select-none
+    `,
+                    className,
+                    disabled
+                        ? "bg-gray-50 text-gray-400 cursor-not-allowed"
+                        : "border-gray-300 hover:border-gray-400",
+                    error ? "border-red-500" : "",
+                    isOpen
+                        ? "border-gray-400 ring-1 ring-gray-400/20"
+                        : ""
+                )}
             >
                 <span className={!selectedOption ? "text-gray-400" : "text-gray-900"}>
                     {selectedOption ? selectedOption.label : placeholder}
