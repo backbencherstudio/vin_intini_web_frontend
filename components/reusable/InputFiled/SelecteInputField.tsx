@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Option = { value: string; label: string };
+type Option = { value: string; label: string; icon?: React.ReactNode };
 
 interface SelecteInputFieldProps {
   value?: string;
@@ -38,8 +38,12 @@ export default function SelecteInputField({
       </SelectTrigger>
       <SelectContent>
         {options.map((opt) => (
-          <SelectItem key={opt.value} value={opt.value}>
-            {opt.label}
+          <SelectItem
+            key={opt.value}
+            value={opt.value}
+            className="flex items-center gap-1.5 cursor-pointer"
+          >
+            {opt.icon && <span className="">{opt.icon}</span>} {opt.label}
           </SelectItem>
         ))}
       </SelectContent>
