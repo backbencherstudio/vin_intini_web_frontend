@@ -28,7 +28,7 @@ const userSlice = baseApiSlice.injectEndpoints({
         url: `/profile/${id}`,
         method: "GET",
       }),
-      providesTags: ["User", "connect"],
+      providesTags: ["User", "connect", "follow"],
     }),
     profileSetup: builder.mutation({
       query: (payload) => ({
