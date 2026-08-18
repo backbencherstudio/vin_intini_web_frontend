@@ -2,6 +2,7 @@
 
 import React from "react";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface JobDetailsProps {
     job: any;
@@ -12,7 +13,17 @@ const JobDetails = ({ job, onClose }: JobDetailsProps) => {
     return (
         <div className="w-full">
             {/* Header */}
-
+            <div className="p-6 border border-red-500">
+                <Image src="/images/admin/user/user-avatar.jpg" alt="User Avatar" width={100} height={100} />
+                <div>
+                    <p>
+                        Clinical Psychologist
+                    </p>
+                    <p>
+                        [EMAIL_ADDRESS]
+                    </p>
+                </div>
+            </div>
 
             {/* Content */}
             <div className="space-y-5 px-6 py-5">

@@ -1,18 +1,21 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { RotateCw, ArrowUp, Calendar } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
+import { DateRangePicker } from '@/components/reusable/dashboard/DataRangePiker';
 
 export default function RevenueReportCard({ data = defaultData, onRefresh = () => { } }) {
+
+    const [date, setDate] = useState<DateRange | undefined>(undefined);
     return (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full  ">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">Revenue Report</h3>
                 <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 bg-gray-50/50">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <span>{data.dateRange}</span>
+                    <div className="">
+                        <DateRangePicker date={date} setDate={setDate} placeholder='Select date range' />
                     </div>
                     <button
                         onClick={onRefresh}

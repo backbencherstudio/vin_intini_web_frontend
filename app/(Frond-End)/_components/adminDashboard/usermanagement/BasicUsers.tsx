@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowDownToLine, ArrowUpDown, Download, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import BasicUserEditModal from "./BasicUserEditModal";
 
 type Job = {
     id: number;
@@ -299,11 +300,7 @@ export default function BasicUser() {
                     onOpenChange={setEditOpen}
                     size="lg"
                 >
-                    {selectedJob && (
-                        <div className="p-6">
-                            Edit content here for {selectedJob.name}
-                        </div>
-                    )}
+                    <BasicUserEditModal data={selectedJob} onClose={() => setEditOpen(false)} />
                 </CustomModal>
 
                 {/* Delete Job */}

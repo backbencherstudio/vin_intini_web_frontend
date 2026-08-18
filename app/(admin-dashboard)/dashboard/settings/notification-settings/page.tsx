@@ -151,10 +151,6 @@ export default function NotificationSettings() {
         }));
     };
 
-    /* --------------------------------
-       Quiet Hours
-    -------------------------------- */
-
     const toggleQuietHours = () => {
         setSettings((prev) => ({
             ...prev,
@@ -178,9 +174,7 @@ export default function NotificationSettings() {
         }));
     };
 
-    /* --------------------------------
-       Save
-    -------------------------------- */
+
 
     const handleSave = async () => {
         console.log("Notification Settings:", settings);
@@ -294,7 +288,7 @@ export default function NotificationSettings() {
                 <div className=" overflow-hidden border border-[#E5E5E5] rounded-xl mt-4 p-3">
 
                     {/* Header */}
-                    <div className="grid grid-cols-[1fr_100px_100px_100px] bg-[#F8F8F8] px-2 py-2 text-[9px] text-[#777980]">
+                    <div className="grid grid-cols-[5fr_1fr_1fr_1fr] bg-[#F8F8F8] px-2 py-2 text-[9px] text-[#777980]">
                         <div className="text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Notification Type</div>
                         <div className="text-center  text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">In App</div>
                         <div className="text-center text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Email</div>
@@ -305,7 +299,7 @@ export default function NotificationSettings() {
                     {settings.preferences.map((item) => (
                         <div
                             key={item.id}
-                            className="grid grid-cols-[1fr_100px_100px_100px] items-center border-t border-[#E5E5E5] px-2 py-2"
+                            className="grid grid-cols-[5fr_1fr_1fr_1fr] items-center border-t border-[#E5E5E5] px-2 py-2"
                         >
                             <div>
                                 <p className="overflow-hidden text-ellipsis text-[#4A4C56] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
