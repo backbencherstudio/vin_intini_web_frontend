@@ -20,7 +20,7 @@ function ProfileEducationList({ userId }: { userId?: string }) {
   const openCreateForm = () => {
     setIsFormOpen(true);
   };
-  console.log(data, "data======education ");
+
 
   return (
     <section className=" pb-4">
