@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLogoutMutation } from "@/feature/slice/auth/authSlice";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
@@ -13,6 +14,7 @@ import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
   LogoutIcon,
+  MessageIcon,
   NotificationIcon,
   SettingIcon,
   UserCircleIcon,
@@ -26,6 +28,7 @@ import { useDispatch } from "react-redux";
 
 function UserHeaderInfo() {
   const { data: userProfileData } = useGetUserProfileQuery("user");
+  const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,9 +42,14 @@ function UserHeaderInfo() {
     useGetNotificationCountQuery("notificationCount");
   const handleLogout = async () => {
     // Clear the access token cookie
-    await clearToken();
+    try {
+      await logout();
+      await clearToken();
+      router.push("/login");
+    } catch (error) {
+      console.error("Error occurred while logging out:", error);
+    }
     // Redirect to the login page
-    router.push("/login");
   };
 
   return (
@@ -59,7 +67,13 @@ function UserHeaderInfo() {
                   : notificationCountData?.data?.unread_count}
               </span>
             )}
-            <NotificationIcon />
+            <NotificationIcon className="text-grayColor1" />
+          </Link>
+          <Link
+            href={`/mu/message`}
+            className="flex justify-center items-center"
+          >
+            <MessageIcon className="text-grayColor1" />
           </Link>
 
           <div className="  relative sm:ml-0">

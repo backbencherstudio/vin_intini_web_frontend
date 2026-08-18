@@ -1,7 +1,7 @@
+import baseApiSlice from "@/feature/slice/baseApi";
+import echo from "@/lib/echo";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import echo from "@/lib/echo";
-import baseApiSlice from "@/feature/slice/baseApi";
 
 export const useRealtimeNotifications = (
   userId: string | number | undefined,
@@ -14,12 +14,12 @@ export const useRealtimeNotifications = (
     const channel = echo.private(channelName);
 
     channel.notification((data: any) => {
-   
+      // console.log(data, "Check data done=========");
+
       dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
     });
 
     return () => {
-    
       echo.leave(channelName);
     };
   }, [userId, dispatch]);
