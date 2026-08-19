@@ -1,48 +1,38 @@
-import nookies from "nookies";
+// app/actions/auth.ts
+"use server";
 
-const ACCESS_TOKEN_KEY = "accessToken";
-const ACCESS_TOKEN_ISSUED_AT_KEY = "accessTokenIssuedAt";
+import { cookies } from "next/headers";
 
-// 7 days in seconds: 7 * 24 * 60 * 60 = 604800 seconds
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
 
 export async function setToken(token: string) {
+  const cookieStore = await cookies();
   const now = Date.now().toString();
 
-  const cookieOptions = {
+  cookieStore.set("accessToken", token, {
+    httpOnly: true, 
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     path: "/",
     maxAge: COOKIE_MAX_AGE,
-    sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
-  };
+  });
 
-  nookies.set(null, ACCESS_TOKEN_KEY, token, cookieOptions);
-  nookies.set(null, ACCESS_TOKEN_ISSUED_AT_KEY, now, cookieOptions);
+  cookieStore.set("accessTokenIssuedAt", now, {
+    httpOnly: false, 
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: COOKIE_MAX_AGE,
+  });
 }
 
 export async function getToken() {
-  const cookies = nookies.get(null);
-  return cookies[ACCESS_TOKEN_KEY] || null;
-}
-
-export async function getTokenIssuedAt() {
-  const cookies = nookies.get(null);
-  const value = cookies[ACCESS_TOKEN_ISSUED_AT_KEY];
-
-  if (!value) {
-    return null;
-  }
-
-  const issuedAt = Number(value);
-  return Number.isNaN(issuedAt) ? null : issuedAt;
+  const cookieStore = await cookies();
+  return cookieStore.get("accessToken")?.value || null;
 }
 
 export async function clearToken() {
-  nookies.destroy(null, ACCESS_TOKEN_KEY, {
-    path: "/",
-  });
-
-  nookies.destroy(null, ACCESS_TOKEN_ISSUED_AT_KEY, {
-    path: "/",
-  });
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
+  cookieStore.delete("accessTokenIssuedAt");
 }
