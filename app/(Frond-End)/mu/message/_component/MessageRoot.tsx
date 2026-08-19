@@ -1,6 +1,7 @@
 "use client";
 
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
+import baseApiSlice from "@/feature/slice/baseApi";
 import {
   useGetConversationMessagesQuery,
   useMarkReadMessageMutation,
@@ -19,7 +20,6 @@ import MessageFileRenderer from "./MessageFileRenderer";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
 import MessageSectionHeader from "./MessageSectionHeader";
 import { useVoiceRecorder } from "./useVoiceRecorder";
-import baseApiSlice from "@/feature/slice/baseApi";
 
 function MessageRoot() {
   const dispatch = useDispatch();
@@ -416,85 +416,86 @@ function MessageRoot() {
                   </button>
                 </div>
               )}
-              {
-                conversationList?.is_connected ?  <div className="flex items-start gap-1 md:gap-3">
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer p-1"
-                >
-                  <AttatchIcon className="w-4.5 h-4.5" />
-                </button>
-
-                {recordingBlob ? (
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={discardRecording}
-                      className="p-1 text-red-500 hover:bg-red-50 rounded-full cursor-pointer"
-                    >
-                      <IoClose className="text-base" />
-                    </button>
-                    <span className="px-2 py-1 bg-[#F3F4F6] rounded-lg text-xs tabular-nums text-headerColor">
-                      {formatRecordingTime(recordingSeconds)}
-                    </span>
-                  </div>
-                ) : (
+              {conversationList?.other_user?.is_connected ? (
+                <div className="flex items-start gap-1 md:gap-3">
                   <button
-                    onClick={toggleRecording}
-                    className={`p-1 flex items-center gap-1.5 rounded-md transition-colors ${
-                      isRecording
-                        ? "bg-red-50 text-red-500 px-2"
-                        : "text-descriptionColor"
-                    }`}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="cursor-pointer p-1"
                   >
-                    {isRecording ? (
-                      <>
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-                        </span>
-                        <span className="text-xs font-medium tabular-nums">
-                          {formatRecordingTime(recordingSeconds)}
-                        </span>
-                      </>
-                    ) : (
-                      <VoiceIcon className="w-4.5 h-4.5" />
-                    )}
+                    <AttatchIcon className="w-4.5 h-4.5" />
                   </button>
-                )}
 
-                <SmartEmojiPicker
-                  onEmojiSelect={handleEmojiSelect}
-                  iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
-                  height={250}
-                />
+                  {recordingBlob ? (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={discardRecording}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded-full cursor-pointer"
+                      >
+                        <IoClose className="text-base" />
+                      </button>
+                      <span className="px-2 py-1 bg-[#F3F4F6] rounded-lg text-xs tabular-nums text-headerColor">
+                        {formatRecordingTime(recordingSeconds)}
+                      </span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={toggleRecording}
+                      className={`p-1 flex items-center gap-1.5 rounded-md transition-colors ${
+                        isRecording
+                          ? "bg-red-50 text-red-500 px-2"
+                          : "text-descriptionColor"
+                      }`}
+                    >
+                      {isRecording ? (
+                        <>
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                          </span>
+                          <span className="text-xs font-medium tabular-nums">
+                            {formatRecordingTime(recordingSeconds)}
+                          </span>
+                        </>
+                      ) : (
+                        <VoiceIcon className="w-4.5 h-4.5" />
+                      )}
+                    </button>
+                  )}
 
-                <textarea
-                  ref={textareaRef}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }
-                  }}
-                  placeholder="Write message here..."
-                  className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
-                />
+                  <SmartEmojiPicker
+                    onEmojiSelect={handleEmojiSelect}
+                    iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
+                    height={250}
+                  />
 
-                <button
-                  onClick={handleSendMessage}
-                  disabled={sendingMessage}
-                  className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer disabled:opacity-50"
-                >
-                  <SendIcon />
-                </button>
-              </div> : <div className="text-center text-sm text-gray-500 py-3">
-                You can only send messages to connected users. Please connect with this user to start a conversation.
-              </div>
-              }
+                  <textarea
+                    ref={textareaRef}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    placeholder="Write message here..."
+                    className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
+                  />
 
-             
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={sendingMessage}
+                    className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer disabled:opacity-50"
+                  >
+                    <SendIcon />
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center text-sm text-gray-500 py-3">
+                  You can only send messages to connected users. Please connect
+                  with this user to start a conversation.
+                </div>
+              )}
             </div>
           </>
         </div>
