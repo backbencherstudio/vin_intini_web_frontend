@@ -13,7 +13,7 @@ async function page(props: { params: Promise<{ id: string }> }) {
   return (
     <div className="space-y-6">
       <ProfileHeroSection userId={id} protect={protect} isprofile={isprofile} />
-      {!protect ? (
+      {protect ? (
         <div>
           <ProfileAbout userId={id} />
           <ProfilePostList />
