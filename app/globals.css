@@ -173,7 +173,7 @@
   display: none;
 }
 
-input:checked ~ .checkmark {
+input:checked~.checkmark {
   background-color: var(--color-green-600);
 }
 
@@ -206,6 +206,7 @@ body {
 }
 
 @keyframes bounce-x {
+
   0%,
   100% {
     transform: translateX(0);
@@ -243,6 +244,7 @@ body {
 .epr_-8ygbw8 {
   padding: 6px !important;
 }
+
 .epr_qyh4cg {
   padding: 10px 0;
   display: none !important;
@@ -252,6 +254,7 @@ body {
   font-size: 13px !important;
   height: 32px !important;
 }
+
 .epr_-xuzz9z {
   display: none;
 }
@@ -265,6 +268,7 @@ body {
   width: 2px !important;
   height: 1px !important;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent !important;
 }
@@ -287,6 +291,7 @@ body {
 .custom-scrollbar::-webkit-scrollbar-corner {
   background: transparent !important;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -303,6 +308,7 @@ body {
 .epr_3z09g4 {
   height: 100% !important;
 }
+
 .ant-select-content-item {
   font-size: 12px !important;
 }
@@ -310,6 +316,7 @@ body {
 .QUIbkc {
   display: none !important;
 }
+
 .css-tr4s17-option {
   background-color: var(--primaryColor) !important;
 }
@@ -350,6 +357,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #0390a3;
 }
+
 .font-great-vibes {
   font-family: "Great Vibes", cursive;
 }
