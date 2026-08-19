@@ -41,7 +41,7 @@ function NotificationPage() {
     return <NotificationSkeleton />;
   }
 
-  console.log(data, "check notification");
+
 
   return (
     <section className="w-full bg-white px-3 pb-12 pt-4 md:px-4">

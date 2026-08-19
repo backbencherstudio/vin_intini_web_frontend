@@ -62,9 +62,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     return (
         <div className="relative w-full" ref={containerRef}>
             {label && (
-                <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px]">
+                <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">
                     {label}
-                    {required && <span className=" ml-0.5">*</span>}
+                    {required && <span className="ml-0.5">*</span>}
                 </label>
             )}
 
@@ -73,12 +73,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 onClick={() => !disabled && setIsOpen((prev) => !prev)}
                 className={twMerge(
                     `
-    flex items-center justify-between
-    w-full h-[48px]
-    rounded-lg border bg-white
-    px-3.5 text-sm cursor-pointer
-    transition-all select-none
-    `,
+                flex w-full h-[48px]
+                items-center justify-between
+                rounded-lg border bg-white
+                px-3.5 text-sm cursor-pointer
+                transition-all select-none
+                `,
                     className,
                     disabled
                         ? "bg-gray-50 text-gray-400 cursor-not-allowed"
@@ -100,7 +100,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
             {/* Dropdown - inline absolute */}
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 -mt-12 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden z-[9999]">
+                <div className="absolute top-full  left-0 right-0 -mt-12 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden z-[9999]">
                     <div className="py-1">
                         {visibleOptions.map((option) => (
                             <div

@@ -11,9 +11,9 @@ function ConnectionListHeader({ data }: any) {
   const [selectedSort, setSelectedSort] = useState("");
 
   const sortOptions = [
-    { iso_code: "recent", country: "Recent" },
-    { iso_code: "az", country: "Name (A-Z)" },
-    { iso_code: "za", country: "Name (Z-A)" },
+    { value: "recent", label: "Recent" },
+    { value: "az", label: "Name (A-Z)" },
+    { value: "za", label: "Name (Z-A)" },
   ];
 
   useEffect(() => {
@@ -68,7 +68,7 @@ function ConnectionListHeader({ data }: any) {
               onValueChange={setSelectedSort}
               options={sortOptions}
               placeholder="Sort by"
-              className="h-10 border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
+              className="h-12! md:h-13! border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
             />
           </div>
         </div>

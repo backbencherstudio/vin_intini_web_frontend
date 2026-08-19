@@ -7,7 +7,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations?status=${params}`,
         method: "GET",
       }),
-      providesTags: ["message"],
+      providesTags: ["conversationList"],
     }),
     startConversation: builder.mutation({
       query: (userId) => ({
@@ -23,12 +23,19 @@ const messageSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["message"],
     }),
+    getUnreadMessagesCount: builder.query({
+      query: () => ({
+        url: `/conversations/unread-count`,
+        method: "GET",
+      }),
+    }),
+
     markReadMessage: builder.mutation({
       query: (messageId) => ({
         url: `/conversations/${messageId}/mark-read`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -86,6 +93,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetConversationListQuery,
   useStartConversationMutation,
+  useGetUnreadMessagesCountQuery,
   useGetConversationMessagesQuery,
   useMarkReadMessageMutation,
   useSendMessageMutation,

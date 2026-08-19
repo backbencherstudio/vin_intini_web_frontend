@@ -39,7 +39,7 @@ type MenuItem = {
 export default function MainNavbar() {
   const pathname = usePathname();
   const params = useParams();
-  
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
   const [openMobileDropdownSlug, setOpenMobileDropdownSlug] = useState<
@@ -55,7 +55,11 @@ export default function MainNavbar() {
     { label: "About Us", slug: "/mu/about-us", icon: AboutIcon },
 
     { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
-    { label: "My Network", slug: "/mu/my-network", icon: MultiUserIcon },
+    {
+      label: "My Network",
+      slug: "/mu/my-network/my-connection",
+      icon: MultiUserIcon,
+    },
     {
       label: "Psychology Network",
       slug: "/mu/psychology-network",

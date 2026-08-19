@@ -15,7 +15,7 @@ export default function RevenueReportCard({ data = defaultData, onRefresh = () =
                 <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">Revenue Report</h3>
                 <div className="flex items-center space-x-2">
                     <div className="">
-                        <DateRangePicker date={date} setDate={setDate} placeholder='Select date range' />
+                        <DateRangePicker required date={date} setDate={setDate} placeholder='Select date range' className='h-8 to w-full' />
                     </div>
                     <button
                         onClick={onRefresh}

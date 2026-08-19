@@ -9,10 +9,14 @@ function ProfilePages() {
     <div>
       <div className="space-y-6">
         <ProfileHeroSection />
-        <ProfileAbout />
-        <ProfilePostList />
-        <ProfileExpreance />
-        <ProfileEducationList />
+
+        <div>
+          <ProfileAbout />
+          <ProfilePostList />
+          <ProfileExpreance />
+          <ProfileEducationList />
+          <ProfileEducationList />
+        </div>
       </div>
     </div>
   );

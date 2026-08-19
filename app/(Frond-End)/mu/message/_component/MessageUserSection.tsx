@@ -17,6 +17,7 @@ import {
 } from "@/feature/slice/message/messageSlice";
 import { truncateText } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
+import { VerifyBadgeIcon } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
 import { Archive, ArchiveRestore, Check, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -108,7 +109,6 @@ function MessageUserSection() {
     }
   };
 
-
   return (
     <div>
       <div className="w-full h-full  flex flex-col">
@@ -133,16 +133,13 @@ function MessageUserSection() {
           {/* User */}
           {data?.data?.length > 0 ? (
             data?.data?.map((msg: any, index: number) => {
-              
               return (
                 <ContextMenu key={msg.id}>
                   <ContextMenuTrigger asChild>
                     <div
                       onClick={() => handleReadMessage(msg.id)}
                       className={`p-2 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors ${
-                        Number(params?.id) === msg.id
-                          ? "bg-gray-100"
-                          : ""
+                        Number(params?.id) === msg.id ? "bg-gray-100" : ""
                       }`}
                     >
                       <div className="w-10 h-10 overflow-hidden rounded-sm">
@@ -155,12 +152,19 @@ function MessageUserSection() {
                         />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-sm flex justify-between">
-                          {msg?.user?.name}{" "}
+                        <div className="flex justify-between">
+                          <div className="flex gap-1.5 items-center">
+                            <p className="font-medium text-sm ">
+                              {msg?.user?.name}{" "}
+                            </p>
+                            {msg?.user?.has_premium && (
+                              <VerifyBadgeIcon className="w-3.5 h-3.5 text-primaryColor" />
+                            )}
+                          </div>
                           <span className="text-xs text-gray-400">
                             {dayjs(msg?.last_message?.created_at).fromNow()}
                           </span>
-                        </p>
+                        </div>
                         <p className="text-xs flex justify-between text-gray-500 truncate">
                           {msg.last_message?.message
                             ? truncateText(msg.last_message?.message, 30)

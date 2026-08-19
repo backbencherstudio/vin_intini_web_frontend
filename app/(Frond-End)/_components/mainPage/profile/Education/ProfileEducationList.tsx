@@ -21,6 +21,7 @@ function ProfileEducationList({ userId }: { userId?: string }) {
     setIsFormOpen(true);
   };
 
+
   return (
     <section className=" pb-4">
       <div className="mb-3 flex items-center justify-between">
@@ -60,14 +61,16 @@ function ProfileEducationList({ userId }: { userId?: string }) {
             <p className="text-sm text-grayColor1">
               Start building your profile by adding your education.
             </p>
-            <button
-              type="button"
-              onClick={() => setIsFormOpen(true)}
-              className={`${BUTTON_STYLES.primary} flex items-center justify-center gap-1 py-2! mt-3 text-sm! px-3! `}
-            >
-              <Plus className="h-4 w-4" />
-              Add Education
-            </button>
+            {data?.is_own_education && (
+              <button
+                type="button"
+                onClick={() => setIsFormOpen(true)}
+                className={`${BUTTON_STYLES.primary} flex items-center justify-center gap-1 py-2! mt-3 text-sm! px-3! `}
+              >
+                <Plus className="h-4 w-4" />
+                Add Education
+              </button>
+            )}
           </div>
         )}
       </div>

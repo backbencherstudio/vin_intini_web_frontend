@@ -73,6 +73,9 @@ export const fetchWrapper = async (
 
     return await response.json();
   } catch (error) {
+    if (error?.digest === "DYNAMIC_SERVER_USAGE") {
+      throw error;
+    }
     throw error;
   }
 };

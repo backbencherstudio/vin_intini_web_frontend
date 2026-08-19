@@ -1,3 +1,4 @@
+
 import { clearToken, getToken, setToken } from "@/lib/token";
 import {
   BaseQueryFn,
@@ -140,6 +141,7 @@ export const baseApiSlice = createApi({
     "Notifications",
     "psychology",
     "neuroscience",
+    "conversationList",
     "message",
   ],
 });

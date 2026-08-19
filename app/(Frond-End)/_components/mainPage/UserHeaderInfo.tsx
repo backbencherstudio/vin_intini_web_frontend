@@ -7,9 +7,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogoutMutation } from "@/feature/slice/auth/authSlice";
+import baseApiSlice from "@/feature/slice/baseApi";
+import { useGetUnreadMessagesCountQuery } from "@/feature/slice/message/messageSlice";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import echo from "@/lib/echo";
 import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
@@ -22,7 +25,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
@@ -30,6 +33,17 @@ function UserHeaderInfo() {
   const { data: userProfileData } = useGetUserProfileQuery("user");
   const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [newMessagePopup, setNewMessagePopup] = useState<{
+    key: number;
+    sender: string;
+    image: string;
+    text: string;
+  } | null>(null);
+  const popupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { data: unreadMessagesCountData } = useGetUnreadMessagesCountQuery(
+    "unreadMessagesCount",
+  );
 
   useEffect(() => {
     if (userProfileData?.success) {
@@ -40,6 +54,45 @@ function UserHeaderInfo() {
   const router = useRouter();
   const { data: notificationCountData } =
     useGetNotificationCountQuery("notificationCount");
+  useEffect(() => {
+    setUnreadCount(unreadMessagesCountData?.data?.total_unread_messages);
+    if (!echo || !userProfileData?.user?.id) return;
+    const channelName = `App.Models.User.${userProfileData?.user?.id}`;
+    const channel = echo.private(channelName);
+
+    const handleMessageSent = async (data: any) => {
+      setUnreadCount(data?.total_unread_messages);
+      if (data) {
+        const lastMessage = data?.last_message;
+        const text = lastMessage?.message
+          ? lastMessage.message
+          : lastMessage?.type === "audio"
+            ? "Send a voice message"
+            : lastMessage?.type === "file" || lastMessage?.type === "vedio"
+              ? "Send a file"
+              : "You have a new message";
+        setNewMessagePopup({
+          key: Date.now(),
+          sender: data?.user?.name || "New message",
+          image: data?.user?.profile_image_url || emptyImage,
+          text,
+        });
+        if (popupTimerRef.current) clearTimeout(popupTimerRef.current);
+        popupTimerRef.current = setTimeout(() => {
+          setNewMessagePopup(null);
+          popupTimerRef.current = null;
+        }, 4000);
+        dispatch(baseApiSlice.util.invalidateTags(["conversationList"]));
+      }
+    };
+
+    channel.listen(".ConversationUpdated", handleMessageSent);
+
+    return () => {
+      channel.stopListening(".ConversationUpdated", handleMessageSent);
+      if (popupTimerRef.current) clearTimeout(popupTimerRef.current);
+    };
+  }, [dispatch, userProfileData?.user?.id]);
   const handleLogout = async () => {
     // Clear the access token cookie
     try {
@@ -71,8 +124,40 @@ function UserHeaderInfo() {
           </Link>
           <Link
             href={`/mu/message`}
-            className="flex justify-center items-center"
+            className="flex justify-center relative items-center"
           >
+            {newMessagePopup && (
+              <div
+                key={newMessagePopup.key}
+                className="animate-pop-in absolute top-full right-0 mt-2 z-50 w-60 rounded-lg bg-white shadow-lg border border-gray-100 p-3 cursor-pointer"
+              >
+                <div className="flex items-start gap-2">
+                  <div className="w-10 h-10 overflow-hidden rounded-sm">
+                    <Image
+                      src={newMessagePopup?.image}
+                      width={40}
+                      height={40}
+                      className="rounded-sm w-full border border-primaryColor h-full object-center object-cover"
+                      alt=""
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-headerColor truncate">
+                      {newMessagePopup.sender}{" "}
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-600"></span>
+                    </p>
+                    <p className="text-xs text-gray-500 line-clamp-2 mt-0.5 wrap-break-words">
+                      {newMessagePopup.text}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
             <MessageIcon className="text-grayColor1" />
           </Link>
 
