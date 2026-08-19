@@ -1,6 +1,9 @@
 "use client";
 
+import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { Calendar, RotateCw, UserPlus, Megaphone, CreditCard, User, FileText } from "lucide-react";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 const activities = [
     {
@@ -36,6 +39,8 @@ const activities = [
 ];
 
 export default function RecentlyActivity() {
+    const [date, setDate] = useState<DateRange | undefined>(undefined);
+
     return (
         <div className="w-full bg-white rounded-xl border border-gray-200 ">
             {/* Header */}
@@ -47,8 +52,13 @@ export default function RecentlyActivity() {
                 <div className="flex items-center gap-2">
                     {/* Date Range */}
                     <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 bg-white">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                        <span>Jun 25 - Jul 04, 2026</span>
+
+                        <DateRangePicker
+                            date={date}
+                            setDate={setDate}
+                            placeholder="Select date range"
+                            className="w-auto h-auto px-0 py-0 border-none bg-transparent text-sm font-normal text-gray-600"
+                        />
                     </div>
 
                     {/* Refresh Button */}

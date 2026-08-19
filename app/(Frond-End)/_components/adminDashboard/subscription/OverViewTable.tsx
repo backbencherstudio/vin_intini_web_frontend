@@ -14,15 +14,18 @@ import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleD
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
+import EditOverModal from "./EditOverModal";
 
 type Job = {
     id: number;
     img: string;
-    name: string;
-    subscription: string;
+    Subscribers: string;
+    plan: string;
+    billingCycle: string;
+    nextBilling: string;
+    amount: string;
     email: string;
-    profession: string;
-    connections: string;
+    stayday: string;
     status: string;
     joined: string;
 };
@@ -31,66 +34,78 @@ const initialJobs: Job[] = [
     {
         id: 1,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Premium",
+        billingCycle: "Yearly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "In 45 days",
         status: "Active",
         joined: "2024-01-15",
     },
     {
         id: 2,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Basic",
+        billingCycle: "Monthly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "In 45 days",
         status: "Active",
         joined: "2024-01-15",
     },
     {
         id: 3,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Premium",
+        billingCycle: "Monthly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "Expired",
         status: "Suspended",
         joined: "2024-01-15",
     },
     {
         id: 4,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Pro industry",
+        billingCycle: "Monthly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "In 45 days",
         status: "Suspended",
         joined: "2024-01-15",
     },
     {
         id: 5,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Premium",
+        billingCycle: "Monthly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "5 days Over",
         status: "Active",
         joined: "2024-01-15",
     },
     {
         id: 6,
         img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Premium",
+        Subscribers: "Clinical Psychologist",
+        plan: "Premium",
+        billingCycle: "Monthly",
+        nextBilling: "2024-01-15",
+        amount: "$100",
         email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
+        stayday: "In 45 days",
         status: "Active",
         joined: "2024-01-15",
     },
@@ -139,54 +154,30 @@ export default function OverViewTable() {
             ),
         },
         {
-            header: "Full Name",
-            accessor: "name",
+            header: "Subscribers",
+            accessor: "Subscribers",
             cell: (row) => (
-                <span className="flex items-center gap-2 font-medium text-gray-900">
+                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.img && (
                         <Image
                             src={row.img}
-                            alt={row.name}
+                            alt={row.Subscribers}
                             width={24}
                             height={24}
                             className="rounded-full"
                         />
                     )}
-                    {row.name}
+                    {row.Subscribers}
                 </span>
             ),
         },
         {
-            header: "Subscriptions",
-            accessor: "subscription",
+            header: "Plan",
+            accessor: "plan",
             cell: (row) => (
-                <CustomBadge color="orange" className="font-medium">
-                    {row.subscription}
+                <CustomBadge color={row.plan === "Premium" ? "orange" : row.plan === "Basic" ? "purple" : row.plan === "Pro industry" ? "green" : "gray"} className="font-medium">
+                    {row.plan}
                 </CustomBadge>
-            ),
-        },
-        {
-            header: "Email",
-            cell: (row) => (
-                <span className="text-[14px] font-normal text-[#0A0A0A]">
-                    {row.email}
-                </span>
-            ),
-        },
-        {
-            header: "Profession",
-            cell: (row) => (
-                <span className="text-[14px] font-normal text-[#0A0A0A]">
-                    {row.profession}
-                </span>
-            ),
-        },
-        {
-            header: "Connections",
-            cell: (row) => (
-                <span className="text-[14px] font-normal text-[#0A0A0A]">
-                    {row.connections}
-                </span>
             ),
         },
         {
@@ -199,6 +190,38 @@ export default function OverViewTable() {
                 )
             ),
         },
+        {
+            header: "Billing Cycle",
+            cell: (row) => (
+                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    {row.billingCycle}
+                </span>
+            ),
+        },
+
+        {
+            header: "Next Billing",
+            cell: (row) => (
+                <div className="flex flex-col gap-2">
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                        {row.nextBilling}
+                    </span>
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                        {row.stayday}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            header: "Amount",
+            cell: (row) => (
+                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    {row.amount} <span className="text-[#0A0A0A80]"> /year</span>
+                </span>
+            ),
+        },
+
+
         {
             header: "Joined",
             cell: (row) => (
@@ -300,7 +323,6 @@ export default function OverViewTable() {
                     columns={columns}
                     data={jobs}
                     defaultPageSize={10}
-                    onView={openView}
                     onEdit={openEdit}
                     onDelete={openDelete}
                 />
@@ -321,13 +343,20 @@ export default function OverViewTable() {
                 <CustomModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
+                    title="OverView"
                     size="lg"
                 >
-                    {selectedJob && (
+                    {/* {selectedJob && (
                         <div className="p-6">
-                            Edit content here for {selectedJob.name}
+                            Edit content here for {selectedJob.Subscribers}
                         </div>
-                    )}
+                    )} */}
+
+                    <EditOverModal
+
+                        data={selectedJob}
+                        onClose={() => setEditOpen(false)}
+                    />
                 </CustomModal>
 
                 {/* Delete Job */}

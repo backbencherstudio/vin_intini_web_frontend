@@ -73,7 +73,7 @@ export default function DataTable<T extends { id: string | number }>({
             <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
                 <table className="w-full text-left">
                     <thead>
-                        <tr className="bg-gray-50 border-b border-gray-200">
+                        <tr className="bg-[#F8F8F8] border-b border-gray-200">
                             {columns.map((col, i) => (
                                 <th
                                     key={i}
