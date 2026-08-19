@@ -19,7 +19,7 @@ function ProfileExpreance({ userId }: { userId?: string }) {
 
 
   return (
-    <section className=" pb-4">
+    <section className=" pb-4 mt-6 lg:mt-8">
       <div className="mb-3 lg:mb-6 flex items-center justify-between">
         <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
           Experience
