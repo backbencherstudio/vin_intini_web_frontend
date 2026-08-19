@@ -75,6 +75,7 @@
     "@types/pusher-js": "^5.1.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
+    "@types/react-is": "^19",
     "@types/redux-persist": "^4.3.1",
     "tailwindcss": "^4.0.9",
     "tw-animate-css": "^1.2.8",

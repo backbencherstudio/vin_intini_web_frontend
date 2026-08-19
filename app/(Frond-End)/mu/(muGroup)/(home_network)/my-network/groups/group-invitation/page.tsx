@@ -1,5 +1,6 @@
 import GroupInvitetionAllList from "@/app/(Frond-End)/_components/mainPage/group/GroupInvitetionAllList";
 import { fetchWrapper } from "@/src/utils/fetchWrapper";
+export const dynamic = "force-dynamic";
 const limit = 9;
 async function page() {
   let initialData = { data: [] } as any;
