@@ -21,8 +21,9 @@ function ProfileLockDesign() {
 
         {/* Descriptive Text */}
         <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-6">
-          Only connections and approved followers can see full profile details,
-          posts, experience, and educational background.
+          The profile owner has locked their profile to protect their privacy.
+          Profile information is therefore restricted and cannot be viewed
+          publicly.
         </p>
       </div>
     </div>
