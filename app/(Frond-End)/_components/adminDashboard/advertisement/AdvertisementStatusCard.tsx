@@ -1,43 +1,64 @@
+"use client"
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { IoIosTrendingDown, IoIosTrendingUp } from "react-icons/io";
 import { IoArrowForward } from "react-icons/io5";
+import { DateRange } from "react-day-picker";
+import { useState } from "react";
+import { ArrowDownToLine } from "lucide-react";
 
-export default function TransactionStatusCard() {
+export default function AdvertisementStatusCard() {
+    const [date, setDate] = useState<DateRange | undefined>(undefined);
     const CardData = [
         {
-            title: "Total Transactions",
-            value: "12,846",
+            title: "Total Advertisements",
+            value: "427",
             icon: IoIosTrendingUp,
             percentage: "59.2%",
         },
         {
-            title: "Total Revenue",
-            value: "$485 932.50",
+            title: "Active Advertisements",
+            value: "323",
             icon: IoIosTrendingUp,
             percentage: "59.2%",
         },
         {
-            title: "Successful Payments",
-            value: "17,856",
+            title: "Pending Approval",
+            value: "35",
             icon: IoIosTrendingUp,
             percentage: "2.8%",
         },
         {
-            title: "Refunded Amount",
-            value: "$12,450.00",
+            title: "Total Ad Revenue",
+            value: "24,580",
             icon: IoIosTrendingDown,
             percentage: "12.2%",
         },
-        {
-            title: "Failed Payments",
-            value: "400",
-            icon: IoIosTrendingUp,
-            percentage: "9.2%",
-        },
+
+
     ];
 
     return (
         <div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
+
+            <div className="flex flex-col justify-between gap-4 lg:flex-row" >
+                <div>
+                    <CustomTitleDescription
+                        title="Advertise Management Dashboard"
+                        description="Welcome back, Vin! Here's what's happening on Mind Unite today."
+                    />
+                </div>
+                <div className="flex gap-2.5">
+                    <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <ArrowDownToLine className="h-4 w-4" />
+                        Export
+                    </button>
+                    <div>
+                        <DateRangePicker date={date} setDate={setDate} placeholder='Select date range' className='h-8 to w-full' />
+                    </div>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-4">
                 {CardData.map((item, index) => {
                     const Icon = item.icon;
 
