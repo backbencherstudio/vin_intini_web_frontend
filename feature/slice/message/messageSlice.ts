@@ -14,7 +14,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/with/${userId}`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     getConversationMessages: builder.query({
       query: (conversationId) => ({
@@ -78,7 +78,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${conversationId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     deleteMessage: builder.mutation({
       query: (messageId) => ({

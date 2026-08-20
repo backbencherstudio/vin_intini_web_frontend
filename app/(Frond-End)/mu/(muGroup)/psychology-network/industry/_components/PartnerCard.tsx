@@ -31,7 +31,7 @@ export const PartnerCard = ({
       }`}
     >
       <div className="flex gap-2 h-auto">
-        <div className="bg-bgColor w-8 h-8 flex justify-center items-center  rounded-sm">
+        <div className="bg-bgColor  w-8 h-8 flex justify-center items-center  rounded-sm">
           <Image
             src={partner?.partner_logo}
             alt={partner?.partner_name}
@@ -40,7 +40,7 @@ export const PartnerCard = ({
             className="w-6 h-6 "
           />
         </div>
-        <div>
+        <div className="flex-1">
           <div className="flex w-full items-center justify-between ">
             <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
               {partner.partner_name}
