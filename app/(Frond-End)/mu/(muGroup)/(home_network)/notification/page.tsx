@@ -81,7 +81,7 @@ function NotificationPage() {
 
               <div className="">
                 <Link
-                  href={`/mu/profile/${item?.data?.sender_username || item?.data?.acceptor_username}`}
+                  href={`/mu/profile/${item?.data?.sender_username || item?.data?.inviter_username}`}
                 >
                   {" "}
                   <span className="font-bold">
