@@ -15,6 +15,7 @@ import {
   useMarkUnReadMessageMutation,
   useUnarchiveMessageMutation,
 } from "@/feature/slice/message/messageSlice";
+import baseApiSlice from "@/feature/slice/baseApi";
 import { truncateText } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { VerifyBadgeIcon } from "@/public/svgIcons/Icons";
@@ -28,7 +29,10 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { IoMdDoneAll } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/feature/store";
 function MessageUserSection() {
+  const dispatch = useDispatch() as AppDispatch;
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
@@ -56,10 +60,10 @@ function MessageUserSection() {
       id: 3,
       name: "unread",
     },
-    {
-      id: 2,
-      name: "recruiter",
-    },
+    // {
+    //   id: 2,
+    //   name: "recruiter",
+    // },
     {
       id: 4,
       name: "archived",
@@ -70,6 +74,25 @@ function MessageUserSection() {
     router.push(`/mu/message/${messageId}`);
     try {
       await markReadMessage(messageId).unwrap();
+      const api = baseApiSlice as any;
+      const tabs = ["all", "unread", "archived"];
+      tabs.forEach((tab) => {
+        dispatch(
+          api.util.updateQueryData(
+            "getConversationList",
+            tab,
+            (draft: any) => {
+              if (!draft?.data) return;
+              const idx = draft.data.findIndex(
+                (conv: any) => conv.id === messageId,
+              );
+              if (idx !== -1) {
+                draft.data[idx].unread_count = 0;
+              }
+            },
+          ),
+        );
+      });
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
@@ -119,7 +142,7 @@ function MessageUserSection() {
           />
         </div>
 
-        <div className="flex  gap-2 overflow-x-auto mb-3 justify-between  text-base font-medium text-blackColor">
+        <div className="flex  gap-2 overflow-x-auto mb-3   text-base font-medium text-blackColor">
           {messageType.map((item) => (
             <button
               onClick={() => setTab(item.name)}

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
-  console.log(conversationList, "conversationList");
+
 
   return (
     <div>
