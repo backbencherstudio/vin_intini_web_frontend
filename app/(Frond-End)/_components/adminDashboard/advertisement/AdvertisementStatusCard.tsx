@@ -5,7 +5,7 @@ import { IoIosTrendingDown, IoIosTrendingUp } from "react-icons/io";
 import { IoArrowForward } from "react-icons/io5";
 import { DateRange } from "react-day-picker";
 import { useState } from "react";
-import { ArrowDownToLine } from "lucide-react";
+import { ArrowDownToLine, Plus } from "lucide-react";
 
 export default function AdvertisementStatusCard() {
     const [date, setDate] = useState<DateRange | undefined>(undefined);
@@ -41,7 +41,7 @@ export default function AdvertisementStatusCard() {
     return (
         <div>
 
-            <div className="flex flex-col justify-between gap-4 lg:flex-row" >
+            <div className="flex flex-col justify-between gap-4 lg:flex-row " >
                 <div>
                     <CustomTitleDescription
                         title="Advertise Management Dashboard"
@@ -49,13 +49,15 @@ export default function AdvertisementStatusCard() {
                     />
                 </div>
                 <div className="flex gap-2.5">
-                    <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                    
+                    <button className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                         <ArrowDownToLine className="h-4 w-4" />
                         Export
                     </button>
-                    <div>
-                        <DateRangePicker date={date} setDate={setDate} placeholder='Select date range' className='h-8 to w-full' />
+                    <div className="h-10 w-full">
+                        <DateRangePicker date={date} setDate={setDate} placeholder='Select date range' className='h-10 w-full cursor-pointer' />
                     </div>
+
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-4">
