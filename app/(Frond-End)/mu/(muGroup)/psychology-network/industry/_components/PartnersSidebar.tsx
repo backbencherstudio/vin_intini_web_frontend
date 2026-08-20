@@ -2,7 +2,11 @@
 
 "use client";
 
-import { useGetBiotechnologyPartnersQuery, useGetPsychologyOnePartnersQuery, useGetPublicationsOnePartnersQuery } from "@/feature/slice/biotechnologySlice";
+import {
+  useGetBiotechnologyPartnersQuery,
+  useGetPsychologyOnePartnersQuery,
+  useGetPublicationsOnePartnersQuery,
+} from "@/feature/slice/biotechnologySlice";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PaginationDots } from "./PaginationDots";
@@ -12,10 +16,14 @@ export const PartnersSidebar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const pathname = usePathname();
 
-
-  const { data } = pathname === `/mu/psychology-network/industry/biotechnology` ? useGetBiotechnologyPartnersQuery("biotechnology") : 
-  pathname === `/mu/psychology-network/industry/psychopharmacology` ?   useGetPsychologyOnePartnersQuery("psychopharmacology") : pathname === `/mu/psychology-network/industry/publications` ? useGetPublicationsOnePartnersQuery("publications") : useGetBiotechnologyPartnersQuery("biotechnology");
-
+  const { data } =
+    pathname === `/mu/psychology-network/industry/biotechnology`
+      ? useGetBiotechnologyPartnersQuery("biotechnology")
+      : pathname === `/mu/psychology-network/industry/psychopharmacology`
+        ? useGetPsychologyOnePartnersQuery("psychopharmacology")
+        : pathname === `/mu/psychology-network/industry/publications`
+          ? useGetPublicationsOnePartnersQuery("publications")
+          : useGetBiotechnologyPartnersQuery("biotechnology");
 
   const navItems = [
     {
@@ -43,7 +51,7 @@ export const PartnersSidebar = () => {
   };
 
   return (
-    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-[#F8FAFB] p-5  rounded-lg border border-[#ECEFF3]">
+    <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-bgLightColor p-4  rounded-lg border border-[#ECEFF3]">
       {/* Header */}
       <div className="flex w-full flex-col items-start gap-2 ">
         <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">

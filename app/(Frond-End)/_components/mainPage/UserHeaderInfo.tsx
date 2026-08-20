@@ -54,15 +54,21 @@ function UserHeaderInfo() {
   const router = useRouter();
   const { data: notificationCountData } =
     useGetNotificationCountQuery("notificationCount");
+
   useEffect(() => {
-    setUnreadCount(unreadMessagesCountData?.data?.total_unread_messages);
+    if (unreadMessagesCountData?.data?.total_unread_messages !== undefined) {
+      setUnreadCount(unreadMessagesCountData?.data?.total_unread_messages);
+    }
+  }, [unreadMessagesCountData]);
+
+  useEffect(() => {
     if (!echo || !userProfileData?.user?.id) return;
     const channelName = `App.Models.User.${userProfileData?.user?.id}`;
     const channel = echo.private(channelName);
 
     const handleMessageSent = async (data: any) => {
       setUnreadCount(data?.total_unread_messages);
-      if (data) {
+      if (data?.user && data?.last_message) {
         const lastMessage = data?.last_message;
         const text = lastMessage?.message
           ? lastMessage.message
@@ -153,7 +159,8 @@ function UserHeaderInfo() {
                 </div>
               </div>
             )}
-            {unreadCount > 0 && (
+            {unreadMessagesCountData?.data?.total_unread_messages === 0 ||
+            unreadCount === 0 ? null : (
               <span className="absolute -top-2 -right-2 flex justify-center items-center text-[0.625rem] w-4 h-4 text-whiteColor rounded-full bg-redColor">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
