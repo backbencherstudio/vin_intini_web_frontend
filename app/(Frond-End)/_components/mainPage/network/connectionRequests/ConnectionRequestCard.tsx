@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
 function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
+
   return (
     <div>
       <article className="flex flex-col md:flex-row lg:gap-6 xl:gap-8 items-start justify-between gap-3 border-b border-borderColor py-3">
@@ -26,7 +27,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
 
           <div className="flex-1">
             <Link
-              href={`/mu/profile/${item?.user?.id}`}
+              href={`/mu/profile/${item?.user?.username}`}
               className=" text-[18px] text-headerColor font-semibold"
             >
               {item?.user?.name}

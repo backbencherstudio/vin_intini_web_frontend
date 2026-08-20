@@ -41,8 +41,6 @@ function NotificationPage() {
     return <NotificationSkeleton />;
   }
 
-
-
   return (
     <section className="w-full bg-white px-3 pb-12 pt-4 md:px-4">
       <h1 className="text-lg font-semibold leading-tight text-headerColor">
@@ -62,7 +60,7 @@ function NotificationPage() {
             <div className="flex  items-center gap-3 md:gap-4">
               <div className="h-10 w-10 shrink-0 rounded-full ">
                 {item?.data?.sender_profile_image_url ||
-                  item?.data?.acceptor_profile_image_url ? (
+                item?.data?.acceptor_profile_image_url ? (
                   <Image
                     src={
                       item?.data?.sender_profile_image_url ||
@@ -83,7 +81,7 @@ function NotificationPage() {
 
               <div className="">
                 <Link
-                  href={`/mu/profile/${item?.data?.sender_id || item?.data?.acceptor_id}`}
+                  href={`/mu/profile/${item?.data?.sender_username || item?.data?.inviter_username}`}
                 >
                   {" "}
                   <span className="font-bold">

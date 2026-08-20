@@ -33,6 +33,7 @@ export interface UserProfileType {
   profile_image: string | null;
   profile_image_url: string | null;
   cover_image: string | null;
+  username: string;
   user: any;
   cover_image_url: string | null;
 }
