@@ -5,7 +5,7 @@ import { RotateCw, ArrowUp } from 'lucide-react';
 
 export default function UserGrowthCard({ data = defaultData, onRefresh = () => { } }) {
     return (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full  ">
+        <div className="bg-white rounded-2xl p-6  border  w-full  ">
             {/* Header */}
             <div className="flex justify-between items-start mb-2">
                 <div>
