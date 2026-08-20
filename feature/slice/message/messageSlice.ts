@@ -14,7 +14,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/with/${userId}`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     getConversationMessages: builder.query({
       query: (conversationId) => ({
@@ -28,6 +28,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/unread-count`,
         method: "GET",
       }),
+      providesTags: ["conversationList"],
     }),
 
     markReadMessage: builder.mutation({
@@ -35,7 +36,6 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/mark-read`,
         method: "POST",
       }),
-      invalidatesTags: ["conversationList"],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -78,7 +78,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${conversationId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     deleteMessage: builder.mutation({
       query: (messageId) => ({
