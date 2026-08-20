@@ -16,6 +16,7 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
 import AdvertisementViewDetails from "./AdvertisementViewDetails";
+import AdvertisementEditForm from "./EditAdvertiseData";
 
 type Job = {
     id: number;
@@ -266,7 +267,7 @@ export default function AdvertisementTable() {
                 </div> */}
 
                 {/* Actions */}
-                <div className="mb-6 flex w-full justify-end">
+                <div className="mb-4 flex w-full justify-end">
                     <div className="flex w-full flex-col items-start gap-4 lg:w-auto lg:flex-row lg:items-center">
 
                         {/* Export */}
@@ -367,17 +368,18 @@ export default function AdvertisementTable() {
                 <CustomModal
                     open={editOpen}
                     onOpenChange={setEditOpen}
-                    title="OverView"
-                    size="lg"
+                    title="Edit Advertisement"
+                    size="sm"
                 >
-                    {/* {selectedJob && (
-                        <div className="p-6">
-                            Edit content here for {selectedJob.Subscribers}
-                        </div>
-                    )} */}
-                    <div>
+                    <AdvertisementEditForm
+                        job={selectedJob}
+                        onCancel={() => setEditOpen(false)}
+                        onUpdate={() => {
 
-                    </div>
+                            console.log("Updated");
+                            setEditOpen(false);
+                        }}
+                    />
                 </CustomModal>
 
                 {/* Delete Job */}
