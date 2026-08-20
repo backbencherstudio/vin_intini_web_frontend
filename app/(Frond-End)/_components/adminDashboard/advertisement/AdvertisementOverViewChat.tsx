@@ -11,7 +11,7 @@ export default function AdPerformanceOverview({
     onRefresh = () => { },
 }) {
     return (
-        <div className="bg-white rounded-2xl p-6  border border-[#E5E5E5] w-full h-full">
+        <div className="bg-white rounded-2xl p-3  border border-[#E5E5E5] w-full h-full">
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-[#000] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">

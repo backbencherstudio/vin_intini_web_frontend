@@ -7,7 +7,7 @@ const COLORS = ['#00A8B5', '#00B8D9', '#FF9F0A']; // Teal, Cyan, Orange
 
 export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
     return (
-        <div className="bg-white rounded-2xl p-6  border  w-full h-full ">
+        <div className="bg-white rounded-2xl p-3  border  w-full h-full ">
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">Total Revenue</h3>
