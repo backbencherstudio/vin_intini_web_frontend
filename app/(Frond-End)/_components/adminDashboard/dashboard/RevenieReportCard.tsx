@@ -9,7 +9,7 @@ export default function RevenueReportCard({ data = defaultData, onRefresh = () =
 
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     return (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full  ">
+        <div className="bg-white rounded-2xl p-3 border  w-full  ">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">Revenue Report</h3>
