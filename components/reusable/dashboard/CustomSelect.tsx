@@ -62,7 +62,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     return (
         <div className="relative w-full" ref={containerRef}>
             {label && (
-                <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">
+                <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
                     {label}
                     {required && <span className="ml-0.5">*</span>}
                 </label>

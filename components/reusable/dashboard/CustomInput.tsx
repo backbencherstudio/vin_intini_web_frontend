@@ -29,7 +29,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                 {label && (
                     <label
                         htmlFor={inputId}
-                        className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px]"
+                        className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]"
                     >
                         {label}
                         {required && <span className=" ml-0.5">*</span>}

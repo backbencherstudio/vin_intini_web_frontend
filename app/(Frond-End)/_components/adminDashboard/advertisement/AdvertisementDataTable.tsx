@@ -9,14 +9,15 @@ import advertise from "@/public/images/admin/advertise1.png";
 
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowDownToLine, ArrowUpDown, Download, SearchIcon } from "lucide-react";
+import { ArrowDownToLine, ArrowUpDown, Download, Plus, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
 import AdvertisementViewDetails from "./AdvertisementViewDetails";
-import AdvertisementEditForm from "./EditAdvertiseData";
+import EditvertisementEditForm from "./EditAdvertiseData";
+import AdvertisementEditForm from "./AddAdvertisement";
 
 type Job = {
     id: number;
@@ -131,6 +132,7 @@ export default function AdvertisementTable() {
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [sort, setSort] = useState("default");
+    const [addOpen, setAddOpen] = useState(false);
 
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -274,7 +276,7 @@ export default function AdvertisementTable() {
 
 
                         {/* Search */}
-                        <div className="relative w-full ">
+                        <div className="relative w-full w-auto">
                             <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
                             <input
@@ -333,6 +335,14 @@ export default function AdvertisementTable() {
                             ]}
                         />
                         <DateRangePicker className=" h-[38px]" date={date} setDate={setDate} placeholder='Select date range' />
+                        <button onClick={()=>{  
+                            setAddOpen(true);
+                            setSelectedJob(null);
+
+                        }} className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto whitespace-nowrap">
+                            <Plus className="h-4 w-4" />
+                            Add Item
+                        </button>
 
                         <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
                             <ArrowDownToLine className="h-4 w-4" />
@@ -371,7 +381,7 @@ export default function AdvertisementTable() {
                     title="Edit Advertisement"
                     size="sm"
                 >
-                    <AdvertisementEditForm
+                    <EditvertisementEditForm
                         job={selectedJob}
                         onCancel={() => setEditOpen(false)}
                         onUpdate={() => {
@@ -390,6 +400,23 @@ export default function AdvertisementTable() {
                     title="Do you want to delete this user?"
                     description="Click “Delete Now” if you want to delete otherwise press cancel."
                 />
+
+
+              <CustomModal
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        title="Add Advertisement"
+        size="lg"
+      >
+        <AdvertisementEditForm
+          job={null}
+          onCancel={() => setAddOpen(false)}
+          onUpdate={() => {
+            console.log("Created new advertisement");
+            setAddOpen(false);
+          }}
+        />
+      </CustomModal>
             </div>
         </div>
     );
