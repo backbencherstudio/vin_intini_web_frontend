@@ -70,11 +70,10 @@ export default function EditvertisementEditForm({
 
                     {/* Categories */}
                     <div>
-                        <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                            Categories
-                        </label>
+
                         <CustomSelect
                             className="h-11 w-full"
+                            label="Categories"
                             value={category}
                             onChange={(value: string) => setCategory(value)}
                             options={[
@@ -88,11 +87,10 @@ export default function EditvertisementEditForm({
 
                     {/* Advertiser */}
                     <div>
-                        <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                            Advertiser
-                        </label>
+
                         <CustomSelect
                             className="h-11 w-full"
+                            label="Advertiser"
                             value={advertiser}
                             onChange={(value: string) => setAdvertiser(value)}
                             options={[
@@ -105,11 +103,10 @@ export default function EditvertisementEditForm({
 
                     {/* Status */}
                     <div>
-                        <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                            Status
-                        </label>
+                        
                         <CustomSelect
                             className="h-11 w-full"
+                            label="Status"
                             value={status}
                             onChange={(value: string) => setStatus(value)}
                             options={[
@@ -124,11 +121,10 @@ export default function EditvertisementEditForm({
             {/* Starting Date & Ending Date */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                        Starting Date
-                    </label>
+                 
                     <DateRangePicker
                         className="h-10 w-full"
+                        label="Starting Date"
                         date={date}
                         setDate={setDate}
                         placeholder="29 July, 2026 "
@@ -136,12 +132,10 @@ export default function EditvertisementEditForm({
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                        Ending Date
-                    </label>
+                
                     <DateRangePicker
                         className="h-10 w-full"
-
+label="Ending Date"
                         date={date}
                         setDate={setDate}
                         placeholder="29 Aug, 2026 "
