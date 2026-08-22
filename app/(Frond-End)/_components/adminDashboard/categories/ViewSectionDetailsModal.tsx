@@ -2,20 +2,22 @@
 
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import { Pencil, X } from "lucide-react";
-import type { PsychologySection } from "./PsychologySectionCard";
+import type { CategorySection } from "./CategorySectionCard";
 
 interface ViewSectionDetailsModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    section: PsychologySection | null;
+    section: CategorySection | null;
     onEditTab?: (tabName: string) => void;
     onDeleteTab?: (tabName: string) => void;
 }
 
-const badgeStyles: Record<PsychologySection["category"], string> = {
+const badgeStyles: Record<string, string> = {
     biotechnology: "bg-[#DDF7F5] text-[#19A7A8]",
     psychotropics: "bg-[#FFF0E7] text-[#FF8A3D]",
 };
+
+const fallbackBadge = "bg-gray-100 text-gray-600";
 
 export default function ViewSectionDetailsModal({
     open,
@@ -37,7 +39,7 @@ export default function ViewSectionDetailsModal({
             <div className="flex w-full flex-col gap-5 border-t border-[#E0E0E0] pt-4">
                 <div>
                     <span
-                        className={`inline-flex rounded px-3 py-1 text-xs font-medium ${badgeStyles[section.category]}`}
+                        className={`inline-flex rounded px-3 py-1 text-xs font-medium ${badgeStyles[section.category] ?? fallbackBadge}`}
                     >
                         {section.categoryLabel}
                     </span>

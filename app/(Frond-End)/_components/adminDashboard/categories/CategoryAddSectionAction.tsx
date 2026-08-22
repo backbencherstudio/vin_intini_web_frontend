@@ -5,7 +5,13 @@ import { PlusIcon } from "lucide-react";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import CreateSectionModal from "./CreateSectionModal";
 
-export default function PsychologyAddSectionAction() {
+interface CategoryAddSectionActionProps {
+    industryOptions?: { label: string; value: string }[];
+}
+
+export default function CategoryAddSectionAction({
+    industryOptions,
+}: CategoryAddSectionActionProps) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -15,7 +21,11 @@ export default function PsychologyAddSectionAction() {
                 Add New Section
             </CustomButton>
 
-            <CreateSectionModal open={open} onOpenChange={setOpen} />
+            <CreateSectionModal
+                open={open}
+                onOpenChange={setOpen}
+                industryOptions={industryOptions}
+            />
         </>
     );
 }

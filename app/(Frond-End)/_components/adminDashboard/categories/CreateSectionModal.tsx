@@ -6,7 +6,7 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 
-const industryOptions = [
+const defaultIndustryOptions = [
     { label: "Biotechnologies", value: "biotechnology" },
     { label: "Psychotropics", value: "psychotropics" },
 ];
@@ -14,19 +14,20 @@ const industryOptions = [
 interface CreateSectionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    industryOptions?: { label: string; value: string }[];
     onSubmit?: (data: { industryType: string; sectionHeading: string }) => void;
 }
-
-const emptyForm = {
-    industryType: "biotechnology" as string | number,
-    sectionHeading: "",
-};
 
 export default function CreateSectionModal({
     open,
     onOpenChange,
+    industryOptions = defaultIndustryOptions,
     onSubmit,
 }: CreateSectionModalProps) {
+    const emptyForm = {
+        industryType: industryOptions[0]?.value ?? "",
+        sectionHeading: "",
+    };
     const [form, setForm] = useState(emptyForm);
     const [errors, setErrors] = useState<{
         industryType?: string;
@@ -80,7 +81,7 @@ export default function CreateSectionModal({
                         options={industryOptions}
                         value={form.industryType}
                         onChange={(value) => {
-                            setForm((prev) => ({ ...prev, industryType: value }));
+                            setForm((prev) => ({ ...prev, industryType: String(value) }));
                             setErrors((prev) => ({ ...prev, industryType: undefined }));
                         }}
                         placeholder="Select industry type"

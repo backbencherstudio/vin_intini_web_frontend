@@ -6,20 +6,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
-import type { PsychologySection } from "./PsychologySectionCard";
+import { EllipsisVertical, Trash2 } from "lucide-react";
 
-interface PsychologySectionActionsProps {
-    section: PsychologySection;
-    onEdit?: (section: PsychologySection) => void;
-    onDelete?: (section: PsychologySection) => void;
+import { CategorySection } from "./CategorySectionCard";
+
+interface CategorySectionActionsProps {
+    section:  CategorySection;
+    onEdit?: (section: CategorySection) => void;
+    onDelete?: (section: CategorySection) => void;
 }
 
-export default function PsychologySectionActions({
+export default function CategorySectionActions({
     section,
     onEdit,
     onDelete,
-}: PsychologySectionActionsProps) {
+}: CategorySectionActionsProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

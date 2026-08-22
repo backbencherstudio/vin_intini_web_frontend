@@ -1,7 +1,14 @@
-import React from 'react'
+import NeuroscienceStructurePage from '@/app/(Frond-End)/_components/adminDashboard/categories/neuroscience/NeuroscienceStructurePage'
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
+interface NeurosciencePageProps {
+  searchParams: Promise<{
+    tab?: string | string[];
+  }>;
+}
+
+export default async function Page({ searchParams }: NeurosciencePageProps) {
+  const { tab } = await searchParams;
+  const activeTab = Array.isArray(tab) ? tab[0] : tab;
+
+  return <NeuroscienceStructurePage activeTab={activeTab} />;
 }

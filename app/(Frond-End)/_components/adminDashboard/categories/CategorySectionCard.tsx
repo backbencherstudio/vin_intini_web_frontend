@@ -2,33 +2,35 @@
 
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import { Pencil, X } from "lucide-react";
-import PsychologySectionActions from "./PsychologySectionActions";
+import CategorySectionActions from "./CategorySectionActions";
 
-export interface PsychologySection {
+export interface CategorySection {
     id: string;
-    category: "biotechnology" | "psychotropics";
+    category: string;
     categoryLabel: string;
     title: string;
     subsections: string[];
     hasMore?: boolean;
 }
 
-interface PsychologySectionCardProps {
-    section: PsychologySection;
-    onEdit?: (section: PsychologySection) => void;
-    onDelete?: (section: PsychologySection) => void;
-    onCreateTab?: (section: PsychologySection) => void;
-    onSeeMore?: (section: PsychologySection) => void;
-    onEditTab?: (section: PsychologySection, tabName: string) => void;
-    onDeleteTab?: (section: PsychologySection, tabName: string) => void;
+interface CategorySectionCardProps {
+    section: CategorySection;
+    onEdit?: (section: CategorySection) => void;
+    onDelete?: (section: CategorySection) => void;
+    onCreateTab?: (section: CategorySection) => void;
+    onSeeMore?: (section: CategorySection) => void;
+    onEditTab?: (section: CategorySection, tabName: string) => void;
+    onDeleteTab?: (section: CategorySection, tabName: string) => void;
 }
 
-const badgeStyles: Record<PsychologySection["category"], string> = {
+const badgeStyles: Record<string, string> = {
     biotechnology: "bg-[#DDF7F5] text-[#19A7A8]",
     psychotropics: "bg-[#FFF0E7] text-[#FF8A3D]",
 };
 
-export default function PsychologySectionCard({
+const fallbackBadge = "bg-gray-100 text-gray-600";
+
+export default function CategorySectionCard({
     section,
     onEdit,
     onDelete,
@@ -36,13 +38,13 @@ export default function PsychologySectionCard({
     onSeeMore,
     onEditTab,
     onDeleteTab,
-}: PsychologySectionCardProps) {
+}: CategorySectionCardProps) {
     return (
         <article className="flex min-h-85 flex-col rounded-2xl border border-[#E0E0E0] bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <span
-                        className={`inline-flex rounded px-3 py-1 text-xs font-medium ${badgeStyles[section.category]}`}
+                        className={`inline-flex rounded px-3 py-1 text-xs font-medium ${badgeStyles[section.category] ?? fallbackBadge}`}
                     >
                         {section.categoryLabel}
                     </span>
@@ -51,7 +53,7 @@ export default function PsychologySectionCard({
                     </h3>
                 </div>
 
-                <PsychologySectionActions
+                <CategorySectionActions
                     section={section}
                     onEdit={onEdit}
                     onDelete={onDelete}

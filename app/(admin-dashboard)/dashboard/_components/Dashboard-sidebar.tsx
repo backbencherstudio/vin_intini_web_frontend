@@ -179,7 +179,7 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "neuroscience",
         name: "Neuroscience",
-        href: "/dashboard/categories",
+        href: "/dashboard/categories/neuroscience",
         icon: NeuroscienceIcon,
       },
     ],

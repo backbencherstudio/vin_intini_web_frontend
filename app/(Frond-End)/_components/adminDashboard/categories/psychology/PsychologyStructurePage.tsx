@@ -1,14 +1,14 @@
 import CustomTitleDescription from '@/components/reusable/dashboard/CustomTitleDes'
 import FilterTabs from '@/components/reusable/dashboard/FilterTabs';
-import { PsychologySection } from './PsychologySectionCard';
-import PsychologyAddSectionAction from './PsychologyAddSectionAction';
-import PsychologySectionList from './PsychologySectionList';
+import { CategorySection } from '../CategorySectionCard';
+import CategoryAddSectionAction from '../CategoryAddSectionAction';
+import CategorySectionList from '../CategorySectionList';
 
 interface PsychologyStructurePageProps {
     activeTab?: string;
 }
 
-const sections: PsychologySection[] = [
+const sections: CategorySection[] = [
     {
         id: "experimental-tools",
         category: "biotechnology",
@@ -48,31 +48,32 @@ const sections: PsychologySection[] = [
 export default function PsychologyStructurePage({
     activeTab = "all",
 }: PsychologyStructurePageProps) {
-
     const tabs = [
         { id: "all", label: "All" },
         { id: "biotechnology", label: "Biotechnology" },
         { id: "psychotropics", label: "Psychotropics" },
     ];
-    
+
     return (
         <>
-
-            <div className=' pb-4 border-b border-[#E0E0E0]'>
+            <div className="pb-4 border-b border-[#E0E0E0]">
                 <CustomTitleDescription
                     title="Psychology Structure"
                     description="Manage your industry sections and tabs."
-                    action={<PsychologyAddSectionAction />}
+                    action={
+                        <CategoryAddSectionAction
+                            industryOptions={[
+                                { label: "Biotechnologies", value: "biotechnology" },
+                                { label: "Psychotropics", value: "psychotropics" },
+                            ]}
+                        />
+                    }
                 />
             </div>
 
-
-
             <FilterTabs tabs={tabs} paramKey="tab" className="my-4" />
 
-            <PsychologySectionList sections={sections} activeTab={activeTab} />
-
-
+            <CategorySectionList sections={sections} activeTab={activeTab} />
         </>
-    )
+    );
 }

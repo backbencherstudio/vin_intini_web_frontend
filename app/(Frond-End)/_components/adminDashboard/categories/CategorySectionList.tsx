@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import PsychologySectionCard, { PsychologySection } from "./PsychologySectionCard";
+import CategorySectionCard, { CategorySection } from "./CategorySectionCard";
 import ViewSectionDetailsModal from "./ViewSectionDetailsModal";
 import CreateTabModal from "./CreateTabModal";
 
-interface PsychologySectionListProps {
-    sections: PsychologySection[];
+interface CategorySectionListProps {
+    sections: CategorySection[];
     activeTab?: string;
 }
 
-export default function PsychologySectionList({
+export default function CategorySectionList({
     sections: initialSections,
     activeTab = "all",
-}: PsychologySectionListProps) {
-    
+}: CategorySectionListProps) {
     const [sections, setSections] = useState(initialSections);
     const visibleSections =
         activeTab === "all"
@@ -28,24 +27,20 @@ export default function PsychologySectionList({
     const selectedSection =
         sections.find((section) => section.id === selectedSectionId) ?? null;
 
-    const openDetails = (section: PsychologySection) => {
+    const openDetails = (section: CategorySection) => {
         setSelectedSectionId(section.id);
         setDetailsOpen(true);
     };
 
-    const openCreateTab = (section?: PsychologySection) => {
+    const openCreateTab = (section?: CategorySection) => {
         if (section) setSelectedSectionId(section.id);
         setEditingTab(undefined);
         setTabModalOpen(true);
     };
 
-    const openEditTab = (section: PsychologySection | string, tabName?: string) => {
-        if (typeof section === "string") {
-            setEditingTab(section);
-        } else {
-            setSelectedSectionId(section.id);
-            setEditingTab(tabName);
-        }
+    const openEditTab = (section: CategorySection, tabName: string) => {
+        setSelectedSectionId(section.id);
+        setEditingTab(tabName);
         setTabModalOpen(true);
     };
 
@@ -74,40 +69,33 @@ export default function PsychologySectionList({
         );
     };
 
-    const handleDeleteTab = (
-        sectionOrTabName: PsychologySection | string,
-        tabName?: string,
-    ) => {
-        const sectionId =
-            typeof sectionOrTabName === "string"
-                ? selectedSectionId
-                : sectionOrTabName.id;
-        const name =
-            typeof sectionOrTabName === "string" ? sectionOrTabName : tabName;
-
-        if (!sectionId || !name) return;
-
+    const handleDeleteTab = (section: CategorySection, tabName: string) => {
         setSections((prev) =>
-            prev.map((section) =>
-                section.id === sectionId
+            prev.map((item) =>
+                item.id === section.id
                     ? {
-                          ...section,
-                          subsections: section.subsections.filter(
-                              (item) => item !== name,
+                          ...item,
+                          subsections: item.subsections.filter(
+                              (name) => name !== tabName,
                           ),
                       }
-                    : section,
+                    : item,
             ),
         );
+    };
+
+    const handleDeleteSection = (section: CategorySection) => {
+        setSections((prev) => prev.filter((item) => item.id !== section.id));
     };
 
     return (
         <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {visibleSections.map((section) => (
-                    <PsychologySectionCard
+                    <CategorySectionCard
                         key={section.id}
                         section={section}
+                        onDelete={handleDeleteSection}
                         onCreateTab={openCreateTab}
                         onSeeMore={openDetails}
                         onEditTab={openEditTab}
