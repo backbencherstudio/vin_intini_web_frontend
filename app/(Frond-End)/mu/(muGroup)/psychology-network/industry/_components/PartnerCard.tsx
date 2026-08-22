@@ -2,9 +2,7 @@
 
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 interface PartnerCardType {
   partner_name: string;
   partner_tag: string;
@@ -22,8 +20,6 @@ export const PartnerCard = ({
   partner,
   isMobile = false,
 }: PartnerCardProps) => {
-
-
   return (
     <div
       className={`flex w-full flex-col items-start gap-3.25 self-stretch border-b border-[#D2D2D5] p-4 lg:p-1 ${
@@ -56,7 +52,7 @@ export const PartnerCard = ({
           </p>
         </div>
       </div>
-      <Link
+      {/* <Link
         href={partner?.partner_link}
         className="flex items-center gap-1 text-[#04A1B7] hover:underline"
       >
@@ -64,7 +60,7 @@ export const PartnerCard = ({
           Learn more
         </span>
         <ArrowUpRight className="h-4 w-4" />
-      </Link>
+      </Link> */}
     </div>
   );
 };

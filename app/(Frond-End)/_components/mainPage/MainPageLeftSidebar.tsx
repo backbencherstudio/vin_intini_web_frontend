@@ -1,15 +1,20 @@
 "use client";
+
 import {
   GroupUserIcon,
   MultiUserIcon,
   PlusUserIcon,
   SingleUserIcon,
 } from "@/public/svgIcons/Icons";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import MainPageBottomNav from "./MainPageBottomNav";
 
 function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
+  const pathname = usePathname();
+  const [isMobile, setOpenMobile] = useState(false);
+
   const menuItems = [
     {
       label: "My Connections",
@@ -22,52 +27,59 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
       icon: PlusUserIcon,
     },
     {
-      label: " Following & Followers",
+      label: "Following & Followers",
       slug: "/mu/my-network/following",
       icon: SingleUserIcon,
     },
-    // {
-    //   label: "Groups Invited",
-    //   slug: "/mu/my-network/groups-invited",
-    //   icon: GroupUserIcon,
-    //   isDropdown: true,
-    // },
     {
       label: "Groups",
       slug: "/mu/my-network/groups",
       icon: GroupUserIcon,
-      isDropdown: true,
     },
   ];
 
-  const pathName = usePathname();
+  const handleLinkClick = () => {
+    onItemClick?.();
+    if (isMobile) setOpenMobile(false);
+  };
+
   const isActive = (href: string): boolean => {
     if (href === "/mu/my-network/my-connection") {
-      return pathName === "/mu/my-network/my-connection";
+      return pathname === "/mu/my-network/my-connection";
     }
-    return pathName.startsWith(href);
+    return pathname.startsWith(href);
   };
-  return (
-    <div>
-      <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold">
-        Manage Network
-      </h3>
 
-      <div className="mt-6 space-y-1 ">
-        {menuItems.map((item) => (
-          <Link
-            key={item.slug}
-            href={item.slug}
-            onClick={onItemClick}
-            className={`flex items-center gap-3 p-2 text-sm transition ${isActive(item.slug)
-                ? "text-headerColor bg-bgLightColor rounded-md font-medium"
-                : "text-grayColor1 hover:text-headerColor"
+  return (
+    <div className="flex flex-col justify-between min-h-130 h-full">
+      {/* Top Navigation */}
+      <div>
+        <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold text-headerColor">
+          Manage Network
+        </h3>
+
+        <div className="mt-4 space-y-1">
+          {menuItems.map((item) => (
+            <Link
+              key={item.slug}
+              href={item.slug}
+              onClick={onItemClick}
+              className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
+                isActive(item.slug)
+                  ? "text-headerColor bg-lightGreenColor font-medium"
+                  : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
               }`}
-          >
-            {item.icon && <item.icon className="w-4.5 h-4.5" />}
-            {item.label}
-          </Link>
-        ))}
+            >
+              {item.icon && <item.icon className="w-4.5 h-4.5" />}
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Common Navigation */}
+      <div className="pt-6 mt-auto ">
+        <MainPageBottomNav onItemClick={onItemClick} />
       </div>
     </div>
   );

@@ -15,7 +15,6 @@ function ProfilePages() {
           <ProfilePostList />
           <ProfileExpreance />
           <ProfileEducationList />
-          <ProfileEducationList />
         </div>
       </div>
     </div>
