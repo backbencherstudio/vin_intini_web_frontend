@@ -28,7 +28,7 @@ interface AdvertisementEditFormProps {
     onUpdate: () => void;
 }
 
-export default function AdvertisementEditForm({
+export default function EditvertisementEditForm({
     job,
     onCancel,
     onUpdate,
