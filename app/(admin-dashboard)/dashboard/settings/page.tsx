@@ -217,7 +217,7 @@ export default function JobsPage() {
         {
             header: "Salary Range",
             cell: (row) => (
-                <span className="text-[#04A1B7] text-[14px] font-semibold">
+                <span className="text-primaryColor text-[14px] font-semibold">
                     {row.salary}
                 </span>
             ),

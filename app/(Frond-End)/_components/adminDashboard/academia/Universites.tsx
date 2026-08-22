@@ -250,7 +250,7 @@ export default function Universites() {
                             </SelectContent>
                         </Select>
 
-                        <button onClick={() => setAddOpen(true)} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <button onClick={() => setAddOpen(true)} className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
                             <Plus className="h-4 w-4" />
                             Add New University
                         </button>

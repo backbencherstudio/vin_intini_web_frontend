@@ -173,7 +173,7 @@ label="Ending Date"
                 </button>
                 <button
                     onClick={onUpdate}
-                    className="rounded-md bg-[#04A1B7] px-5 py-2 text-sm font-medium text-white hover:bg-[#038a9c] transition"
+                    className="rounded-md bg-primaryColor px-5 py-2 text-sm font-medium text-white hover:bg-[#038a9c] transition"
                 >
                     Update
                 </button>

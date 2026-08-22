@@ -186,7 +186,7 @@ export default function FacilityForm({
                     <button
                         type="button"
                         onClick={handleSave}
-                        className="bg-[#04A1B7] text-white rounded-lg px-4 py-2 cursor-pointer"
+                        className="bg-primaryColor text-white rounded-lg px-4 py-2 cursor-pointer"
                     >
                         {mode === "add" ? "Save Facility" : "Save Facility"}
                     </button>

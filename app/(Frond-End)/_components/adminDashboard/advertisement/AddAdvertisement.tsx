@@ -182,7 +182,7 @@ export default function AdvertisementEditForm({
             Drag and drop your file, or{" "}
             <span
               onClick={handleBrowseClick}
-              className="cursor-pointer font-medium text-[#04A1B7] hover:underline"
+              className="cursor-pointer font-medium text-primaryColor hover:underline"
             >
               browse
             </span>
@@ -251,7 +251,7 @@ export default function AdvertisementEditForm({
         <button
           type="button"
           onClick={onUpdate}
-          className="rounded-md bg-[#04A1B7] px-5 py-2 text-base font-medium leading-[140%] text-white text-center hover:bg-[#038a9c]"
+          className="rounded-md bg-primaryColor px-5 py-2 text-base font-medium leading-[140%] text-white text-center hover:bg-[#038a9c]"
         >
           {isEditMode ? "Update" : "Publish Advertisement"}
         </button>

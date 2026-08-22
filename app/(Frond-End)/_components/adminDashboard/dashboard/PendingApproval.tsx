@@ -41,7 +41,7 @@ export default function PendingApproval() {
                                         <p className="text-[#777980] font-['Segoe_UI'] text-[14px] font-normal leading-[140%] tracking-[0.07px]">{item.title}</p>
                                         <p className="text-[#1D1F2C] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px] py-3">{item.date}</p>
                                     </div>
-                                    <button className="text-[#04A1B7] flex justify-center items-center bg-[#E9FAF7] w-full py-1 rounded-md font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-auto">
+                                    <button className="text-primaryColor flex justify-center items-center bg-[#E9FAF7] w-full py-1 rounded-md font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-auto">
                                         View Details <ArrowRight className='w-4 h-4 ml-1' />
                                     </button>
                                 </div>

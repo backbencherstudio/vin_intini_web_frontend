@@ -23,7 +23,7 @@ export default function UserGrowthCard({ data = defaultData, onRefresh = () => {
             {/* Metric & Growth Badge */}
             <div className="flex items-baseline justify-between mb-4">
                 <h4 className="text-[#0D0D12] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">{data.totalUsers.toLocaleString()} users</h4>
-                <div className="flex items-center text-[#04A1B7] font-['Inter_Tight'] text-[14px] font-semibold leading-[150%] tracking-[0.28px]">
+                <div className="flex items-center text-primaryColor font-['Inter_Tight'] text-[14px] font-semibold leading-[150%] tracking-[0.28px]">
                     <ArrowUp className="w-3.5 h-3.5 mr-1" />
                     {data.growthRate}%
                 </div>

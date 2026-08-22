@@ -104,7 +104,7 @@ export default function PlanPricingPage() {
 
         <Link
           href="/dashboard/subscription/plan-pricing/create-new-plan"
-          className="flex items-center gap-2 rounded-lg bg-[#04A1B7] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#038a9c]"
+          className="flex items-center gap-2 rounded-lg bg-primaryColor px-5 py-2.5 text-sm font-medium text-white hover:bg-[#038a9c]"
         >
           + Add new plan
         </Link>
@@ -189,7 +189,7 @@ export default function PlanPricingPage() {
 
                 {/* Save 20% শুধু Annually + থাকলে */}
                 {plan.savePercentage && billingType === "annually" && (
-                  <span className="rounded-full bg-[#E9FAF7] px-2.5 py-0.5 text-xs font-medium text-[#04A1B7]">
+                  <span className="rounded-full bg-[#E9FAF7] px-2.5 py-0.5 text-xs font-medium text-primaryColor">
                     {plan.savePercentage}
                   </span>
                 )}
@@ -235,7 +235,7 @@ export default function PlanPricingPage() {
               ))}
             </ul>
 
-            <button className="mt-5 flex items-center gap-1 text-base font-normal leading-[150%] tracking-[0.08px] text-[#04A1B7] hover:underline">
+            <button className="mt-5 flex items-center gap-1 text-base font-normal leading-[150%] tracking-[0.08px] text-primaryColor hover:underline">
               <Plus className="h-4 w-4" />
               Show More
             </button>

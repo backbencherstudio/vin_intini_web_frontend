@@ -154,8 +154,8 @@ export default function VideoTutorial() {
                                 key={video.file_url || video.url}
                                 onClick={() => handleVideoSelect(video)}
                                 className={`flex-shrink-0 w-[200px] md:w-[260px] bg-white rounded-sm overflow-hidden border-2 cursor-pointer transition-all duration-300  ${selectedVideo?.title === video.title
-                                    ? "border-[#04A1B7] "
-                                    : "border-[#EDEDED] hover:border-[#04A1B7]/50"
+                                    ? "border-primaryColor "
+                                    : "border-[#EDEDED] hover:border-primaryColor/50"
                                     }`}
                             >
                                 {/* Thumbnail */}
@@ -191,7 +191,7 @@ export default function VideoTutorial() {
 
                                     {/* Active Indicator */}
                                     {selectedVideo?.title === video.title && (
-                                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#04A1B7] " />
+                                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-primaryColor " />
                                     )}
                                 </div>
 
@@ -211,14 +211,14 @@ export default function VideoTutorial() {
                     {/* Navigation Arrows */}
                     <button
                         onClick={scrollLeft}
-                        className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50  transition-all z-10 hover:border-[#04A1B7]"
+                        className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50  transition-all z-10 hover:border-primaryColor"
                     >
                         <ArrowLeft size={22} className="text-[#1A1A1A] md:w-6 md:h-6" />
                     </button>
 
                     <button
                         onClick={scrollRight}
-                        className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50 hover:shadow-2xl transition-all z-10 hover:border-[#04A1B7    ]"
+                        className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50 hover:shadow-2xl transition-all z-10 hover:border-primaryColor"
                     >
                         <ArrowRight size={22} className="text-[#1A1A1A] md:w-6 md:h-6" />
                     </button>

@@ -279,7 +279,7 @@ export default function TransactionTable() {
                         <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
 
                         <input
-                            className="h-10 w-full xl:w-[300px] rounded-md border border-gray-200 bg-white p-2 pl-9 text-sm focus:outline-none focus:ring-1 focus:ring-[#04A1B7]"
+                            className="h-10 w-full xl:w-[300px] rounded-md border border-gray-200 bg-white p-2 pl-9 text-sm focus:outline-none focus:ring-1 focus:ring-primaryColor"
                             type="text"
                             placeholder="Search by user name, email or plan..."
                         />
@@ -323,7 +323,7 @@ export default function TransactionTable() {
                     />
 
                     {/* Export */}
-                    <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 text-white transition hover:bg-[#038a9c]">
+                    <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 text-white transition hover:bg-[#038a9c]">
                         <ArrowDownToLine className="h-4 w-4" />
                         Export
                     </button>

@@ -65,7 +65,7 @@ export default function ContactUs() {
                     </div>
                     <ReusableInput id="subject" label="Subject*" className='rounded-xl' placeholder='Your subject' />
                     <ReusableTextarea id="message" label="Message*" className='rounded-xl h-[140px] px-2 py-3 border w-full' placeholder='Your message here...' />
-                    <button className="w-full py-3 bg-[#04A1B7] rounded-xl text-white text-base font-medium">Send Message</button> */}
+                    <button className="w-full py-3 bg-primaryColor rounded-xl text-white text-base font-medium">Send Message</button> */}
 
           <ContactForm />
         </div>

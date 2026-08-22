@@ -69,7 +69,7 @@ export default function TransactionStatusCard() {
                                         className={
                                             isDown
                                                 ? "text-[#EB3D4D] rotate-120 "
-                                                : "text-[#04A1B7] "
+                                                : "text-primaryColor "
                                         }
                                     />
 
@@ -77,7 +77,7 @@ export default function TransactionStatusCard() {
                                         className={
                                             isDown
                                                 ? "text-[#EB3D4D] font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
-                                                : "text-[#04A1B7] font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
+                                                : "text-primaryColor font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
                                         }
                                     >
                                         {item.percentage}

@@ -291,7 +291,7 @@ const EditTransactionForm = ({
                             )
                         }
                         placeholder="Add a note (optional)"
-                        className="h-[144px] w-full resize-none rounded-lg border border-[#D5DCE8] bg-white px-4 py-3 text-sm text-[#4A4C56] outline-none placeholder:text-[#777980] focus:border-[#04A1B7]"
+                        className="h-[144px] w-full resize-none rounded-lg border border-[#D5DCE8] bg-white px-4 py-3 text-sm text-[#4A4C56] outline-none placeholder:text-[#777980] focus:border-primaryColor"
                     />
                 </div>
             </div>
@@ -309,7 +309,7 @@ const EditTransactionForm = ({
                 <button
                     type="button"
                     onClick={handleUpdate}
-                    className="h-[42px] rounded-lg border border-[#04A1B7] bg-[#E9FBFD] px-5 ttext-center text-[#04A1B7] font-['Inter'] text-[16px] font-medium leading-[22.4px] transition hover:bg-[#DDF8FA]"
+                    className="h-[42px] rounded-lg border border-primaryColor bg-[#E9FBFD] px-5 ttext-center text-primaryColor font-['Inter'] text-[16px] font-medium leading-[22.4px] transition hover:bg-[#DDF8FA]"
                 >
                     Update
                 </button>
