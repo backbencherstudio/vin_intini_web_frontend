@@ -1,6 +1,5 @@
 "use client";
 
-import { useSidebar } from "@/components/ui/sidebar";
 import {
   GroupUserIcon,
   MultiUserIcon,
@@ -9,11 +8,12 @@ import {
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import MainPageBottomNav from "./MainPageBottomNav";
 
 function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const [isMobile, setOpenMobile] = useState(false);
 
   const menuItems = [
     {

@@ -1,11 +1,13 @@
-import React from 'react'
+import GeneralSettingsPage from "../_component/GeneralSettingsPage";
 
 function page() {
   return (
     <div>
-        <div>setting pages </div>
+      <div>
+        <GeneralSettingsPage />{" "}
+      </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

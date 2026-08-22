@@ -4,9 +4,9 @@ import RootProtectedLayout from "../_components/RootProtectedLayout";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <div className="bg-bgLightColor">
       <RootProtectedLayout>
-        <SidebarProvider>{children}</SidebarProvider>
+       {children}
       </RootProtectedLayout>
     </div>
   );

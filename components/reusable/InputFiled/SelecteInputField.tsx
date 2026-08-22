@@ -10,6 +10,7 @@ type Option = { value: string; label: string; icon?: React.ReactNode };
 
 interface SelecteInputFieldProps {
   value?: string;
+  onChange?: (value: string) => void;
   onValueChange?: (value: string) => void;
   options: Option[];
   placeholder?: string;
@@ -20,6 +21,7 @@ interface SelecteInputFieldProps {
 
 export default function SelecteInputField({
   value,
+  onChange,
   onValueChange,
   options,
   placeholder = "Select",
@@ -27,8 +29,10 @@ export default function SelecteInputField({
   id,
   disabled = false,
 }: SelecteInputFieldProps) {
+  const handleChange = onChange ?? onValueChange;
+
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={handleChange}>
       <SelectTrigger
         id={id}
         className={` cursor-pointer   w-full ${className}`}
