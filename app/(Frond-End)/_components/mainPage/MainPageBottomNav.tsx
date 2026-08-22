@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  Bell,
-  Briefcase,
-  ChevronDown,
-  Settings,
-  ShieldCheck,
-  SlidersHorizontal,
-} from "lucide-react";
+  GeneralSettingIcon,
+  NotificationIcon,
+  SecurityIcon,
+  SettingIcon,
+} from "@/public/svgIcons/Icons";
+import { Briefcase, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,20 +23,19 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
     {
       label: "General Settings",
       slug: "/mu/settings/general",
-      icon: SlidersHorizontal,
+      icon: GeneralSettingIcon,
     },
     {
       label: "Notification Settings",
       slug: "/mu/settings/notifications",
-      icon: Bell,
+      icon: NotificationIcon,
     },
     {
       label: "Security Settings",
       slug: "/mu/settings/security",
-      icon: ShieldCheck,
+      icon: SecurityIcon,
     },
   ];
-
 
   useEffect(() => {
     if (settingsItems.some((item) => pathname.startsWith(item.slug))) {
@@ -75,7 +73,7 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
           }`}
         >
           <div className="flex items-center gap-3">
-            <Settings className="w-4.5 h-4.5" />
+            <SettingIcon className="w-4.5 h-4.5" />
             <span>Settings</span>
           </div>
           <ChevronDown

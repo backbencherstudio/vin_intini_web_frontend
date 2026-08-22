@@ -78,7 +78,7 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
       </div>
 
       {/* Bottom Common Navigation */}
-      <div className="pt-6 mt-auto border-t border-gray-100">
+      <div className="pt-6 mt-auto ">
         <MainPageBottomNav onItemClick={onItemClick} />
       </div>
     </div>
