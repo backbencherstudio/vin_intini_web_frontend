@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import { UploadImageIcon } from "@/public/svgIcons/AdminIcon";
 
 type Job = {
   id: number;
@@ -35,14 +36,35 @@ export default function AdvertisementEditForm({
 }: AdvertisementEditFormProps) {
   const isEditMode = !!job;
 
-  const [title, setTitle] = useState(job?.title || "");
+  const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [advertiser, setAdvertiser] = useState(job?.advertiser || "");
-  const [industry, setIndustry] = useState(job?.industry || "");
-  const [status, setStatus] = useState(job?.status || "Publish");
-  const [description, setDescription] = useState();
+  const [advertiser, setAdvertiser] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [status, setStatus] = useState("Publish");
+  const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState<DateRange | undefined>(undefined);
   const [endDate, setEndDate] = useState<DateRange | undefined>(undefined);
+
+  // File upload
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      alert("Only JPG, PNG or WEBP files are allowed");
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="space-y-5">
@@ -50,18 +72,17 @@ export default function AdvertisementEditForm({
       <CustomInput
         label="Title"
         value={title}
-        // onChange={(value: string) => setTitle(value)}
+        placeholder="Enter your ad title"
+        onChange={(e) => setTitle(e.target.value)}
         required
       />
 
       {/* Categories + Advertiser */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Categories
-          </label>
           <CustomSelect
             className="h-11 w-full"
+            label="Category"
             value={category}
             onChange={(value: string) => setCategory(value)}
             options={[
@@ -76,11 +97,9 @@ export default function AdvertisementEditForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Advertiser
-          </label>
           <CustomSelect
             className="h-11 w-full"
+            label="Advertiser"
             value={advertiser}
             onChange={(value: string) => setAdvertiser(value)}
             options={[
@@ -104,11 +123,9 @@ export default function AdvertisementEditForm({
       {/* Industry + Status */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Industry
-          </label>
           <CustomSelect
             className="h-11 w-full"
+            label="Industry"
             value={industry}
             onChange={(value: string) => setIndustry(value)}
             options={[
@@ -121,11 +138,9 @@ export default function AdvertisementEditForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Status
-          </label>
           <CustomSelect
             className="h-11 w-full"
+            label="Status"
             value={status}
             onChange={(value: string) => setStatus(value)}
             options={[
@@ -141,8 +156,8 @@ export default function AdvertisementEditForm({
 
       {/* Upload Product Image */}
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
-          Upload Product Image <span className="text-red-500">*</span>
+        <label className="mb-1.5 block text-base font-semibold leading-[150%] font-['Segoe_UI'] tracking-[0.08px] text-[#4A4C56]">
+          Upload Product Image <span className="">*</span>
         </label>
 
         {/* Existing image only in Edit mode */}
@@ -159,40 +174,40 @@ export default function AdvertisementEditForm({
         )}
 
         {/* Drop zone */}
-        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-10 text-center transition hover:border-gray-400">
-          <svg
-            className="mx-auto h-10 w-10 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            />
-          </svg>
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#A5A5AB] bg-gray-50 px-6 py-10 text-center transition hover:border-gray-400">
+          <span>
+            <UploadImageIcon />
+          </span>
           <p className="mt-2 overflow-hidden text-black text-center text-ellipsis font-['Segoe_UI'] text-base not-italic font-normal leading-6 tracking-[0.08px]">
             Drag and drop your file, or{" "}
-            <span className="cursor-pointer font-medium text-[#04A1B7] hover:underline">
-              choose here
+            <span
+              onClick={handleBrowseClick}
+              className="cursor-pointer font-medium text-[#04A1B7] hover:underline"
+            >
+              browse
             </span>
           </p>
           <p className="mt-1 overflow-hidden text-[#8C8C8C] text-center text-ellipsis whitespace-nowrap font-['Segoe_UI'] text-[14px] font-normal leading-[19.6px] tracking-[0.07px]">
             Support file: JPG, PNG or WEBP
           </p>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            className="hidden"
+          />
         </div>
       </div>
 
       {/* Starting Date & Ending Date */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Starting Date
-          </label>
           <DateRangePicker
             className="h-11 w-full"
+            label="Start Date"
             date={startDate}
             setDate={setStartDate}
             placeholder="29 July, 2026 | 10:23 PM"
@@ -200,11 +215,9 @@ export default function AdvertisementEditForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Ending Date
-          </label>
           <DateRangePicker
             className="h-11 w-full"
+            label="End Date"
             date={endDate}
             setDate={setEndDate}
             placeholder="29 Aug, 2026 | 10:23 PM"
@@ -214,13 +227,13 @@ export default function AdvertisementEditForm({
 
       {/* Description */}
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+        <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
           Description
         </label>
         <textarea
           rows={4}
           value={description}
-        //   onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm outline-none transition-colors focus:border-gray-500 focus:ring-0 resize-none"
           placeholder="Enter description..."
         />
@@ -231,14 +244,14 @@ export default function AdvertisementEditForm({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          className="rounded-md border border-gray-300 px-5 py-2 text-base font-medium leading-[140%] text-gray-700 transition hover:bg-gray-50"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={onUpdate}
-          className="rounded-md bg-[#04A1B7] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#038a9c]"
+          className="rounded-md bg-[#04A1B7] px-5 py-2 text-base font-medium leading-[140%] text-white text-center hover:bg-[#038a9c]"
         >
           {isEditMode ? "Update" : "Publish Advertisement"}
         </button>

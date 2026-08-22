@@ -95,7 +95,7 @@ export default function DashboardSidebar() {
                   <React.Fragment key={item.id}>
 
                     {/* Parent */}
-                    <useSidebar >
+                    <SidebarMenuItem>
                       {hasChildren ? (
                         <SidebarMenuButton
                           onClick={() => toggleMenu(item.id)}
@@ -127,7 +127,7 @@ export default function DashboardSidebar() {
                           </Link>
                         </SidebarMenuButton>
                       )}
-                    </useSidebar>
+                    </SidebarMenuItem>
 
                     {/* Submenu */}
                     {hasChildren && isOpen && state === "expanded" && (

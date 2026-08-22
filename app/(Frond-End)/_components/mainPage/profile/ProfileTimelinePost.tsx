@@ -55,7 +55,7 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
             disableOnInteraction: false,
           }}
           breakpoints={{
-            640: {
+            640: {  
               slidesPerView: 2,
               spaceBetween: 10,
             },

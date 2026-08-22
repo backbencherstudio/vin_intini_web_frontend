@@ -180,30 +180,42 @@ function Sidebar({
     )
   }
 
-  if (isMobile) {
+   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-        <SheetContent
-          data-sidebar="sidebar"
-          data-slot="sidebar"
-          data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as React.CSSProperties
-          }
-          side={side}
-        >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
-          <div className="flex h-full w-full flex-col pt-16">{children}</div>
-        </SheetContent>
-      </Sheet>
+      <>
+    
+        {openMobile && (
+          <div
+            onClick={() => setOpenMobile(false)}
+            className="fixed inset-0 z-40 bg-black/40  transition-all duration-300 md:hidden"
+            aria-hidden="true"
+          />
+        )}
+
+        <Sheet open={openMobile} onOpenChange={setOpenMobile} modal={false} {...props}>
+          <SheetContent
+            data-sidebar="sidebar"
+            data-slot="sidebar"
+            data-mobile="true"
+            className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-50"
+            style={
+              {
+                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+              } as React.CSSProperties
+            }
+            side={side}
+          >
+            <SheetHeader className="sr-only">
+              <SheetTitle>Sidebar</SheetTitle>
+              <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            </SheetHeader>
+            <div className="flex h-full w-full flex-col pt-16">{children}</div>
+          </SheetContent>
+        </Sheet>
+      </>
     )
   }
+
 
   return (
     <div
