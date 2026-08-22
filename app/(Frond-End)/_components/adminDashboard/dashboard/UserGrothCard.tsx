@@ -9,8 +9,8 @@ export default function UserGrowthCard({ data = defaultData, onRefresh = () => {
             {/* Header */}
             <div className="flex justify-between items-start mb-2">
                 <div>
-                    <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">User Growth</h3>
-                    <p className="text-[#6C6C6D] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-0.5">Total users</p>
+                    <h3 className="text-[#0D0D12]  text-[18px] font-semibold leading-[150%]">User Growth</h3>
+                    <p className="text-[#6C6C6D]  text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-0.5">Total users</p>
                 </div>
                 <button
                     onClick={onRefresh}
@@ -22,7 +22,7 @@ export default function UserGrowthCard({ data = defaultData, onRefresh = () => {
 
             {/* Metric & Growth Badge */}
             <div className="flex items-baseline justify-between mb-4">
-                <h4 className="text-[#0D0D12] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">{data.totalUsers.toLocaleString()} users</h4>
+                <h4 className="text-[#0D0D12]  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">{data.totalUsers.toLocaleString()} users</h4>
                 <div className="flex items-center text-primaryColor font-['Inter_Tight'] text-[14px] font-semibold leading-[150%] tracking-[0.28px]">
                     <ArrowUp className="w-3.5 h-3.5 mr-1" />
                     {data.growthRate}%

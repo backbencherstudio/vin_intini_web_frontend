@@ -12,7 +12,7 @@ export default function RevenueReportCard({ data = defaultData, onRefresh = () =
         <div className="bg-white rounded-2xl p-3 border  w-full  ">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-                <h3 className="text-[#0D0D12] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">Revenue Report</h3>
+                <h3 className="text-[#0D0D12]  text-[18px] font-semibold leading-[150%]">Revenue Report</h3>
                 <div className="flex items-center space-x-2">
                     <div className="">
                         <DateRangePicker required date={date} setDate={setDate} placeholder='Select date range' className='h-8 to w-full' />
@@ -29,7 +29,7 @@ export default function RevenueReportCard({ data = defaultData, onRefresh = () =
             {/* Main Metric & Legend */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                 <div className="flex items-baseline space-x-3">
-                    <h4 className="text-[#0D0D12] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">${data.totalRevenue.toLocaleString()}</h4>
+                    <h4 className="text-[#0D0D12]  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">${data.totalRevenue.toLocaleString()}</h4>
                     <div className="flex items-center text-primaryColor font-['Inter_Tight'] text-[14px] font-semibold leading-[150%] tracking-[0.28px]">
                         <ArrowUp className="w-3.5 h-3.5 mr-1" />
                         {data.growthRate}%

@@ -174,7 +174,7 @@ export default function AdvertisementTable() {
         {
             header: "Ad Details",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.advertisImage && (
                         <Image
                             src={row.advertisImage}
@@ -197,7 +197,7 @@ export default function AdvertisementTable() {
             header: "Advertiser",
             accessor: "advertiser",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.img && (
                         <Image
                             src={row.img}
@@ -233,7 +233,7 @@ export default function AdvertisementTable() {
         {
             header: "Impression",
             cell: (row) => (
-                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.impression}
                 </span>
             ),
@@ -241,7 +241,7 @@ export default function AdvertisementTable() {
         {
             header: "Clicks",
             cell: (row) => (
-                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.clicks}
                 </span>
             ),
@@ -249,7 +249,7 @@ export default function AdvertisementTable() {
         {
             header: "CTR",
             cell: (row) => (
-                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.ctr}
                 </span>
             ),

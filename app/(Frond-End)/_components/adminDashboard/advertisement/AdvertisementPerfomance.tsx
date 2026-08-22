@@ -72,7 +72,7 @@ export default function AdvertisementPerformance() {
     return (
         <div className="rounded-xl border border-[#E5E5E5] bg-white p-6 ">
             {/* Title */}
-            <h3 className="mb-2 text-[#000] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">
+            <h3 className="mb-2 text-[#000]  text-[18px] font-semibold leading-[150%]">
                 Advertisement Performance
             </h3>
 
@@ -83,11 +83,11 @@ export default function AdvertisementPerformance() {
                         key={item.title}
                         className="rounded-lg border border-gray-100 bg-gray-50/50 p-4"
                     >
-                        <p className="text-[#777980] font-['Segoe_UI'] text-xs not-italic font-normal leading-[15.84px] tracking-[0.06px]">
+                        <p className="text-[#777980]  text-xs not-italic font-normal leading-[15.84px] tracking-[0.06px]">
                             {item.title}
                         </p>
 
-                        <p className="mt-1 text-[#1D1F2C] font-['Segoe_UI'] text-[24px] not-italic font-semibold leading-[31.2px] tracking-[0.12px]">
+                        <p className="mt-1 text-[#1D1F2C]  text-[24px] not-italic font-semibold leading-[31.2px] tracking-[0.12px]">
                             {item.value}
                         </p>
                     </div>
@@ -96,7 +96,7 @@ export default function AdvertisementPerformance() {
 
             {/* Chart Title + Legend */}
             <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-[#777980] font-['Segoe_UI'] text-sm not-italic font-semibold leading-[19.6px] tracking-[0.07px]">Views vs Click</h3>
+                <h3 className="text-[#777980]  text-sm not-italic font-semibold leading-[19.6px] tracking-[0.07px]">Views vs Click</h3>
                 <div className="flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1.5">
                         <span className="h-2.5 w-2.5 rounded-full bg-[#0D9488]"></span>

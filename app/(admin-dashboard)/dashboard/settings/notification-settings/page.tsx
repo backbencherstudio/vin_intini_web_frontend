@@ -192,11 +192,11 @@ export default function NotificationSettings() {
             {/* Header */}
             <div className="flex items-start justify-between border-b border-[#EEEEEE] pb-3">
                 <div>
-                    <h1 className="text-[#1D1F2C] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
+                    <h1 className="text-[#1D1F2C]  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
                         Notification Settings
                     </h1>
 
-                    <p className="text-[#4A4C56] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-2">
+                    <p className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-2">
                         Manage how you and your users receive notifications
                         across the platform.
                     </p>
@@ -217,11 +217,11 @@ export default function NotificationSettings() {
                 <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-4">
 
                     <div>
-                        <h2 className="text-[#1D1F2C] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+                        <h2 className="text-[#1D1F2C]  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
                             Notification Preferences
                         </h2>
 
-                        <p className="text-[#4A4C56] font-['Segoe_UI'] text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
+                        <p className="text-[#4A4C56]  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
                             Choose which notifications you want to receive
                             and how.
                         </p>
@@ -230,7 +230,7 @@ export default function NotificationSettings() {
                     {/* Global Enable / Disable */}
                     <div className="flex items-center gap-2 text-[9px] text-[#4A4C56]">
 
-                        <span className="text-[#4A4C56] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">Enable all</span>
+                        <span className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Enable all</span>
 
                         <button
                             type="button"
@@ -250,7 +250,7 @@ export default function NotificationSettings() {
 
                         <div className="h-4 w-px bg-[#B6B6B6]" />
 
-                        <span className="text-[#4A4C56] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">Disable all</span>
+                        <span className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Disable all</span>
 
                         <button
                             type="button"
@@ -289,10 +289,10 @@ export default function NotificationSettings() {
 
                     {/* Header */}
                     <div className="grid grid-cols-[5fr_1fr_1fr_1fr] bg-[#F8F8F8] px-2 py-2 text-[9px] text-[#777980]">
-                        <div className="text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Notification Type</div>
-                        <div className="text-center  text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">In App</div>
-                        <div className="text-center text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Email</div>
-                        <div className="text-center text-[#737373] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Push</div>
+                        <div className="text-[#737373]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Notification Type</div>
+                        <div className="text-center  text-[#737373]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">In App</div>
+                        <div className="text-center text-[#737373]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Email</div>
+                        <div className="text-center text-[#737373]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">Push</div>
                     </div>
 
                     {/* Rows */}
@@ -302,11 +302,11 @@ export default function NotificationSettings() {
                             className="grid grid-cols-[5fr_1fr_1fr_1fr] items-center border-t border-[#E5E5E5] px-2 py-2"
                         >
                             <div>
-                                <p className="overflow-hidden text-ellipsis text-[#4A4C56] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                                <p className="overflow-hidden text-ellipsis text-[#4A4C56]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                                     {item.title}
                                 </p>
 
-                                <p className="overflow-hidden text-ellipsis text-[#777980] font-['Segoe_UI'] text-[12px] font-normal leading-[132%] tracking-[0.06px] mt-0.5">
+                                <p className="overflow-hidden text-ellipsis text-[#777980]  text-[12px] font-normal leading-[132%] tracking-[0.06px] mt-0.5">
                                     {item.description}
                                 </p>
                             </div>
@@ -357,11 +357,11 @@ export default function NotificationSettings() {
                 <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-2">
 
                     <div>
-                        <h2 className="text-[#1D1F2C] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+                        <h2 className="text-[#1D1F2C]  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
                             Quiet Hours
                         </h2>
 
-                        <p className="text-[#4A4C56] font-['Segoe_UI'] text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
+                        <p className="text-[#4A4C56]  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
                             Pause non-urgent notifications during specific
                             hours.
                         </p>
@@ -480,7 +480,7 @@ export default function NotificationSettings() {
                 </div>
 
                 {/* Info */}
-                <div className="mt-6 flex items-center gap-2 text-[#4A4C56] font-['Segoe_UI'] text-[12px] font-normal leading-[132%] tracking-[0.06px]">
+                <div className="mt-6 flex items-center gap-2 text-[#4A4C56]  text-[12px] font-normal leading-[132%] tracking-[0.06px]">
                     <CircleAlert className="rotate-180" size={16} />
                     During quiet hours, you’ll still receive important
                     alerts like security notifications and direct messages.

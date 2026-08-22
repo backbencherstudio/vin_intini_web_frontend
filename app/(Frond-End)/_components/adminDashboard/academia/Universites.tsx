@@ -109,14 +109,14 @@ export default function Universites() {
         {
             header: "No.",
             cell: (row) => (
-                <span className="overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">{row.id}</span>
+                <span className="overflow-hidden text-[#0A0A0A] text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">{row.id}</span>
             ),
         },
         {
             header: "University",
             accessor: "university",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
 
                     {row.university}
                 </span>
@@ -174,7 +174,7 @@ export default function Universites() {
         {
             header: "Map Pin (Lat,Long)",
             cell: (row) => (
-                <span className="text-[#006EFF] text-right font-['Segoe_UI'] text-xs font-semibold leading-[132%] tracking-[0.06px]">
+                <span className="text-[#006EFF] text-right  text-xs font-semibold leading-[132%] tracking-[0.06px]">
                     {row.mapPin}
                 </span>
             ),
@@ -184,7 +184,7 @@ export default function Universites() {
             header: "Website",
             accessor: "website",
             cell: (row) => (
-                <span className="flex gap-1 text-[#006EFF] items-center ext-[#006EFF] text-right font-['Segoe_UI'] text-[14px] font-semibold leading-[132%] tracking-[0.06px] cursor-pointer">
+                <span className="flex gap-1 text-[#006EFF] items-center ext-[#006EFF] text-right  text-[14px] font-semibold leading-[132%] tracking-[0.06px] cursor-pointer">
                     <MoveUpRight className="h-5 w-5" />  {row.website}
                 </span>
             ),

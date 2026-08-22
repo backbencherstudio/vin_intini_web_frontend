@@ -111,7 +111,7 @@ export default function AddEmployment({ onClose }: AddEmploymentProps) {
                     />
                 </div>
 
-                <div className="text-[#4A4C56] text-base font-semibold font-['Segoe UI'] leading-6 tracking-wide">
+                <div className="text-[#4A4C56] text-base font-semibold  leading-6 tracking-wide">
                     Salary Range
                 </div>
 

@@ -86,7 +86,7 @@ export default function GeneralSettings() {
             {/* General Settings */}
             <div className="mt-4 rounded-xl border border-[#E1E1E1] p-3.5">
 
-                <h2 className="text-[#1D1F2C] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px] mb-4">
+                <h2 className="text-[#1D1F2C]  text-[24px] font-semibold leading-[130%] tracking-[0.12px] mb-4">
                     General Settings
                 </h2>
 
@@ -232,11 +232,11 @@ export default function GeneralSettings() {
                 {/* Site Logo */}
                 <div className="mt-4 border-b border-[#E5E5E5] pb-4">
 
-                    <p className="text-[#4A4C56] font-['Segoe_UI'] text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
+                    <p className="text-[#4A4C56]  text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
                         Site logo
                     </p>
 
-                    <p className="mt-1 text-[#8C8C8C] font-['Segoe_UI'] text-[14px] leading-[150%] tracking-[0.07px]">
+                    <p className="mt-1 text-[#8C8C8C]  text-[14px] leading-[150%] tracking-[0.07px]">
                         Upload your platform logo. This will be displayed
                         in the admin panel and platform.
                     </p>
@@ -274,17 +274,17 @@ export default function GeneralSettings() {
                                 onClick={() =>
                                     logoInputRef.current?.click()
                                 }
-                                className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#E0E0E0] px-3 py-2 text-[#4A4C56] text-center font-['Segoe_UI'] text-[14px] font-normal leading-[140%] tracking-[0.07px]"
+                                className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#E0E0E0] px-3 py-2 text-[#4A4C56] text-center  text-[14px] font-normal leading-[140%] tracking-[0.07px]"
                             >
                                 ↻
                                 Change Logo
                             </button>
 
-                            <p className="mt-2 text-[#A5A5AB] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">
+                            <p className="mt-2 text-[#A5A5AB]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">
                                 Recommended size: 512x512px
                             </p>
 
-                            <p className="text-[#A5A5AB] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">
+                            <p className="text-[#A5A5AB]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">
                                 (PNG, JPG or SVG 2MB)
                             </p>
                         </div>
@@ -295,11 +295,11 @@ export default function GeneralSettings() {
                 {/* Fav Icon */}
                 <div className="border-b border-[#E5E5E5] py-4">
 
-                    <p className="text-[#4A4C56] font-['Segoe_UI'] text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
+                    <p className="text-[#4A4C56]  text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
                         Fav Icon
                     </p>
 
-                    <p className="mt-1 text-[#8C8C8C] font-['Segoe_UI'] text-[14px] leading-[150%] tracking-[0.07px]">
+                    <p className="mt-1 text-[#8C8C8C]  text-[14px] leading-[150%] tracking-[0.07px]">
                         Upload your platform favicon. This will be
                         displayed in the browser tab.
                     </p>
@@ -343,11 +343,11 @@ export default function GeneralSettings() {
                                 Change Logo
                             </button>
 
-                            <p className="mt-2 text-[#A5A5AB] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">
+                            <p className="mt-2 text-[#A5A5AB]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">
                                 Recommended size: 32x32px
                             </p>
 
-                            <p className="text-[#A5A5AB] font-['Segoe_UI'] text-[16px] font-normal leading-[150%] tracking-[0.08px]">
+                            <p className="text-[#A5A5AB]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">
                                 (PNG, JPG or SVG, Max 1MB)
                             </p>
                         </div>
@@ -369,7 +369,7 @@ export default function GeneralSettings() {
                         }
                     />
 
-                    <p className="mt-1 text-sm text-[#8C8C8C] font-['Segoe_UI'] text-[14px] leading-[150%] tracking-[0.07px]">
+                    <p className="mt-1 text-sm text-[#8C8C8C]  text-[14px] leading-[150%] tracking-[0.07px]">
                         This text will be displayed in the platform footer.
                     </p>
 

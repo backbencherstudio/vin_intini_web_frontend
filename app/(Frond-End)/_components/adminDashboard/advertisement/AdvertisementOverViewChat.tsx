@@ -14,7 +14,7 @@ export default function AdPerformanceOverview({
         <div className="bg-white rounded-2xl p-3  border border-[#E5E5E5] w-full h-full">
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[#000] font-['Segoe_UI'] text-[18px] font-semibold leading-[150%]">
+                <h3 className="text-[#000]  text-[18px] font-semibold leading-[150%]">
                     Ad Performance Overview
                 </h3>
                 <button
@@ -84,15 +84,15 @@ export default function AdPerformanceOverview({
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
                             />
-                            <span className="text-[#121212] font-['Segoe_UI'] text-xs not-italic font-semibold leading-[15.84px] tracking-[0.06px]">
+                            <span className="text-[#121212]  text-xs not-italic font-semibold leading-[15.84px] tracking-[0.06px]">
                                 {item.name}
                             </span>
                         </div>
 
-                        <span className="w-16 text-[#121212] font-['Segoe_UI'] text-xs not-italic font-normal leading-[15.84px] tracking-[0.06px]">
+                        <span className="w-16 text-[#121212]  text-xs not-italic font-normal leading-[15.84px] tracking-[0.06px]">
                             {item.percentage}%
                         </span>
-                        <span className="w-10 text-[#121212] font-['Segoe_UI'] text-xs not-italic font-normal leading-[132%] tracking-[0.06px] text-right">
+                        <span className="w-10 text-[#121212]  text-xs not-italic font-normal leading-[132%] tracking-[0.06px] text-right">
                             {item.count}
                         </span>
                     </div>

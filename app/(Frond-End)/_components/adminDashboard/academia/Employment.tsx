@@ -138,7 +138,7 @@ export default function Employment() {
         {
             header: "No.",
             cell: (row) => (
-                <span className="overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">{row.id}</span>
+                <span className="overflow-hidden text-[#0A0A0A] text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">{row.id}</span>
             ),
         },
 
@@ -146,7 +146,7 @@ export default function Employment() {
             header: "Job Title ",
             accessor: "jobtitle",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
 
                     {row.jobtitle}
                 </span>
@@ -156,7 +156,7 @@ export default function Employment() {
             header: "Company Name ",
             accessor: "companyName",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-[#0A0A0A] text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
 
                     {row.companyName}
                 </span>
@@ -214,7 +214,7 @@ export default function Employment() {
             header: "Salary Range",
             accessor: "saleryrange",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-primaryColor text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-primaryColor text-ellipsis  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.saleryrange}
                 </span>
             )
@@ -225,7 +225,7 @@ export default function Employment() {
         //     header: "Website",
         //     accessor: "website",
         //     cell: (row) => (
-        //         <span className="flex gap-1 text-[#006EFF] items-center ext-[#006EFF] text-right font-['Segoe_UI'] text-[14px] font-semibold leading-[132%] tracking-[0.06px] cursor-pointer">
+        //         <span className="flex gap-1 text-[#006EFF] items-center ext-[#006EFF] text-right  text-[14px] font-semibold leading-[132%] tracking-[0.06px] cursor-pointer">
         //             <MoveUpRight className="h-5 w-5" />  {row.website}
         //         </span>
         //     ),

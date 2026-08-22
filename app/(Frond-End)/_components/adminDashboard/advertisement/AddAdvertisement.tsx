@@ -156,7 +156,7 @@ export default function AdvertisementEditForm({
 
       {/* Upload Product Image */}
       <div>
-        <label className="mb-1.5 block text-base font-semibold leading-[150%] font-['Segoe_UI'] tracking-[0.08px] text-[#4A4C56]">
+        <label className="mb-1.5 block text-base font-semibold leading-[150%]  tracking-[0.08px] text-[#4A4C56]">
           Upload Product Image <span className="">*</span>
         </label>
 
@@ -178,7 +178,7 @@ export default function AdvertisementEditForm({
           <span>
             <UploadImageIcon />
           </span>
-          <p className="mt-2 overflow-hidden text-black text-center text-ellipsis font-['Segoe_UI'] text-base not-italic font-normal leading-6 tracking-[0.08px]">
+          <p className="mt-2 overflow-hidden text-black text-center text-ellipsis  text-base not-italic font-normal leading-6 tracking-[0.08px]">
             Drag and drop your file, or{" "}
             <span
               onClick={handleBrowseClick}
@@ -187,7 +187,7 @@ export default function AdvertisementEditForm({
               browse
             </span>
           </p>
-          <p className="mt-1 overflow-hidden text-[#8C8C8C] text-center text-ellipsis whitespace-nowrap font-['Segoe_UI'] text-[14px] font-normal leading-[19.6px] tracking-[0.07px]">
+          <p className="mt-1 overflow-hidden text-[#8C8C8C] text-center text-ellipsis whitespace-nowrap  text-[14px] font-normal leading-[19.6px] tracking-[0.07px]">
             Support file: JPG, PNG or WEBP
           </p>
 
@@ -227,7 +227,7 @@ export default function AdvertisementEditForm({
 
       {/* Description */}
       <div>
-        <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
+        <label className="mb-1.5 block text-[#4A4C56]  text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
           Description
         </label>
         <textarea

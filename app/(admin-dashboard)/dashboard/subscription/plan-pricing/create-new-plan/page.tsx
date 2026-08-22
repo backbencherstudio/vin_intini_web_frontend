@@ -114,10 +114,10 @@ export default function CreatePlanModal({
       <form onSubmit={handleSubmit}>
         {/* Header */}
         <div className=" border-[#E1E4EA]">
-          <h2 className="text-[#1D1F2C] text-2xl font-semibold leading-[130%] tracking-[0.12px] font-['Segoe_UI']">
+          <h2 className="text-[#1D1F2C] text-2xl font-semibold leading-[130%] tracking-[0.12px] ">
             {data ? "Edit Plan" : "Create New Plan"}
           </h2>
-          <p className="mt-2 font-['Segoe_UI'] text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
+          <p className="mt-2  text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
             Create a new subscription plan with pricing and features.
           </p>
 
@@ -132,8 +132,8 @@ export default function CreatePlanModal({
           {/* Left Side - Plan Information */}
           <div className="space-y-5 border border-[#E2E8F0] p-4 rounded-lg">
             <div>
-              <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">Plan Information</h3>
-              <p className=" mt-1 font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">Add Subscription</p>
+              <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">Plan Information</h3>
+              <p className=" mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">Add Subscription</p>
             </div>
 
             <CustomInput
@@ -181,7 +181,7 @@ export default function CreatePlanModal({
                 onChange={(e) => handleChange("discount", e.target.value)}
               />
               <div>
-                <label className=" font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#4A4C56] ">Badge Color</label>
+                <label className="  text-base font-semibold leading-[150%] tracking-[0.08px] text-[#4A4C56] ">Badge Color</label>
                 <div className="flex items-center gap-2 relative mt-2">
                   <input
                     type="color"
@@ -208,8 +208,8 @@ export default function CreatePlanModal({
             {/* Status Toggle */}
             <div className="flex items-center justify-between rounded-lg  px-4 py-3">
               <div>
-                <p className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#4A4C56]">Plan Status</p>
-                <p className="font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB] mt-1">You can activate or deactivate this plan.</p>
+                <p className=" text-base font-semibold leading-[150%] tracking-[0.08px] text-[#4A4C56]">Plan Status</p>
+                <p className=" text-sm font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB] mt-1">You can activate or deactivate this plan.</p>
               
                 
               </div>
@@ -234,10 +234,10 @@ export default function CreatePlanModal({
 <div className="space-y-5 border p-4 rounded-lg">
   
     <div>
-      <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
+      <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
         Plan Feature
       </h3>
-      <p className="mt-1 font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+      <p className="mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
         Select and configure features for this plan
       </p>
        <div className="flex items-center justify-center gap-2 py-4 w-full">
@@ -266,7 +266,7 @@ export default function CreatePlanModal({
         key={item.key}
         className="flex items-center justify-between rounded-lg  px-4 py-3"
       >
-        <span className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">{item.label}</span>
+        <span className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">{item.label}</span>
         <button
           type="button"
           onClick={() => handleFeatureToggle(item.key)}

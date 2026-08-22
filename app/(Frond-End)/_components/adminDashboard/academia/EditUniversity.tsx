@@ -87,7 +87,7 @@ export default function EditUniversity({ data, onClose }: EditUniversityProps) {
 
                 {/* Map Coordinates */}
                 <div className="bg-[#D3F4EF] rounded-xl p-4">
-                    <p className="text-[#4A4C56] font-['Segoe_UI'] text-base not-italic font-semibold leading-6 tracking-[0.08px] mb-4">
+                    <p className="text-[#4A4C56]  text-base not-italic font-semibold leading-6 tracking-[0.08px] mb-4">
                         Map Coordinates
                     </p>
                     <div className="grid grid-cols-2 gap-4">

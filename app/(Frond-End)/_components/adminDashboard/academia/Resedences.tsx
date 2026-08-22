@@ -95,7 +95,7 @@ export default function Resedences() {
         {
             header: "No.",
             cell: (row) => (
-                <span className="text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold">
+                <span className="text-[#0A0A0A]  text-[14px] font-semibold">
                     {row.id}
                 </span>
             ),
@@ -104,7 +104,7 @@ export default function Resedences() {
             header: "Program Name",
             accessor: "programName",
             cell: (row) => (
-                <span className="text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold">
+                <span className="text-[#0A0A0A]  text-[14px] font-semibold">
                     {row.programName}
                 </span>
             ),

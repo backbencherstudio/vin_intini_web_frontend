@@ -29,7 +29,7 @@ export default function PendingApproval() {
     return (
         <div className='flex flex-col h-full'>
             <div className='border p-3 rounded-lg w-full h-full flex flex-col justify-between'>
-                <p className="text-[#1D1F2C] font-['Segoe_UI'] text-[18px] font-semibold leading-[160%] pb-2">Pending Approval</p>
+                <p className="text-[#1D1F2C]  text-[18px] font-semibold leading-[160%] pb-2">Pending Approval</p>
 
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-2 h-full'>
@@ -38,10 +38,10 @@ export default function PendingApproval() {
                             return (
                                 <div key={index} className='px-4 pt-4 pb-1 border border-[#DFDFDF] rounded-lg flex flex-col justify-between'>
                                     <div>
-                                        <p className="text-[#777980] font-['Segoe_UI'] text-[14px] font-normal leading-[140%] tracking-[0.07px]">{item.title}</p>
-                                        <p className="text-[#1D1F2C] font-['Segoe_UI'] text-[24px] font-semibold leading-[130%] tracking-[0.12px] py-3">{item.date}</p>
+                                        <p className="text-[#777980]  text-[14px] font-normal leading-[140%] tracking-[0.07px]">{item.title}</p>
+                                        <p className="text-[#1D1F2C]  text-[24px] font-semibold leading-[130%] tracking-[0.12px] py-3">{item.date}</p>
                                     </div>
-                                    <button className="text-primaryColor flex justify-center items-center bg-[#E9FAF7] w-full py-1 rounded-md font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-auto">
+                                    <button className="text-primaryColor flex justify-center items-center bg-[#E9FAF7] w-full py-1 rounded-md  text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-auto">
                                         View Details <ArrowRight className='w-4 h-4 ml-1' />
                                     </button>
                                 </div>
