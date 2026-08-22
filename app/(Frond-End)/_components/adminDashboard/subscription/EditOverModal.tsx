@@ -211,7 +211,7 @@ export default function EditOverModal({
 
                         <button
                             type="submit"
-                            className="h-10 cursor-pointer rounded-lg border border-[#04A1B7] bg-[#E9FAF7] px-5 text-center text-[#04A1B7] font-['Inter'] text-base font-medium leading-[140%] hover:bg-[#DDF7FA]"
+                            className="h-10 cursor-pointer rounded-lg border border-primaryColor bg-[#E9FAF7] px-5 text-center text-primaryColor font-['Inter'] text-base font-medium leading-[140%] hover:bg-[#DDF7FA]"
                         >
                             Save Now
                         </button>

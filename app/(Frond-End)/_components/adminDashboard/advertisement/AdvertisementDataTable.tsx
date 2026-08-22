@@ -339,12 +339,12 @@ export default function AdvertisementTable() {
                             setAddOpen(true);
                             setSelectedJob(null);
 
-                        }} className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto whitespace-nowrap">
+                        }} className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto whitespace-nowrap">
                             <Plus className="h-4 w-4" />
                             Add Item
                         </button>
 
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-white md:w-auto">
+                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
                             <ArrowDownToLine className="h-4 w-4" />
                             Export
                         </button>

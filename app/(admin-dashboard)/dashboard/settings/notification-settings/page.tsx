@@ -205,7 +205,7 @@ export default function NotificationSettings() {
                 <button
                     type="button"
                     onClick={handleSave}
-                    className="cursor-pointer rounded-md bg-[#04A1B7] px-3 py-2 text-[14px] font-semibold text-[#FFF]"
+                    className="cursor-pointer rounded-md bg-primaryColor px-3 py-2 text-[14px] font-semibold text-[#FFF]"
                 >
                     Save Changes
                 </button>
@@ -236,7 +236,7 @@ export default function NotificationSettings() {
                             type="button"
                             onClick={toggleGlobalNotification}
                             className={`relative h-4 w-7 rounded-full transition ${settings.globalEnabled
-                                ? "bg-[#04A1B7]"
+                                ? "bg-primaryColor"
                                 : "bg-[#B6B6B6]"
                                 }`}
                         >
@@ -270,7 +270,7 @@ export default function NotificationSettings() {
                                 }))
                             }
                             className={`relative h-4 w-7 rounded-full transition ${!settings.globalEnabled
-                                ? "bg-[#04A1B7]"
+                                ? "bg-primaryColor"
                                 : "bg-[#B6B6B6]"
                                 }`}
                         >
@@ -371,7 +371,7 @@ export default function NotificationSettings() {
                         type="button"
                         onClick={toggleQuietHours}
                         className={`relative h-4 w-7 rounded-full transition ${settings.quietHours.enabled
-                            ? "bg-[#04A1B7]"
+                            ? "bg-primaryColor"
                             : "bg-[#B6B6B6]"
                             }`}
                     >
@@ -510,7 +510,7 @@ function BooleanCheckbox({
             onClick={onChange}
             aria-pressed={checked}
             className={`flex h-3 w-3 cursor-pointer items-center justify-center rounded-[2px] border ${checked
-                ? "border-[#04A1B7] bg-[#04A1B7]"
+                ? "border-primaryColor bg-primaryColor"
                 : "border-[#B6B6B6] bg-white"
                 }`}
         >

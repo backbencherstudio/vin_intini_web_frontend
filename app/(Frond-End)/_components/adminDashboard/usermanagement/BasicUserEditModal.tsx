@@ -119,7 +119,7 @@ export default function BasicUserEditModal({ data, onClose }: BasicUserEditModal
                         Job Description <span className="text-red-500">*</span>
                     </label>
                     <textarea
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-[#04A1B7] resize-y"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primaryColor resize-y"
                         placeholder="Describe the role, responsibilities, and requirements..."
                         value={formData.jobDescription}
                         onChange={(e) =>
@@ -290,7 +290,7 @@ export default function BasicUserEditModal({ data, onClose }: BasicUserEditModal
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className="border cursor-pointer bg-[#04A1B7] text-white rounded-lg px-4 py-2 hover:bg-[#038a9c]"
+                        className="border cursor-pointer bg-primaryColor text-white rounded-lg px-4 py-2 hover:bg-[#038a9c]"
                         type="button"
                     >
                         Save Now

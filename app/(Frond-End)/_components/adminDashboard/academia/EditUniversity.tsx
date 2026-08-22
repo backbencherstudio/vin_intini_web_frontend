@@ -168,7 +168,7 @@ export default function EditUniversity({ data, onClose }: EditUniversityProps) {
 
                     <div className="flex justify-end gap-2.5 py-4">
                         <button className="border border-[#B6B6B6] rounded-lg px-3 py-2 cursor-pointer " onClick={onClose} type="button"  >Cancel</button>
-                        <button onClick={handleSubmit} className="border cursor-pointer bg-[#04A1B7] text-white rounded-lg px-3 py-2" type="button">Save University</button>
+                        <button onClick={handleSubmit} className="border cursor-pointer bg-primaryColor text-white rounded-lg px-3 py-2" type="button">Save University</button>
                     </div>
                 </div>
             </div>

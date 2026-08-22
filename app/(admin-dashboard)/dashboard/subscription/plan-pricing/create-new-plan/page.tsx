@@ -217,7 +217,7 @@ export default function CreatePlanModal({
                 type="button"
                 onClick={() => handleChange("status", !formData.status)}
                 className={`relative h-6 w-11 rounded-full transition-colors ${
-                  formData.status ? "bg-[#04A1B7]" : "bg-gray-300"
+                  formData.status ? "bg-primaryColor" : "bg-gray-300"
                 }`}
               >
                 <span
@@ -271,7 +271,7 @@ export default function CreatePlanModal({
           type="button"
           onClick={() => handleFeatureToggle(item.key)}
           className={`relative h-6 w-11 rounded-full transition-colors ${
-            features[item.key] ? "bg-[#04A1B7]" : "bg-gray-300"
+            features[item.key] ? "bg-primaryColor" : "bg-gray-300"
           }`}
         >
           <span
@@ -299,7 +299,7 @@ export default function CreatePlanModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="h-10 rounded-lg border border-[#04A1B7] bg-[#E9FAF7] px-5 text-base font-medium text-[#04A1B7] hover:bg-[#DDF7FA] disabled:opacity-60"
+              className="h-10 rounded-lg border border-primaryColor bg-[#E9FAF7] px-5 text-base font-medium text-primaryColor hover:bg-[#DDF7FA] disabled:opacity-60"
             >
               {isSubmitting ? "Saving..." : data ? "Update Now" : "Create Now"}
             </button>

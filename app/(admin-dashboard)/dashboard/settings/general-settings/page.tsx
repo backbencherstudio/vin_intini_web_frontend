@@ -77,7 +77,7 @@ export default function GeneralSettings() {
                 <button
                     type="button"
                     onClick={handleSave}
-                    className="cursor-pointer rounded-lg bg-[#04A1B7] px-4 py-2.5 text-sm font-semibold text-white"
+                    className="cursor-pointer rounded-lg bg-primaryColor px-4 py-2.5 text-sm font-semibold text-white"
                 >
                     Save Changes
                 </button>

@@ -173,7 +173,7 @@ export default function PartnerForm({
                         }
                         placeholder="Enter Description"
                         rows={5}
-                        className="w-full resize-none rounded-lg border border-[#B6B6B6] p-2 text-sm text-[#4A4C56] outline-none focus:border-[#04A1B7]"
+                        className="w-full resize-none rounded-lg border border-[#B6B6B6] p-2 text-sm text-[#4A4C56] outline-none focus:border-primaryColor"
                     />
                 </div>
 
@@ -203,7 +203,7 @@ export default function PartnerForm({
                     <button
                         type="button"
                         onClick={handleSubmit}
-                        className="cursor-pointer rounded-lg border bg-[#04A1B7] px-5 py-2 text-white"
+                        className="cursor-pointer rounded-lg border bg-primaryColor px-5 py-2 text-white"
                     >
                         {mode === "add"
                             ? "Save Information"

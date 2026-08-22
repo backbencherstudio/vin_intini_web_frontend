@@ -117,7 +117,7 @@ export default function DashboardSidebar() {
                         <SidebarMenuButton
                           asChild
                           className={`h-9 rounded-lg ${active
-                            ? "bg-[#D3F4EF] text-[#111827] border border-[#04A1B7]"
+                            ? "bg-[#D3F4EF] text-[#111827] border border-primaryColor"
                             : "text-[#374151] hover:bg-gray-50"
                             }`}
                         >
@@ -141,7 +141,7 @@ export default function DashboardSidebar() {
                               <SidebarMenuButton
                                 asChild
                                 className={`h-8 rounded-md ${active
-                                  ? "bg-[#D3F4EF] text-[#1D1F2C] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] border border-[#04A1B7]"
+                                  ? "bg-[#D3F4EF] text-[#1D1F2C] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] border border-primaryColor"
                                   : "text-[#6B7280] hover:bg-gray-50"
                                   }`}
                               >
@@ -181,7 +181,7 @@ export default function DashboardSidebar() {
             <SidebarMenuButton
               asChild
               className={`h-9 rounded-lg ${pathname === "/dashboard/analytics"
-                ? "bg-[#D3F4EF] text-[#111827] border border-[#04A1B7]"
+                ? "bg-[#D3F4EF] text-[#111827] border border-primaryColor"
                 : "text-[#374151] hover:bg-gray-50"
                 }`}
             >
