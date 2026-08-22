@@ -33,13 +33,13 @@ export default function PsychologySectionActions({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-32 bg-white">
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                     onSelect={() => onEdit?.(section)}
                     className="cursor-pointer"
                 >
                     <Pencil />
                     Edit
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem
                     variant="destructive"
                     onSelect={() => onDelete?.(section)}

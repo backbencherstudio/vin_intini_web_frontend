@@ -17,6 +17,10 @@ interface PsychologySectionCardProps {
     section: PsychologySection;
     onEdit?: (section: PsychologySection) => void;
     onDelete?: (section: PsychologySection) => void;
+    onCreateTab?: (section: PsychologySection) => void;
+    onSeeMore?: (section: PsychologySection) => void;
+    onEditTab?: (section: PsychologySection, tabName: string) => void;
+    onDeleteTab?: (section: PsychologySection, tabName: string) => void;
 }
 
 const badgeStyles: Record<PsychologySection["category"], string> = {
@@ -28,6 +32,10 @@ export default function PsychologySectionCard({
     section,
     onEdit,
     onDelete,
+    onCreateTab,
+    onSeeMore,
+    onEditTab,
+    onDeleteTab,
 }: PsychologySectionCardProps) {
     return (
         <article className="flex min-h-85 flex-col rounded-2xl border border-[#E0E0E0] bg-white p-4 shadow-sm">
@@ -56,7 +64,7 @@ export default function PsychologySectionCard({
                 </p>
 
                 <div className="space-y-3">
-                    {section.subsections.map((subsection) => (
+                    {section.subsections.slice(0, 3).map((subsection) => (
                         <div
                             key={subsection}
                             className="flex w-fit max-w-full items-center rounded-full border border-[#E0E0E0] px-3 py-2 text-sm text-[#4A4C56]"
@@ -67,6 +75,7 @@ export default function PsychologySectionCard({
                                 type="button"
                                 aria-label={`Edit ${subsection}`}
                                 className="shrink-0 rounded p-0.5 hover:bg-gray-100"
+                                onClick={() => onEditTab?.(section, subsection)}
                             >
                                 <Pencil className="h-3.5 w-3.5" />
                             </button>
@@ -74,6 +83,7 @@ export default function PsychologySectionCard({
                                 type="button"
                                 aria-label={`Remove ${subsection}`}
                                 className="ml-1.5 shrink-0 rounded p-0.5 hover:bg-gray-100"
+                                onClick={() => onDeleteTab?.(section, subsection)}
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>
@@ -81,16 +91,21 @@ export default function PsychologySectionCard({
                     ))}
                 </div>
 
-                {section.hasMore && (
+                {(section.hasMore || section.subsections.length > 3) && (
                     <button
                         type="button"
                         className="mt-3 text-xs font-medium text-[#0EA5B7] hover:underline"
+                        onClick={() => onSeeMore?.(section)}
                     >
                         See More +
                     </button>
                 )}
 
-                <CustomButton fullWidth className="mt-4">
+                <CustomButton
+                    fullWidth
+                    className="mt-4"
+                    onClick={() => onCreateTab?.(section)}
+                >
                     Create New Tab
                 </CustomButton>
             </div>

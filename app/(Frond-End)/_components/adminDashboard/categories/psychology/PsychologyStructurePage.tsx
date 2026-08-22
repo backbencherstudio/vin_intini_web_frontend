@@ -1,8 +1,8 @@
 import CustomTitleDescription from '@/components/reusable/dashboard/CustomTitleDes'
-import { PlusIcon } from 'lucide-react'
 import FilterTabs from '@/components/reusable/dashboard/FilterTabs';
-import CustomButton from '@/components/reusable/dashboard/CustomButton';
-import PsychologySectionCard, { PsychologySection } from './PsychologySectionCard';
+import { PsychologySection } from './PsychologySectionCard';
+import PsychologyAddSectionAction from './PsychologyAddSectionAction';
+import PsychologySectionList from './PsychologySectionList';
 
 interface PsychologyStructurePageProps {
     activeTab?: string;
@@ -54,10 +54,7 @@ export default function PsychologyStructurePage({
         { id: "biotechnology", label: "Biotechnology" },
         { id: "psychotropics", label: "Psychotropics" },
     ];
-    const visibleSections = activeTab === "all"
-        ? sections
-        : sections.filter((section) => section.category === activeTab);
-
+    
     return (
         <>
 
@@ -65,12 +62,7 @@ export default function PsychologyStructurePage({
                 <CustomTitleDescription
                     title="Psychology Structure"
                     description="Manage your industry sections and tabs."
-                    action={
-                        <CustomButton size="lg">
-                            <PlusIcon className="h-4 w-4" />
-                            Add New Section
-                        </CustomButton>
-                    }
+                    action={<PsychologyAddSectionAction />}
                 />
             </div>
 
@@ -78,11 +70,7 @@ export default function PsychologyStructurePage({
 
             <FilterTabs tabs={tabs} paramKey="tab" className="my-4" />
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {visibleSections.map((section) => (
-                    <PsychologySectionCard key={section.id} section={section} />
-                ))}
-            </div>
+            <PsychologySectionList sections={sections} activeTab={activeTab} />
 
 
         </>
