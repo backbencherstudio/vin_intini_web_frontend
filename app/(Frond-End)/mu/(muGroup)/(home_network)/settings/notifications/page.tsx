@@ -1,8 +1,12 @@
+import NotificationSettingsPage from "../_component/NotificationSettingsPage";
+
 function page() {
   return (
     <div>
       <div>
-        <div>Notification Settings</div>
+        <div>
+          <NotificationSettingsPage />
+        </div>
       </div>
     </div>
   );

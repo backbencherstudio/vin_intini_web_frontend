@@ -1,13 +1,16 @@
 "use client";
 
-import { Ban, ChevronRight, KeyRound, Lock, Shield } from "lucide-react";
+import { Ban, ChevronRight } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
+import { LockIcon, ProfileVisibiltyIcon } from "@/public/svgIcons/Icons";
+import { BsKey } from "react-icons/bs";
 import GeneralSettingHeader from "./GeneralSettingHeader";
 
 export type GeneralSettingsFormValues = {
@@ -87,22 +90,21 @@ export default function GeneralSettingsPage() {
           </p>
         </div>
 
-        <button
+        <ButtonReuseable
           type="button"
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="bg-[#04A1B7] hover:bg-[#038d9f] text-white px-5 py-2.5 rounded-lg text-base font-semibold transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-50"
-        >
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </button>
+          title="Save Changes"
+          sendingMsg={"Saving..."}
+        />
       </div>
-      <div className="bg-white border border-borderColor rounded-lg p-6 ">
+      <div className="bg-white border border-borderColor rounded-lg p-4 md:p-6 ">
         <GeneralSettingHeader />
       </div>
 
       {/* ----------------- General Settings Form Card ----------------- */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-white border border-borderColor rounded-lg p-6 ">
+        <div className="bg-white border border-borderColor rounded-lg p-4 md:p-6 ">
           <h2 className="text-xl md:text-2xl font-bold text-headerColor mb-5">
             General Settings
           </h2>
@@ -230,18 +232,18 @@ export default function GeneralSettingsPage() {
         </div>
 
         {/* ----------------- Privacy Settings Card ----------------- */}
-        <div className="bg-white border border-borderColor rounded-2xl p-6 ">
+        <div className="bg-white border border-borderColor rounded-lg p-4 md:p-6 ">
           <h2 className="text-lg font-bold text-gray-900 mb-5">Privacy</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 1. Privacy Settings (Dropdown Card) */}
-            <div className="border border-borderColor rounded-xl p-4 flex items-center justify-between gap-3 hover:border-gray-300 transition-colors">
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="p-2 rounded-lg bg-gray-50 text-gray-600 shrink-0">
-                  <Lock className="w-5 h-5" />
+            <div className="border border-borderColor rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 transition-colors">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="">
+                  <LockIcon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base font-semibold text-gray-900">
+                  <h3 className="text-sm md:text-base font-semibold text-gray-900">
                     Privacy Settings
                   </h3>
                   <p className="text-xs text-gray-500 truncate">
@@ -268,13 +270,13 @@ export default function GeneralSettingsPage() {
             </div>
 
             {/* 2. Profile Visibility (Dropdown Card) */}
-            <div className="border border-borderColor rounded-xl p-4 flex items-center justify-between gap-3 hover:border-gray-300 transition-colors">
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="p-2 rounded-lg bg-gray-50 text-gray-600 shrink-0">
-                  <Shield className="w-5 h-5" />
+            <div className="border border-borderColor rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 transition-colors">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className=" ">
+                  <ProfileVisibiltyIcon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base font-semibold text-gray-900">
+                  <h3 className="text-sm md:text-base font-semibold text-gray-900">
                     Profile Visibility
                   </h3>
                   <p className="text-xs text-gray-500 truncate">
@@ -305,14 +307,14 @@ export default function GeneralSettingsPage() {
               onClick={() => {
                 /* Navigate to block list */
               }}
-              className="border border-gray-200/80 rounded-xl p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
+              className="border border-gray-200/80 rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
             >
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="p-2 rounded-lg bg-gray-50 text-gray-600 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="">
                   <Ban className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base font-semibold text-gray-900">
+                  <h3 className="text-sm md:text-base font-semibold text-gray-900">
                     Block Lists
                   </h3>
                   <p className="text-xs text-gray-500 truncate">
@@ -329,14 +331,14 @@ export default function GeneralSettingsPage() {
               onClick={() => {
                 /* Open Change Password Modal */
               }}
-              className="border border-gray-200/80 rounded-xl p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
+              className="border border-gray-200/80 rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
             >
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="p-2 rounded-lg bg-gray-50 text-gray-600 shrink-0">
-                  <KeyRound className="w-5 h-5" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="">
+                  <BsKey className="w-6 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base font-semibold text-gray-900">
+                  <h3 className="text-sm md:text-base font-semibold text-gray-900">
                     Change Password
                   </h3>
                   <p className="text-xs text-gray-500 truncate">
