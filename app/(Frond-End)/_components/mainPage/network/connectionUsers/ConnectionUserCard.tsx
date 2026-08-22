@@ -29,7 +29,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
     }
   };
 
-  console.log(profile, "profile=========");
+
 
   return (
     <div>
@@ -54,7 +54,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
             </div>
             <div className="text-center">
               <Link
-                href={`/mu/profile/${user?.id}`}
+                href={`/mu/profile/${user?.username}`}
                 className="mt-3 line-clamp-2  text-base font-semibold leading-[1.2] text-headerColor"
               >
                 {user?.name}

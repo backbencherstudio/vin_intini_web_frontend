@@ -43,7 +43,7 @@ function ProfileUserConnectCard({ profile }: any) {
 
           <div className="min-w-0 flex-1">
             <Link
-              href={`/mu/profile/${user?.id}`}
+              href={`/mu/profile/${user?.username}`}
               className="truncate text-base  font-semibold leading-[1.2] text-headerColor"
             >
               {user?.name}

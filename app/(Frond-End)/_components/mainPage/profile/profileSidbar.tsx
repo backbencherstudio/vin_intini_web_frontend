@@ -8,7 +8,6 @@ function ProfileSidebar() {
     "my-connection-suggestions",
   );
   const peopleYouMayKnow = data?.data?.slice(0, 6);
-  console.log(peopleYouMayKnow, "peopleYouMayKnow======");
 
   return (
     <aside className="w-full  bg-white  py-3">

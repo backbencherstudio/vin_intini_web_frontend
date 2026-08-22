@@ -81,7 +81,7 @@ function PostCard({ post, meta }: PostCardProps) {
                   {/* <span className="text-primaryColor">{group ? group?.name : ""}</span> */}
                 </Link>
                 <Link
-                  href={`/mu/profile/${user?.id}`}
+                  href={`/mu/profile/${user?.username}`}
                   className="line-clamp-1 text-sm leading-5 text-descriptionColor"
                 >
                   {user?.first_name + " " + user?.last_name ||
@@ -106,7 +106,7 @@ function PostCard({ post, meta }: PostCardProps) {
               </div>
               <div>
                 <Link
-                  href={`/mu/profile/${user?.id}`}
+                  href={`/mu/profile/${user?.username}`}
                   className="line-clamp-1 text-base font-semibold leading-5 text-headerColor"
                 >
                   {user?.first_name + " " + user?.last_name || "Vin Intini"}{" "}
