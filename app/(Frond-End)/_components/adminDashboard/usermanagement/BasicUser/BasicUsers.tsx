@@ -7,93 +7,16 @@ import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 
 import { useState } from "react";
-import JobDetails from "./BasicUserDetailsModal";
+import JobDetails from "./BasicUserDetails";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowDownToLine, ArrowUpDown, Download, SearchIcon } from "lucide-react";
+import { ArrowDownToLine, ArrowUpDown, Download, EditIcon, Eye, SearchIcon, Trash2 } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import BasicUserEditModal from "./BasicUserEditModal";
-
-type Job = {
-    id: number;
-    img: string;
-    name: string;
-    subscription: string;
-    email: string;
-    profession: string;
-    connections: string;
-    status: string;
-    joined: string;
-};
-
-const initialJobs: Job[] = [
-    {
-        id: 1,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 2,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 3,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 4,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 5,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 6,
-        img: userIcon.src,
-        name: "Clinical Psychologist",
-        subscription: "Basic",
-        email: "rachel@gmail.com",
-        profession: "Clinical Psychologist",
-        connections: "125",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-];
+import { DeletIcon, ViewIcon } from "@/public/svgIcons/AdminIcon";
+import { EditeIcon } from "@/public/svgIcons/Icons";
+import Link from "next/link";
+import { initialJobs, Job } from "./BasicUserDemoData";
 
 export default function BasicUser() {
     const [jobs, setJobs] = useState<Job[]>(initialJobs);
@@ -203,6 +126,37 @@ export default function BasicUser() {
                 </span>
             ),
         },
+         {
+    header: "Actions",
+    cell: (row) => (
+        <div className="flex items-center gap-3">
+            {/* View */}
+            <Link href={`/dashboard/user-management/basic-user/${row.id}`}
+                className="cursor-pointer"
+            >
+                <ViewIcon className="w-4 h-4" />
+            </Link>
+
+            {/* Edit */}
+            <button
+                type="button"
+                onClick={() => openEdit(row)}
+                className="cursor-pointer"
+            >
+                <EditeIcon className="w-4 h-4" />
+            </button>
+
+            {/* Delete */}
+            <button
+                type="button"
+                onClick={() => openDelete(row)}
+                className="cursor-pointer"
+            >
+                <DeletIcon className="w-4 h-4" />
+            </button>
+        </div>
+    ),
+},
     ];
 
     return (
@@ -274,13 +228,12 @@ export default function BasicUser() {
                     columns={columns}
                     data={jobs}
                     defaultPageSize={10}
-                    onView={openView}
-                    onEdit={openEdit}
-                    onDelete={openDelete}
+                   
                 />
 
+
                 {/* View Job Details */}
-                <CustomModal
+                {/* <CustomModal
                     open={viewOpen}
                     onOpenChange={setViewOpen}
                     showCloseButton={false}
@@ -292,7 +245,7 @@ export default function BasicUser() {
                             onClose={() => setViewOpen(false)}
                         />
                     )}
-                </CustomModal>
+                </CustomModal> */}
 
                 {/* Edit Job */}
                 <CustomModal

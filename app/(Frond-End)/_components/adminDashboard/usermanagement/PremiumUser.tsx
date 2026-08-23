@@ -7,7 +7,7 @@ import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 
 import { useState } from "react";
-import JobDetails from "./BasicUserDetailsModal";
+import JobDetails from "./BasicUser/BasicUserDetails";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowDownToLine, ArrowUpDown, Download, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";

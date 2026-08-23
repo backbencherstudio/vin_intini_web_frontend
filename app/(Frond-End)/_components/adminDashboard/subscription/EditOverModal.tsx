@@ -100,17 +100,12 @@ export default function EditOverModal({
 
                     {/* Next Billing Date + Update Billing Date */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <CustomInput
-                            label="Next Billing Date"
+                       <DateRangePicker
+                            label="Update Billing Date"
                             required
-                            placeholder="Select date"
-                            value={formData.nextBillingDate}
-                            onChange={(e) =>
-                                handleChange(
-                                    "nextBillingDate",
-                                    e.target.value
-                                )
-                            }
+                            date={date}
+                            setDate={setDate}
+                            placeholder="Select date range"
                         />
 
                         <DateRangePicker

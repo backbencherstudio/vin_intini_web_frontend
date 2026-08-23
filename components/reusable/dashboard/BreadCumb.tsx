@@ -30,7 +30,10 @@ const nonClickableRoutes = [
 export default function Breadcrumb() {
     const pathname = usePathname();
 
-    const parts = pathname.split("/").filter(Boolean);
+    const parts = pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((part) => !/^\d+$/.test(part));
 
     return (
         <div className="flex items-center gap-2 text-sm">
