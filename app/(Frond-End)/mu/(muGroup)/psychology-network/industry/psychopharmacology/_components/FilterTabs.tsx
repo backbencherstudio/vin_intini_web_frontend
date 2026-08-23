@@ -15,7 +15,7 @@ export const FilterTabs = ({
 }: FilterTabsProps) => {
   return (
     <div className="w-full">
-      <div className="w-full overflow-x-auto border-y border-[#E0E0E1] scrollbar-primary">
+      <div className=" overflow-x-auto border-y bg-white w-full border-[#E0E0E1] scrollbar-primary">
         <div className="flex flex-nowrap">
         <button
           onClick={() => onFilterChange("all")}
