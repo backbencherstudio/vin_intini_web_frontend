@@ -99,6 +99,16 @@ function MessageRoot() {
 
     const handleMessageSent = async (data: any) => {
       const newMsg = data?.message?.id ? data.message : data;
+
+      // Skip own messages (already handled by optimistic send + API response)
+      if (
+        !newMsg?.id ||
+        newMsg.is_mine ||
+        newMsg.sender_id === profileData?.user?.id
+      ) {
+        return;
+      }
+
       setChatMessages((prev) => {
         if (!newMsg?.id || prev.some((m) => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
@@ -149,7 +159,7 @@ function MessageRoot() {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       echo.leave(channelName);
     };
-  }, [conversationId, dispatch]);
+  }, [conversationId, dispatch, profileData?.user?.id]);
 
   // Throttled Typing Whisper Sender
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -274,8 +284,8 @@ function MessageRoot() {
 
   return (
     <div>
-      <div className="h-full bg-white">
-        <div className="border md:ml-4 rounded-2xl w-full flex flex-col">
+      <div className="h-full md:pl-4 bg-white">
+        <div className="border  rounded-2xl w-full flex flex-col">
           <>
             {/* Header */}
             <MessageSectionHeader

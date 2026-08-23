@@ -14,7 +14,9 @@ export const EquipmentCard = ({
   priority = false,
 }: EquipmentCardProps) => {
   return (
-    <div className="flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pb-2 pr-px">
+    <div
+      className={`flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white ${card.image ? "pt-0" : "pt-2"} pb-2 pr-px`}
+    >
       {card.image && (
         <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
           <Image
