@@ -1,3 +1,4 @@
+import { CorrectIcon } from "@/public/svgIcons/AdminIcon";
 import { ShieldCheck } from "lucide-react";
 
 interface SecurityOverviewProps {
@@ -16,7 +17,7 @@ function SecurityStatus({
   return (
     <div className="flex items-center justify-between border-b border-[#F1F1F1] p-4 last:border-0">
       <div className="flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-[#04A1B7]" />
+       <CorrectIcon/>
 
         <span className="overflow-hidden text-headerColor text-ellipsis text-sm font-semibold leading-[140%] tracking-[0.07px]
 ">
@@ -51,11 +52,28 @@ export default function SecurityOverview({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[328px_1fr]">
         {/* Security Score */}
         <div className="flex flex-col items-center justify-center border p-6 rounded-sm">
-          <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-[10px] border-[#D9F4F7]">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04A1B7] text-white">
-              <ShieldCheck size={25} />
-            </div>
-          </div>
+          <div className="relative flex h-48 w-48 items-center justify-center">
+  {/* Progress Circle */}
+  <div
+    className="absolute inset-0 rounded-full"
+    style={{
+      background:
+        "conic-gradient(#04A1B7 0deg 200deg, #D9F4F7 200deg 360deg)",
+    }}
+  />
+
+  {/* Inner Background */}
+  <div className="absolute inset-[10px] rounded-full bg-[#E6F6F8]" />
+
+  {/* Icon */}
+  <div className="relative flex h-28 w-28 items-center justify-center">
+    <ShieldCheck
+      className="text-primaryColor"
+      size={48}
+      strokeWidth={2}
+    />
+  </div>
+</div>
 
           <p className="mt-1 text-[#4A4C56] font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px]
 ">

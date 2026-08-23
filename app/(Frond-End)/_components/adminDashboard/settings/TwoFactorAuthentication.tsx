@@ -28,7 +28,7 @@ export default function TwoFactorAuthentication({
         Add an extra layer of security to your account.
       </p>
 
-   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+   <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-4">
        <div className="mt-5 border flex flex-col items-center gap-5 md:flex-row p-6 rounded-sm">
         <div className="flex h-50 w-50 shrink-0 items-center justify-center rounded-full ">
           <AdLockIcon

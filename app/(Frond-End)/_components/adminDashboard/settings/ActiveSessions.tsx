@@ -92,7 +92,7 @@ export default function ActiveSessions() {
           >
             <div className="flex h-8 w-8 shrink-0 items-center justify-center ">
               <Monitor
-                size={15}
+                size={24}
                 className="text-black"
               />
             </div>
@@ -125,7 +125,7 @@ export default function ActiveSessions() {
               disabled={session.current}
               className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <MoreHorizontal size={17} />
+              <MoreHorizontal size={17} className="text-[#000]" />
             </button>
           </div>
         ))}
