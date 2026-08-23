@@ -225,7 +225,7 @@ export default function OverViewTable() {
         {
             header: "Joined",
             cell: (row) => (
-                <span className="text-[14px] font-normal text-[#0A0A0A]">
+                <span className="text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.joined}
                 </span>
             ),

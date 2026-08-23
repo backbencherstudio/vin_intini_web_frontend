@@ -86,7 +86,7 @@ export default function GeneralSettings() {
             {/* General Settings */}
             <div className="mt-4 rounded-xl border border-[#E1E1E1] p-3.5">
 
-                <h2 className="text-[#1D1F2C]  text-[24px] font-semibold leading-[130%] tracking-[0.12px] mb-4">
+                <h2 className="text-headerColor  text-[24px] font-semibold leading-[130%] tracking-[0.12px] mb-4">
                     General Settings
                 </h2>
 

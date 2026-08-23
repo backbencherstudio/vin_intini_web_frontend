@@ -58,7 +58,7 @@ export default function StatusCard() {
 
 
                             </div>
-                            <p className="text-[#1D1F2C] font-['Segoe_UI'] text-[32px] font-semibold leading-[130%] py-3">
+                            <p className="text-headerColor font-['Segoe_UI'] text-[32px] font-semibold leading-[130%] py-3">
                                 {item.value}
                             </p>
 

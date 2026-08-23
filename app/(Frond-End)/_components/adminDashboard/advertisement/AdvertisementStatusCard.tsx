@@ -81,7 +81,7 @@ export default function AdvertisementStatusCard() {
 
 
                             </div>
-                            <p className="text-[#1D1F2C]  text-[32px] font-semibold leading-[130%] py-3">
+                            <p className="text-headerColor  text-[32px] font-semibold leading-[130%] py-3">
                                 {item.value}
                             </p>
 

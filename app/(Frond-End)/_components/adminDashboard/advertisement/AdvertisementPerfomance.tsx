@@ -87,7 +87,7 @@ export default function AdvertisementPerformance() {
                             {item.title}
                         </p>
 
-                        <p className="mt-1 text-[#1D1F2C]  text-[24px] not-italic font-semibold leading-[31.2px] tracking-[0.12px]">
+                        <p className="mt-1 text-headerColor  text-[24px] not-italic font-semibold leading-[31.2px] tracking-[0.12px]">
                             {item.value}
                         </p>
                     </div>

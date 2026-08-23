@@ -159,7 +159,7 @@ export default function PartnerForm({
 
                 {/* Description */}
                 <div className="space-y-2">
-                    <label className="text-[#4A4C56] text-sm font-semibold">
+                    <label className="text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] ">
                         Description
                     </label>
 
@@ -173,7 +173,7 @@ export default function PartnerForm({
                         }
                         placeholder="Enter Description"
                         rows={5}
-                        className="w-full resize-none rounded-lg border border-[#B6B6B6] p-2 text-sm text-[#4A4C56] outline-none focus:border-primaryColor"
+                        className="w-full resize-none rounded-lg mt-1 border border-[#B6B6B6] p-2 text-sm text-[#4A4C56] outline-none focus:border-primaryColor"
                     />
                 </div>
 

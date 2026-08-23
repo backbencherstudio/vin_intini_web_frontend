@@ -106,7 +106,7 @@ export default function DashboardSidebar() {
                         >
                           <Icon className="h-4 w-4" />
 
-                          <span className="text-[#1D1F2C]  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
+                          <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
 
                           <ChevronDown
                             className={`ml-auto h-4 w-4 ${isOpen ? "rotate-180" : ""
@@ -123,7 +123,7 @@ export default function DashboardSidebar() {
                         >
                           <Link href={item.href!} onClick={() => { if (isMobile) setOpenMobile(false); }}>
                             <Icon className="h-4 w-4" />
-                            <span className="text-[#1D1F2C]  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
+                            <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
                           </Link>
                         </SidebarMenuButton>
                       )}
@@ -141,7 +141,7 @@ export default function DashboardSidebar() {
                               <SidebarMenuButton
                                 asChild
                                 className={`h-8 rounded-md ${active
-                                  ? "bg-[#D3F4EF] text-[#1D1F2C]  text-base font-semibold leading-6 tracking-[0.08px] border border-primaryColor"
+                                  ? "bg-[#D3F4EF] text-headerColor  text-base font-semibold leading-6 tracking-[0.08px] border border-primaryColor"
                                   : "text-[#6B7280] hover:bg-gray-50"
                                   }`}
                               >
@@ -154,7 +154,7 @@ export default function DashboardSidebar() {
                                   }}
                                 >
                                   <ChildIcon className="h-3.5 w-3.5" />
-                                  <span className="text-[#1D1F2C]  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{child.name}</span>
+                                  <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{child.name}</span>
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -192,7 +192,7 @@ export default function DashboardSidebar() {
                 }}
               >
                 <BarChart3 className="h-4 w-4" />
-                <span className="text-[#1D1F2C]  text-[16px] font-normal leading-[24px] tracking-[0.08px]">
+                <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">
                   Analytics
                 </span>
               </Link>

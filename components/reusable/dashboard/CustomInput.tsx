@@ -40,7 +40,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                     ref={ref}
                     id={inputId}
                     className={`
-            w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900
+            w-full rounded-lg border border-gray-300  px-3.5 py-3 text-sm text-gray-900
             placeholder:text-gray-400
             focus:outline-none  focus:border-gray-500
             disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed

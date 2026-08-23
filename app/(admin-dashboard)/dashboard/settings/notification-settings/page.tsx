@@ -192,7 +192,7 @@ export default function NotificationSettings() {
             {/* Header */}
             <div className="flex items-start justify-between border-b border-[#EEEEEE] pb-3">
                 <div>
-                    <h1 className="text-[#1D1F2C]  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
+                    <h1 className="text-headerColor  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
                         Notification Settings
                     </h1>
 
@@ -217,7 +217,7 @@ export default function NotificationSettings() {
                 <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-4">
 
                     <div>
-                        <h2 className="text-[#1D1F2C]  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+                        <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
                             Notification Preferences
                         </h2>
 
@@ -357,7 +357,7 @@ export default function NotificationSettings() {
                 <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-2">
 
                     <div>
-                        <h2 className="text-[#1D1F2C]  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+                        <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
                             Quiet Hours
                         </h2>
 

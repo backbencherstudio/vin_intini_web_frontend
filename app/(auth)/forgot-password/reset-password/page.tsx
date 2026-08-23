@@ -67,7 +67,7 @@ export default function page() {
           <div>
             <label
               htmlFor="new-password"
-              className="block text-sm font-medium text-[#1D1F2C] mb-2"
+              className="block text-sm font-medium text-headerColor mb-2"
             >
               New Password
             </label>
@@ -100,7 +100,7 @@ export default function page() {
           <div>
             <label
               htmlFor="confirm-password"
-              className="block text-sm font-medium text-[#1D1F2C] mb-2"
+              className="block text-sm font-medium text-headerColor mb-2"
             >
               Confirm New Password
             </label>
