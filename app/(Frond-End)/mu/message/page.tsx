@@ -11,7 +11,7 @@ function page() {
       <div >
 
         <div className="flex flex-col justify-center p-4 w-full md:p-6 items-center">
-          <div className="h-135 flex flex-col px-4 max-w-134.75 w-full items-center justify-center gap-2">
+          <div className="h-135 flex flex-col px-4  w-full items-center justify-center gap-2">
             <BsEmojiFrown size={24} />
             <p className="text-center text-headerColor font-semibold">
               You don’t have any messages at the moment.

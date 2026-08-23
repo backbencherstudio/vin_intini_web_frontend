@@ -274,8 +274,8 @@ function MessageRoot() {
 
   return (
     <div>
-      <div className="h-full bg-white">
-        <div className="border md:ml-4 rounded-2xl w-full flex flex-col">
+      <div className="h-full md:pl-4 bg-white">
+        <div className="border  rounded-2xl w-full flex flex-col">
           <>
             {/* Header */}
             <MessageSectionHeader
