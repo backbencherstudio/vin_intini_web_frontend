@@ -169,7 +169,7 @@ function UserHeaderInfo() {
           </Link>
 
           <div className="  relative sm:ml-0">
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">

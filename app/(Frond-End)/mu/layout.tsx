@@ -1,13 +1,16 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { headers } from "next/headers";
 import React from "react";
 import RootProtectedLayout from "../_components/RootProtectedLayout";
 
-function layout({ children }: { children: React.ReactNode }) {
+async function layout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+
   return (
-    <div className="bg-bgLightColor">
-      <RootProtectedLayout>
-       {children}
-      </RootProtectedLayout>
+    <div
+      className={`${pathname === "/mu/profile" ? "bg-white" : "bg-bgLightColor"}`}
+    >
+      <RootProtectedLayout>{children}</RootProtectedLayout>
     </div>
   );
 }

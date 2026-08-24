@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useDeleteMessageMutation,
   useReactForeMessageMutation,
@@ -368,13 +369,20 @@ function MessageRoot() {
     <div>
       <div className="h-full md:pl-4 bg-white">
         <div className="border rounded-2xl w-full flex flex-col">
-          {
-          
-          }
-          <MessageSectionHeader
-            conversationList={conversation}
-            isOtherUserTyping={isOtherUserTyping}
-          />
+          {isFetchingMore ? (
+            <div className="flex items-center p-3 gap-3 rounded-xl">
+              <Skeleton className="h-10 w-10" />
+              <div>
+                <Skeleton className="h-4 w-32 mt-2" />
+                <Skeleton className="h-3 w-20 mt-1" />
+              </div>
+            </div>
+          ) : (
+            <MessageSectionHeader
+              conversationList={conversation}
+              isOtherUserTyping={isOtherUserTyping}
+            />
+          )}
 
           <div
             ref={containerRef}
