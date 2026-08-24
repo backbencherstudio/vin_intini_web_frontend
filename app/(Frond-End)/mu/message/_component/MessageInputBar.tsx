@@ -9,12 +9,15 @@ import {
   type KeyboardEvent,
 } from "react";
 import { IoClose } from "react-icons/io5";
+import { getMessagePreview } from "./MessageBubble";
 import { useVoiceRecorder } from "./useVoiceRecorder";
 
 interface MessageInputBarProps {
   isConnected: boolean;
   sending: boolean;
+  replyTo: any;
   onTyping: () => void;
+  onCancelReply: () => void;
   onSendText: (content: string, file: File | null) => void;
   onSendVoice: (blob: Blob) => void;
 }
@@ -22,7 +25,9 @@ interface MessageInputBarProps {
 export default function MessageInputBar({
   isConnected,
   sending,
+  replyTo,
   onTyping,
+  onCancelReply,
   onSendText,
   onSendVoice,
 }: MessageInputBarProps) {
@@ -96,6 +101,25 @@ export default function MessageInputBar({
         className="hidden"
         onChange={handleFileChange}
       />
+
+      {replyTo && (
+        <div className="flex items-center gap-2 bg-[#F3F4F6] border-l-4 border-primaryColor rounded-r-lg px-3 py-2 text-xs mb-2">
+          <div className="min-w-0">
+            <span className="block font-medium text-headerColor">
+              Replying to {replyTo.is_mine ? "your own message" : "message"}
+            </span>
+            <span className="block truncate text-descriptionColor">
+              {getMessagePreview(replyTo)}
+            </span>
+          </div>
+          <button
+            onClick={onCancelReply}
+            className="ml-auto text-red-500 cursor-pointer shrink-0"
+          >
+            <IoClose className="text-base" />
+          </button>
+        </div>
+      )}
 
       {attachments && (
         <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-lg px-3 py-2 text-xs max-w-45 mb-2">

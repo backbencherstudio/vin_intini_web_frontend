@@ -1,13 +1,23 @@
 "use client";
 
 import {
+  useDeleteMessageMutation,
   useReactForeMessageMutation,
   useSendMessageMutation,
 } from "@/feature/slice/message/messageSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useRef, type UIEvent } from "react";
-import MessageBubble from "./MessageBubble";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type UIEvent,
+} from "react";
+import MessageBubble, { getMessagePreview } from "./MessageBubble";
+import MessageContextMenu from "./MessageContextMenu";
 import MessageInputBar from "./MessageInputBar";
 import MessageSectionHeader from "./MessageSectionHeader";
 import TypingIndicator from "./TypingIndicator";
@@ -31,7 +41,17 @@ function MessageRoot() {
 
   const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
   const [reactForeMessage] = useReactForeMessageMutation();
+  const [deleteMessage] = useDeleteMessageMutation();
   const canLoadMoreRef = useRef(true);
+
+  const [replyTo, setReplyTo] = useState<any>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    msg: any;
+    x: number;
+    y: number;
+  } | null>(null);
+  const [highlightedId, setHighlightedId] = useState<any>(null);
+  const highlightTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     containerRef,
@@ -58,6 +78,69 @@ function MessageRoot() {
     markConversationRead,
     loadOlderPage,
   } = useConversationMessages(conversationId, handleInitialLoad);
+
+  useEffect(() => {
+    setReplyTo(null);
+    setContextMenu(null);
+  }, [conversationId]);
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+    };
+  }, []);
+
+  const messagesById = useMemo(() => {
+    const map = new Map<number, any>();
+    chatMessages.forEach((m: any) => map.set(Number(m.id), m));
+    return map;
+  }, [chatMessages]);
+
+  const getReplyText = useCallback(
+    (replyId: any) => {
+      const found = messagesById.get(Number(replyId));
+      return found ? getMessagePreview(found) : "Original message";
+    },
+    [messagesById],
+  );
+
+  const handleMessageContextMenu = useCallback(
+    (msg: any) => (e: MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setContextMenu({ msg, x: e.clientX, y: e.clientY });
+    },
+    [],
+  );
+
+  const handleCloseContextMenu = useCallback(() => setContextMenu(null), []);
+
+  const handleMenuReply = useCallback(() => {
+    if (!contextMenu) return;
+    setReplyTo(contextMenu.msg);
+    setContextMenu(null);
+  }, [contextMenu]);
+
+  const handleMenuDelete = useCallback(async () => {
+    if (!contextMenu) return;
+    const id = contextMenu.msg.id;
+    setContextMenu(null);
+    if (replyTo?.id === id) setReplyTo(null);
+    try {
+      await deleteMessage(id).unwrap();
+      removeMessage(id);
+    } catch (error) {
+      console.error("Failed to delete message", error);
+    }
+  }, [contextMenu, deleteMessage, removeMessage, replyTo]);
+
+  const jumpToMessage = useCallback((targetId: any) => {
+    const el = document.getElementById(`message-${targetId}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setHighlightedId(targetId);
+    if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+    highlightTimeoutRef.current = setTimeout(() => setHighlightedId(null), 1500);
+  }, []);
 
   const handleIncomingMessage = useCallback(
     async (data: any) => {
@@ -153,7 +236,16 @@ function MessageRoot() {
         file_extension: file ? file.name.split(".").pop() : null,
         file_category: getFileCategory(file),
         duration: null,
-        reply_to: null,
+        reply_to_id: replyTo?.id ?? null,
+        reply_to: replyTo
+          ? {
+              id: replyTo.id,
+              message: replyTo.message,
+              type: replyTo.type,
+              file_name: replyTo.file_name,
+              is_mine: replyTo.is_mine,
+            }
+          : null,
         reactions: [],
         created_at: new Date().toISOString(),
       });
@@ -163,6 +255,10 @@ function MessageRoot() {
       formData.append("type", file ? "file" : "text");
       formData.append("message", content);
       if (file) formData.append("file", file);
+      if (replyTo?.id != null) {
+        formData.append("reply_to_id", String(replyTo.id));
+      }
+      setReplyTo(null);
 
       sendMessage({ conversationId, data: formData })
         .unwrap()
@@ -183,6 +279,7 @@ function MessageRoot() {
       currentUserId,
       removeMessage,
       replaceMessage,
+      replyTo,
       scrollToBottom,
       sendMessage,
     ],
@@ -248,8 +345,13 @@ function MessageRoot() {
               <MessageBubble
                 key={msg.id}
                 msg={msg}
+                highlighted={highlightedId === msg.id}
+                otherUserName={conversation?.other_user?.name}
                 onReact={handleReactMessage}
                 onViewFile={handleViewFile}
+                onContextMenu={handleMessageContextMenu(msg)}
+                onJumpToReply={jumpToMessage}
+                getReplyText={getReplyText}
               />
             ))}
 
@@ -259,12 +361,25 @@ function MessageRoot() {
           <MessageInputBar
             isConnected={Boolean(conversation?.other_user?.is_connected)}
             sending={sendingMessage}
+            replyTo={replyTo}
             onTyping={whisperTyping}
+            onCancelReply={() => setReplyTo(null)}
             onSendText={handleSendText}
             onSendVoice={handleSendVoice}
           />
         </div>
       </div>
+
+      {contextMenu && (
+        <MessageContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          canDelete={Boolean(contextMenu.msg.is_mine)}
+          onClose={handleCloseContextMenu}
+          onReply={handleMenuReply}
+          onDelete={handleMenuDelete}
+        />
+      )}
     </div>
   );
 }
