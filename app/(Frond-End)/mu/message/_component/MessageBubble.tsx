@@ -48,7 +48,6 @@ function ReplyReference({
     (reply ? getMessagePreview(reply) : "") ||
     getReplyText?.(replyId) ||
     "Original message";
-
   const authorLabel = reply?.is_mine ? "You" : otherUserName || "Message";
 
   return (
@@ -63,6 +62,7 @@ function ReplyReference({
         className={`w-0.75 shrink-0 rounded-full ${
           variant === "sender" ? "bg-white" : "bg-primaryColor"
         }`}
+
       />
       <div className="flex-1 min-w-0 bg-bgColor px-2 py-1">
         <span className="block text-[11px] font-semibold text-headerColor leading-tight">
