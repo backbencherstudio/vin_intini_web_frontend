@@ -288,17 +288,59 @@ function MessageRoot() {
   const handleSendVoice = useCallback(
     async (blob: Blob) => {
       if (!conversationId) return;
+
+      const tempId = Date.now();
+      const objectUrl = URL.createObjectURL(blob);
+
+      appendMessage({
+        id: tempId,
+        conversation_id: Number(conversationId),
+        sender_id: currentUserId,
+        is_mine: true,
+        type: "voice",
+        message: null,
+        file_url: objectUrl,
+        file_name: "voice-message.mp3",
+        file_size: blob.size,
+        file_extension: "mp3",
+        file_category: "audio",
+        duration: null,
+        reply_to_id: null,
+        reply_to: null,
+        reactions: [],
+        created_at: new Date().toISOString(),
+      });
+      requestAnimationFrame(() => scrollToBottom());
+
       const formData = new FormData();
       formData.append("type", "voice");
       formData.append("message", "");
       formData.append("file", blob, "voice-message.mp3");
+
       try {
-        await sendMessage({ conversationId, data: formData }).unwrap();
+        const response: any = await sendMessage({
+          conversationId,
+          data: formData,
+        }).unwrap();
+
+        const serverMsg = response?.data || response?.message;
+        if (serverMsg?.id) {
+          replaceMessage(tempId, { ...serverMsg, is_mine: true });
+        }
       } catch (error) {
         console.error("Failed to send voice message", error);
+        removeMessage(tempId);
       }
     },
-    [conversationId, sendMessage],
+    [
+      appendMessage,
+      conversationId,
+      currentUserId,
+      removeMessage,
+      replaceMessage,
+      scrollToBottom,
+      sendMessage,
+    ],
   );
 
   const handleReactMessage = useCallback(
