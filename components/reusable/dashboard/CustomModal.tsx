@@ -63,14 +63,31 @@ export default function CustomModal(props: CustomModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                // showCloseButton={false}
                 className={clsx(
                     "flex flex-col items-start gap-6 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-4 md:py-8 rounded-2xl",
-                    // Allow max-h-[90vh] across ALL screens (including md and up)
                     "max-h-[95vh] overflow-hidden",
                     sizeClasses[size],
                     className
                 )}
+                // onPointerDownOutside={(event) => {
+                //     const target = event.target as HTMLElement | null;
+                //     if (
+                //         target?.closest("[data-slot='select-content']") ||
+                //         target?.closest("[data-radix-select-content]") ||
+                //         target?.closest("[data-radix-popper-content-wrapper]")
+                //     ) {
+                //         event.preventDefault();
+                //     }
+                // }}
+                // onFocusOutside={(event) => {
+                //     const target = event.target as HTMLElement | null;
+                //     if (
+                //         target?.closest("[data-slot='select-content']") ||
+                //         target?.closest("[data-radix-select-content]")
+                //     ) {
+                //         event.preventDefault();
+                //     }
+                // }}
             >
                 {/* Header Section */}
                 <div className="flex justify-between items-center w-full px-3">
