@@ -4,6 +4,7 @@ import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import baseApiSlice from "@/feature/slice/baseApi";
 import {
   useGetConversationMessagesQuery,
+  useLazyGetConversationMessagesQuery,
   useMarkReadMessageMutation,
   useReactForeMessageMutation,
   useSendMessageMutation,
@@ -13,7 +14,7 @@ import echo from "@/lib/echo";
 import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { UIEvent, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import MessageFileRenderer from "./MessageFileRenderer";
@@ -26,12 +27,19 @@ function MessageRoot() {
   const params = useParams();
   const conversationId = params?.id as string;
   const { data: profileData } = useGetUserProfileQuery("profile");
-  const { data: conversationList } = useGetConversationMessagesQuery(
-    conversationId,
-    {
-      skip: !conversationId,
-    },
-  );
+  const [fetchMessages, { isFetching: isFetchingMore }] =
+  useLazyGetConversationMessagesQuery();
+const [conversationList, setConversationList] = useState<any>(null);
+const [nextCursor, setNextCursor] = useState<string | null>(null);
+const [hasMore, setHasMore] = useState<boolean>(false);
+const currentUserId = profileData?.user?.id;
+ const currentUserIdRef = useRef(currentUserId);
+
+useEffect(() => {
+  currentUserIdRef.current = currentUserId;
+}, [currentUserId]);
+
+  
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
   const [markReadMessage] = useMarkReadMessageMutation();
@@ -45,7 +53,10 @@ function MessageRoot() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-
+  const previousScrollStateRef = useRef<{
+    height: number;
+    top: number;
+  } | null>(null);
   // Send Voice Message Handler
   const handleSendVoice = async (blob: Blob) => {
     if (!conversationId) return;
@@ -81,15 +92,107 @@ function MessageRoot() {
       });
     }
   };
-
+    // ১. Initial Load on Conversation Change
   useEffect(() => {
-    const id = requestAnimationFrame(() => scrollToBottom());
-    return () => cancelAnimationFrame(id);
-  }, [conversationId, chatMessages?.length, isOtherUserTyping]);
+    if (!conversationId) return;
+
+    setChatMessages([]);
+    setNextCursor(null);
+    setHasMore(false);
+
+    fetchMessages(conversationId)
+      .unwrap()
+      .then((res: any) => {
+        setConversationList(res);
+        setChatMessages(res?.data || []);
+        setNextCursor(res?.next_cursor || null);
+        setHasMore(Boolean(res?.has_more || res?.next_cursor));
+
+        // Initial scroll to bottom
+        requestAnimationFrame(() => {
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop =
+              messagesContainerRef.current.scrollHeight;
+          }
+        });
+      })
+      .catch((err) => console.error("Error fetching messages:", err));
+  }, [conversationId, fetchMessages]);
+
+
+
+  // ৩. Scroll-to-Top Pagination Handler
+  const handleScroll = async (e: UIEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+
+    if (
+      container.scrollTop > 15 ||
+      !hasMore ||
+      isFetchingMore ||
+      !nextCursor
+    ) {
+      return;
+    }
+
+    previousScrollStateRef.current = {
+      height: container.scrollHeight,
+      top: container.scrollTop,
+    };
+
+    try {
+      const res = await fetchMessages({
+        id: conversationId,
+        cursor: nextCursor,
+      }).unwrap();
+
+      if (res?.data && res.data.length > 0) {
+        setChatMessages((prev) => {
+          const existingIds = new Set(prev.map((m: any) => Number(m.id)));
+          const uniqueOlder = res.data.filter(
+            (m: any) => !existingIds.has(Number(m.id)),
+          );
+          return [...uniqueOlder, ...prev];
+        });
+        setNextCursor(res?.next_cursor || null);
+        setHasMore(Boolean(res?.has_more || res?.next_cursor));
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const el = messagesContainerRef.current;
+            const prevState = previousScrollStateRef.current;
+            if (!el || !prevState) return;
+            el.scrollTop = el.scrollHeight - prevState.height + prevState.top;
+            previousScrollStateRef.current = null;
+          });
+        });
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Failed to load older messages", err);
+    }
+  };
 
   useEffect(() => {
     setChatMessages(conversationList?.data || []);
   }, [conversationId, conversationList]);
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container || !isOtherUserTyping) return;
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    if (distanceFromBottom > 120) return;
+
+    const id = requestAnimationFrame(() => {
+      const el = messagesContainerRef.current;
+      if (!el) return;
+      el.scrollTop = el.scrollHeight;
+    });
+    return () => cancelAnimationFrame(id);
+  }, [isOtherUserTyping]);
 
   // Echo Listener (Messages, Reactions, and Whispers)
   useEffect(() => {
@@ -113,6 +216,7 @@ function MessageRoot() {
         if (!newMsg?.id || prev.some((m) => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
       });
+      requestAnimationFrame(() => scrollToBottom());
       if (data) {
         try {
           await markReadMessage(newMsg.conversation_id).unwrap();
@@ -219,6 +323,7 @@ function MessageRoot() {
     const fileToSend = attachments;
     setInputValue("");
     setAttachments(null);
+    requestAnimationFrame(() => scrollToBottom());
     const formData = new FormData();
     formData.append("type", fileToSend ? "file" : "text");
     formData.append("message", content);
@@ -246,7 +351,6 @@ function MessageRoot() {
     }
   };
   const handleViewFile = (url: string) => {
-    scrollToBottom();
     window.open(url, "_blank");
   };
 
@@ -293,10 +397,19 @@ function MessageRoot() {
               isOtherUserTyping={isOtherUserTyping}
             />
             {/* Messages Container (Scoped Scroll, overscroll-contain) */}
-            <div
-              ref={messagesContainerRef}
-              className="md:h-135 h-100 border-t overflow-y-auto p-3! md:p-6! space-y-4 overscroll-contain"
-            >
+              <div
+            ref={messagesContainerRef}
+            onScroll={handleScroll}
+            className="md:h-135 h-100 border-t overflow-y-auto p-3! md:p-6! space-y-4 overscroll-contain"
+          >
+            {/* Top Loading Indicator */}
+            {isFetchingMore && (
+              <div className="flex justify-center py-2">
+                <span className="text-xs text-gray-400 animate-pulse">
+                  Loading older messages...
+                </span>
+              </div>
+            )}
               {chatMessages.map((msg) =>
                 !msg.is_mine ? (
                   <div
