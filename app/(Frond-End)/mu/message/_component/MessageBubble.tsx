@@ -92,7 +92,7 @@ function BubbleContent({
   getReplyText?: (replyId: any) => string;
 }) {
   return (
-    <div className="relative">
+    <div className="">
       <div>
         <ReplyReference
           msg={msg}
