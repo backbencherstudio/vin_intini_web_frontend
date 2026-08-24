@@ -35,7 +35,8 @@ export default function MessageInputBar({
   const [attachments, setAttachments] = useState<File | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+ console.log(isConnected,"isConnected");
+ 
   const {
     isRecording,
     recordingSeconds,

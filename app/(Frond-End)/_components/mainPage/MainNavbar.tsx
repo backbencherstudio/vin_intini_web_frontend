@@ -132,6 +132,7 @@ export default function MainNavbar() {
               return (
                 <DropdownMenu
                   key={item.slug}
+                  modal={false}
                   open={isDropdownOpen}
                   onOpenChange={(open) =>
                     setOpenDropdownSlug(open ? item.slug : null)

@@ -86,7 +86,8 @@ function MessageRoot() {
 
   useEffect(() => {
     return () => {
-      if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+      if (highlightTimeoutRef.current)
+        clearTimeout(highlightTimeoutRef.current);
     };
   }, []);
 
@@ -139,7 +140,10 @@ function MessageRoot() {
     el.scrollIntoView({ behavior: "smooth", block: "center" });
     setHighlightedId(targetId);
     if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
-    highlightTimeoutRef.current = setTimeout(() => setHighlightedId(null), 1500);
+    highlightTimeoutRef.current = setTimeout(
+      () => setHighlightedId(null),
+      1500,
+    );
   }, []);
 
   const handleIncomingMessage = useCallback(
@@ -184,8 +188,7 @@ function MessageRoot() {
     const el = containerRef.current;
     if (!el || !isOtherUserTyping) return;
 
-    const distanceFromBottom =
-      el.scrollHeight - el.scrollTop - el.clientHeight;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
     if (distanceFromBottom > 120) return;
 
     const id = requestAnimationFrame(() => scrollToBottom(false));
@@ -365,6 +368,9 @@ function MessageRoot() {
     <div>
       <div className="h-full md:pl-4 bg-white">
         <div className="border rounded-2xl w-full flex flex-col">
+          {
+          
+          }
           <MessageSectionHeader
             conversationList={conversation}
             isOtherUserTyping={isOtherUserTyping}
@@ -401,7 +407,9 @@ function MessageRoot() {
           </div>
 
           <MessageInputBar
-            isConnected={Boolean(conversation?.other_user?.is_connected)}
+            isConnected={
+              Boolean(conversation?.other_user?.is_connected) || true
+            }
             sending={sendingMessage}
             replyTo={replyTo}
             onTyping={whisperTyping}

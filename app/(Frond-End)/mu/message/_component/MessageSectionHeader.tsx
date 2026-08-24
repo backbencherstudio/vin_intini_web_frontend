@@ -44,9 +44,9 @@ function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
             </p>
           </div>
         </div>
-        <button className="cursor-pointer text-secondaryColor!">
+        {/* <button className="cursor-pointer text-secondaryColor!">
           <BsThreeDotsVertical className="text-blackColor" />
-        </button>
+        </button> */}
       </div>
     </div>
   );
