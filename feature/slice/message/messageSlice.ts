@@ -17,10 +17,19 @@ const messageSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["conversationList"],
     }),
     getConversationMessages: builder.query({
-      query: (conversationId) => ({
-        url: `/conversations/${conversationId}/messages`,
-        method: "GET",
-      }),
+      query: (arg: any) => {
+        const { id, cursor } =
+          typeof arg === "string" || typeof arg === "number"
+            ? { id: arg, cursor: null }
+            : (arg ?? {});
+        const search = new URLSearchParams();
+        if (cursor) search.set("cursor", String(cursor));
+        const qs = search.toString();
+        return {
+          url: `/conversations/${id}/messages${qs ? `?${qs}` : ""}`,
+          method: "GET",
+        };
+      },
       providesTags: ["message"],
     }),
     getUnreadMessagesCount: builder.query({
@@ -95,6 +104,7 @@ export const {
   useStartConversationMutation,
   useGetUnreadMessagesCountQuery,
   useGetConversationMessagesQuery,
+  useLazyGetConversationMessagesQuery,
   useMarkReadMessageMutation,
   useSendMessageMutation,
   useMarkUnReadMessageMutation,
