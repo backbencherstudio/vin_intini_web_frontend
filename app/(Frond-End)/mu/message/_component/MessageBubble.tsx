@@ -1,65 +1,67 @@
-"use client";
-
+import dayjs from "dayjs";
 import MessageFileRenderer from "./MessageFileRenderer";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
+import MessageReactions from "./MessageReactions";
 
-function MessageBubble({
+interface MessageBubbleProps {
+  msg: any;
+  onReact: (messageId: number, emoji: string) => void;
+  onViewFile: (url: string) => void;
+}
+
+const TIME_FORMAT = "hh:mm A";
+const HOVER_ACTIONS_CLASS =
+  "opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200";
+
+function BubbleContent({
   msg,
+  variant,
   onViewFile,
-  onReact,
 }: {
   msg: any;
+  variant: "sender" | "receiver";
   onViewFile: (url: string) => void;
-  onReact: (messageId: number, emoji: string) => void;
 }) {
-  const isMine = msg?.is_mine;
-  const content = (
+  return (
     <>
       {msg?.message}
       {(msg?.type === "file" || msg?.type === "voice") && msg?.file_url && (
         <MessageFileRenderer
           msg={msg}
-          variant={isMine ? "sender" : "receiver"}
+          variant={variant}
           onViewFile={onViewFile}
         />
       )}
-      {msg?.reactions && msg.reactions.length > 0 && (
-        <div
-          className={`flex items-center gap-1 absolute -bottom-3 ${
-            isMine ? "-left-2" : "-right-2"
-          } z-10`}
-        >
-          {msg.reactions.map((react: any, idx: number) => (
-            <span
-              key={idx}
-              className="px-1.5 py-0.5 rounded-full shadow-md bg-white border border-gray-100 text-xs flex items-center gap-0.5"
-            >
-              <span>{react.reaction}</span>
-              {react.count > 1 && (
-                <span className="text-[10px] font-semibold text-gray-600">
-                  {react.count}
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-      )}
+      <MessageReactions reactions={msg?.reactions} variant={variant} />
     </>
   );
+}
 
-  if (isMine) {
+export default function MessageBubble({
+  msg,
+  onReact,
+  onViewFile,
+}: MessageBubbleProps) {
+  if (!msg.is_mine) {
     return (
-      <div className="max-w-xs group/message ml-auto">
-        <div className="flex items-center justify-end w-full   gap-2">
-          <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
+      <div className="flex group/message items-center gap-2">
+        <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
+          <BubbleContent
+            msg={msg}
+            variant="receiver"
+            onViewFile={onViewFile}
+          />
+        </div>
+        <div>
+          <span className="text-[12px] text-nowrap text-gray-400">
+            {dayjs(msg?.created_at).format(TIME_FORMAT)}
+          </span>
+          <div className={HOVER_ACTIONS_CLASS}>
             <MessageReactEmojiAction
               onReact={onReact}
-              type="sender"
+              type="receiver"
               id={msg.id}
             />
-          </div>
-          <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
-            {content}
           </div>
         </div>
       </div>
@@ -67,19 +69,25 @@ function MessageBubble({
   }
 
   return (
-    <div className="flex group/message items-center gap-2">
-      <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
-        {content}
-      </div>
-      <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
-        <MessageReactEmojiAction
-          onReact={onReact}
-          type="receiver"
-          id={msg.id}
-        />
+    <div className="max-w-xs group/message ml-auto">
+      <div className="flex items-center justify-end w-full gap-2">
+        <div className="flex flex-col items-end">
+          <span className="text-[12px] text-nowrap text-gray-400">
+            {dayjs(msg?.created_at).format(TIME_FORMAT)}
+          </span>
+          <div className={HOVER_ACTIONS_CLASS}>
+            <MessageReactEmojiAction
+              onReact={onReact}
+              type="sender"
+              id={msg.id}
+            />
+          </div>
+        </div>
+
+        <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
+          <BubbleContent msg={msg} variant="sender" onViewFile={onViewFile} />
+        </div>
       </div>
     </div>
   );
 }
-
-export default MessageBubble;
