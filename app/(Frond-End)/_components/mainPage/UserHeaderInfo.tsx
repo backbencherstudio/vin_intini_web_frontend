@@ -169,7 +169,7 @@ function UserHeaderInfo() {
           </Link>
 
           <div className="  relative sm:ml-0">
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
@@ -233,7 +233,7 @@ function UserHeaderInfo() {
 
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/mu/profile`}
+                      href={`/mu/settings/general`}
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
                     >
                       <SettingIcon className="w-5 h-5 text-grayColor1  " />

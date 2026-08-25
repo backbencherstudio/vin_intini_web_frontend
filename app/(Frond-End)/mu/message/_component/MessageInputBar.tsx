@@ -36,6 +36,7 @@ export default function MessageInputBar({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+ 
   const {
     isRecording,
     recordingSeconds,

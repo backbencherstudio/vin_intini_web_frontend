@@ -112,7 +112,7 @@ export default function GeneralSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
             {/* First Name */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 First Name
               </label>
               <ReusableInput
@@ -125,7 +125,7 @@ export default function GeneralSettingsPage() {
 
             {/* Last Name */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 Last Name
               </label>
               <ReusableInput
@@ -138,7 +138,7 @@ export default function GeneralSettingsPage() {
 
             {/* User Email */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 User Email
               </label>
               <ReusableInput
@@ -152,7 +152,7 @@ export default function GeneralSettingsPage() {
 
             {/* Phone Number */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 Phone Number
               </label>
               <ReusableInput
@@ -165,7 +165,7 @@ export default function GeneralSettingsPage() {
 
             {/* Address */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 Address
               </label>
               <ReusableInput
@@ -178,7 +178,7 @@ export default function GeneralSettingsPage() {
 
             {/* State Select */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 State
               </label>
               <Controller
@@ -198,7 +198,7 @@ export default function GeneralSettingsPage() {
 
             {/* Country Select */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 Country
               </label>
               <Controller
@@ -218,7 +218,7 @@ export default function GeneralSettingsPage() {
 
             {/* Postal Code */}
             <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
+              <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
                 Postal Code
               </label>
               <ReusableInput

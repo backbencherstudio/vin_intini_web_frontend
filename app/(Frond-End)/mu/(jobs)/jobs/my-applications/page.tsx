@@ -1,0 +1,11 @@
+function page() {
+  return (
+    <div>
+      <div>
+        <h1>Recommended Jobs</h1>
+      </div>
+    </div>
+  );
+}
+
+export default page;

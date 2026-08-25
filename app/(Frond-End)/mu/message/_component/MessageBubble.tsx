@@ -62,7 +62,6 @@ function ReplyReference({
         className={`w-0.75 shrink-0 rounded-full ${
           variant === "sender" ? "bg-white" : "bg-primaryColor"
         }`}
-
       />
       <div className="flex-1 min-w-0 bg-bgColor px-2 py-1">
         <span className="block text-[11px] font-semibold text-headerColor leading-tight">
@@ -103,13 +102,17 @@ function BubbleContent({
         />
       </div>
       {msg?.message}
-      {(msg?.type === "file" || msg?.type === "voice") && msg?.file_url && (
-        <MessageFileRenderer
-          msg={msg}
-          variant={variant}
-          onViewFile={onViewFile}
-        />
-      )}
+      {(msg?.type === "file" ||
+        msg?.type === "image" ||
+        msg?.type === "video" ||
+        msg?.type === "voice") &&
+        msg?.file_url && (
+          <MessageFileRenderer
+            msg={msg}
+            variant={variant}
+            onViewFile={onViewFile}
+          />
+        )}
       <MessageReactions reactions={msg?.reactions} variant={variant} />
     </div>
   );
