@@ -20,7 +20,7 @@ export const JobCardSection: React.FC<JobCardSectionProps> = ({
   if (!jobs.length) return null;
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 space-y-6 ">
+    <section className="bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6 ">
       <div>
         <h2 className="text-xl font-bold text-[#1D1F2C]">{title}</h2>
         <p className="text-xs text-[#777986] mt-0.5">{subtitle}</p>

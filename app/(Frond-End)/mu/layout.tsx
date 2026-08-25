@@ -8,7 +8,7 @@ async function layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${pathname === "/mu/profile" || pathname === "/mu/jobs" ? "bg-white" : "bg-bgLightColor"}`}
+      className={`${pathname === "/mu/profile" || pathname.includes("/mu/jobs") ? "bg-white" : "bg-bgLightColor"}`}
     >
       <RootProtectedLayout>{children}</RootProtectedLayout>
     </div>

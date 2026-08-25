@@ -1,5 +1,6 @@
 import Breadcrumb from "../../../_components/Breadcrumb";
 import JobsLeftSidebar from "./_component/JobsLeftSidebar";
+import TopJobsRightbar from "./_component/TopJobsRightbar";
 
 export default function FrontEndLayout({
   children,
@@ -18,7 +19,7 @@ export default function FrontEndLayout({
             {children}
           </div>
           <div className="hidden lg:block col-span-3   lg:sticky lg:top-19  lg:overflow-y-auto self-start">
-            <JobsLeftSidebar />
+            <TopJobsRightbar />
           </div>
         </div>
       </div>
