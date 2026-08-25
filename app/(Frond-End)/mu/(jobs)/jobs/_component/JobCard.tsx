@@ -22,11 +22,11 @@ export const JobCard = memo(({ job }: { job: JobItem }) => {
 
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <h3 className="font-semibold text-[#1D1F2C] text-sm sm:text-base leading-snug hover:text-[#00A896] cursor-pointer">
+            <h3 className="font-semibold text-[#1D1F2C] text-sm sm:text-base leading-snug hover:text-primaryColor cursor-pointer">
               {job.title}
             </h3>
             {job.isVerified && (
-              <HiOutlineCheckBadge className="text-[#00A896] text-base shrink-0" />
+              <HiOutlineCheckBadge className="text-primaryColor text-base shrink-0" />
             )}
           </div>
 
@@ -44,12 +44,12 @@ export const JobCard = memo(({ job }: { job: JobItem }) => {
             )}
           </p>
 
-          <p className="text-xs text-[#00A896] font-medium pt-1">
+          <p className="text-xs text-primaryColor font-medium pt-1">
             Your profile matches this job
           </p>
 
           <div className="pt-2">
-            <button className="px-5 py-1.5 border border-[#00A896] text-[#00A896] hover:bg-[#00A896] hover:text-white rounded-full text-xs font-semibold transition-colors">
+            <button className="px-5 py-1.5 border border-primaryColor text-primaryColor hover:bg-primaryColor hover:text-white rounded-full text-xs font-semibold transition-colors">
               Apply Now
             </button>
           </div>
@@ -57,7 +57,7 @@ export const JobCard = memo(({ job }: { job: JobItem }) => {
       </div>
 
       <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 shrink-0">
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#E6F7F5] text-[#00A896]">
+        <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#E6F7F5] text-primaryColor">
           {job.workplaceType}
         </span>
         <div className="flex items-center gap-3 text-xs text-gray-500 mt-auto">
@@ -65,7 +65,7 @@ export const JobCard = memo(({ job }: { job: JobItem }) => {
           <button
             type="button"
             aria-label={`Save ${job.title}`}
-            className="flex items-center gap-1 hover:text-[#00A896] transition-colors"
+            className="flex items-center gap-1 hover:text-primaryColor transition-colors"
           >
             <FiBookmark className="text-sm" />
             <span>Save</span>

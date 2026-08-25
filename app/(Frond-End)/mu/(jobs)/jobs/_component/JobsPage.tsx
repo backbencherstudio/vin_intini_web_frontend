@@ -62,7 +62,7 @@ export default function JobsPage() {
   );
 
   return (
-    <main className="w-full max-w-6xl mx-auto py-8 px-4 sm:px-6 space-y-6">
+    <main className="w-full  space-y-6">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
           All Jobs

@@ -2,6 +2,7 @@
 
 import baseApiSlice from "@/feature/slice/baseApi";
 import {
+  useGetConversationMessagesQuery,
   useLazyGetConversationMessagesQuery,
   useMarkReadMessageMutation,
 } from "@/feature/slice/message/messageSlice";
@@ -24,9 +25,26 @@ export function useConversationMessages(
   const [hasMore, setHasMore] = useState<boolean>(false);
   const isLoadingOlderRef = useRef(false);
 
+  // Read RTK Query cache directly — if cached, skip refetch
+  const cachedResult = useGetConversationMessagesQuery(conversationId, {
+    skip: !conversationId,
+  });
+
   useEffect(() => {
     if (!conversationId) return;
 
+    // Cache hit within 10 min → populate from cache, no flash, no API call
+    if (cachedResult?.data && !cachedResult.isLoading) {
+      const res = cachedResult.data as any;
+      setConversation(res);
+      setChatMessages(res?.data || []);
+      setNextCursor(res?.next_cursor || null);
+      setHasMore(Boolean(res?.has_more || res?.next_cursor));
+      onLoaded?.(res);
+      return;
+    }
+
+    // Cache miss → clear state and fetch from network
     setChatMessages([]);
     setNextCursor(null);
     setHasMore(false);
@@ -47,7 +65,7 @@ export function useConversationMessages(
     return () => {
       cancelled = true;
     };
-  }, [conversationId, fetchMessages, onLoaded]);
+  }, [conversationId, cachedResult?.data, cachedResult.isLoading, fetchMessages, onLoaded]);
 
   const appendMessage = useCallback((msg: any) => {
     if (!msg?.id) return;

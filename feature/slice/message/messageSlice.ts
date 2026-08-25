@@ -30,7 +30,14 @@ const messageSlice = baseApiSlice.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["message"],
+      providesTags: (_result, _error, arg) => {
+        const id =
+          typeof arg === "string" || typeof arg === "number"
+            ? arg
+            : arg?.id;
+        return id ? [{ type: "message", id }] : ["message"];
+      },
+      keepUnusedDataFor: 600,
     }),
     getUnreadMessagesCount: builder.query({
       query: () => ({
