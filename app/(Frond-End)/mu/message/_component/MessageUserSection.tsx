@@ -325,7 +325,7 @@ function MessageUserSection() {
                             : msg.last_message?.type === "audio" ||
                                 msg.last_message?.type === "voice"
                               ? "Sent a voice message"
-                              : msg.last_message?.type === "file"
+                              : msg.last_message?.type === "file" || msg.last_message?.type === "image"
                                 ? "Sent a file"
                                 : msg.last_message?.type === "video" ||
                                     msg.last_message?.type === "vedio"
