@@ -38,17 +38,18 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
   // Always start with Home
   const items: { label: string; href: string }[] = [];
   let cumulativePath = "";
+  console.log(items);
 
   for (const seg of segments) {
     cumulativePath += `/${seg}`;
     items.push({
       label: toLabel(seg),
-      href: cumulativePath,
+      href: seg === "mu" ? "/mu/home" : cumulativePath,
     });
   }
 
   // Back = parent of current, or "/" if only one level
-  const backHref = items.length > 1 ? items[items.length - 2].href : "/";
+  const backHref = items.length > 2 ? items[items.length - 2].href : "/mu/home";
 
   return (
     <div className={`flex gap-6 items-center my-4 md:my-6 ${className}`}>
