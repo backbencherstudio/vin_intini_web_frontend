@@ -68,6 +68,8 @@ export default function BasicUserActivity({
                     </TabsContent>
                 </Tabs>
             </div>
+
+          
         </div>
     );
 }
