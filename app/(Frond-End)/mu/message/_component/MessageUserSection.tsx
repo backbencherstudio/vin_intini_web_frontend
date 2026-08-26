@@ -105,8 +105,6 @@ function MessageUserSection() {
     { id: 4, name: "archived" },
   ];
 
-
-
   const handleReadMessage = async (messageId: number) => {
     router.push(`/mu/message/${messageId}`);
     try {
@@ -147,8 +145,10 @@ function MessageUserSection() {
     try {
       if (msg.is_archived) {
         await unarchiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       } else {
         await archiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       }
     } catch (error) {
       console.error("Error toggling archive status:", error);
@@ -325,7 +325,8 @@ function MessageUserSection() {
                             : msg.last_message?.type === "audio" ||
                                 msg.last_message?.type === "voice"
                               ? "Sent a voice message"
-                              : msg.last_message?.type === "file" || msg.last_message?.type === "image"
+                              : msg.last_message?.type === "file" ||
+                                  msg.last_message?.type === "image"
                                 ? "Sent a file"
                                 : msg.last_message?.type === "video" ||
                                     msg.last_message?.type === "vedio"

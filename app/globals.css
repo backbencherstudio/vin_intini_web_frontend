@@ -173,7 +173,7 @@
   display: none;
 }
 
-input:checked~.checkmark {
+input:checked ~ .checkmark {
   background-color: var(--color-green-600);
 }
 
@@ -206,7 +206,6 @@ body {
 }
 
 @keyframes bounce-x {
-
   0%,
   100% {
     transform: translateX(0);
@@ -360,4 +359,15 @@ body {
 
 .font-great-vibes {
   font-family: "Great Vibes", cursive;
+}
+
+.image-post .change-color {
+  color: #000 !important;
+  width: 20px;
+  height: 20px;
+  background-color: var(--whiteColor);
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer important;
+  display: none !important;
 }

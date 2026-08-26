@@ -73,7 +73,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/archive`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     reactForeMessage: builder.mutation({
       query: ({ data, messageId }) => ({
@@ -87,7 +87,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/unarchive`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     deleteConversation: builder.mutation({
       query: (conversationId) => ({
