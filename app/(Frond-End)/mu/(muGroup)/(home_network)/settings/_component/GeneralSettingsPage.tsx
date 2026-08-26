@@ -10,18 +10,22 @@ import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
+import {
+  useGeneralPrivacySettingUpdateMutation,
+  useGeneralSettingUpdateMutation,
+  useGetAllStatesQuery,
+} from "@/feature/slice/settingSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { countries } from "@/public/demoData/RealData";
 import { LockIcon, ProfileVisibiltyIcon } from "@/public/svgIcons/Icons";
 import { BsKey } from "react-icons/bs";
 import GeneralSettingHeader from "./GeneralSettingHeader";
-import { useGeneralPrivacySettingUpdateMutation, useGeneralSettingUpdateMutation, useGetAllStatesQuery } from "@/feature/slice/settingSlice";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { countries } from "@/public/demoData/RealData";
 
 export type GeneralSettingsFormValues = {
   first_name: string;
   last_name: string;
   email: string;
-  phone_number: string;
+  mobile: string;
   address: string;
   state: string;
   country: string;
@@ -37,12 +41,12 @@ const countryOptions = countries.map((c) => ({
 
 const visibilityOptions1 = [
   { value: "everyone", label: "Everyone" },
-  { value: "only_connections", label: "Only Connections" },
-  { value: "only_me", label: "Only Me" },
+  { value: "only_connected", label: "Only Connections" },
+  { value: "nobody", label: "Only Me" },
 ];
 const visibilityOptions = [
   { value: "everyone", label: "Everyone" },
-  { value: "only_me", label: "Only Me" },
+  { value: "nobody", label: "Only Me" },
 ];
 
 export default function GeneralSettingsPage() {
@@ -72,7 +76,7 @@ export default function GeneralSettingsPage() {
       first_name: "",
       last_name: "",
       email: "",
-      phone_number: "",
+      mobile: "",
       address: "",
       state: "",
       country: "",
@@ -95,12 +99,13 @@ export default function GeneralSettingsPage() {
       first_name: user?.first_name || "",
       last_name: user?.last_name || "",
       email: user?.email || "",
-      phone_number: user?.mobile || "",
+      mobile: user?.mobile || "",
       address: profile?.address || "",
       state: stateName,
-      country: typeof profile?.country === "object" && profile?.country !== null
-        ? profile.country.name || ""
-        : profile?.country || "",
+      country:
+        typeof profile?.country === "object" && profile?.country !== null
+          ? profile.country.name || ""
+          : profile?.country || "",
       postal_code: profile?.postal_code || "",
       privacy_profile_activity: profile?.privacy_profile_activity || "",
       privacy_profile_visibility: profile?.privacy_profile_visibility || "",
@@ -108,7 +113,8 @@ export default function GeneralSettingsPage() {
   }, [user, profile, reset]);
 
   const [generalSettingUpdate] = useGeneralSettingUpdateMutation();
-  const [generalPrivacySettingUpdate] = useGeneralPrivacySettingUpdateMutation();
+  const [generalPrivacySettingUpdate] =
+    useGeneralPrivacySettingUpdateMutation();
 
   const onSubmit = async (formData: GeneralSettingsFormValues) => {
     try {
@@ -119,13 +125,15 @@ export default function GeneralSettingsPage() {
           : formData.state;
       const stateId =
         stateIdByName[formData.state] ||
-        (typeof rawState === "object" && rawState !== null ? rawState.id : null);
+        (typeof rawState === "object" && rawState !== null
+          ? rawState.id
+          : null);
 
       await generalSettingUpdate({
         data: {
           first_name: formData.first_name,
           last_name: formData.last_name,
-          phone_number: formData.phone_number,
+          mobile: formData.mobile,
           address: formData.address,
           state_id: stateId,
           country: formData.country,
@@ -174,7 +182,7 @@ export default function GeneralSettingsPage() {
         />
       </div>
       <div className="bg-white border border-borderColor rounded-lg p-4 md:p-6 ">
-        <GeneralSettingHeader />
+        <GeneralSettingHeader data={data} />
       </div>
 
       {/* ----------------- General Settings Form Card ----------------- */}
@@ -231,9 +239,9 @@ export default function GeneralSettingsPage() {
                 Phone Number
               </label>
               <ReusableInput
-                id="phone_number"
+                id="mobile"
                 placeholder="Phone Number"
-                {...register("phone_number")}
+                {...register("mobile")}
                 className="h-11 rounded-lg border-gray-200 bg-white"
               />
             </div>

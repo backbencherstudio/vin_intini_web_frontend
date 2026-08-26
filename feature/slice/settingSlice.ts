@@ -1,34 +1,35 @@
 import baseApiSlice from "./baseApi";
 
 const settingSlice = baseApiSlice.injectEndpoints({
-    endpoints: (builder) => ({
+  endpoints: (builder) => ({
     generalSettingUpdate: builder.mutation({
-            query: ({ data }) => ({
-                url: "/profile/update",
-                method: "PUT",
-                body: data,
-            }),
-            invalidatesTags: ["User"],
-        }),
-    generalPrivacySettingUpdate: builder.mutation({
-            query: ({ data }) => ({
-                url: "/profile/update",
-                method: "PUT",
-                body: data,
-            }),
-            invalidatesTags: ["User"],
-        }),
-   getAllStates: builder.query({
-            query: () => ({
-                url: "/states", 
-                method: "GET",
-            }),
-            providesTags: ["User"],
-        }),
+      query: ({ data }) => ({
+        url: "/profile/update",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
+    generalPrivacySettingUpdate: builder.mutation({
+      query: ({ data }) => ({
+        url: "/user/privacy-settings",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    getAllStates: builder.query({
+      query: () => ({
+        url: "/states",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+  }),
 });
 
-
-
-
-export const { useGeneralSettingUpdateMutation, useGeneralPrivacySettingUpdateMutation, useGetAllStatesQuery } = settingSlice;
+export const {
+  useGeneralSettingUpdateMutation,
+  useGeneralPrivacySettingUpdateMutation,
+  useGetAllStatesQuery,
+} = settingSlice;
