@@ -1,65 +1,162 @@
-"use client";
-
+import dayjs from "dayjs";
+import type { MouseEvent } from "react";
 import MessageFileRenderer from "./MessageFileRenderer";
 import MessageReactEmojiAction from "./MessageReactEmojiAction";
+import MessageReactions from "./MessageReactions";
 
-function MessageBubble({
+interface MessageBubbleProps {
+  msg: any;
+  highlighted?: boolean;
+  otherUserName?: string;
+  onReact: (messageId: number, emoji: string) => void;
+  onViewFile: (url: string) => void;
+  onContextMenu?: (e: MouseEvent<HTMLDivElement>) => void;
+  onJumpToReply?: (replyId: any) => void;
+  getReplyText?: (replyId: any) => string;
+}
+
+export function getMessagePreview(msg: any) {
+  if (!msg) return "";
+  if (msg.message) return msg.message;
+  if (msg.type === "voice") return "Voice message";
+  if (msg.file_name) return msg.file_name;
+  return "Attachment";
+}
+
+const TIME_FORMAT = "hh:mm A";
+const HOVER_ACTIONS_CLASS =
+  "opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200";
+
+function ReplyReference({
   msg,
-  onViewFile,
-  onReact,
+  variant,
+  otherUserName,
+  onJumpToReply,
+  getReplyText,
 }: {
   msg: any;
-  onViewFile: (url: string) => void;
-  onReact: (messageId: number, emoji: string) => void;
+  variant: "sender" | "receiver";
+  otherUserName?: string;
+  onJumpToReply?: (replyId: any) => void;
+  getReplyText?: (replyId: any) => string;
 }) {
-  const isMine = msg?.is_mine;
-  const content = (
-    <>
-      {msg?.message}
-      {(msg?.type === "file" || msg?.type === "voice") && msg?.file_url && (
-        <MessageFileRenderer
-          msg={msg}
-          variant={isMine ? "sender" : "receiver"}
-          onViewFile={onViewFile}
-        />
-      )}
-      {msg?.reactions && msg.reactions.length > 0 && (
-        <div
-          className={`flex items-center gap-1 absolute -bottom-3 ${
-            isMine ? "-left-2" : "-right-2"
-          } z-10`}
-        >
-          {msg.reactions.map((react: any, idx: number) => (
-            <span
-              key={idx}
-              className="px-1.5 py-0.5 rounded-full shadow-md bg-white border border-gray-100 text-xs flex items-center gap-0.5"
-            >
-              <span>{react.reaction}</span>
-              {react.count > 1 && (
-                <span className="text-[10px] font-semibold text-gray-600">
-                  {react.count}
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-      )}
-    </>
-  );
+  const reply = msg?.reply_to;
+  const replyId = reply?.id ?? msg?.reply_to_id;
+  if (!reply && !replyId) return null;
 
-  if (isMine) {
+  const text =
+    (reply ? getMessagePreview(reply) : "") ||
+    getReplyText?.(replyId) ||
+    "Original message";
+  const authorLabel = reply?.is_mine ? "You" : otherUserName || "Message";
+
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        onJumpToReply?.(reply?.id ?? replyId);
+      }}
+      className="mb-1.5 flex items-stretch gap-1.5 rounded-md overflow-hidden cursor-pointer"
+    >
+      <span
+        className={`w-0.75 shrink-0 rounded-full ${
+          variant === "sender" ? "bg-white" : "bg-primaryColor"
+        }`}
+      />
+      <div className="flex-1 min-w-0 bg-bgColor px-2 py-1">
+        <span className="block text-[11px] font-semibold text-headerColor leading-tight">
+          {authorLabel}
+        </span>
+        <span className="block text-[11px] truncate text-descriptionColor leading-tight">
+          {text}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function BubbleContent({
+  msg,
+  variant,
+  otherUserName,
+  onViewFile,
+  onJumpToReply,
+  getReplyText,
+}: {
+  msg: any;
+  variant: "sender" | "receiver";
+  otherUserName?: string;
+  onViewFile: (url: string) => void;
+  onJumpToReply?: (replyId: any) => void;
+  getReplyText?: (replyId: any) => string;
+}) {
+  return (
+    <div className="">
+      <div>
+        <ReplyReference
+          msg={msg}
+          variant={variant}
+          otherUserName={otherUserName}
+          onJumpToReply={onJumpToReply}
+          getReplyText={getReplyText}
+        />
+      </div>
+      {msg?.message}
+      {(msg?.type === "file" ||
+        msg?.type === "image" ||
+        msg?.type === "video" ||
+        msg?.type === "voice") &&
+        msg?.file_url && (
+          <MessageFileRenderer
+            msg={msg}
+            variant={variant}
+            onViewFile={onViewFile}
+          />
+        )}
+      <MessageReactions reactions={msg?.reactions} variant={variant} />
+    </div>
+  );
+}
+
+export default function MessageBubble({
+  msg,
+  highlighted,
+  otherUserName,
+  onReact,
+  onViewFile,
+  onContextMenu,
+  onJumpToReply,
+  getReplyText,
+}: MessageBubbleProps) {
+  if (!msg.is_mine) {
     return (
-      <div className="max-w-xs group/message ml-auto">
-        <div className="flex items-center justify-end w-full   gap-2">
-          <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
+      <div
+        id={`message-${msg.id}`}
+        onContextMenu={onContextMenu}
+        className={`flex group/message items-center gap-2 rounded-lg transition-colors ${
+          highlighted ? "bg-amber-50" : ""
+        }`}
+      >
+        <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
+          <BubbleContent
+            msg={msg}
+            variant="receiver"
+            otherUserName={otherUserName}
+            onViewFile={onViewFile}
+            onJumpToReply={onJumpToReply}
+            getReplyText={getReplyText}
+          />
+        </div>
+        <div>
+          <span className="text-[12px] text-nowrap text-gray-400">
+            {dayjs(msg?.created_at).format(TIME_FORMAT)}
+          </span>
+          <div className={HOVER_ACTIONS_CLASS}>
             <MessageReactEmojiAction
               onReact={onReact}
-              type="sender"
+              type="receiver"
               id={msg.id}
             />
-          </div>
-          <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
-            {content}
           </div>
         </div>
       </div>
@@ -67,19 +164,38 @@ function MessageBubble({
   }
 
   return (
-    <div className="flex group/message items-center gap-2">
-      <div className="max-w-xs relative bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
-        {content}
-      </div>
-      <div className="opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200">
-        <MessageReactEmojiAction
-          onReact={onReact}
-          type="receiver"
-          id={msg.id}
-        />
+    <div
+      id={`message-${msg.id}`}
+      onContextMenu={onContextMenu}
+      className={`max-w-xs group/message ml-auto rounded-lg transition-colors ${
+        highlighted ? "bg-amber-50" : ""
+      }`}
+    >
+      <div className="flex items-center justify-end w-full gap-2">
+        <div className="flex flex-col items-end">
+          <span className="text-[12px] text-nowrap text-gray-400">
+            {dayjs(msg?.created_at).format(TIME_FORMAT)}
+          </span>
+          <div className={HOVER_ACTIONS_CLASS}>
+            <MessageReactEmojiAction
+              onReact={onReact}
+              type="sender"
+              id={msg.id}
+            />
+          </div>
+        </div>
+
+        <div className="border relative border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
+          <BubbleContent
+            msg={msg}
+            variant="sender"
+            otherUserName={otherUserName}
+            onViewFile={onViewFile}
+            onJumpToReply={onJumpToReply}
+            getReplyText={getReplyText}
+          />
+        </div>
       </div>
     </div>
   );
 }
-
-export default MessageBubble;

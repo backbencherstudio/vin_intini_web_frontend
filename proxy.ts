@@ -15,7 +15,8 @@ export async function proxy(request: NextRequest) {
   ) {
     return NextResponse.next();
   }
-
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   const cookieToken = request.cookies.get("accessToken")?.value;
 
@@ -35,7 +36,11 @@ export async function proxy(request: NextRequest) {
   };
 
   // If token came as query param, decode and set cookie on the response
-  let response = NextResponse.next();
+  let response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
   let currentToken = cookieToken || null;
 
   if (tokenQuery) {
