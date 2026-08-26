@@ -7,7 +7,6 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import baseApiSlice from "@/feature/slice/baseApi";
 import { useGetMyConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import {
   useArchiveMessageMutation,
@@ -106,10 +105,9 @@ function MessageUserSection() {
   ];
 
   const handleReadMessage = async (messageId: number) => {
-
     try {
       await markReadMessage(messageId).unwrap();
-         router.push(`/mu/message/${messageId}?${searchParams.toString()}`);
+      router.push(`/mu/message/${messageId}?${searchParams.toString()}`);
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
@@ -121,7 +119,7 @@ function MessageUserSection() {
         await markReadMessage(msg.id).unwrap();
       } else {
         await markUnReadMessage(msg.id).unwrap();
-          router.push(`/mu/message?${searchParams.toString()}`);
+        router.push(`/mu/message?${searchParams.toString()}`);
       }
     } catch (error) {
       console.error("Error toggling read status:", error);
@@ -161,9 +159,6 @@ function MessageUserSection() {
       const currentParams = new URLSearchParams(searchParams.toString());
       currentParams.delete("search");
       const queryString = currentParams.toString();
-      console.log(queryString, "queryString===");
-      console.log(`/mu/message/${response.data.id}?${queryString}`, "queryString===");
-
       router.push(`/mu/message/${response.data.id}?${queryString}`);
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to start conversation.");
@@ -260,7 +255,10 @@ function MessageUserSection() {
         {messageType.map((item) => (
           <button
             key={item.id}
-            onClick={() => setTab(item.name)}
+            onClick={() => {
+              setTab(item.name);
+              router.push(`/mu/message?tab=${item.name}`);
+            }}
             className={`py-1 rounded-sm px-4 border capitalize text-sm border-liteDescriptionColor/80 text-liteDescriptionColor cursor-pointer ${
               activeTab === item?.name
                 ? "bg-primaryColor text-whiteColor border-0 font-medium"

@@ -368,6 +368,6 @@ body {
   background-color: var(--whiteColor);
   border-radius: 50%;
   padding: 2px;
-  cursor: pointer important;
+  cursor: pointer;
   display: none !important;
 }
