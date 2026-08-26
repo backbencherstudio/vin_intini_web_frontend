@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { FiSearch, FiSliders } from "react-icons/fi";
 import { FILTER_TYPES } from "./jobdata";
 
-
 interface JobSearchBarProps {
   activeFilter: string;
   searchParam: string;
@@ -35,12 +34,12 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search Job.."
-            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm focus:outline-none focus:border-[#00A896] transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm focus:outline-none focus:border-primaryColor transition-colors"
           />
         </form>
         <button
           onClick={handleSubmit}
-          className="w-full sm:w-auto px-7 py-2.5 bg-[#00A896] hover:bg-[#008f80] text-white rounded-full text-sm font-medium transition-colors"
+          className="w-full cursor-pointer sm:w-auto px-7 py-2.5 bg-primaryColor hover:shadow-xl text-white rounded-full text-sm font-medium transition-colors"
         >
           Search
         </button>
@@ -51,16 +50,16 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
         {FILTER_TYPES.map((filter) => {
           const isActive = activeFilter === filter.value;
           return (
             <button
               key={filter.value}
               onClick={() => onFilterChange(filter.value)}
-              className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-5 py-2 cursor-pointer hover:shadow-xl rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 isActive
-                  ? "bg-[#00A896] text-white"
+                  ? "bg-primaryColor text-white"
                   : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >

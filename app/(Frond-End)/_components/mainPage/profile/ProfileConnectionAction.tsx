@@ -34,7 +34,7 @@ function ProfileConnectionAction({ profileData, userId }) {
   const [requestSentId, setRequestSentId] = useState();
 
   const connectionActions = [
-    { value: "remove", label: "Remove Connection" ,icon : <CrossUserIcon /> },
+    { value: "remove", label: "Remove" ,icon : <CrossUserIcon /> },
     { value: "follow", label: "Follow", icon : <FollowUserIcon /> },
     { value: "unfollow", label: "Unfollow", icon : <UnfollowUserIcon /> },
   ];
@@ -114,8 +114,8 @@ function ProfileConnectionAction({ profileData, userId }) {
                 value={selectedAction}
                 onValueChange={handleConnectionAction}
                 options={filterFollowUnfollow}
-                placeholder="Connection Actions"
-                className="h-10.25! min-w-45 w-full"
+                placeholder="Connected"
+                className="h-10.25!  w-full"
               />
             </div>
           )}

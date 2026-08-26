@@ -105,27 +105,11 @@ function MessageUserSection() {
     { id: 4, name: "archived" },
   ];
 
-
-
   const handleReadMessage = async (messageId: number) => {
-    router.push(`/mu/message/${messageId}`);
+
     try {
       await markReadMessage(messageId).unwrap();
-      const api = baseApiSlice as any;
-      const tabs = ["all", "unread", "archived"];
-      tabs.forEach((tab) => {
-        dispatch(
-          api.util.updateQueryData("getConversationList", tab, (draft: any) => {
-            if (!draft?.data) return;
-            const idx = draft.data.findIndex(
-              (conv: any) => conv.id === messageId,
-            );
-            if (idx !== -1) {
-              draft.data[idx].unread_count = 0;
-            }
-          }),
-        );
-      });
+         router.push(`/mu/message/${messageId}?${searchParams.toString()}`);
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
@@ -137,6 +121,7 @@ function MessageUserSection() {
         await markReadMessage(msg.id).unwrap();
       } else {
         await markUnReadMessage(msg.id).unwrap();
+          router.push(`/mu/message?${searchParams.toString()}`);
       }
     } catch (error) {
       console.error("Error toggling read status:", error);
@@ -147,8 +132,10 @@ function MessageUserSection() {
     try {
       if (msg.is_archived) {
         await unarchiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       } else {
         await archiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       }
     } catch (error) {
       console.error("Error toggling archive status:", error);
@@ -174,6 +161,9 @@ function MessageUserSection() {
       const currentParams = new URLSearchParams(searchParams.toString());
       currentParams.delete("search");
       const queryString = currentParams.toString();
+      console.log(queryString, "queryString===");
+      console.log(`/mu/message/${response.data.id}?${queryString}`, "queryString===");
+
       router.push(`/mu/message/${response.data.id}?${queryString}`);
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to start conversation.");
@@ -325,7 +315,8 @@ function MessageUserSection() {
                             : msg.last_message?.type === "audio" ||
                                 msg.last_message?.type === "voice"
                               ? "Sent a voice message"
-                              : msg.last_message?.type === "file" || msg.last_message?.type === "image"
+                              : msg.last_message?.type === "file" ||
+                                  msg.last_message?.type === "image"
                                 ? "Sent a file"
                                 : msg.last_message?.type === "video" ||
                                     msg.last_message?.type === "vedio"

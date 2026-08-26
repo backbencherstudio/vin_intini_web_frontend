@@ -30,7 +30,14 @@ const messageSlice = baseApiSlice.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["message"],
+      providesTags: (_result, _error, arg) => {
+        const id =
+          typeof arg === "string" || typeof arg === "number"
+            ? arg
+            : arg?.id;
+        return id ? [{ type: "message", id }] : ["message"];
+      },
+      keepUnusedDataFor: 600,
     }),
     getUnreadMessagesCount: builder.query({
       query: () => ({
@@ -45,6 +52,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/mark-read`,
         method: "POST",
       }),
+      invalidatesTags: ["conversationList"],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -59,14 +67,14 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/mark-unread`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     archiveMessage: builder.mutation({
       query: (messageId) => ({
         url: `/conversations/${messageId}/archive`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     reactForeMessage: builder.mutation({
       query: ({ data, messageId }) => ({
@@ -80,7 +88,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/unarchive`,
         method: "POST",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: ["conversationList"],
     }),
     deleteConversation: builder.mutation({
       query: (conversationId) => ({
