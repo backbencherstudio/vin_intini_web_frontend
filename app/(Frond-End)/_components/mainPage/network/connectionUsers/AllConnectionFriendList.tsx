@@ -54,7 +54,10 @@ function AllConnectionFriendList() {
             <ConnectionRequestCard key={item.id} item={item} />
           ))
         ) : (
-          <ConnectionNotFound title="No Connections Found" />
+          <ConnectionNotFound
+            title="No Connections Found"
+            description="You have no connections right now. If you want to connect with someone, please check out the connection requests to get started."
+          />
         )}
       </div>
       {showMoreLoader && (
