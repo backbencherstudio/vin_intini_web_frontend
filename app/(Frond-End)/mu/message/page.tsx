@@ -5,12 +5,14 @@ import { BsEmojiFrown } from "react-icons/bs";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 function Page() {
-  const { data, isLoading } = useGetConversationListQuery("conversationList");
+  const { data, isLoading } = useGetConversationListQuery("all");
 
   if (isLoading) {
     return (
       <div className="flex h-135 w-full items-center justify-center p-4">
-        <span className="text-sm text-grayColor1 animate-pulse">Loading conversations...</span>
+        <span className="text-sm text-grayColor1 animate-pulse">
+          Loading conversations...
+        </span>
       </div>
     );
   }
@@ -30,7 +32,8 @@ function Page() {
               Select a conversation
             </p>
             <p className="text-center text-sm text-grayColor1 max-w-md">
-              Choose a contact from the sidebar to view your chat history or send a new message.
+              Choose a contact from the sidebar to view your chat history or
+              send a new message.
             </p>
           </div>
         ) : (
