@@ -15,7 +15,7 @@ function SecurityStatus({
   value,
 }: SecurityStatusProps) {
   return (
-    <div className="flex items-center justify-between border-b border-[#F1F1F1] p-4 last:border-0">
+    <div className="flex items-center justify-between border-b border-[#F1F1F1] px-4  py-5.5 last:border-0">
       <div className="flex items-center gap-2">
        <CorrectIcon/>
 
@@ -90,7 +90,7 @@ export default function SecurityOverview({
         </div>
 
         {/* Security Status */}
-        <div className="space-y-3 border rounded-sm">
+        <div className="space-y border rounded-sm">
           <SecurityStatus
             title="Password Strength"
             value="Strong"

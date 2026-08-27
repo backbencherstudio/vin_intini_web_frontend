@@ -100,21 +100,21 @@ export default function ChangePassword() {
           label="Current Password"
           value={currentPassword}
           onChange={setCurrentPassword}
-          placeholder="Enter current password"
+          placeholder="*************************"
         />
 
         <PasswordInput
           label="New Password"
           value={newPassword}
           onChange={setNewPassword}
-          placeholder="Enter new password"
+          placeholder="*************************"
         />
 
         <PasswordInput
           label="Confirm New Password"
           value={confirmPassword}
           onChange={setConfirmPassword}
-          placeholder="Confirm new password"
+          placeholder="*************************"
         />
 
         {/* <div className="flex items-center gap-1">

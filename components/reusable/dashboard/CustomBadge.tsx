@@ -42,7 +42,7 @@ export default function CustomBadge({
         <span
             className={`inline-flex items-center rounded-md text-xs font-medium border ${colorStyles[color]} ${className}`}
         >
-            {/* যদি কালার active বা suspended হয়, তাহলেই শুধু ডট দেখাবে */}
+      
             {dotColor && <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>}
 
             {children}

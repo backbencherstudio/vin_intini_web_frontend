@@ -23,7 +23,7 @@ export default async function Page({
                 <img className="w-full h-full object-cover" src={Coverphoto.src} alt="" />
             </div>
             <div className="w-[480px] bg-white -mt-9 ml-5">
-                <img src={user.img} alt="ald" width={33} height={33}/>
+                <img src={user.img} alt="ald" />
 
               
 
@@ -46,6 +46,7 @@ export default async function Page({
             <div>
                 <BasicUserActivity user={user}/>
             </div>
+
         </div>
     );
 }
