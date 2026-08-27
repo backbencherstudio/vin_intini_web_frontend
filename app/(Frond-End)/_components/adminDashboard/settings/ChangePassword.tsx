@@ -1,6 +1,7 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import { usePostChangePasswordMutation } from "@/feature/slice/admin/securitySettings";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
@@ -48,43 +49,42 @@ function PasswordInput({
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const [newPassword, setNewPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState<"success" | "error">(
-    "success"
-  );
+const [message, setMessage] = useState("");
+const [messageType, setMessageType] = useState<"success" | "error">(
+  "success"
+);
 
-  const updatePassword = () => {
-    setMessage("");
+const [postChangePassword, { isLoading }] =
+  usePostChangePasswordMutation();
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setMessageType("error");
-      setMessage("Please fill in all fields.");
-      return;
-    }
+const updatePassword = async () => {
+  try {
+    await postChangePassword({
+      current_password: currentPassword,
+      new_password: newPassword,
+      new_password_confirmation: confirmPassword,
+    }).unwrap();
 
-    if (newPassword.length < 8) {
-      setMessageType("error");
-      setMessage("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setMessageType("error");
-      setMessage("Passwords do not match.");
-      return;
-    }
-
-    setMessageType("success");
     setMessage("Password updated successfully.");
+    setMessageType("success");
 
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
-  };
+  } catch (error: any) {
+  const errorMessage =
+    error?.data?.errors?.new_password?.[0] ||
+    error?.data?.message ||
+    "Failed to update password.";
 
+  setMessage(errorMessage);
+  setMessageType("error");
+}
+
+};
   return (
     <section className="rounded-md border border-[#E8E8E8] p-4">
       <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
@@ -141,12 +141,13 @@ export default function ChangePassword() {
         )}
 
         <button
-          type="button"
-          onClick={updatePassword}
-          className="h-9 w-full rounded-md border border-primaryColor bg-[#D3F4EF] text-[14px] font-semibold text-primaryColor transition cursor-pointer"
-        >
-          Update Password
-        </button>
+  type="button"
+  onClick={updatePassword}
+  disabled={isLoading}
+  className="h-9 w-full rounded-md border border-primaryColor bg-[#D3F4EF] text-[14px] font-semibold text-primaryColor transition cursor-pointer"
+>
+  {isLoading ? "Updating..." : "Update Password"}
+</button>
       </div>
     </section>
   );

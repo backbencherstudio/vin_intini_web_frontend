@@ -1,3 +1,4 @@
+import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
 import { CorrectIcon } from "@/public/svgIcons/AdminIcon";
 import { ShieldCheck } from "lucide-react";
 
@@ -14,6 +15,8 @@ function SecurityStatus({
   title,
   value,
 }: SecurityStatusProps) {
+
+
   return (
     <div className="flex items-center justify-between border-b border-[#F1F1F1] px-4  py-5.5 last:border-0">
       <div className="flex items-center gap-2">
@@ -36,6 +39,17 @@ function SecurityStatus({
 export default function SecurityOverview({
   twoFactorEnabled,
 }: SecurityOverviewProps) {
+
+    const {data, isLoading} = useGetSecurityOverviewQuery({})
+  const OverviewData = data?.data || [];
+
+  console.log(OverviewData)
+
+   const percentage = OverviewData?.security_score?.percentage ?? 0;
+const progressDegree = (percentage / 100) * 360;
+console.log(percentage, progressDegree)
+
+
   return (
     <section className="rounded-md  ">
       <div className=" border-[#EEEEEE] py-6">
@@ -54,13 +68,15 @@ export default function SecurityOverview({
         <div className="flex flex-col items-center justify-center border p-6 rounded-sm">
           <div className="relative flex h-48 w-48 items-center justify-center">
   {/* Progress Circle */}
-  <div
-    className="absolute inset-0 rounded-full"
-    style={{
-      background:
-        "conic-gradient(#04A1B7 0deg 200deg, #D9F4F7 200deg 360deg)",
-    }}
-  />
+ <div
+  className="absolute inset-0 rounded-full"
+  style={{
+    background: `conic-gradient(
+      #04A1B7 0deg ${progressDegree}deg,
+      #D9F4F7 ${progressDegree}deg 360deg
+    )`,
+  }}
+/>
 
   {/* Inner Background */}
   <div className="absolute inset-[10px] rounded-full bg-[#E6F6F8]" />
@@ -81,11 +97,12 @@ export default function SecurityOverview({
           </p>
 
           <p className="text-primaryColor text-center text-2xl font-semibold leading-[130%] tracking-[0.12px] ">
-            Strong
+          {OverviewData?.security_score?.rating}
           </p>
 
           <p className="text-[#4A4C56] text-sm font-normal leading-[140%] tracking-[0.07px]">
-            Last checked today, 10:40 AM
+            {/* Last checked today, 10:40 AM */}
+            {OverviewData?.security_score?.last_checked}
           </p>
         </div>
 
@@ -93,27 +110,28 @@ export default function SecurityOverview({
         <div className="space-y border rounded-sm">
           <SecurityStatus
             title="Password Strength"
-            value="Strong"
+            value={OverviewData?.password_strength
+}
           />
 
           <SecurityStatus
             title="Two-Factor Authentication"
-            value={twoFactorEnabled ? "Enabled" : "Disabled"}
+            value={OverviewData?.two_factor_auth}
           />
 
           <SecurityStatus
             title="Active Sessions"
-            value="2 active devices"
+            value={OverviewData?.active_sessions}
           />
 
           <SecurityStatus
             title="Account Recovery"
-            value="Email verified"
+            value={OverviewData?.account_recovery}
           />
 
           <SecurityStatus
             title="Login Activity"
-            value="No suspicious activity"
+            value={OverviewData?.login_activity}
           />
         </div>
       </div>

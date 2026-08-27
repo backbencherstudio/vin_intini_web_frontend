@@ -1,0 +1,49 @@
+import baseApiSlice from "../baseApi";
+
+const securitySettingsSlice = baseApiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getSecurityOverview: builder.query({
+      query: () => ({
+        url: `/security/overview`,
+        method: "GET",
+      }),
+    }),
+
+    //change-password
+    postChangePassword: builder.mutation({
+      query: (payload) => ({
+        url: "/profile/change-password",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //activity-session
+    getActiveSessions: builder.query({
+      query: () => ({
+        url: `/security/active-sessions`,
+        method: "GET",
+      }),
+    }),
+
+    //login-activity
+  getLoginActivity: builder.query({
+  query: (params) => ({
+    url: "/security/login-activities",
+    method: "GET",
+    params,
+  }),
+}),
+
+  }),
+});
+
+export const {
+  useGetSecurityOverviewQuery,
+
+  usePostChangePasswordMutation,
+
+  useGetActiveSessionsQuery,
+
+  useGetLoginActivityQuery,
+} = securitySettingsSlice;

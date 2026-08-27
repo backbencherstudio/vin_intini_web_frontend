@@ -255,7 +255,6 @@ export default function Partner() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    defaultPageSize={10}
 
                     onEdit={openEdit}
                     onDelete={openDelete}

@@ -355,7 +355,7 @@ export default function AdvertisementTable() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    defaultPageSize={10}
+                    // defaultPageSize={10}
                     onView={openView}
                     onEdit={openEdit}
                     onDelete={openDelete}

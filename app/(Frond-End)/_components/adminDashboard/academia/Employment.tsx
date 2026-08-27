@@ -303,7 +303,6 @@ export default function Employment() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    defaultPageSize={10}
 
                     onEdit={openEdit}
                     onDelete={openDelete}

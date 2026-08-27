@@ -334,7 +334,7 @@ export default function TransactionTable() {
             <DataTable
                 columns={columns}
                 data={transactions}
-                defaultPageSize={10}
+            
                 onEdit={openEdit}
                 onDelete={openDelete}
             />

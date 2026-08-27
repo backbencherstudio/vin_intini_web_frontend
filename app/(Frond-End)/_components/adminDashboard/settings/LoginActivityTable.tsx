@@ -1,10 +1,14 @@
 "use client";
 
+import AdminPagination from "@/components/reusable/dashboard/AdminPagination";
 import DataTable, {
     Column,
 } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+import Pagination from "@/components/reusable/Pagination";
+import { useGetLoginActivityQuery } from "@/feature/slice/admin/securitySettings";
+import { LogoutIcon } from "@/public/svgIcons/Icons";
 import { Monitor } from "lucide-react";
 import { useState } from "react";
 
@@ -13,71 +17,29 @@ type LoginActivity = {
     device: string;
     browser: string;
     location: string;
-    ipAddress: string;
-    date: string;
-    time: string;
+    ip_address: string;
     status: "Successful" | "Failed";
+    is_active: boolean;
+    is_current: boolean;
+    signin_status: string;
+    login_at: string;
+    created_at: string;
 };
 
-const initialLoginActivities: LoginActivity[] = [
-    {
-        id: 1,
-        device: "Windows",
-        browser: "Chrome",
-        location: "Dhaka, Bangladesh",
-        ipAddress: "103.13.45.124",
-        date: "09 Jul 2026",
-        time: "01:24 AM",
-        status: "Successful",
-    },
-    {
-        id: 2,
-        device: "Mac",
-        browser: "Chrome",
-        location: "Dhaka, Bangladesh",
-        ipAddress: "103.15.76.109",
-        date: "07 Jul 2026",
-        time: "11:56 AM",
-        status: "Successful",
-    },
-    {
-        id: 3,
-        device: "Windows",
-        browser: "Firefox",
-        location: "Dhaka, Bangladesh",
-        ipAddress: "172.16.254.3",
-        date: "15 Jul 2026",
-        time: "06:42 PM",
-        status: "Successful",
-    },
-    {
-        id: 4,
-        device: "Mac",
-        browser: "Safari",
-        location: "Dhaka, Bangladesh",
-        ipAddress: "54.213.1.45",
-        date: "22 Jul 2026",
-        time: "09:15 AM",
-        status: "Successful",
-    },
-    {
-        id: 5,
-        device: "Linux",
-        browser: "Chrome",
-        location: "Dhaka, Bangladesh",
-        ipAddress: "203.0.113.7",
-        date: "29 Jul 2026",
-        time: "03:30 PM",
-        status: "Successful",
-    },
-];
-
 export default function LoginActivityTable() {
-    const [loginActivities, setLoginActivities] = useState<LoginActivity[]>(
-        initialLoginActivities
-    );
+   const [page, setPage] = useState(1);
+const [limit, setLimit] = useState(10);
+
+const { data, isLoading } = useGetLoginActivityQuery({
+  page,
+  limit,
+});
+
+const loginActivities: LoginActivity[] =
+  data?.data?.items || [];
 
     const [deleteOpen, setDeleteOpen] = useState(false);
+
     const [selectedLogin, setSelectedLogin] =
         useState<LoginActivity | null>(null);
 
@@ -85,16 +47,13 @@ export default function LoginActivityTable() {
         setSelectedLogin(row);
         setDeleteOpen(true);
     };
+
     const openEdit = (row: LoginActivity) => {
         setSelectedLogin(row);
     };
 
     const handleDelete = () => {
         if (!selectedLogin) return;
-
-        setLoginActivities((prev) =>
-            prev.filter((item) => item.id !== selectedLogin.id)
-        );
 
         setDeleteOpen(false);
         setSelectedLogin(null);
@@ -104,7 +63,7 @@ export default function LoginActivityTable() {
         {
             header: "No.",
             cell: (row) => (
-                <span className="text-[13px] font-medium leading-[140%] text-[#4A4C56]">
+                <span className="text-[13px] font-medium text-[#4A4C56]">
                     {row.id}
                 </span>
             ),
@@ -120,7 +79,7 @@ export default function LoginActivityTable() {
                         className="text-[#1D1F2C]"
                     />
 
-                    <span className="text-[13px] font-semibold leading-[140%] tracking-[0.065px] text-[#0A0A0A]">
+                    <span className="text-[13px] font-semibold text-[#0A0A0A]">
                         {row.device} • {row.browser}
                     </span>
                 </div>
@@ -130,7 +89,7 @@ export default function LoginActivityTable() {
         {
             header: "Location",
             cell: (row) => (
-                <span className="whitespace-nowrap text-[13px] font-semibold leading-[140%] tracking-[0.065px] text-[#0A0A0A]">
+                <span className="whitespace-nowrap text-[13px] font-semibold text-[#0A0A0A]">
                     {row.location}
                 </span>
             ),
@@ -139,67 +98,96 @@ export default function LoginActivityTable() {
         {
             header: "IP Address",
             cell: (row) => (
-                <span className="whitespace-nowrap text-[13px] font-medium leading-[140%] tracking-[0.065px] text-[#1D1F2C]">
-                    {row.ipAddress}
+                <span className="whitespace-nowrap text-[13px] font-medium text-[#1D1F2C]">
+                    {row.ip_address}
                 </span>
             ),
         },
 
         {
             header: "Date & Time",
-            cell: (row) => (
-                <div className="flex flex-col gap-0">
-                    <span className="whitespace-nowrap text-[13px] font-medium leading-[140%] text-[#1D1F2C]">
-                        {row.date}
-                    </span>
+            cell: (row) => {
+                const date = new Date(row.login_at);
 
-                    <span className="whitespace-nowrap text-[12px] font-normal leading-[140%] text-[#A5A5AB]">
-                        {row.time}
-                    </span>
-                </div>
-            ),
+                return (
+                    <div className="flex flex-col">
+                        <span className="whitespace-nowrap text-[13px] font-medium text-[#1D1F2C]">
+                            {date.toLocaleDateString()}
+                        </span>
+
+                        <span className="whitespace-nowrap text-[12px] text-[#A5A5AB]">
+                            {date.toLocaleTimeString()}
+                        </span>
+                    </div>
+                );
+            },
         },
 
         {
             header: "Status",
             cell: (row) => (
                 <CustomBadge
-                    color="active"
-                    className="!rounded-[4px] !border !border-[#72DED1] !bg-[#F0FFFD] !px-2.5 !py-1 text-[11px] font-medium !text-[#287F6E]"
+                   color={
+                        row.status === "Successful"
+                            ? "green"
+                            : "red"
+                    }
+                    className={
+                        row.status === "Successful"
+                            ? "!rounded-[4px] !border !border-[#72DED1] !bg-[#F0FFFD] !px-2.5 !py-1 text-[11px] !text-[#287F6E]"
+                            : "!rounded-[4px] !border !border-red-200 !bg-red-50 !px-2.5 !py-1 text-[11px] !text-red-500"
+                    }
                 >
-                    
                     {row.status}
                 </CustomBadge>
             ),
         },
+        {
+            header: "Actions",
+            cell: (row) => (
+                <div className="flex items-center gap-2.5 whitespace-nowrap">
+                    <button
+                        onClick={() => openEdit(row)}
+                        className=" flex items-center gap-1 bg-[#FEECEE] text-red-500 px-2 py-1 rounded-sm text-[12px] font-medium"
+                    >
+                        <LogoutIcon className="w-4 h-4" />
+                        Logout
+                    </button>
+                  
+                </div>
+            ),
+        }
     ];
 
     return (
         <div className="w-full">
-            {/* Header */}
             <div className="py-6">
-                <h2 className="text-[#1D1F2C] text-[20px] font-semibold leading-[130%] tracking-[0.1px]
-">
+                <h2 className="text-[#1D1F2C] text-[20px] font-semibold">
                     Login Activity
                 </h2>
 
-                <p className="mt-1 text-[#4A4C56] text-[14px] font-normal leading-[140%] tracking-[0.07px]
-">
+                <p className="mt-1 text-[#4A4C56] text-[14px]">
                     Review your recent account login activity.
                 </p>
             </div>
 
-            {/* Table */}
             <DataTable
                 columns={columns}
                 data={loginActivities}
-                defaultPageSize={10}
-                onEdit={openEdit}
-                onDelete={openDelete}
+         
             />
 
-            {/* Delete Modal */}
-            <CustomDeletModal
+            {/* Backend Pagination */}
+           <AdminPagination
+  pagination={data}
+  onPageChange={setPage}
+  onPageSizeChange={(size) => {
+    setLimit(size);
+    setPage(1);
+  }}
+/>
+
+            {/* <CustomDeletModal
                 isOpen={deleteOpen}
                 onClose={() => {
                     setDeleteOpen(false);
@@ -208,7 +196,7 @@ export default function LoginActivityTable() {
                 onConfirm={handleDelete}
                 title="Do you want to delete this login activity?"
                 description="Click “Delete Now” if you want to delete otherwise press cancel."
-            />
+            /> */}
         </div>
     );
 }

@@ -6,7 +6,6 @@ import ChangePassword from "./ChangePassword";
 import ActiveSessions from "./ActiveSessions";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import AuthenticationMethods from "./AuthenticationMethods";
-import LoginActivity from "./LoginActivity";
 
 
 export default function SecuritySettings() {
@@ -51,8 +50,7 @@ export default function SecuritySettings() {
         
         </div>
 
-        {/* Login Activity */}
-        {/* <LoginActivity /> */}
+        
       </div>
     </main>
   );

@@ -229,7 +229,6 @@ export default function JobsPage() {
             <DataTable
                 columns={columns}
                 data={jobs}
-                defaultPageSize={10}
                 onEdit={openEdit}
                 onDelete={openEdit}         // ← এখানে connect করো
             // onDelete={(row) => console.log("Delete", row)}

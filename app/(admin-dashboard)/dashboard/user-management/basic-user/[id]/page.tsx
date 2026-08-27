@@ -37,7 +37,7 @@ export default async function Page({
                 </div>
                 <div>
                     <p>Company Name & <br /> Logo</p>
-                  <p>Graduated institution <br />  Name</p>
+                  <p>Graduated institution <br /> Name</p>
                 </div>
             </div>
             <div>
