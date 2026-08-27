@@ -95,9 +95,6 @@ export async function proxy(request: NextRequest) {
       credentials: "include",
     });
 
-    if (userResponse.status === 401) {
-      return redirectToLogin();
-    }
 
     const userData = await userResponse.json();
 
