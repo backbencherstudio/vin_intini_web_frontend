@@ -96,6 +96,14 @@ export const baseApiSlice = createApi({
     "getConversationList",
     "message",
     "connect",
+    "psychology",
+    "follow",
+    "group",
+    "neuroscience",
+    "Comment",
+    "Like",
+    "experience",
+    "study",
   ],
 });
 
