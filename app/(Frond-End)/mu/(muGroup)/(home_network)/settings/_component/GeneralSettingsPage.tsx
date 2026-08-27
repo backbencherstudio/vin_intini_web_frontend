@@ -70,7 +70,7 @@ export default function GeneralSettingsPage() {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<GeneralSettingsFormValues>({
     defaultValues: {
       first_name: "",
@@ -196,40 +196,51 @@ export default function GeneralSettingsPage() {
             {/* First Name */}
             <div>
               <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
-                First Name
+                First Name <span className="text-redColor">*</span>
               </label>
               <ReusableInput
                 id="first_name"
                 placeholder="First Name"
-                {...register("first_name")}
-                className="h-11 rounded-lg border-gray-200 bg-white"
+                {...register("first_name", { required: "First name is required" })}
+                className={`h-11 rounded-lg border-gray-200 bg-white ${errors.first_name ? "border-redColor" : "border-gray-200"}`}
               />
+              {errors.first_name && (
+                <p className="text-redColor text-sm mt-1">
+                  {errors.first_name.message}
+                </p>
+              )}
             </div>
 
             {/* Last Name */}
             <div>
               <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
-                Last Name
+                Last Name <span className="text-redColor">*</span>
               </label>
               <ReusableInput
                 id="last_name"
                 placeholder="Last Name"
-                {...register("last_name")}
-                className="h-11 rounded-lg border-gray-200 bg-white"
+                {...register("last_name", { required: "Last name is required" })}
+                className={`h-11 rounded-lg border-gray-200 bg-white ${errors.last_name ? "border-redColor" : "border-gray-200"}`}
               />
+              {errors.last_name && (
+                <p className="text-redColor text-sm mt-1">
+                  {errors.last_name.message}
+                </p>
+              )}
             </div>
 
             {/* User Email */}
             <div>
               <label className="block text-sm font-semibold text-descriptionColor mb-1.5">
-                User Email
+                Email <span className="text-redColor">*</span>
               </label>
               <ReusableInput
                 id="email"
                 type="email"
+                disabled={true}
                 placeholder="User Email"
                 {...register("email")}
-                className="h-11 rounded-lg border-gray-200 bg-white"
+                className="h-11 rounded-lg disabled:cursor-not-allowed disabled:bg-bgColor/60 disabled:text-descriptionColor border-gray-200 bg-white"
               />
             </div>
 
@@ -392,9 +403,9 @@ export default function GeneralSettingsPage() {
           </div>
 
           {/* 3. Block Lists (Navigation Card) */}
-          <div
+          {/* <div
             onClick={() => {
-              /* Navigate to block list */
+           
             }}
             className="border border-gray-200/80 rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
           >
@@ -413,12 +424,12 @@ export default function GeneralSettingsPage() {
             </div>
 
             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-transform group-hover:translate-x-0.5 shrink-0" />
-          </div>
+          </div> */}
 
           {/* 4. Change Password (Navigation Card) */}
-          <div
+          {/* <div
             onClick={() => {
-              /* Open Change Password Modal */
+           
             }}
             className="border border-gray-200/80 rounded-md p-2 md:p-4 flex items-center justify-between gap-3 hover:border-gray-300 hover:bg-gray-50/50 transition-colors cursor-pointer group"
           >
@@ -437,7 +448,7 @@ export default function GeneralSettingsPage() {
             </div>
 
             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-transform group-hover:translate-x-0.5 shrink-0" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,11 +1,10 @@
-import Link from "next/link";
-import JobsPage from "./_component/JobsPage";
+import ComingSoonCard from "@/components/reusable/ComingSoonCard";
 
 export default function Page() {
   return (
-    <div >
+    <div>
       <div>
-        <JobsPage/>
+        <ComingSoonCard />
       </div>
     </div>
   );

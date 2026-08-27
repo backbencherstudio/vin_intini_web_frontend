@@ -71,7 +71,7 @@ export default function PsychologyPartnersSlider() {
             <Marquee
               gradient={true}
               gradientWidth={40}
-              gradientColor="#f8fafb"
+              gradientColor="#fff"
               speed={45}
               pauseOnHover={true}
               className="flex items-center py-2"

@@ -50,66 +50,65 @@ export const IndustrySidebar = () => {
   };
 
   return (
-    <>
-      {/* Desktop View - UNCHANGED */}
-      <div className="hidden h-full min-h-screen w-full max-w-66 flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex lg:w-58">
-        <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
-          <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
-            Industries
-          </h2>
-        </div>
-        <div className="flex w-full max-w-56 flex-col items-start gap-1">
-          {navItems.map((item) => (
-            <IndustryNavItem
-              key={item.href}
-              href={item.href}
-              icon={item.icon}
-              label={item.label}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile View - Header + Dropdown */}
-      <div className="w-full lg:hidden">
-        <IndustryHeader
-          title={currentPage}
-          description={
-            pageDescriptions[currentPage] ||
-            "Explore the latest advancements in brain health research and treatment."
-          }
-        />
-
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="mt-4 flex w-full items-center justify-between rounded-lg border border-[#DFE1E7] bg-white px-4 py-3"
-        >
-          <span className="font-['Segoe_UI'] text-base font-semibold text-[#1D1F2C]">
-            <div className="flex items-center gap-2">
-              {currentIcon} {currentPage}
-            </div>
-          </span>
-          <ChevronDown
-            className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-
-        {isOpen && (
-          <div className="mt-2 flex w-full flex-col rounded-lg border border-[#DFE1E7] bg-white p-2">
-            {navItems.map((item) => (
-              <IndustryNavItem
-                key={item.href}
-                href={item.href}
-                icon={item.icon}
-                label={item.label}
-                onClick={() => setIsOpen(false)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </>
+      <>
+         {/* Desktop View - Shows from lg (1024px) and above */}
+         <div className="hidden h-full min-h-screen w-full  flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex ">
+           <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
+             <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
+               Industries
+             </h2>
+           </div>
+           <div className="flex w-full max-w-56 flex-col items-start gap-1">
+             {navItems.map((item) => (
+               <IndustryNavItem
+                 key={item.href}
+                 href={item.href}
+                 icon={item.icon}
+                 label={item.label}
+               />
+             ))}
+           </div>
+         </div>
+   
+         {/* Mobile & Tablet View - Shows below lg (1024px) */}
+         <div className="w-full lg:hidden">
+           <IndustryHeader
+             title={currentPage}
+             description={
+               pageDescriptions[currentPage] ||
+               "Explore the latest advancements in brain health research and treatment."
+             }
+           />
+   
+           <button
+             onClick={() => setIsOpen(!isOpen)}
+             className="mt-4 flex w-full items-center justify-between rounded-lg border border-[#DFE1E7] bg-white px-4 py-3"
+           >
+             <span className="font-['Segoe_UI'] text-base font-semibold text-[#1D1F2C]">
+               <div className="flex items-center gap-2">
+                 {currentIcon} {currentPage}
+               </div>
+             </span>
+             <ChevronDown
+               className={`h-5 w-5 text-[#1D1F2C] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                 }`}
+             />
+           </button>
+   
+           {isOpen && (
+             <div className="mt-2 flex w-full flex-col rounded-lg border border-[#DFE1E7] bg-white p-2">
+               {navItems.map((item) => (
+                 <IndustryNavItem
+                   key={item.href}
+                   href={item.href}
+                   icon={item.icon}
+                   label={item.label}
+                   onClick={() => setIsOpen(false)}
+                 />
+               ))}
+             </div>
+           )}
+         </div>
+       </>
   );
 };

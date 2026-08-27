@@ -54,12 +54,12 @@ function toOption(value: string, options: FlatOption[]) {
 const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
   control: (base, state) => ({
     ...base,
-    minHeight: "48px",
+    minHeight: "50px",
     borderRadius: "0.5rem",
-    borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
+    borderColor: state.isFocused ? "#e5e5e5" : base.borderColor,
     boxShadow: state.isFocused ? "0 0 0 2px #D9F4F7" : "none",
     "&:hover": {
-      borderColor: state.isFocused ? "#00A3B1" : base.borderColor,
+      borderColor: state.isFocused ? "#e5e5e5" : base.borderColor,
     },
   }),
   valueContainer: (base) => ({

@@ -32,9 +32,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
       },
       providesTags: (_result, _error, arg) => {
         const id =
-          typeof arg === "string" || typeof arg === "number"
-            ? arg
-            : arg?.id;
+          typeof arg === "string" || typeof arg === "number" ? arg : arg?.id;
         return id ? [{ type: "message", id }] : ["message"];
       },
       keepUnusedDataFor: 600,
@@ -52,7 +50,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${messageId}/mark-read`,
         method: "POST",
       }),
-      invalidatesTags: ["conversationList"],
+      invalidatesTags: ["conversationList", "message"],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -61,6 +59,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
         body: data,
         formData: true,
       }),
+      invalidatesTags: ["conversationList"],
     }),
     markUnReadMessage: builder.mutation({
       query: (messageId) => ({
