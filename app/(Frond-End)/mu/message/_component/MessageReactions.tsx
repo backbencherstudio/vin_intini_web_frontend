@@ -11,7 +11,7 @@ export default function MessageReactions({
 
   return (
     <div
-      className={`flex items-center gap-1 absolute -bottom-4 z-10 ${
+      className={`flex items-center gap-1 absolute -bottom-9 z-10 ${
         variant === "sender" ? "-left-2" : "-right-2"
       }`}
     >
