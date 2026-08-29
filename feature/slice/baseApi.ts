@@ -69,6 +69,20 @@ const baseQueryWithReauth: BaseQueryFn<
             return result;
           }
         } else {
+          await rawBaseQuery(
+            {
+              url: "/refresh",
+              method: "POST",
+              headers: {
+                ...(currentToken
+                  ? { Authorization: `Bearer ${currentToken}` }
+                  : {}),
+                Accept: "application/json",
+              },
+            },
+            api,
+            extraOptions,
+          );
           await clearToken();
           if (typeof window !== "undefined") window.location.href = "/login";
         }
