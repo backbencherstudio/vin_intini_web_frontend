@@ -35,12 +35,16 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
 
-  // Always start with Home
+  // Filter out dynamic numeric IDs (e.g., /mu/message/28 -> hide "28")
+  const filteredSegments = segments.filter((seg, i) => {
+    if (/^\d+$/.test(seg) && segments[i - 1] === "message") return false;
+    return true;
+  });
+
   const items: { label: string; href: string }[] = [];
   let cumulativePath = "";
-  console.log(items);
 
-  for (const seg of segments) {
+  for (const seg of filteredSegments) {
     cumulativePath += `/${seg}`;
     items.push({
       label: toLabel(seg),

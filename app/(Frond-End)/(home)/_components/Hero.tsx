@@ -1,8 +1,8 @@
-import { DiamondIcon, RightArrowIcon } from "@/public/svgIcons/Icons";
+import JoinButton from "@/components/reusable/JoinButton";
+import heroImage from "@/public/images/hero-img.png";
+import { DiamondIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import WrapperContainer from "../../_components/WrapperContainer";
-import JoinButton from "@/components/reusable/JoinButton";
-import heroImage from "@/public/images/hero-img.svg";
 
 export default function Hero() {
   return (

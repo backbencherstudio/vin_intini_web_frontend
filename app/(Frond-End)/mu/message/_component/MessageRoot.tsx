@@ -387,7 +387,7 @@ function MessageRoot() {
           <div
             ref={containerRef}
             onScroll={handleScroll}
-            className="md:h-135 h-100 border-t overflow-y-auto p-3! md:p-6! space-y-4 overscroll-contain"
+            className="lg:h-135 md:h-115 h-105 border-t overflow-y-auto px-3! py-6! md:p-6! space-y-5.5 overscroll-contain"
           >
             {isFetchingMore && (
               <div className="flex justify-center py-2">

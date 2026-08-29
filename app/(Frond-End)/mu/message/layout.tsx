@@ -8,9 +8,9 @@ function layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="pb-6 md:pb-8">
       <div>
-      <Breadcrumb />
+        <Breadcrumb />
       </div>
-      <div className="h-full bg-white p-4 rounded-xl flex">
+      <div className="h-full md:bg-white md:p-4 rounded-xl flex">
         {/* Sidebar */}
         <div
           className={`md:max-w-80 lg:max-w-90 md:border-r ${params?.id ? "hidden" : "block"} md:pr-4 w-full md:flex flex-col`}
