@@ -87,6 +87,19 @@ const baseQueryWithReauth: BaseQueryFn<
           if (typeof window !== "undefined") window.location.href = "/login";
         }
       } catch {
+        const token = await getToken();
+        await rawBaseQuery(
+          {
+            url: "/refresh",
+            method: "POST",
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              Accept: "application/json",
+            },
+          },
+          api,
+          extraOptions,
+        );
         await clearToken();
         if (typeof window !== "undefined") window.location.href = "/login";
       } finally {
