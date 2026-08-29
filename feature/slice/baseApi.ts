@@ -19,6 +19,7 @@ const rawBaseQuery = fetchBaseQuery({
 });
 
 let isRefreshing = false;
+let pendingRequests: Array<() => void> = [];
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
@@ -31,84 +32,67 @@ const baseQueryWithReauth: BaseQueryFn<
     result?.error?.status === 401 ||
     (result?.data as any)?.message?.toLowerCase?.()?.includes("unauthorized");
 
-  if (isUnauthorized) {
-    if (typeof args === "object" && args.url.includes("/refresh")) {
-      await clearToken();
-      if (typeof window !== "undefined") window.location.href = "/login";
-      return result;
-    }
-
-    if (!isRefreshing) {
-      isRefreshing = true;
-      try {
-        const currentToken = await getToken();
-        const refreshResult = await rawBaseQuery(
-          {
-            url: "/refresh",
-            method: "POST",
-            headers: {
-              ...(currentToken
-                ? { Authorization: `Bearer ${currentToken}` }
-                : {}),
-              Accept: "application/json",
-            },
-          },
-          api,
-          extraOptions,
-        );
-
-        const newToken =
-          (refreshResult.data as any)?.token ||
-          (refreshResult.data as any)?.data?.token ||
-          (refreshResult.data as any)?.access_token;
-
-        if (newToken) {
-          await setToken(newToken);
-          if (typeof window !== "undefined") {
-            window.location.reload();
-            return result;
-          }
-        } else {
-          await rawBaseQuery(
-            {
-              url: "/refresh",
-              method: "POST",
-              headers: {
-                ...(currentToken
-                  ? { Authorization: `Bearer ${currentToken}` }
-                  : {}),
-                Accept: "application/json",
-              },
-            },
-            api,
-            extraOptions,
-          );
-          await clearToken();
-          if (typeof window !== "undefined") window.location.href = "/login";
-        }
-      } catch {
-        const token = await getToken();
-        await rawBaseQuery(
-          {
-            url: "/refresh",
-            method: "POST",
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-              Accept: "application/json",
-            },
-          },
-          api,
-          extraOptions,
-        );
-        await clearToken();
-        if (typeof window !== "undefined") window.location.href = "/login";
-      } finally {
-        isRefreshing = false;
-      }
-    }
+  if (!isUnauthorized) {
+    return result;
   }
 
-  return result;
+  // রিফ্রেশ রিকোয়েস্ট নিজেই ফেইল করলে লগআউট
+  if (typeof args === "object" && args.url.includes("/refresh")) {
+    await clearToken();
+    if (typeof window !== "undefined") window.location.href = "/login";
+    return result;
+  }
+
+  // অন্যান্য সমান্তরাল রিকোয়েস্টগুলোকে কিউতে রাখা
+  if (isRefreshing) {
+    return new Promise((resolve) => {
+      pendingRequests.push(() => {
+        resolve(rawBaseQuery(args, api, extraOptions));
+      });
+    });
+  }
+
+  isRefreshing = true;
+  try {
+    const currentToken = await getToken();
+    const refreshResult = await rawBaseQuery(
+      {
+        url: "/refresh",
+        method: "POST",
+        headers: {
+          ...(currentToken ? { Authorization: `Bearer ${currentToken}` } : {}),
+          Accept: "application/json",
+        },
+      },
+      api,
+      extraOptions
+    );
+
+    const newToken =
+      (refreshResult.data as any)?.token ||
+      (refreshResult.data as any)?.data?.token ||
+      (refreshResult.data as any)?.access_token;
+
+    if (newToken) {
+      await setToken(newToken);
+      pendingRequests.forEach((cb) => cb());
+      pendingRequests = [];
+      return await rawBaseQuery(args, api, extraOptions);
+    }
+
+    // রিফ্রেশ টোকেনও ইনভ্যালিড হলে লগআউট
+    pendingRequests = [];
+    await clearToken();
+    if (typeof window !== "undefined") window.location.href = "/login";
+    return result;
+  } catch {
+    pendingRequests = [];
+    await clearToken();
+    if (typeof window !== "undefined") window.location.href = "/login";
+    return result;
+  } finally {
+    isRefreshing = false;
+  }
 };
 
 export const baseApiSlice = createApi({
