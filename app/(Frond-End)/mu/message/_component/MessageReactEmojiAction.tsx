@@ -38,7 +38,7 @@ function MessageReactEmojiAction({
       </button>
       {showPicker && messageId === id && (
         <div
-          className={`rounded-full  z-20 w-full absolute bottom-20px ${type === "receiver" ? "lg:-left-2 right-0" : "lg:-left-20 "} shadow-gray-500 shadow-2xl  bg-white  px-2`}
+          className={`rounded-full  z-20 w-full absolute bottom-20px ${type === "receiver" ? "md:-left-2 -left-23" : "md:-left-20 "} shadow-gray-500 shadow-2xl  `}
         >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
