@@ -33,7 +33,43 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
     method: "GET",
     params,
   }),
+  providesTags:["loginActivities"]
 }),
+
+    DeleteLoginActivity: builder.mutation({
+  query: (id) => ({
+    url: `/security/login-activities/${id}`, 
+    method: "DELETE",
+  }),
+  invalidatesTags:["loginActivities"]
+}),
+
+//emabele pass
+ EnablePassword: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/setup",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //code send
+     ProviderEmailCode: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/confirm",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //desable pass
+     DesablePasswd: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/disable",
+        method: "POST",
+        body: payload,
+      }),
+    }),
 
   }),
 });
@@ -44,6 +80,10 @@ export const {
   usePostChangePasswordMutation,
 
   useGetActiveSessionsQuery,
+  useDeleteLoginActivityMutation,
 
   useGetLoginActivityQuery,
+  useEnablePasswordMutation,
+  useProviderEmailCodeMutation,
+  useDesablePasswdMutation
 } = securitySettingsSlice;

@@ -45,6 +45,34 @@ export default function SecurityOverview({
 
   console.log(OverviewData)
 
+  const rating = OverviewData?.security_score?.rating?.toLowerCase();
+
+const securityConfig = {
+  weak: {
+    progress: "#EF4444",
+    track: "#FEE2E2",
+    inner: "#FEF2F2",
+    icon: "#EF4444",
+  },
+
+  medium: {
+    progress: "#F59E0B",
+    track: "#FEF3C7",
+    inner: "#FFF8E7",
+    icon: "#F59E0B",
+  },
+  strong: {
+    progress: "#04A1B7",
+    track: "#D9F4F7",
+    inner: "#E6F6F8",
+    icon: "#04A1B7",
+  },
+};
+
+const config =
+  securityConfig[rating as keyof typeof securityConfig] ||
+  securityConfig.medium;
+
    const percentage = OverviewData?.security_score?.percentage ?? 0;
 const progressDegree = (percentage / 100) * 360;
 console.log(percentage, progressDegree)
@@ -66,25 +94,30 @@ console.log(percentage, progressDegree)
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[328px_1fr]">
         {/* Security Score */}
         <div className="flex flex-col items-center justify-center border p-6 rounded-sm">
-          <div className="relative flex h-48 w-48 items-center justify-center">
+         <div className="relative flex h-48 w-48 items-center justify-center">
   {/* Progress Circle */}
- <div
-  className="absolute inset-0 rounded-full"
-  style={{
-    background: `conic-gradient(
-      #04A1B7 0deg ${progressDegree}deg,
-      #D9F4F7 ${progressDegree}deg 360deg
-    )`,
-  }}
-/>
+  <div
+    className="absolute inset-0 rounded-full"
+    style={{
+      background: `conic-gradient(
+        ${config.progress} 0deg ${progressDegree}deg,
+        ${config.track} ${progressDegree}deg 360deg
+      )`,
+    }}
+  />
 
   {/* Inner Background */}
-  <div className="absolute inset-[10px] rounded-full bg-[#E6F6F8]" />
+  <div
+    className="absolute inset-[10px] rounded-full"
+    style={{
+      backgroundColor: config.inner,
+    }}
+  />
 
   {/* Icon */}
   <div className="relative flex h-28 w-28 items-center justify-center">
     <ShieldCheck
-      className="text-primaryColor"
+      style={{ color: config.icon }}
       size={48}
       strokeWidth={2}
     />

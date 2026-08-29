@@ -7,7 +7,7 @@ import DataTable, {
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import Pagination from "@/components/reusable/Pagination";
-import { useGetLoginActivityQuery } from "@/feature/slice/admin/securitySettings";
+import { useDeleteLoginActivityMutation, useGetLoginActivityQuery } from "@/feature/slice/admin/securitySettings";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
 import { Monitor } from "lucide-react";
 import { useState } from "react";
@@ -35,6 +35,8 @@ const { data, isLoading } = useGetLoginActivityQuery({
   limit,
 });
 
+
+
 const loginActivities: LoginActivity[] =
   data?.data?.items || [];
 
@@ -52,12 +54,16 @@ const loginActivities: LoginActivity[] =
         setSelectedLogin(row);
     };
 
-    const handleDelete = () => {
-        if (!selectedLogin) return;
+   const [deleteLoginActivity, { isLoading: deleteLoading }] =
+  useDeleteLoginActivityMutation();
 
-        setDeleteOpen(false);
-        setSelectedLogin(null);
-    };
+const handleLogout = async (id: number) => {
+  try {
+    await deleteLoginActivity(id).unwrap();
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 
     const columns: Column<LoginActivity>[] = [
         {
@@ -144,15 +150,16 @@ const loginActivities: LoginActivity[] =
         },
         {
             header: "Actions",
-            cell: (row) => (
+            cell: (row: LoginActivity) => (
                 <div className="flex items-center gap-2.5 whitespace-nowrap">
                     <button
-                        onClick={() => openEdit(row)}
-                        className=" flex items-center gap-1 bg-[#FEECEE] text-red-500 px-2 py-1 rounded-sm text-[12px] font-medium"
-                    >
-                        <LogoutIcon className="w-4 h-4" />
-                        Logout
-                    </button>
+  onClick={() => handleLogout(row.id)}
+  disabled={deleteLoading}
+  className="flex items-center gap-1 bg-[#FEECEE] text-red-500 px-2 py-1 rounded-sm text-[12px] font-medium disabled:opacity-50"
+>
+  <LogoutIcon className="w-4 h-4" />
+  {deleteLoading ? "Logging out..." : "Logout"}
+</button>
                   
                 </div>
             ),
@@ -178,13 +185,12 @@ const loginActivities: LoginActivity[] =
             />
 
             {/* Backend Pagination */}
-           <AdminPagination
-  pagination={data}
-  onPageChange={setPage}
-  onPageSizeChange={(size) => {
-    setLimit(size);
-    setPage(1);
-  }}
+           <Pagination
+     page={page} 
+          pageSize={limit}
+          total={data?.total || 10}
+          totalPages={data?.total_page || 1}
+          onPageChange={(page) => setPage(page)}
 />
 
             {/* <CustomDeletModal

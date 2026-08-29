@@ -43,8 +43,7 @@ export default function SecuritySettings() {
         {/* 2FA + Authentication Methods */}
         <div className="">
           <TwoFactorAuthentication
-            enabled={twoFactorEnabled}
-            setEnabled={setTwoFactorEnabled}
+          
           />
 
         

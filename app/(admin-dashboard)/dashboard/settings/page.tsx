@@ -230,8 +230,8 @@ export default function JobsPage() {
                 columns={columns}
                 data={jobs}
                 onEdit={openEdit}
-                onDelete={openEdit}         // ← এখানে connect করো
-            // onDelete={(row) => console.log("Delete", row)}
+                onDelete={openEdit}        
+       
             />
 
             <CustomModal
@@ -242,7 +242,7 @@ export default function JobsPage() {
             >
                 {selectedJob && (
                     <TopHeader
-                    // এখানে selectedJob পাঠাতে পারো
+                  
                     // job={selectedJob}
                     // onSuccess={() => setEditOpen(false)}
                     />
