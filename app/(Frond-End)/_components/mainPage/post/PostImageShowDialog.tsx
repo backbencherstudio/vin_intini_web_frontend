@@ -70,11 +70,11 @@ function PostImageShowDialog({
     <RootDialog
       open={open}
       setOpen={setOpen}
-      className="max-w-6xl border-0  p-0"
+      className="max-w-6xl border-0 image-post p-0"
       ariaLabel="Post image preview"
       ariaDescription="Preview post images with slider controls"
     >
-      <div className="relative w-full  p-2 sm:p-4">
+      <div className="relative w-full  bg-black  p-2 sm:p-4">
         {mediaItems.length > 1 && (
           <button
             type="button"

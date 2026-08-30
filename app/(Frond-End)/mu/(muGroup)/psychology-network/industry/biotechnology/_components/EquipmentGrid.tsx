@@ -51,7 +51,7 @@ export const EquipmentGrid = ({
 
       {allItems.length === 0 && (
         <div className="flex w-full justify-center py-12">
-          <p className="text-[#A5A5AB] font-['Segoe_UI'] text-base">
+          <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
             No equipment found in this category
           </p>
         </div>

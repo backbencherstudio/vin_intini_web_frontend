@@ -7,7 +7,6 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import baseApiSlice from "@/feature/slice/baseApi";
 import { useGetMyConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import {
   useArchiveMessageMutation,
@@ -105,27 +104,10 @@ function MessageUserSection() {
     { id: 4, name: "archived" },
   ];
 
-
-
   const handleReadMessage = async (messageId: number) => {
-    router.push(`/mu/message/${messageId}`);
     try {
       await markReadMessage(messageId).unwrap();
-      const api = baseApiSlice as any;
-      const tabs = ["all", "unread", "archived"];
-      tabs.forEach((tab) => {
-        dispatch(
-          api.util.updateQueryData("getConversationList", tab, (draft: any) => {
-            if (!draft?.data) return;
-            const idx = draft.data.findIndex(
-              (conv: any) => conv.id === messageId,
-            );
-            if (idx !== -1) {
-              draft.data[idx].unread_count = 0;
-            }
-          }),
-        );
-      });
+      router.push(`/mu/message/${messageId}?${searchParams.toString()}`);
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
@@ -137,6 +119,7 @@ function MessageUserSection() {
         await markReadMessage(msg.id).unwrap();
       } else {
         await markUnReadMessage(msg.id).unwrap();
+        router.push(`/mu/message?${searchParams.toString()}`);
       }
     } catch (error) {
       console.error("Error toggling read status:", error);
@@ -147,8 +130,10 @@ function MessageUserSection() {
     try {
       if (msg.is_archived) {
         await unarchiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       } else {
         await archiveMessage(msg.id).unwrap();
+        router.push(`/mu/message`);
       }
     } catch (error) {
       console.error("Error toggling archive status:", error);
@@ -270,7 +255,10 @@ function MessageUserSection() {
         {messageType.map((item) => (
           <button
             key={item.id}
-            onClick={() => setTab(item.name)}
+            onClick={() => {
+              setTab(item.name);
+              router.push(`/mu/message?tab=${item.name}`);
+            }}
             className={`py-1 rounded-sm px-4 border capitalize text-sm border-liteDescriptionColor/80 text-liteDescriptionColor cursor-pointer ${
               activeTab === item?.name
                 ? "bg-primaryColor text-whiteColor border-0 font-medium"
@@ -325,7 +313,9 @@ function MessageUserSection() {
                             : msg.last_message?.type === "audio" ||
                                 msg.last_message?.type === "voice"
                               ? "Sent a voice message"
-                              : msg.last_message?.type === "file"
+                              : msg.last_message?.type === "file" ||
+                                  msg.last_message?.type === "image" ||
+                                  msg.last_message?.type === "pdf"
                                 ? "Sent a file"
                                 : msg.last_message?.type === "video" ||
                                     msg.last_message?.type === "vedio"

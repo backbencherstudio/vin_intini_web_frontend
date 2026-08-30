@@ -38,7 +38,7 @@ function MessageReactEmojiAction({
       </button>
       {showPicker && messageId === id && (
         <div
-          className={`rounded-full border z-20 absolute bottom-20px ${type === "receiver" ? "-left-2" : "-left-20"} shadow-gray-500 shadow-2xl bg-white  px-2`}
+          className={`rounded-full  z-20 w-full absolute bottom-20px ${type === "receiver" ? "md:-left-2 -left-23" : "md:-left-20 "} shadow-gray-500 shadow-2xl  `}
         >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
@@ -52,8 +52,8 @@ function MessageReactEmojiAction({
                 "--epr-emoji-padding": "2px",
                 "--epr-horizontal-padding": "4px",
                 "--epr-bg-color": "transparent",
-                "--epr-picker-border-color": "transparent",
-                "--epr-picker-border-radius": "0px",
+                "--epr-picker-border-color": " #E5E7EB",
+                "--epr-picker-border-radius": "20px",
                 "--epr-picker-box-shadow": "none",
               } as CSSProperties
             }

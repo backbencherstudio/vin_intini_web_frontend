@@ -71,7 +71,7 @@ export default function PsychologyPartnersSlider() {
             <Marquee
               gradient={true}
               gradientWidth={40}
-              gradientColor="#f8fafb"
+              gradientColor="#fff"
               speed={45}
               pauseOnHover={true}
               className="flex items-center py-2"
@@ -86,7 +86,7 @@ export default function PsychologyPartnersSlider() {
                   <div
                     key={partner.id || index}
                     title={partnerName}
-                    className="relative mx-2 flex h-12 w-12 items-center justify-center rounded-lg border border-gray-100   transition-transform duration-200 hover:scale-105"
+                    className="relative mx-2 flex h-12 w-12 items-center justify-center rounded-lg   transition-transform duration-200 hover:scale-105"
                   >
                     <Image
                       src={imageUrl}

@@ -52,7 +52,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
                 className="h-full group-hover:scale-110 transition-transform duration-200 w-full object-cover"
               />
             </div>
-            <div className="text-center">
+            <div className="text-center px-1">
               <Link
                 href={`/mu/profile/${user?.username}`}
                 className="mt-3 line-clamp-2  text-base font-semibold leading-[1.2] text-headerColor"

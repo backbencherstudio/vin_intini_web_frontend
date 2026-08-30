@@ -24,7 +24,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch } from "react-redux";
@@ -33,6 +33,7 @@ function UserHeaderInfo() {
   const { data: userProfileData } = useGetUserProfileQuery("user");
   const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
+
   const [unreadCount, setUnreadCount] = useState(0);
   const [newMessagePopup, setNewMessagePopup] = useState<{
     key: number;
@@ -52,6 +53,7 @@ function UserHeaderInfo() {
   }, [userProfileData?.success, dispatch]);
 
   const router = useRouter();
+  const patheName = usePathname();
   const { data: notificationCountData } =
     useGetNotificationCountQuery("notificationCount");
 
@@ -110,6 +112,7 @@ function UserHeaderInfo() {
     }
     // Redirect to the login page
   };
+  const isMessagePage = patheName.startsWith("/mu/message");
 
   return (
     <div>
@@ -132,7 +135,7 @@ function UserHeaderInfo() {
             href={`/mu/message`}
             className="flex justify-center relative items-center"
           >
-            {newMessagePopup && (
+            {!isMessagePage && newMessagePopup  && (
               <div
                 key={newMessagePopup.key}
                 className="animate-pop-in absolute top-full right-0 mt-2 z-50 w-60 rounded-lg bg-white shadow-lg border border-gray-100 p-3 cursor-pointer"
@@ -169,7 +172,7 @@ function UserHeaderInfo() {
           </Link>
 
           <div className="  relative sm:ml-0">
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
@@ -233,7 +236,7 @@ function UserHeaderInfo() {
 
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/mu/profile`}
+                      href={`/mu/settings/general`}
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
                     >
                       <SettingIcon className="w-5 h-5 text-grayColor1  " />
