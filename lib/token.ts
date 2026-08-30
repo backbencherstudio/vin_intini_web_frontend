@@ -3,8 +3,9 @@ import nookies from "nookies";
 const ACCESS_TOKEN_KEY = "accessToken";
 const ACCESS_TOKEN_ISSUED_AT_KEY = "accessTokenIssuedAt";
 
-// কুকি ব্রাউজারে ৭ দিন পর্যন্ত পারসিস্ট করবে (ব্রাউজার কাটলেও থাকবে)
-const COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
+
+// কুকি ব্রাউজারে ৩০ দিন পর্যন্ত পারসিস্ট করবে (ব্রাউজার কাটলেও থাকবে)
+ export const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
 export async function setToken(token: string) {
   const now = Date.now().toString();
