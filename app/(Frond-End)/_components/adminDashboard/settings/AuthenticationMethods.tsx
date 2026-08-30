@@ -2,14 +2,25 @@
 
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
 import { Monitor, MoreHorizontal, Copy } from "lucide-react";
+import { useState } from "react";
+import RegenerateCode from "./2FactorAuthentication/RegenerateCode";
+import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import RecoveryEmail from "./recoverymailSetup/RecoveryEmail";
+import VerifyOtp from "./recoverymailSetup/VerifyOtp";
+import Success from "./recoverymailSetup/Success";
 
 export default function AuthenticationMethods() {
-  const {data, isLoading} = useGetSecurityOverviewQuery({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recoveryModalOpen, setRecoveryModalOpen] = useState(false);
 
+  const [step, setStep] = useState(1);
+  const {data, isLoading} = useGetSecurityOverviewQuery({});
   const securityData = data?.data || [];
-  
+
+
   return (
-    <section className="h-full rounded-md border p-4">
+  <div>
+      <section className="h-full rounded-md border p-4">
       <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
         Authentication Method
       </h2>
@@ -56,7 +67,9 @@ export default function AuthenticationMethods() {
              {securityData?.backup_codes_count || "N/A"}
             </p>
           </div>
-
+           <button type="button" className="cursor-pointer" onClick={()=> setIsModalOpen(true)}>
+            <MoreHorizontal size={16} className="text-black" />
+          </button>
 
         </div>
 
@@ -66,7 +79,10 @@ export default function AuthenticationMethods() {
             <Monitor size={24} className="text-black" />
           </div>
 
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1" onClick={()=>{
+            setStep(1);
+            setRecoveryModalOpen(true);
+          }}>
             <p className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
               Recovery Email
             </p>
@@ -87,5 +103,51 @@ export default function AuthenticationMethods() {
 
       </div>
     </section>
+
+    <div>
+  <CustomModal
+   open={isModalOpen}
+   onOpenChange={()=> setIsModalOpen(false)}  
+   title="Generate Backup Codes"
+   size="sm"
+  >
+       <RegenerateCode/>
+  </CustomModal>
+
+  <CustomModal
+  open={recoveryModalOpen}
+  onOpenChange={(open) => {
+    setRecoveryModalOpen(open);
+    if (!open) setStep(1);
+  }}
+  title={
+    step === 1
+      ? "Recovery Email"
+      : step === 2
+        ? "Verify OTP"
+        : "Recovery Email"
+  }
+  size="sm"
+>
+  {step === 1 && (
+    <RecoveryEmail
+      onSuccess={() => setStep(2)}
+    />
+  )}
+
+  {step === 2 && (
+    <VerifyOtp
+      onSuccess={() => setStep(3)}
+    />
+  )}
+
+  {step === 3 && (
+    <Success
+      onClose={() => setIsModalOpen(false)}
+    />
+  )}
+</CustomModal>
+    </div>
+  </div>
   );
 }

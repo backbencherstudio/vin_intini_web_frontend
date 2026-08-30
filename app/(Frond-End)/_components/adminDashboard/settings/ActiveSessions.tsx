@@ -98,8 +98,8 @@ export default function ActiveSessions() {
                  <button
               type="button"
               onClick={() => removeSession(session.id)}
-              disabled={session.current}
-              className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30"
+              disabled={session.is_current}
+              className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
             >
               <MoreHorizontal size={17} className="text-[#000]" />
             </button>

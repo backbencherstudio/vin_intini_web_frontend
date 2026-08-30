@@ -92,6 +92,15 @@ DeletAllSessions: builder.mutation({
       }),
     }),
 
+    //newGenerate Code
+     GenerateCode: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/regenerate-codes",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
   }),
 });
 
@@ -109,5 +118,6 @@ export const {
   useGetLoginActivityQuery,
   useEnablePasswordMutation,
   useProviderEmailCodeMutation,
-  useDesablePasswdMutation
+  useDesablePasswdMutation,
+  useGenerateCodeMutation
 } = securitySettingsSlice;
