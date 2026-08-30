@@ -36,14 +36,14 @@ const baseQueryWithReauth: BaseQueryFn<
     return result;
   }
 
-  // রিফ্রেশ রিকোয়েস্ট নিজেই ফেইল করলে লগআউট
+  // Refresh token logic
   if (typeof args === "object" && args.url.includes("/refresh")) {
     await clearToken();
     if (typeof window !== "undefined") window.location.href = "/login";
     return result;
   }
 
-  // অন্যান্য সমান্তরাল রিকোয়েস্টগুলোকে কিউতে রাখা
+  // If a refresh is already in progress, wait for it to complete
   if (isRefreshing) {
     return new Promise((resolve) => {
       pendingRequests.push(() => {
@@ -80,7 +80,7 @@ const baseQueryWithReauth: BaseQueryFn<
       return await rawBaseQuery(args, api, extraOptions);
     }
 
-    // রিফ্রেশ টোকেনও ইনভ্যালিড হলে লগআউট
+    // If refresh fails, clear token and redirect to login
     pendingRequests = [];
     await clearToken();
     if (typeof window !== "undefined") window.location.href = "/login";
