@@ -1,6 +1,7 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import Loading from "@/components/reusable/Loader";
 import { useProviderEmailCodeMutation } from "@/feature/slice/admin/securitySettings";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -20,39 +21,19 @@ export default function StepEmailCode({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-   const [providerEmailCode] = useProviderEmailCodeMutation();
+   const [providerEmailCode,{isLoading}] = useProviderEmailCodeMutation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
   setError("");
-  setLoading(true);
 
-  const payload = {
-    code: code,
-  };
-
- try {
-  const response = await providerEmailCode(payload).unwrap();
-
-  if (response.status) {
-    toast.success(response.message || "Code verified successfully");
-    const codes =
-      response.recovery_codes ||
-      response.backup_codes ||
-      response.data?.recovery_codes ||
-      response.data?.backup_codes ||
-      [];
-    onSuccess(codes);
-  } else {
-    setError(response.message || "Failed to verify code");
-  }
-} catch (error: any) {
-    const errorMessage =
-      error?.data?.message || "An error occurred. Please try again.";
-    setError(errorMessage);
-  } finally {
-    setLoading(false);
-  }
+  providerEmailCode({ code })
+    .unwrap()
+    .then((res) => {
+      toast.success(res.message);
+      onSuccess(res.recovery_codes || []);
+    })
+    .catch((err) => setError(err?.data?.message || "Invalid code"));
 };
   return (
     <form onSubmit={handleSubmit} className="space-y-4 px-3">
@@ -91,17 +72,23 @@ export default function StepEmailCode({
         <button
           type="button"
           onClick={onBack}
-          className="rounded-md border px-4 py-2 text-sm font-medium"
+          className="rounded-md border px-4 cursor-pointer py-2 text-sm font-medium"
         >
           Back to Setup
         </button>
-             <button
+         {
+          isLoading?(
+            <Loading/>
+          ):(
+                <button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+          className="rounded-md bg-primaryColor cursor-pointer px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {loading ? "Confirming..." : "Confirm"}
         </button>
+          )
+         }
       
       </div>
     </form>

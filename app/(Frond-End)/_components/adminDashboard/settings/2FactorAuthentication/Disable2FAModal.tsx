@@ -86,7 +86,7 @@ export default function Disable2FAModal({
           <button
             type="submit"
             disabled={loading}
-            className="rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="rounded-md bg-red-500 px-4 cursor-pointer py-2 text-sm font-medium text-white disabled:opacity-60"
           >
             {loading ? "Disabling..." : "Disable 2FA"}
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import Loading from "@/components/reusable/Loader";
 import { useEnablePasswordMutation } from "@/feature/slice/admin/securitySettings";
 import { useState } from "react";
 
@@ -60,13 +61,20 @@ export default function StepPassword({ onSuccess, onClose }: StepPasswordProps) 
         />
 
         <div className="w-full pt-6">
-          <button
+         {
+          isLoading ?(
+            <Loading />
+          ):
+          (
+            <button
             type="submit"
             disabled={isLoading}
-            className="rounded-md w-full bg-primaryColor px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+            className="rounded-md w-full cursor-pointer bg-primaryColor px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
             {isLoading ? "Submitting..." : "Submit"}
           </button>
+          )
+         }
         </div>
       </div>
     </form>

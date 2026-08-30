@@ -68,7 +68,7 @@ export default function Enable2FactorModal({
       case 3:
         return "Two-Factor Authentication";
       case 4:
-        return "Save Backup Codes";
+        return "";
       default:
         return "Enable 2FA";
     }

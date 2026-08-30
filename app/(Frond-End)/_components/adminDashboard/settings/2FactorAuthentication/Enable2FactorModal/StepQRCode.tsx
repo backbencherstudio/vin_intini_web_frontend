@@ -77,7 +77,7 @@ export default function StepQRCode({
         <button
           type="button"
           onClick={onContinue}
-          className="rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white"
+          className="rounded-md bg-primaryColor  cursor-pointer px-4 py-2 text-sm font-medium text-white"
         >
           Continue
         </button>

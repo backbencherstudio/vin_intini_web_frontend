@@ -36,9 +36,9 @@ export default function AuthenticationMethods() {
             Primary
           </span>
 
-          <button type="button">
+          {/* <button type="button">
             <MoreHorizontal size={16} className="text-black" />
-          </button>
+          </button> */}
         </div>
 
         {/* Backup Codes */}
@@ -57,9 +57,7 @@ export default function AuthenticationMethods() {
             </p>
           </div>
 
-          <button type="button">
-            <Copy size={16} className="text-[#888]" />
-          </button>
+
         </div>
 
         {/* Recovery Email */}
@@ -82,9 +80,9 @@ export default function AuthenticationMethods() {
             Verified
           </span>
 
-          <button type="button">
+          {/* <button type="button">
             <MoreHorizontal size={16} className="text-black" />
-          </button>
+          </button> */}
         </div>
 
       </div>

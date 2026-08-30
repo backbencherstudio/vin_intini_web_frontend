@@ -67,7 +67,7 @@ export default function TwoFactorAuthentication() {
               <button
                 type="button"
                 onClick={() => setShowDisableModal(true)}
-                className="mt-4 h-8 rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
+                className="mt-4 h-8 rounded-md border border-[#F38B94] cursor-pointer bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
               >
                 Disable 2FA
               </button>
@@ -75,7 +75,7 @@ export default function TwoFactorAuthentication() {
               <button
                 type="button"
                 onClick={() => setShowEnableModal(true)}
-                className="mt-4 h-8 rounded-md border border-primaryColor bg-primaryColor px-5 text-[14px] font-semibold text-white"
+                className="mt-4 h-8 rounded-md border border-primaryColor cursor-pointer bg-primaryColor px-5 text-[14px] font-semibold text-white"
               >
                 Enable 2FA
               </button>

@@ -11,6 +11,7 @@ import { useDeleteLoginActivityMutation, useGetLoginActivityQuery } from "@/feat
 import { LogoutIcon } from "@/public/svgIcons/Icons";
 import { Monitor } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type LoginActivity = {
     id: number;
@@ -60,6 +61,7 @@ const loginActivities: LoginActivity[] =
 const handleLogout = async (id: number) => {
   try {
     await deleteLoginActivity(id).unwrap();
+    toast.success("Logout successful");
   } catch (error) {
     console.error("Logout failed:", error);
   }
@@ -152,13 +154,12 @@ const handleLogout = async (id: number) => {
             header: "Actions",
             cell: (row: LoginActivity) => (
                 <div className="flex items-center gap-2.5 whitespace-nowrap">
-                    <button
+                   <button
   onClick={() => handleLogout(row.id)}
-  disabled={deleteLoading}
-  className="flex items-center gap-1 bg-[#FEECEE] text-red-500 px-2 py-1 rounded-sm text-[12px] font-medium disabled:opacity-50"
+  className="flex items-center gap-1 rounded-sm cursor-pointer bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500"
 >
-  <LogoutIcon className="w-4 h-4" />
-  {deleteLoading ? "Logging out..." : "Logout"}
+  <LogoutIcon className="h-4 w-4" />
+  Logout
 </button>
                   
                 </div>

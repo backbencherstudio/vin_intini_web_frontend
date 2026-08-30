@@ -1,5 +1,7 @@
 "use client";
 
+import { TwoFactorSuccessIcon } from "@/public/svgIcons/AdminIcon";
+import { Check, Copy, Download } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -15,6 +17,12 @@ export default function StepBackupCodes({
   onClose,
 }: StepBackupCodesProps) {
   const [copied, setCopied] = useState(false);
+
+  const handleCopy = async ()=>{
+    await navigator.clipboard.writeText(codes.join("\n"));
+    setCopied(true);
+     toast.success("Backup codes copied!");
+  }
 
  const handleDownload = () => {
   if (!codes?.length) return;
@@ -39,12 +47,29 @@ export default function StepBackupCodes({
 
   return (
     <div className="space-y-4 px-3">
-      <p className="text-sm text-[#777980]">
-        Store these backup codes in a safe place. You can use them if you lose
-        access to your authenticator app.
+      <div className="flex flex-col items-center">
+        <TwoFactorSuccessIcon/>
+        <p className="text-[#1D1F2C] text-center text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
+        Verifyed Two-Factor Authentication
       </p>
+      </div>
+    
+      
+      
 
-      <div className="grid grid-cols-2 gap-2 rounded-md border bg-gray-50 p-4">
+      <div className="grid grid-cols-2 gap-2 rounded-md border bg-gray-50 p-4 relative">
+         <button
+  type="button"
+  onClick={handleCopy}
+  className="absolute right-2 top-2 flex items-center justify-center rounded-md"
+>
+  {copied ? (
+     <Check size={18} className="text-primaryColor" />
+   
+  ) : (
+     <Copy size={18} className="cursor-pointer text-primaryColor" />
+  )}
+</button>
         {codes && codes.length > 0 ? (
           codes.map((code) => (
             <div
@@ -65,20 +90,13 @@ export default function StepBackupCodes({
   type="button"
   onClick={handleDownload}
    disabled={!codes?.length}
-  className="text-sm font-medium text-white mt-3 bg-primaryColor px-2 py-1 rounded-sm w-full"
+  className="text-white text-[16px] font-medium leading-[160%] tracking-[0.08px]  py-2 cursor-pointer bg-primaryColor px-2 py-1 rounded-sm w-full flex items-center justify-center gap-2"
 >
   Download this backup codes
+  <Download className=" cursor-pointer text-white" size={18} />
 </button>
 
-      {/* <div className="flex justify-end pt-2">
-        <button
-          type="button"
-          onClick={onDone}
-          className="rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white"
-        >
-          Done
-        </button>
-      </div> */}
+    
     </div>
   );
 }

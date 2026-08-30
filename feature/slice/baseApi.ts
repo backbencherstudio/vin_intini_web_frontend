@@ -143,7 +143,9 @@ export const baseApiSlice = createApi({
     "conversationList",
     "getConversationList",
     "message",
-    "loginActivities"
+    "loginActivities",
+    "activeSessions",
+    "overview"
   ],
 });
 

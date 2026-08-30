@@ -7,6 +7,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/overview`,
         method: "GET",
       }),
+      providesTags:["overview"]
     }),
 
     //change-password
@@ -24,7 +25,26 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/active-sessions`,
         method: "GET",
       }),
+      providesTags:["activeSessions"]
     }),
+
+    //delte activite session
+    DeleteActiveSessions: builder.mutation({
+  query: (id) => ({
+    url: `/security/sessions/revoke/${id}`, 
+    method: "POST",
+  }),
+  invalidatesTags: ["activeSessions"],
+}),
+
+//Delet all session
+DeletAllSessions: builder.mutation({
+  query: () => ({
+    url: "/security/sessions/sign-out-all",
+    method: "POST",
+  }),
+  invalidatesTags: ["activeSessions"],
+}),
 
     //login-activity
   getLoginActivity: builder.query({
@@ -36,6 +56,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
   providesTags:["loginActivities"]
 }),
 
+//delte activite
     DeleteLoginActivity: builder.mutation({
   query: (id) => ({
     url: `/security/login-activities/${id}`, 
@@ -80,6 +101,9 @@ export const {
   usePostChangePasswordMutation,
 
   useGetActiveSessionsQuery,
+  useDeleteActiveSessionsMutation,
+  useDeletAllSessionsMutation,
+
   useDeleteLoginActivityMutation,
 
   useGetLoginActivityQuery,
