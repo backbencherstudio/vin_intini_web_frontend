@@ -239,7 +239,6 @@ export async function proxy(request: NextRequest) {
     console.error("Auth Error:", error);
   }
 
-
   const finalResponse = NextResponse.next();
   
   if (tokenQuery && currentToken) {
