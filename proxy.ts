@@ -126,7 +126,7 @@ import { COOKIE_MAX_AGE } from "./lib/token";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
-// শুধুমাত্র যে পেজগুলো লগইন ছাড়াই দেখা যাবে
+
 const PUBLIC_PATHS = [
   "/",
   "/login",
@@ -199,7 +199,6 @@ export async function proxy(request: NextRequest) {
           Accept: "application/json",
         },
       });
-
       
 
       if (refreshResponse.ok) {
@@ -239,7 +238,6 @@ export async function proxy(request: NextRequest) {
   } catch (error) {
     console.error("Auth Error:", error);
   }
-
 
   const finalResponse = NextResponse.next();
   
