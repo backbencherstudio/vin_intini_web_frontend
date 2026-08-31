@@ -124,8 +124,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
-
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
 const PUBLIC_PATHS = [
   "/",
@@ -134,12 +134,11 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/privecy-policy",
   "/two-factor",
+  "/backup-codes",
 ];
-
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
 
   if (
     pathname === "/favicon.ico" ||
@@ -168,7 +167,6 @@ export async function proxy(request: NextRequest) {
 
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
-
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
       return NextResponse.next();
@@ -177,9 +175,9 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isPublicPath && currentToken && pathname !== "/onboarding") {
-     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
-        return NextResponse.redirect(new URL("/mu/home", request.url));
-     }
+    if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
   }
 
   try {
@@ -193,7 +191,7 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.status === 401) {
       console.log("Access token expired, attempting refresh...");
-      
+
       try {
         const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
           method: "POST",
@@ -217,14 +215,13 @@ export async function proxy(request: NextRequest) {
             });
             return response;
           }
-        } 
-        
-        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
-            const res = NextResponse.redirect(new URL("/login", request.url));
-            res.cookies.delete("accessToken");
-            return res;
         }
 
+        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+          const res = NextResponse.redirect(new URL("/login", request.url));
+          res.cookies.delete("accessToken");
+          return res;
+        }
       } catch (refreshErr) {
         console.error("Network error during refresh, session preserved.");
         return NextResponse.next();
@@ -233,7 +230,8 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-      const isOnboarded = userData?.data?.is_onboarding ?? userData?.is_onboarding;
+      const isOnboarded =
+        userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
       if (!isOnboarded) {
         if (!pathname.startsWith("/onboarding")) {
@@ -251,7 +249,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const finalResponse = NextResponse.next();
-  
+
   if (tokenQuery && currentToken) {
     finalResponse.cookies.set("accessToken", currentToken, {
       path: "/",
@@ -267,6 +265,3 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };
-
-
-

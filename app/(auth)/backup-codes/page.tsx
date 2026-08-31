@@ -38,15 +38,12 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
       setError(error?.data?.message || "Invalid code. Please try again.");
     }
   };
- const handleEmailRecovery = () => {
-    // Implement the logic to send the code to the recovery email
-    toast.success("Recovery email sent successfully!");
-  }
+  console.log(error, "error");
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 px-3">
       <h4 className="text-xl md:text-2xl font-semibold text-headerColor text-center">
-        Enter the code you see on your authentication app
+        Enter the secrect code that you backed up before
       </h4>
 
       <CustomInput
@@ -54,8 +51,8 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
         required
         value={code}
         onChange={(e) => setCode(e.target.value)}
-        placeholder="xxx-xxx"
-        maxLength={6}
+        placeholder="xxxxx-xxxxx"
+        maxLength={10}
         error={error}
         className={`text-center tracking-widest text-lg ${error ? "border-red-500" : "border-gray-300"}`}
       />
@@ -74,8 +71,11 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
         </button>
         <div className="text-center">
           Use{" "}
-          <Link href={`/backup-codes?email=${email}`} className="text-primaryColor">
-            Backup codes
+          <Link
+            href={`/two-factor?email=${email}`}
+            className="text-primaryColor"
+          >
+            Authentication App
           </Link>{" "}
         </div>
         <div className="text-grayColor1">
