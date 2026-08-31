@@ -133,7 +133,7 @@ const PUBLIC_PATHS = [
   "/sign-up",
   "/forgot-password",
   "/privecy-policy",
-  "/tearm-condition",
+  "/two-factor",
 ];
 
 
@@ -168,6 +168,7 @@ export async function proxy(request: NextRequest) {
 
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
+
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
       return NextResponse.next();
@@ -182,7 +183,6 @@ export async function proxy(request: NextRequest) {
   }
 
   try {
-
     let userResponse = await fetch(`${API_BASE_URL}/me`, {
       method: "GET",
       headers: {
@@ -192,33 +192,43 @@ export async function proxy(request: NextRequest) {
     });
 
     if (userResponse.status === 401) {
-      const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
-      });
+      console.log("Access token expired, attempting refresh...");
       
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+            Accept: "application/json",
+          },
+        });
 
-      if (refreshResponse.ok) {
-        const refreshData = await refreshResponse.json();
-        const newToken = refreshData?.data?.token || refreshData?.token;
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          const newToken = refreshData?.data?.token || refreshData?.token;
 
-        if (newToken) {
-          const response = NextResponse.next();
-          response.cookies.set("accessToken", newToken, {
-            path: "/",
-            maxAge: COOKIE_MAX_AGE,
-            sameSite: "lax",
-            secure: true,
-          });
-          return response;
+          if (newToken) {
+            const response = NextResponse.next();
+            response.cookies.set("accessToken", newToken, {
+              path: "/",
+              maxAge: COOKIE_MAX_AGE,
+              sameSite: "lax",
+              secure: true,
+            });
+            return response;
+          }
+        } 
+        
+        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+            const res = NextResponse.redirect(new URL("/login", request.url));
+            res.cookies.delete("accessToken");
+            return res;
         }
+
+      } catch (refreshErr) {
+        console.error("Network error during refresh, session preserved.");
+        return NextResponse.next();
       }
-      const res = NextResponse.redirect(new URL("/login", request.url));
-      res.cookies.delete("accessToken");
-      return res;
     }
 
     if (userResponse.ok) {
@@ -236,7 +246,8 @@ export async function proxy(request: NextRequest) {
       }
     }
   } catch (error) {
-    console.error("Auth Error:", error);
+    console.error("Middleware Auth Fetch Error:", error);
+    return NextResponse.next();
   }
 
   const finalResponse = NextResponse.next();
@@ -256,4 +267,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };
+
+
 

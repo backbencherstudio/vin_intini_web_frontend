@@ -7,7 +7,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/overview`,
         method: "GET",
       }),
-      providesTags:["overview"]
+      providesTags: ["overview"],
     }),
 
     //change-password
@@ -25,48 +25,48 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/active-sessions`,
         method: "GET",
       }),
-      providesTags:["activeSessions"]
+      providesTags: ["activeSessions"],
     }),
 
     //delte activite session
     DeleteActiveSessions: builder.mutation({
-  query: (id) => ({
-    url: `/security/sessions/revoke/${id}`, 
-    method: "POST",
-  }),
-  invalidatesTags: ["activeSessions"],
-}),
+      query: (id) => ({
+        url: `/security/sessions/revoke/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["activeSessions"],
+    }),
 
-//Delet all session
-DeletAllSessions: builder.mutation({
-  query: () => ({
-    url: "/security/sessions/sign-out-all",
-    method: "POST",
-  }),
-  invalidatesTags: ["activeSessions"],
-}),
+    //Delet all session
+    DeletAllSessions: builder.mutation({
+      query: () => ({
+        url: "/security/sessions/sign-out-all",
+        method: "POST",
+      }),
+      invalidatesTags: ["activeSessions"],
+    }),
 
     //login-activity
-  getLoginActivity: builder.query({
-  query: (params) => ({
-    url: "/security/login-activities",
-    method: "GET",
-    params,
-  }),
-  providesTags:["loginActivities"]
-}),
+    getLoginActivity: builder.query({
+      query: (params) => ({
+        url: "/security/login-activities",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["loginActivities"],
+    }),
 
-//delte activite
+    //delte activite
     DeleteLoginActivity: builder.mutation({
-  query: (id) => ({
-    url: `/security/login-activities/${id}`, 
-    method: "DELETE",
-  }),
-  invalidatesTags:["loginActivities"]
-}),
+      query: (id) => ({
+        url: `/security/login-activities/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
 
-//emabele pass
- EnablePassword: builder.mutation({
+    //emabele pass
+    EnablePassword: builder.mutation({
       query: (payload) => ({
         url: "/2fa/setup",
         method: "POST",
@@ -75,7 +75,15 @@ DeletAllSessions: builder.mutation({
     }),
 
     //code send
-     ProviderEmailCode: builder.mutation({
+    ProviderEmailCode: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/confirm",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    // code verify ===
+    twoFactorEmailCodeVerify: builder.mutation({
       query: (payload) => ({
         url: "/2fa/confirm",
         method: "POST",
@@ -84,7 +92,7 @@ DeletAllSessions: builder.mutation({
     }),
 
     //desable pass
-     DesablePasswd: builder.mutation({
+    DesablePasswd: builder.mutation({
       query: (payload) => ({
         url: "/2fa/disable",
         method: "POST",
@@ -93,31 +101,27 @@ DeletAllSessions: builder.mutation({
     }),
 
     //newGenerate Code
-     GenerateCode: builder.mutation({
+    GenerateCode: builder.mutation({
       query: (payload) => ({
         url: "/2fa/regenerate-codes",
         method: "POST",
         body: payload,
       }),
     }),
-
   }),
 });
 
 export const {
   useGetSecurityOverviewQuery,
-
   usePostChangePasswordMutation,
-
   useGetActiveSessionsQuery,
   useDeleteActiveSessionsMutation,
   useDeletAllSessionsMutation,
-
   useDeleteLoginActivityMutation,
-
   useGetLoginActivityQuery,
   useEnablePasswordMutation,
   useProviderEmailCodeMutation,
+  useTwoFactorEmailCodeVerifyMutation,
   useDesablePasswdMutation,
-  useGenerateCodeMutation
+  useGenerateCodeMutation,
 } = securitySettingsSlice;
