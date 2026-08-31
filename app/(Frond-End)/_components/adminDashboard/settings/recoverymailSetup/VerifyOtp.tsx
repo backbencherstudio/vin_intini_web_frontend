@@ -40,6 +40,34 @@ export default function VerifyOtp({ onSuccess }: Props) {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+
+    if (!pastedData) return;
+
+    clearErrors("otp");
+
+    const updated = ["", "", "", ""];
+
+    pastedData.split("").forEach((digit, index) => {
+      updated[index] = digit;
+    });
+
+    setOtp(updated);
+    setValue("otp", pastedData);
+
+    const nextIndex = Math.min(pastedData.length, 4) - 1;
+
+    if (nextIndex >= 0) {
+      document.getElementById(`otp-${nextIndex}`)?.focus();
+    }
+  };
+
   const handleSubmitOtp = async (data: FormData) => {
     if (data.otp.length !== 4) {
       setError("otp", {
@@ -76,6 +104,7 @@ export default function VerifyOtp({ onSuccess }: Props) {
               maxLength={1}
               inputMode="numeric"
               onChange={(e) => handleChange(e.target.value, index)}
+              onPaste={handlePaste}
               className={`h-12 w-12 border bg-white text-center text-lg outline-none ${
                 errors.otp
                   ? "border-red-500 text-red-500"

@@ -6,6 +6,8 @@ import {
   useRecoveryEmailOtpVerifyMutation,
   useRecoveryEmailUpdateMutation,
 } from "@/feature/slice/admin/securitySettings";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function RecoveryEmail({ onSuccess }: Props) {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -58,14 +61,27 @@ export default function RecoveryEmail({ onSuccess }: Props) {
           <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
 
-        <CustomInput
-          label="Password"
-          placeholder="****************"
-          type="password"
-          {...register("password", {
-            required: "Password is required",
-          })}
-        />
+        <div className="relative">
+          <CustomInput
+            label="Password"
+            className="relative"
+            placeholder="****************"
+            type={showPassword ? "text" : "password"}
+            {...register("password", {
+              required: "Password is required",
+            })}
+          />
+          <button
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-11 cursor-pointer text-end"
+          >
+            {showPassword ? (
+              <Eye className="h-5 w-5 text-[#4A4C56]" />
+            ) : (
+              <EyeOff className="h-5 w-5 text-[#4A4C56]" />
+            )}
+          </button>
+        </div>
 
         {errors.password && (
           <p className="text-sm text-red-500">{errors.password.message}</p>

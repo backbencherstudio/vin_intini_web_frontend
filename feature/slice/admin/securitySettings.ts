@@ -121,7 +121,10 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview"],
     }),
+
+    //
   }),
 });
 

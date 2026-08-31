@@ -57,7 +57,7 @@ export default function GenerateNewCode({ onSuccess }: GenerateNewCodeProps) {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-10 cursor-pointer text-end"
+          className="absolute right-3 top-11 cursor-pointer text-end"
         >
           {showPassword ? (
             <Eye className="h-5 w-5 text-[#4A4C56]" />
