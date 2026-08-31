@@ -1,6 +1,11 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import Loading from "@/components/reusable/Loader";
+import {
+  useRecoveryEmailOtpVerifyMutation,
+  useRecoveryEmailUpdateMutation,
+} from "@/feature/slice/admin/securitySettings";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -14,17 +19,20 @@ interface Props {
 }
 
 export default function RecoveryEmail({ onSuccess }: Props) {
-  const { register, handleSubmit, formState: { errors } } =
-    useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
 
-  // const [recoveryEmail, { isLoading }] = useRecoveryEmailMutation();
+  const [RecoveryEmailUpdate, { isLoading }] = useRecoveryEmailUpdateMutation();
 
   const onSubmit = async (data: FormData) => {
     try {
-      // await recoveryEmail(data).unwrap();
+      await RecoveryEmailUpdate(data).unwrap();
 
       toast.success("OTP sent successfully");
-      onSuccess(); // Go to OTP step
+      onSuccess();
     } catch (err: any) {
       toast.error(err?.data?.message || "Something went wrong");
     }
@@ -47,9 +55,7 @@ export default function RecoveryEmail({ onSuccess }: Props) {
         />
 
         {errors.email && (
-          <p className="text-sm text-red-500">
-            {errors.email.message}
-          </p>
+          <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
 
         <CustomInput
@@ -62,19 +68,24 @@ export default function RecoveryEmail({ onSuccess }: Props) {
         />
 
         {errors.password && (
-          <p className="text-sm text-red-500">
-            {errors.password.message}
-          </p>
+          <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={handleSubmit(onSubmit)}
-        className="mt-5 w-full rounded-lg bg-primaryColor py-2 text-sm font-semibold text-white"
-      >
-        Continue
-      </button>
+      <div className="flex justify-end gap-3 mt-6 w-full">
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <button
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+            className="cursor-pointer w-full rounded-sm bg-primaryColor px-4 py-2 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-white disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Continue
+          </button>
+        )}
+      </div>
     </div>
   );
 }

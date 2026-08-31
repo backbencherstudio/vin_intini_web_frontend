@@ -1,6 +1,7 @@
 "use client";
 
-import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import { useRecoveryEmailOtpVerifyMutation } from "@/feature/slice/admin/securitySettings";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -13,19 +14,49 @@ interface Props {
 }
 
 export default function VerifyOtp({ onSuccess }: Props) {
-  const { register, handleSubmit, formState: { errors } } =
-    useForm<FormData>();
+  const {
+    handleSubmit,
+    setError,
+    clearErrors,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
 
-  // const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [verifyOtp, { isLoading }] = useRecoveryEmailOtpVerifyMutation();
 
-  const onSubmit = async (data: FormData) => {
+  const handleChange = (value: string, index: number) => {
+    if (!/^\d?$/.test(value)) return;
+
+    clearErrors("otp");
+
+    const updated = [...otp];
+    updated[index] = value;
+    setOtp(updated);
+    setValue("otp", updated.join(""));
+
+    if (value && index < 3) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  };
+
+  const handleSubmitOtp = async (data: FormData) => {
+    if (data.otp.length !== 4) {
+      setError("otp", {
+        type: "manual",
+        message: "Please enter a 4-digit OTP.",
+      });
+      return;
+    }
+
     try {
-      // await verifyOtp(data).unwrap();
-
+      await verifyOtp(data).unwrap();
       toast.success("OTP verified successfully");
-      onSuccess(); 
+      onSuccess();
     } catch (err: any) {
-      toast.error(err?.data?.message || "Invalid OTP");
+      const message = err?.data?.message || "Invalid or expired OTP.";
+      setError("otp", { type: "manual", message });
+      toast.error(message);
     }
   };
 
@@ -35,27 +66,41 @@ export default function VerifyOtp({ onSuccess }: Props) {
         Enter the OTP sent to your recovery email.
       </p>
 
-      <CustomInput
-        label="Verification Code"
-        placeholder="Enter OTP"
-        type="text"
-        {...register("otp", {
-          required: "OTP is required",
-        })}
-      />
+      <div>
+        <div className="flex justify-center">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              value={digit}
+              maxLength={1}
+              inputMode="numeric"
+              onChange={(e) => handleChange(e.target.value, index)}
+              className={`h-12 w-12 border bg-white text-center text-lg outline-none ${
+                errors.otp
+                  ? "border-red-500 text-red-500"
+                  : "border-[#8B8D94] text-[#1D1F2C]"
+              } ${index === 0 ? "rounded-l-lg" : "border-l-0"} ${
+                index === 3 ? "rounded-r-lg" : ""
+              }`}
+            />
+          ))}
+        </div>
 
-      {errors.otp && (
-        <p className="mt-1 text-sm text-red-500">
-          {errors.otp.message}
-        </p>
-      )}
+        {errors.otp && (
+          <p className="mt-2 text-center text-sm text-red-500">
+            {errors.otp.message}
+          </p>
+        )}
+      </div>
 
       <button
         type="button"
-        onClick={handleSubmit(onSubmit)}
-        className="mt-5 w-full rounded-lg bg-primaryColor py-2 text-sm font-semibold text-white"
+        disabled={isLoading}
+        onClick={handleSubmit(handleSubmitOtp)}
+        className="mt-5 w-full cursor-pointer rounded-lg bg-primaryColor py-2 text-sm font-semibold text-white disabled:opacity-60"
       >
-        Verify
+        {isLoading ? "Verifying..." : "Verify"}
       </button>
     </div>
   );
