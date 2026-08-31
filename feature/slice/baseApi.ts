@@ -1,9 +1,4 @@
-import { clearToken, getToken, setToken } from "@/lib/token";
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-} from "@reduxjs/toolkit/query";
+import { getToken } from "@/lib/token";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
@@ -18,86 +13,9 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
-let isRefreshing = false;
-let pendingRequests: Array<() => void> = [];
-
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await rawBaseQuery(args, api, extraOptions);
-
-  const isUnauthorized =
-    result?.error?.status === 401 ||
-    (result?.data as any)?.message?.toLowerCase?.()?.includes("unauthorized");
-
-  if (!isUnauthorized) {
-    return result;
-  }
-
-  // Refresh token logic
-  if (typeof args === "object" && args.url.includes("/refresh")) {
-    await clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return result;
-  }
-
-  // If a refresh is already in progress, wait for it to complete
-  if (isRefreshing) {
-    return new Promise((resolve) => {
-      pendingRequests.push(() => {
-        resolve(rawBaseQuery(args, api, extraOptions));
-      });
-    });
-  }
-
-  isRefreshing = true;
-  try {
-    const currentToken = await getToken();
-    const refreshResult = await rawBaseQuery(
-      {
-        url: "/refresh",
-        method: "POST",
-        headers: {
-          ...(currentToken ? { Authorization: `Bearer ${currentToken}` } : {}),
-          Accept: "application/json",
-        },
-      },
-      api,
-      extraOptions
-    );
-
-    const newToken =
-      (refreshResult.data as any)?.token ||
-      (refreshResult.data as any)?.data?.token ||
-      (refreshResult.data as any)?.access_token;
-
-    if (newToken) {
-      await setToken(newToken);
-      pendingRequests.forEach((cb) => cb());
-      pendingRequests = [];
-      return await rawBaseQuery(args, api, extraOptions);
-    }
-
-    // If refresh fails, clear token and redirect to login
-    pendingRequests = [];
-    await clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return result;
-  } catch {
-    pendingRequests = [];
-    await clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return result;
-  } finally {
-    isRefreshing = false;
-  }
-};
-
 export const baseApiSlice = createApi({
   reducerPath: "api",
-  baseQuery: baseQueryWithReauth,
+  baseQuery: rawBaseQuery,
   endpoints: () => ({}),
   tagTypes: [
     "User",

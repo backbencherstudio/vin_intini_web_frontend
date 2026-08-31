@@ -85,7 +85,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
     // code verify ===
     twoFactorEmailCodeVerify: builder.mutation({
       query: (payload) => ({
-        url: "/2fa/confirm",
+        url: "/2fa/verify-login",
         method: "POST",
         body: payload,
       }),

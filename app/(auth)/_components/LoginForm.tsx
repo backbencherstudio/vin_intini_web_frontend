@@ -32,7 +32,6 @@ function LoginForm() {
     try {
       const response = await login(data).unwrap();
       if (response?.two_factor_enabled) {
-        console.log(response?.two_factor_enabled, "response======");
         route.push(`/two-factor?email=${data.email}`);
        
       } else {

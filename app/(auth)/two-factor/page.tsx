@@ -2,9 +2,11 @@
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import { useTwoFactorEmailCodeVerifyMutation } from "@/feature/slice/admin/securitySettings";
+import { setToken } from "@/lib/token";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface StepEmailCodeProps {
   onSuccess: (codes: string[]) => void;
@@ -16,23 +18,27 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") || "");
-  console.log(email, "email============");
-
+  const route = useRouter();
   const [twoFactorEmailCode, { isLoading }] =
     useTwoFactorEmailCodeVerifyMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const payload = {
         email: email,
         code: code,
       };
-      const response = twoFactorEmailCode(payload).unwrap();
+      const response = await twoFactorEmailCode(payload).unwrap();
+      toast.success("2FA verification successful!");
+      await setToken(response?.token || response.data.token);
+      route.push(`/mu/home`);
     } catch (error) {
-      console.log(error);
+      setError(error?.data?.message || "Invalid code. Please try again."); 
     }
   };
+  console.log(error, "error");
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 px-3">
       <h4 className="text-xl md:text-2xl font-semibold text-headerColor text-center">
@@ -47,7 +53,7 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
         placeholder="xxx-xxx"
         maxLength={6}
         error={error}
-        className="text-center tracking-widest text-lg"
+        className={`text-center tracking-widest text-lg ${error ? "border-red-500" : "border-gray-300"}`}
       />
 
       {/* <button type="button" className="text-sm font-medium text-primaryColor">
