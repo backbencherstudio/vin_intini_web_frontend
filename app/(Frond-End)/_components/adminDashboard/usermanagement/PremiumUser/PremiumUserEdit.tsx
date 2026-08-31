@@ -15,15 +15,15 @@ interface JobProfile {
   subscription: string;
 }
 
-interface BasicUserEditModalProps {
+interface PremiumUserEditModalProps {
   data?: Partial<JobProfile>;
   onClose?: () => void;
 }
 
-export default function BasicUserEditModal({
+export default function PremiumUserEditModal({
   data,
   onClose,
-}: BasicUserEditModalProps) {
+}: PremiumUserEditModalProps) {
   // Existing user data will be loaded here initially
   const [job, setJob] = useState<JobProfile>({
     name: data?.name || "",

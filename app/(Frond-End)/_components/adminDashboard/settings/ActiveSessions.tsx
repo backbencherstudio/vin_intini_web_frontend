@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Monitor, MoreHorizontal } from "lucide-react";
 import {
-  Monitor,
-  MoreHorizontal,
-} from "lucide-react";
-import { useDeletAllSessionsMutation, useDeleteActiveSessionsMutation, useGetActiveSessionsQuery } from "@/feature/slice/admin/securitySettings";
+  useDeletAllSessionsMutation,
+  useDeleteActiveSessionsMutation,
+  useGetActiveSessionsQuery,
+} from "@/feature/slice/admin/securitySettings";
 import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 interface Session {
   id: number;
@@ -17,22 +19,18 @@ interface Session {
   current?: boolean;
 }
 
-
-
 export default function ActiveSessions() {
   const [sessions, setSessions] = useState([]);
-  const {data, isLoading , error} = useGetActiveSessionsQuery({});
+  const { data, isLoading, error } = useGetActiveSessionsQuery({});
   const ActiveSession = data?.data || [];
   console.log(ActiveSession);
 
   const [DeleteActiveSessions] = useDeleteActiveSessionsMutation();
-  const [DeleteAllSessions] =useDeletAllSessionsMutation(); 
+  const [DeleteAllSessions] = useDeletAllSessionsMutation();
 
   const removeSession = (id: number) => {
     DeleteActiveSessions(id);
-    setSessions((prev) =>
-      prev.filter((session) => session.id !== id)
-    );
+    setSessions((prev) => prev.filter((session) => session.id !== id));
     toast.success("Session Terminated successfully");
   };
 
@@ -54,8 +52,6 @@ export default function ActiveSessions() {
             Manage devices that are currently signed in to your account.
           </p>
         </div>
-
-       
       </div>
 
       <div className="space-y-3">
@@ -65,45 +61,46 @@ export default function ActiveSessions() {
             className="flex items-center gap-3   pb-3 last:border-0"
           >
             <div className="flex h-8 w-8 shrink-0 items-center justify-center ">
-              <Monitor
-                size={24}
-                className="text-black"
-              />
+              <Monitor size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]
-">
+                <p
+                  className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]
+"
+                >
                   {session.device}
                 </p>
-
-            
               </div>
 
-              <p className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
-">
-                {session.location} • {session.ip_address} •{" "}
-                {session.login_at}
+              <p
+                className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
+"
+              >
+                {session.location} • {session.ip_address} •
+                {dayjs(session.login_at).format("DD-MM-YYYY, hh:mm A")}
               </p>
             </div>
-                <div className="flex items-center gap-2 justify-end">
-                   {session?.is_current && (
-                  <span className="rounded-full border border-[#287F6E] px-2 py-1 text-[#287F6E] text-center text-[12px] font-semibold leading-[132%] tracking-[0.06px]
-">
-                    Active now
-                  </span>
-                )}
+            <div className="flex items-center gap-2 justify-end">
+              {session?.is_current && (
+                <span
+                  className="rounded-full border border-[#287F6E] px-2 py-1 text-[#287F6E] text-center text-[12px] font-semibold leading-[132%] tracking-[0.06px]
+"
+                >
+                  Active now
+                </span>
+              )}
 
-                 <button
-              type="button"
-              onClick={() => removeSession(session.id)}
-              disabled={session.is_current}
-              className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
-            >
-              <MoreHorizontal size={17} className="text-[#000]" />
-            </button>
-                </div>
+              <button
+                type="button"
+                onClick={() => removeSession(session.id)}
+                disabled={session.is_current}
+                className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
+              >
+                <MoreHorizontal size={17} className="text-[#000]" />
+              </button>
+            </div>
           </div>
         ))}
       </div>

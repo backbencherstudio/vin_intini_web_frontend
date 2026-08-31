@@ -12,7 +12,6 @@ export default function TwoFactorAuthentication() {
   const [showDisableModal, setShowDisableModal] = useState(false);
 
   const { data, isLoading, refetch } = useGetSecurityOverviewQuery({});
-  
 
   const is2FAEnabled = data?.data?.two_factor_enabled ?? false;
 
@@ -23,7 +22,7 @@ export default function TwoFactorAuthentication() {
 
   const handleDisableSuccess = () => {
     setShowDisableModal(false);
-    refetch(); 
+    refetch();
   };
 
   if (isLoading) {
@@ -36,7 +35,7 @@ export default function TwoFactorAuthentication() {
 
   return (
     <section className="rounded-md">
-      <h2 className="text-[#1D1F2C] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+      <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
         Two-Factor Authentication (2FA)
       </h2>
 
@@ -51,7 +50,7 @@ export default function TwoFactorAuthentication() {
           </div>
 
           <div className="flex-1">
-            <p className="text-[#1D1F2C] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+            <p className="text-headerColor text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
               Two-Factor Authentication is{" "}
               <span className="font-semibold text-primaryColor">
                 {is2FAEnabled ? "ON" : "OFF"}
