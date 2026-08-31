@@ -204,7 +204,6 @@ export default function PlanPricingTable() {
             <DataTable
                 columns={columns}
                 data={transactions}
-                defaultPageSize={10}
                 onDelete={openDelete}
             />
 

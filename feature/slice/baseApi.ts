@@ -8,7 +8,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api",
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api",
   credentials: "include",
   prepareHeaders: async (headers) => {
     const token = await getToken();
@@ -106,6 +106,9 @@ export const baseApiSlice = createApi({
     "conversationList",
     "getConversationList",
     "message",
+    "loginActivities",
+    "activeSessions",
+    "overview",
     "connect",
     "psychology",
     "follow",

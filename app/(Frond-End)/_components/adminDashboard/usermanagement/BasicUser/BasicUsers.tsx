@@ -17,6 +17,7 @@ import { DeletIcon, ViewIcon } from "@/public/svgIcons/AdminIcon";
 import { EditeIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { initialJobs, Job } from "./BasicUserDemoData";
+import Pagination from "@/components/reusable/Pagination";
 
 export default function BasicUser() {
     const [jobs, setJobs] = useState<Job[]>(initialJobs);
@@ -26,6 +27,15 @@ export default function BasicUser() {
     const [sort, setSort] = useState("default");
 
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
+const [page, setPage] = useState(1);
+
+const pageSize = 10;
+
+const paginatedJobs = jobs.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+);
 
     const openView = (job: Job) => {
         setSelectedJob(job);
@@ -227,7 +237,15 @@ export default function BasicUser() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    defaultPageSize={10}
+                   
+                />
+
+                   <Pagination
+                  page={page}
+                  pageSize={10}
+                  total={100}
+                  totalPages={10}
+                  onPageChange={setPage}
                    
                 />
 

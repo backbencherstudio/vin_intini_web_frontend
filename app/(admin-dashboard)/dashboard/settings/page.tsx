@@ -229,10 +229,9 @@ export default function JobsPage() {
             <DataTable
                 columns={columns}
                 data={jobs}
-                defaultPageSize={10}
                 onEdit={openEdit}
-                onDelete={openEdit}         // ← এখানে connect করো
-            // onDelete={(row) => console.log("Delete", row)}
+                onDelete={openEdit}        
+       
             />
 
             <CustomModal
@@ -243,7 +242,7 @@ export default function JobsPage() {
             >
                 {selectedJob && (
                     <TopHeader
-                    // এখানে selectedJob পাঠাতে পারো
+                  
                     // job={selectedJob}
                     // onSuccess={() => setEditOpen(false)}
                     />

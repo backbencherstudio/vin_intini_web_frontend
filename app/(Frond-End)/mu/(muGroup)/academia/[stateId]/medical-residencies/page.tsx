@@ -82,6 +82,7 @@ export default function page() {
           total={data?.total || 10}
           totalPages={data?.total_page || 1}
           onPageChange={(page) => setPage(page)}
+  
         />
         <Select
           value={limit.toString()}

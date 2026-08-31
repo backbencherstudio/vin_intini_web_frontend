@@ -1,0 +1,123 @@
+import baseApiSlice from "../baseApi";
+
+const securitySettingsSlice = baseApiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getSecurityOverview: builder.query({
+      query: () => ({
+        url: `/security/overview`,
+        method: "GET",
+      }),
+      providesTags:["overview"]
+    }),
+
+    //change-password
+    postChangePassword: builder.mutation({
+      query: (payload) => ({
+        url: "/profile/change-password",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //activity-session
+    getActiveSessions: builder.query({
+      query: () => ({
+        url: `/security/active-sessions`,
+        method: "GET",
+      }),
+      providesTags:["activeSessions"]
+    }),
+
+    //delte activite session
+    DeleteActiveSessions: builder.mutation({
+  query: (id) => ({
+    url: `/security/sessions/revoke/${id}`, 
+    method: "POST",
+  }),
+  invalidatesTags: ["activeSessions"],
+}),
+
+//Delet all session
+DeletAllSessions: builder.mutation({
+  query: () => ({
+    url: "/security/sessions/sign-out-all",
+    method: "POST",
+  }),
+  invalidatesTags: ["activeSessions"],
+}),
+
+    //login-activity
+  getLoginActivity: builder.query({
+  query: (params) => ({
+    url: "/security/login-activities",
+    method: "GET",
+    params,
+  }),
+  providesTags:["loginActivities"]
+}),
+
+//delte activite
+    DeleteLoginActivity: builder.mutation({
+  query: (id) => ({
+    url: `/security/login-activities/${id}`, 
+    method: "DELETE",
+  }),
+  invalidatesTags:["loginActivities"]
+}),
+
+//emabele pass
+ EnablePassword: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/setup",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //code send
+     ProviderEmailCode: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/confirm",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //desable pass
+     DesablePasswd: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/disable",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //newGenerate Code
+     GenerateCode: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/regenerate-codes",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+  }),
+});
+
+export const {
+  useGetSecurityOverviewQuery,
+
+  usePostChangePasswordMutation,
+
+  useGetActiveSessionsQuery,
+  useDeleteActiveSessionsMutation,
+  useDeletAllSessionsMutation,
+
+  useDeleteLoginActivityMutation,
+
+  useGetLoginActivityQuery,
+  useEnablePasswordMutation,
+  useProviderEmailCodeMutation,
+  useDesablePasswdMutation,
+  useGenerateCodeMutation
+} = securitySettingsSlice;

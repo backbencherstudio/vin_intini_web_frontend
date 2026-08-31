@@ -31,7 +31,7 @@ export default function Pagination({
     const pagesToShow = getPages();
 
     return (
-        <div className="flex justify-end items-center gap-3">
+        <div className="flex justify-end items-center gap-3 mt-5">
             {/* Prev */}
             <button
                 disabled={page === 1}

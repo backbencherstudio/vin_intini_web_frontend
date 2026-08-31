@@ -233,7 +233,6 @@ export default function Facilites() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    defaultPageSize={10}
 
                     onEdit={openEdit}
                     onDelete={openDelete}

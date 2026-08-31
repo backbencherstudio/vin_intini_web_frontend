@@ -124,7 +124,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vin.apphero.agency/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
 
 const PUBLIC_PATHS = [

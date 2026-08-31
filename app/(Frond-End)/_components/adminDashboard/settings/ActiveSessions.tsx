@@ -5,6 +5,8 @@ import {
   Monitor,
   MoreHorizontal,
 } from "lucide-react";
+import { useDeletAllSessionsMutation, useDeleteActiveSessionsMutation, useGetActiveSessionsQuery } from "@/feature/slice/admin/securitySettings";
+import toast from "react-hot-toast";
 
 interface Session {
   id: number;
@@ -15,55 +17,33 @@ interface Session {
   current?: boolean;
 }
 
-const initialSessions: Session[] = [
-  {
-    id: 1,
-    device: "MacBook Pro 15-inch",
-    location: "Melbourne, Australia",
-    ip: "192.168.32.1",
-    lastActive: "10:40am",
-    current: true,
-  },
-  {
-    id: 2,
-    device: "MacBook Pro 15-inch",
-    location: "Dhaka, Bangladesh",
-    ip: "192.168.32.1",
-    lastActive: "10:40am",
-  },
-  {
-    id: 3,
-    device: "MacBook Pro 15-inch",
-    location: "Dhaka, Bangladesh",
-    ip: "192.168.32.1",
-    lastActive: "10:40am",
-  },
-  {
-    id: 4,
-    device: "MacBook Pro 15-inch",
-    location: "Dhaka, Bangladesh",
-    ip: "192.168.32.1",
-    lastActive: "10:40am",
-  },
-];
+
 
 export default function ActiveSessions() {
-  const [sessions, setSessions] = useState(initialSessions);
+  const [sessions, setSessions] = useState([]);
+  const {data, isLoading , error} = useGetActiveSessionsQuery({});
+  const ActiveSession = data?.data || [];
+  console.log(ActiveSession);
+
+  const [DeleteActiveSessions] = useDeleteActiveSessionsMutation();
+  const [DeleteAllSessions] =useDeletAllSessionsMutation(); 
 
   const removeSession = (id: number) => {
+    DeleteActiveSessions(id);
     setSessions((prev) =>
       prev.filter((session) => session.id !== id)
     );
+    toast.success("Session Terminated successfully");
   };
 
   const logoutAllSessions = () => {
-    setSessions((prev) =>
-      prev.filter((session) => session.current)
-    );
+    DeleteAllSessions({}).unwrap();
+    toast.success("All sessions terminated successfully");
+    setSessions([]);
   };
 
   return (
-    <section className="rounded-md border border-[#E8E8E8]  p-6">
+    <section className="rounded-md border border-[#E8E8E8] h-[450px] overflow-y-auto  p-6">
       <div className="mb-6 flex items-start justify-between">
         <div>
           <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
@@ -75,17 +55,11 @@ export default function ActiveSessions() {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="text-[#04A1B7] text-[14px] font-semibold leading-[140%] tracking-[0.07px] cursor-pointer
-"
-        >
-          See All
-        </button>
+       
       </div>
 
       <div className="space-y-3">
-        {sessions.map((session) => (
+        {ActiveSession.map((session) => (
           <div
             key={session.id}
             className="flex items-center gap-3   pb-3 last:border-0"
@@ -104,29 +78,32 @@ export default function ActiveSessions() {
                   {session.device}
                 </p>
 
-                {session.current && (
+            
+              </div>
+
+              <p className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
+">
+                {session.location} • {session.ip_address} •{" "}
+                {session.login_at}
+              </p>
+            </div>
+                <div className="flex items-center gap-2 justify-end">
+                   {session?.is_current && (
                   <span className="rounded-full border border-[#287F6E] px-2 py-1 text-[#287F6E] text-center text-[12px] font-semibold leading-[132%] tracking-[0.06px]
 ">
                     Active now
                   </span>
                 )}
-              </div>
 
-              <p className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
-">
-                {session.location} • {session.ip} •{" "}
-                {session.lastActive}
-              </p>
-            </div>
-
-            <button
+                 <button
               type="button"
               onClick={() => removeSession(session.id)}
-              disabled={session.current}
-              className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30"
+              disabled={session.is_current}
+              className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
             >
               <MoreHorizontal size={17} className="text-[#000]" />
             </button>
+                </div>
           </div>
         ))}
       </div>
