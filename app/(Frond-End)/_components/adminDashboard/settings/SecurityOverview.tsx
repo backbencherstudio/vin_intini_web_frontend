@@ -1,5 +1,9 @@
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
-import { CorrectIcon } from "@/public/svgIcons/AdminIcon";
+import {
+  CorrectIcon,
+  CrossIcon,
+  DangerIcon,
+} from "@/public/svgIcons/AdminIcon";
 import dayjs from "dayjs";
 import { ShieldCheck } from "lucide-react";
 
@@ -10,13 +14,14 @@ interface SecurityOverviewProps {
 interface SecurityStatusProps {
   title: string;
   value: string;
+  icon: React.ReactNode;
 }
 
-function SecurityStatus({ title, value }: SecurityStatusProps) {
+function SecurityStatus({ title, value, icon }: SecurityStatusProps) {
   return (
     <div className="flex items-center justify-between border-b border-[#F1F1F1] px-4  py-5.5 last:border-0">
       <div className="flex items-center gap-2">
-        <CorrectIcon />
+        {icon ? icon : <CorrectIcon />}
 
         <span
           className="overflow-hidden text-headerColor text-ellipsis text-sm font-semibold leading-[140%] tracking-[0.07px]
@@ -142,26 +147,31 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Password Strength"
             value={OverviewData?.password_strength}
+            icon={<CorrectIcon />}
           />
 
           <SecurityStatus
             title="Two-Factor Authentication"
             value={OverviewData?.two_factor_auth}
+            icon={<CrossIcon />}
           />
 
           <SecurityStatus
             title="Active Sessions"
             value={OverviewData?.active_sessions}
+            icon={<CorrectIcon />}
           />
 
           <SecurityStatus
             title="Account Recovery"
             value={OverviewData?.account_recovery}
+            icon={<DangerIcon />}
           />
 
           <SecurityStatus
             title="Login Activity"
             value={OverviewData?.login_activity}
+            icon={<CorrectIcon />}
           />
         </div>
       </div>
