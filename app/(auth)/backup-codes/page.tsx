@@ -1,7 +1,10 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
-import { useTwoFactorEmailCodeVerifyMutation } from "@/feature/slice/admin/securitySettings";
+import {
+  useTwoFactorEmailCodeVerifyMutation,
+  useTwoFactorRecoveryEmailMutation,
+} from "@/feature/slice/admin/securitySettings";
 import { setToken } from "@/lib/token";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -19,10 +22,12 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [errorRecovery, setErrorRecovery] = useState("");
   const route = useRouter();
   const [twoFactorEmailCode, { isLoading }] =
     useTwoFactorEmailCodeVerifyMutation();
-
+  const [twoFactorRecoveryEmail, { isLoading: isRecoveryLoading }] =
+    useTwoFactorRecoveryEmailMutation();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -36,9 +41,26 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
       route.push(`/mu/home`);
     } catch (error) {
       setError(error?.data?.message || "Invalid code. Please try again.");
+      setErrorRecovery("");
     }
   };
-  console.log(error, "error");
+  const handleEmailRecovery = async () => {
+    try {
+      const payload = {
+        email: email,
+      };
+      const response = await twoFactorRecoveryEmail(payload).unwrap();
+      ;
+      
+      route.push(`/recovery-email?email=${email}`);
+    } catch (error) {
+      setErrorRecovery(
+        error?.data?.message ||
+          "Failed to send recovery email. Please try again.",
+      );
+      setError("");
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 px-3">
@@ -65,7 +87,7 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className="rounded-md bg-primaryColor cursor-pointer px-4 py-3 text-base font-medium text-white disabled:opacity-60"
+          className="rounded-md disabled:cursor-not-allowed bg-primaryColor w-full flex justify-center text-center cursor-pointer px-4 py-3 text-base font-medium text-white disabled:opacity-60"
         >
           {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
         </button>
@@ -78,11 +100,18 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
             Authentication App
           </Link>{" "}
         </div>
-        <div className="text-grayColor1">
+        <div className="text-grayColor1 text-center">
           Don’t have access device? Send code to{" "}
-          <button className="text-descriptionColor cursor-pointer ">
+          <button
+            className="text-primaryColor cursor-pointer "
+            onClick={handleEmailRecovery}
+            disabled={isRecoveryLoading}
+          >
             your recovery email
           </button>{" "}
+          {errorRecovery && (
+            <p className="mt-1.5 text-xs text-red-500">{errorRecovery}</p>
+          )}
         </div>
       </div>
     </form>

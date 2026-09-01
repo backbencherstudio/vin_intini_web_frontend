@@ -90,6 +90,21 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    // code verify ===
+    twoFactorRecoveryEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-init",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    twoFactorRecoveryCodeSentEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-send-otp",
+        method: "POST",
+        body: payload,
+      }),
+    }),
 
     //desable pass
     DesablePasswd: builder.mutation({
@@ -122,6 +137,8 @@ export const {
   useEnablePasswordMutation,
   useProviderEmailCodeMutation,
   useTwoFactorEmailCodeVerifyMutation,
+  useTwoFactorRecoveryEmailMutation,
+  useTwoFactorRecoveryCodeSentEmailMutation,
   useDesablePasswdMutation,
   useGenerateCodeMutation,
 } = securitySettingsSlice;
