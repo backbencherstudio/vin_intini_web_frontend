@@ -7,7 +7,6 @@ import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 
 import { useState } from "react";
-import JobDetails from "./BasicUserDetails";
 import {
   Select,
   SelectContent,
@@ -19,21 +18,108 @@ import {
   ArrowDownToLine,
   ArrowUpDown,
   Download,
-  EditIcon,
-  Eye,
   SearchIcon,
-  Trash2,
 } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
-import BasicUserEditModal from "./BasicUserEditModal";
-import { DeletIcon, ViewIcon } from "@/public/svgIcons/AdminIcon";
-import { EditeIcon } from "@/public/svgIcons/Icons";
-import Link from "next/link";
-import { initialJobs, Job } from "./BasicUserDemoData";
-import Pagination from "@/components/reusable/Pagination";
+import ProUserEditModal from "./ProUserEdit";
 
-export default function BasicUser() {
+type Job = {
+  id: number;
+  img: string;
+  name: string;
+  organization: string;
+  type: string;
+  subscription: string;
+  email: string;
+  profession: string;
+  connections: string;
+  status: string;
+  joined: string;
+};
+
+const initialJobs: Job[] = [
+  {
+    id: 1,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "Harvard University",
+    type: "University",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Active",
+    joined: "2024-01-15",
+  },
+  {
+    id: 2,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "Stanford University",
+    type: "Pharmaceuticals",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Active",
+    joined: "2024-01-15",
+  },
+  {
+    id: 3,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "Duke University",
+    type: "Research Labs",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Suspended",
+    joined: "2024-01-15",
+  },
+  {
+    id: 4,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "Johns Hopkins",
+    type: "Research Labs",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Suspended",
+    joined: "2024-01-15",
+  },
+  {
+    id: 5,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "NeuroTech",
+    type: "Research Labs",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Active",
+    joined: "2024-01-15",
+  },
+  {
+    id: 6,
+    img: userIcon.src,
+    name: "Clinical Psychologist",
+    organization: "Johnson & Johnson",
+    type: "Clinical Trials",
+    subscription: "Pro Industry",
+    email: "rachel@gmail.com",
+    profession: "Clinical Psychologist",
+    connections: "125",
+    status: "Active",
+    joined: "2024-01-15",
+  },
+];
+
+export default function ProUser() {
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -41,12 +127,6 @@ export default function BasicUser() {
   const [sort, setSort] = useState("default");
 
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-
-  const [page, setPage] = useState(1);
-
-  const pageSize = 10;
-
-  const paginatedJobs = jobs.slice((page - 1) * pageSize, page * pageSize);
 
   const openView = (job: Job) => {
     setSelectedJob(job);
@@ -98,10 +178,42 @@ export default function BasicUser() {
       ),
     },
     {
+      header: "Organization",
+      accessor: "organization",
+      cell: (row) => (
+        <span className="text-[14px] font-normal text-[#0A0A0A]">
+          {row.organization}
+        </span>
+      ),
+    },
+
+    {
+      header: "Type",
+      accessor: "type",
+      cell: (row) => (
+        <CustomBadge
+          color="green"
+          className="text-[14px] font-normal text-[#0A0A0A]"
+        >
+          {row.type}
+        </CustomBadge>
+      ),
+    },
+
+    {
+      header: "Profession",
+      cell: (row) => (
+        <span className="text-[14px] font-normal text-[#0A0A0A]">
+          {row.profession}
+        </span>
+      ),
+    },
+
+    {
       header: "Subscriptions",
       accessor: "subscription",
       cell: (row) => (
-        <CustomBadge color="purple" className="font-medium">
+        <CustomBadge color="green" className="font-medium">
           {row.subscription}
         </CustomBadge>
       ),
@@ -114,25 +226,15 @@ export default function BasicUser() {
         </span>
       ),
     },
-    {
-      header: "Profession",
-      cell: (row) => (
-        <span className="text-[14px] font-normal text-[#0A0A0A]">
-          {row.profession}
-        </span>
-      ),
-    },
-    {
-      header: "Connections",
-      cell: (row) => (
-        <span className="text-[14px] font-normal text-[#0A0A0A]">
-          {row.connections}
-        </span>
-      ),
-    },
+
     {
       header: "Status",
-      cell: (row) => <CustomBadge color="active">{row.status}</CustomBadge>,
+      cell: (row) =>
+        row.status === "Active" ? (
+          <CustomBadge color="active">{row.status}</CustomBadge>
+        ) : (
+          <CustomBadge color="suspended">{row.status}</CustomBadge>
+        ),
     },
     {
       header: "Joined",
@@ -140,38 +242,6 @@ export default function BasicUser() {
         <span className="text-[14px] font-normal text-[#0A0A0A]">
           {row.joined}
         </span>
-      ),
-    },
-    {
-      header: "Actions",
-      cell: (row) => (
-        <div className="flex items-center gap-3">
-          {/* View */}
-          <Link
-            href={`/dashboard/user-management/basic-user/${row.id}`}
-            className="cursor-pointer"
-          >
-            <ViewIcon className="w-4 h-4" />
-          </Link>
-
-          {/* Edit */}
-          <button
-            type="button"
-            onClick={() => openEdit(row)}
-            className="cursor-pointer"
-          >
-            <EditeIcon className="w-4 h-4" />
-          </button>
-
-          {/* Delete */}
-          <button
-            type="button"
-            onClick={() => openDelete(row)}
-            className="cursor-pointer"
-          >
-            <DeletIcon className="w-4 h-4" />
-          </button>
-        </div>
       ),
     },
   ];
@@ -182,14 +252,14 @@ export default function BasicUser() {
         {/* Title */}
         <div className="mb-6  w-full">
           <CustomTitleDescription
-            title="Basic users"
-            description="24,560 Basic Users"
+            title="Pro Industry Users"
+            description="1,560 Pro Industry Users"
           />
         </div>
 
         {/* Actions */}
         <div className="mb-6 flex w-full justify-end">
-          <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center ">
+          <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
             {/* Export */}
             <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
               <ArrowDownToLine className="h-4 w-4" />
@@ -201,7 +271,7 @@ export default function BasicUser() {
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
               <input
-                className="h-10 w-full rounded-md border p-5 pl-7"
+                className="h-10 w-full rounded-md border p-2 pl-7"
                 type="text"
                 placeholder="Search"
               />
@@ -209,7 +279,7 @@ export default function BasicUser() {
 
             {/* Sort */}
             <Select value={sort} onValueChange={(value) => setSort(value)}>
-              <SelectTrigger className="h-10 w-full cursor-pointer gap-2 md:w-[170px] py-5">
+              <SelectTrigger className="h-10 w-full cursor-pointer gap-2 md:w-[170px]">
                 <ArrowUpDown className="h-4 w-4" />
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -228,37 +298,27 @@ export default function BasicUser() {
         </div>
       </div>
       <div>
-        <DataTable columns={columns} data={jobs} />
-
-        <Pagination
-          page={page}
-          pageSize={10}
-          total={100}
-          totalPages={10}
-          onPageChange={setPage}
+        <DataTable
+          columns={columns}
+          data={jobs}
+          onView={openView}
+          onEdit={openEdit}
+          onDelete={openDelete}
         />
 
         {/* View Job Details */}
-        {/* <CustomModal
-                    open={viewOpen}
-                    onOpenChange={setViewOpen}
-                    showCloseButton={false}
-                    size="lg"
-                >
-                    {selectedJob && (
-                        <JobDetails
-                            job={selectedJob}
-                            onClose={() => setViewOpen(false)}
-                        />
-                    )}
-                </CustomModal> */}
+        <CustomModal
+          open={viewOpen}
+          onOpenChange={setViewOpen}
+          showCloseButton={false}
+          size="lg"
+        >
+          <div></div>
+        </CustomModal>
 
         {/* Edit Job */}
         <CustomModal open={editOpen} onOpenChange={setEditOpen} size="lg">
-          <BasicUserEditModal
-            data={selectedJob}
-            onClose={() => setEditOpen(false)}
-          />
+          <ProUserEditModal data={selectedJob} />
         </CustomModal>
 
         {/* Delete Job */}

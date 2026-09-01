@@ -72,6 +72,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview"],
     }),
 
     //code send
@@ -81,6 +82,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview"],
     }),
     // code verify ===
     twoFactorEmailCodeVerify: builder.mutation({
@@ -120,6 +122,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview"],
     }),
 
     //newGenerate Code
@@ -129,7 +132,29 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview"],
     }),
+
+    //email recovery add
+    RecoveryEmailUpdate: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-email/update",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+
+    //email recovery otp verify
+    RecoveryEmailOtpVerify: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-email/confirm",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["overview"],
+    }),
+
+    //
   }),
 });
 
@@ -149,4 +174,7 @@ export const {
   useTwoFactorRecoveryCodeVerifyEmailMutation,
   useDesablePasswdMutation,
   useGenerateCodeMutation,
+
+  useRecoveryEmailOtpVerifyMutation,
+  useRecoveryEmailUpdateMutation,
 } = securitySettingsSlice;

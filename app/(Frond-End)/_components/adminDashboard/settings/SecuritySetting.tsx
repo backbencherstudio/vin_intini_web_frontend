@@ -7,7 +7,6 @@ import ActiveSessions from "./ActiveSessions";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import AuthenticationMethods from "./AuthenticationMethods";
 
-
 export default function SecuritySettings() {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
 
@@ -24,10 +23,6 @@ export default function SecuritySettings() {
             Manage your account security, access, and authentication settings.
           </p>
         </div>
-
-        <button className="h-9 rounded-md bg-[#04A1B7] px-5 text-[11px] font-medium text-white transition hover:bg-[#038da0]">
-          Save Changes
-        </button>
       </div>
 
       <div className="space-y-5">
@@ -42,14 +37,8 @@ export default function SecuritySettings() {
 
         {/* 2FA + Authentication Methods */}
         <div className="">
-          <TwoFactorAuthentication
-          
-          />
-
-        
+          <TwoFactorAuthentication />
         </div>
-
-        
       </div>
     </main>
   );

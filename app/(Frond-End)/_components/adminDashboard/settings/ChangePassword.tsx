@@ -37,11 +37,7 @@ function PasswordInput({
         className="absolute right-3 top-[45px] cursor-pointer text-[#8C8C8C] transition-colors hover:text-[#4A4C56]"
         aria-label={showPassword ? "Hide password" : "Show password"}
       >
-        {showPassword ? (
-          <EyeOff size={17} />
-        ) : (
-          <Eye size={17} />
-        )}
+        {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
       </button>
     </div>
   );
@@ -49,42 +45,40 @@ function PasswordInput({
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
-const [newPassword, setNewPassword] = useState("");
-const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-const [message, setMessage] = useState("");
-const [messageType, setMessageType] = useState<"success" | "error">(
-  "success"
-);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "error">(
+    "success",
+  );
 
-const [postChangePassword, { isLoading }] =
-  usePostChangePasswordMutation();
+  const [postChangePassword, { isLoading }] = usePostChangePasswordMutation();
 
-const updatePassword = async () => {
-  try {
-    await postChangePassword({
-      current_password: currentPassword,
-      new_password: newPassword,
-      new_password_confirmation: confirmPassword,
-    }).unwrap();
+  const updatePassword = async () => {
+    try {
+      await postChangePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        new_password_confirmation: confirmPassword,
+      }).unwrap();
 
-    setMessage("Password updated successfully.");
-    setMessageType("success");
+      setMessage("Password updated successfully.");
+      setMessageType("success");
 
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-  } catch (error: any) {
-  const errorMessage =
-    error?.data?.errors?.new_password?.[0] ||
-    error?.data?.message ||
-    "Failed to update password.";
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      const errorMessage =
+        error?.data?.errors?.new_password?.[0] ||
+        error?.data?.message ||
+        "Failed to update password.";
 
-  setMessage(errorMessage);
-  setMessageType("error");
-}
-
-};
+      setMessage(errorMessage);
+      setMessageType("error");
+    }
+  };
   return (
     <section className="rounded-md border border-[#E8E8E8] p-4">
       <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
@@ -131,9 +125,7 @@ const updatePassword = async () => {
         {message && (
           <p
             className={`text-[11px] ${
-              messageType === "success"
-                ? "text-[#04A1B7]"
-                : "text-red-500"
+              messageType === "success" ? "text-[#04A1B7]" : "text-red-500"
             }`}
           >
             {message}
@@ -141,13 +133,13 @@ const updatePassword = async () => {
         )}
 
         <button
-  type="button"
-  onClick={updatePassword}
-  disabled={isLoading}
-  className="h-9 w-full rounded-md border border-primaryColor bg-[#D3F4EF] text-[14px] font-semibold text-primaryColor transition cursor-pointer"
->
-  {isLoading ? "Updating..." : "Update Password"}
-</button>
+          type="button"
+          onClick={updatePassword}
+          disabled={isLoading}
+          className="h-9 w-full rounded-md border border-primaryColor bg-[#D3F4EF] text-[14px] font-semibold text-primaryColor transition cursor-pointer mt-3"
+        >
+          {isLoading ? "Updating..." : "Update Password"}
+        </button>
       </div>
     </section>
   );
