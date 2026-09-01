@@ -1,8 +1,10 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import { useTwoFactorRecoveryCodeVerifyEmailMutation } from "@/feature/slice/admin/securitySettings";
-import { useForgotPasswordMutation } from "@/feature/slice/auth/authSlice";
+import {
+  useGenerateTwoFactorRecoveryCodeEmailMutation,
+  useTwoFactorRecoveryCodeVerifyEmailMutation,
+} from "@/feature/slice/admin/securitySettings";
 import { setToken } from "@/lib/token";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,9 +24,12 @@ export default function page() {
     useTwoFactorRecoveryCodeVerifyEmailMutation();
   const router = useRouter();
   const [
-    forgotPassword,
-    { isLoading: isForgotPasswordLoading, isError: isForgotPasswordError },
-  ] = useForgotPasswordMutation();
+    generateTwoFactorRecoveryCodeEmail,
+    {
+      isLoading: isGenerateTwoFactorRecoveryCodeEmailLoading,
+      isError: isGenerateTwoFactorRecoveryCodeEmailError,
+    },
+  ] = useGenerateTwoFactorRecoveryCodeEmailMutation();
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
@@ -111,7 +116,7 @@ export default function page() {
   };
   const handleResendClick = async () => {
     try {
-      await forgotPassword(verifyMail).unwrap();
+      await generateTwoFactorRecoveryCodeEmail({ email: verifyMail }).unwrap();
       setResendCountdown(180);
       toast.success("OTP resent successfully.");
     } catch (error) {
@@ -190,10 +195,12 @@ export default function page() {
           <button
             type="button"
             onClick={handleResendClick}
-            disabled={isForgotPasswordLoading || resendCountdown > 0}
+            disabled={
+              isGenerateTwoFactorRecoveryCodeEmailLoading || resendCountdown > 0
+            }
             className=" text-sm font-medium   text-primaryColor hover:opacity-80 transition-opacity disabled:text-gray-400 cursor-pointer disabled:hover:opacity-100 disabled:cursor-not-allowed"
           >
-            {isForgotPasswordLoading
+            {isGenerateTwoFactorRecoveryCodeEmailLoading
               ? "Sending..."
               : resendCountdown > 0
                 ? `Resend in ${formatCountdown(resendCountdown)}`
