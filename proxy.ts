@@ -136,6 +136,7 @@ const PUBLIC_PATHS = [
   "/two-factor",
   "/backup-codes",
   "/recovery-email",
+  "/email-verify-code",
 ];
 
 export async function proxy(request: NextRequest) {

@@ -35,6 +35,7 @@ export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
       };
       const response = await twoFactorRecoveryCodeSentEmail(payload).unwrap();
       toast.success(response?.message || "2FA verification successful!");
+      route.push(`/email-verify-code?email=${email}`);
     } catch (error) {
       setError(error?.data?.message || "Invalid code. Please try again.");
     }
