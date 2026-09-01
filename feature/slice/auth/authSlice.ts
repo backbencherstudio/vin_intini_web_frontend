@@ -63,6 +63,12 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    recoverYourAccount: builder.mutation({
+      query: () => ({
+        url: "/account/restore",
+        method: "POST",
+      }),
+    }),
     resetPassword: builder.mutation({
       query: ({ email, new_password, new_password_confirmation }) => ({
         url: "/password-reset",
@@ -83,5 +89,6 @@ export const {
   useRegistrationMutation,
   useRegSendOTPMutation,
   useResetPasswordMutation,
+  useRecoverYourAccountMutation,
   useContactSubmitMutation,
 } = authSlice;

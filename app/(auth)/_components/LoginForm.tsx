@@ -33,7 +33,9 @@ function LoginForm() {
       const response = await login(data).unwrap();
       if (response?.two_factor_enabled) {
         route.push(`/two-factor?email=${data.email}`);
-       
+      } else if (response?.status == "pending_deletion") {
+        route.push(`/account-recovery?message=${response.message}`);
+        await setToken(response?.token || response.data.token);
       } else {
         toast.success("Login successful!");
         await setToken(response?.token || response.data.token);

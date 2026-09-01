@@ -137,7 +137,6 @@ const PUBLIC_PATHS = [
   "/backup-codes",
   "/recovery-email",
   "/email-verify-code",
-  "/account-recovery",
 ];
 
 export async function proxy(request: NextRequest) {
@@ -233,6 +232,8 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
+      console.log(userData, "userData==========");
+
       const isOnboarded =
         userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
