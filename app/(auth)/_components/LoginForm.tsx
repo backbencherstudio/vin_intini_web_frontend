@@ -31,11 +31,16 @@ function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await login(data).unwrap();
-
-      toast.success("Login successful!");
-      await setToken(response?.token || response.data.token);
-      route.push(`/mu/home`);
+      if (response?.two_factor_enabled) {
+        route.push(`/two-factor?email=${data.email}`);
+       
+      } else {
+        toast.success("Login successful!");
+        await setToken(response?.token || response.data.token);
+        route.push(`/mu/home`);
+      }
     } catch (error) {
+      console.error(error, "error======");
       toast.error(error?.data?.message || "Email or password is incorrect.");
     }
   };

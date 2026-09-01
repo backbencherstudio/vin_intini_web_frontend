@@ -124,8 +124,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
-
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
 const PUBLIC_PATHS = [
   "/",
@@ -133,13 +133,14 @@ const PUBLIC_PATHS = [
   "/sign-up",
   "/forgot-password",
   "/privecy-policy",
-  "/tearm-condition",
+  "/two-factor",
+  "/backup-codes",
+  "/recovery-email",
+  "/email-verify-code",
 ];
-
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
 
   if (
     pathname === "/favicon.ico" ||
@@ -176,13 +177,12 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isPublicPath && currentToken && pathname !== "/onboarding") {
-     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
-        return NextResponse.redirect(new URL("/mu/home", request.url));
-     }
+    if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
   }
 
   try {
-
     let userResponse = await fetch(`${API_BASE_URL}/me`, {
       method: "GET",
       headers: {
@@ -192,38 +192,48 @@ export async function proxy(request: NextRequest) {
     });
 
     if (userResponse.status === 401) {
-      const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
-      });
-      
+      console.log("Access token expired, attempting refresh...");
 
-      if (refreshResponse.ok) {
-        const refreshData = await refreshResponse.json();
-        const newToken = refreshData?.data?.token || refreshData?.token;
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+            Accept: "application/json",
+          },
+        });
 
-        if (newToken) {
-          const response = NextResponse.next();
-          response.cookies.set("accessToken", newToken, {
-            path: "/",
-            maxAge: COOKIE_MAX_AGE,
-            sameSite: "lax",
-            secure: true,
-          });
-          return response;
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          const newToken = refreshData?.data?.token || refreshData?.token;
+
+          if (newToken) {
+            const response = NextResponse.next();
+            response.cookies.set("accessToken", newToken, {
+              path: "/",
+              maxAge: COOKIE_MAX_AGE,
+              sameSite: "lax",
+              secure: true,
+            });
+            return response;
+          }
         }
+
+        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+          const res = NextResponse.redirect(new URL("/login", request.url));
+          res.cookies.delete("accessToken");
+          return res;
+        }
+      } catch (refreshErr) {
+        console.error("Network error during refresh, session preserved.");
+        return NextResponse.next();
       }
-      const res = NextResponse.redirect(new URL("/login", request.url));
-      res.cookies.delete("accessToken");
-      return res;
     }
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-      const isOnboarded = userData?.data?.is_onboarding ?? userData?.is_onboarding;
+      const isOnboarded =
+        userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
       if (!isOnboarded) {
         if (!pathname.startsWith("/onboarding")) {
@@ -236,11 +246,12 @@ export async function proxy(request: NextRequest) {
       }
     }
   } catch (error) {
-    console.error("Auth Error:", error);
+    console.error("Middleware Auth Fetch Error:", error);
+    return NextResponse.next();
   }
 
   const finalResponse = NextResponse.next();
-  
+
   if (tokenQuery && currentToken) {
     finalResponse.cookies.set("accessToken", currentToken, {
       path: "/",
@@ -256,4 +267,3 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };
-
