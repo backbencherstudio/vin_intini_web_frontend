@@ -6,14 +6,22 @@ import { AdLockIcon } from "@/public/svgIcons/AdminIcon";
 import Disable2FAModal from "./2FactorAuthentication/Disable2FAModal";
 import Enable2FactorModal from "./2FactorAuthentication/Enable2FactorModal/Enable2FactorModal";
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function TwoFactorAuthentication() {
   const [showEnableModal, setShowEnableModal] = useState(false);
   const [showDisableModal, setShowDisableModal] = useState(false);
-
+  const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
   const { data, isLoading, refetch } = useGetSecurityOverviewQuery({});
 
   const is2FAEnabled = data?.data?.two_factor_enabled ?? false;
+  const recoveryEmailVerified = data?.data?.recovery_email_verified ?? false;
 
   const handleEnableSuccess = () => {
     setShowEnableModal(false);
@@ -65,16 +73,30 @@ export default function TwoFactorAuthentication() {
             {is2FAEnabled ? (
               <button
                 type="button"
-                onClick={() => setShowDisableModal(true)}
-                className="mt-4 h-8 rounded-md border border-[#F38B94] cursor-pointer bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
+                onClick={() => {
+                  if (!recoveryEmailVerified) {
+                    setShowVerifyEmailModal(true);
+                    return;
+                  }
+
+                  setShowDisableModal(true);
+                }}
+                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
               >
                 Disable 2FA
               </button>
             ) : (
               <button
                 type="button"
-                onClick={() => setShowEnableModal(true)}
-                className="mt-4 h-8 rounded-md border border-primaryColor cursor-pointer bg-primaryColor px-5 text-[14px] font-semibold text-white"
+                onClick={() => {
+                  if (!recoveryEmailVerified) {
+                    setShowVerifyEmailModal(true);
+                    return;
+                  }
+
+                  setShowEnableModal(true);
+                }}
+                className="mt-4 h-8 cursor-pointer rounded-md border border-primaryColor bg-primaryColor px-5 text-[14px] font-semibold text-white"
               >
                 Enable 2FA
               </button>
@@ -100,6 +122,22 @@ export default function TwoFactorAuthentication() {
         onOpenChange={setShowDisableModal}
         onSuccess={handleDisableSuccess}
       />
+
+      <Dialog
+        open={showVerifyEmailModal}
+        onOpenChange={setShowVerifyEmailModal}
+      >
+        <DialogContent className="max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Verify Your Email</DialogTitle>
+
+            <DialogDescription className="pt-2 text-[14px] text-gray-500">
+              Please verify your recovery email before enabling or disabling
+              2FA.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
