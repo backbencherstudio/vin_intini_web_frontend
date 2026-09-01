@@ -12,12 +12,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-interface StepEmailCodeProps {
-  onSuccess: (codes: string[]) => void;
-  onClose: () => void;
-}
 
-export default function page({ onSuccess, onClose }: StepEmailCodeProps) {
+export default function page() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [errorRecovery, setErrorRecovery] = useState("");
