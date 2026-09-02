@@ -1,18 +1,37 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import { useRecoverYourAccountMutation } from "@/feature/slice/auth/authSlice";
 import { clearToken, setToken } from "@/lib/token";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 function page() {
-  const [recoverYourAccount] = useRecoverYourAccountMutation();
+  const [recoverYourAccount, { isLoading }] = useRecoverYourAccountMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<any>({
+    defaultValues: {
+      password: "",
+    },
+  });
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") || "");
+
+  const [message, setMessage] = useState(searchParams.get("message") || "");
   const route = useRouter();
-  const handleKeepAccount = async () => {
+  const onSubmit = async (data: any) => {
     try {
-      const response = await recoverYourAccount(undefined).unwrap();
+      const response = await recoverYourAccount({
+        email,
+        password: data.password,
+      }).unwrap();
       toast.success("Login successful!");
       await setToken(response?.token || response.data.token);
       route.push(`/mu/home`);
@@ -33,33 +52,54 @@ function page() {
           <h4 className="text-headerColor text-base font-semibold">
             ⚠️ Account Recovery Confirmation
           </h4>
-          <p className="text-sm text-grayColor1 mt-0.5">
+          {/* <p className="text-sm text-grayColor1 mt-0.5">
             Your account has been scheduled for deletion.
-          </p>
+          </p> */}
         </div>
         <Link href="/login">
           <X className="w-6 h-6" />
         </Link>
       </div>
-      <p className="text-sm text-grayColor1">
-        You have 30 days to recover your account. If you continue, your account
-        will be permanently deleted and cannot be recovered after this period.
-      </p>
+      <p className="text-sm text-grayColor1">{message}</p>
       <h4 className="text-headerColor text-base font-semibold">
         Do you want to keep your account?
       </h4>
-      <div className="flex items-center gap-4">
-        <ButtonReuseable
-          title="Keep My Account"
-          className="py-2! "
-          onClick={handleKeepAccount}
-        />
-        <ButtonReuseable
-          title="Delete Permanently"
-          className="py-2! border border-redColor! text-redColor! bg-whiteColor! "
-          onClick={handleDeleteAccount}
-        />
-      </div>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div>
+          <ReusableInput
+            type="password"
+            id="password"
+            required={true}
+            placeholder="Enter your current password"
+            label="Current Password"
+            error={errors.password?.message as string}
+            {...register("password", {
+              required: "Type your password",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            className="rounded-md!"
+          />
+        </div>
+        <div className="flex items-center mt-4 gap-4">
+          <ButtonReuseable
+            title="Keep My Account"
+            type="submit"
+            disabled={isLoading}
+            loading={isLoading}
+            sendingMsg={"Restoring..."}
+            className="py-2! "
+          />
+          <ButtonReuseable
+            title="Delete Permanently"
+            type="button"
+            className="py-2! border border-redColor! text-redColor! bg-whiteColor! "
+            onClick={handleDeleteAccount}
+          />
+        </div>
+      </form>
 
       <p className="text-redColor text-sm leading-[140%]">
         Note: If you choose Delete Permanently, all account data may be

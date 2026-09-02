@@ -31,7 +31,7 @@ const ReusableInput = ({
 
       <input
         type={type}
-        className={`h-12! md:h-13! w-full px-3 border border-borderColor  placeholder:text-placeholderColor focus:outline-none focus:ring-2 focus:ring-primaryColor/20! ${className || ""}`}
+        className={`h-12! md:h-13! w-full px-3 border   placeholder:text-placeholderColor focus:outline-none focus:ring-2 focus:ring-primaryColor/20! ${className || ""} ${error ? "border-red-500" : "border-borderColor"}`}
         {...props}
       />
 

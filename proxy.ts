@@ -133,10 +133,12 @@ const PUBLIC_PATHS = [
   "/sign-up",
   "/forgot-password",
   "/privecy-policy",
+  "/tearm-condition",
   "/two-factor",
   "/backup-codes",
   "/recovery-email",
   "/email-verify-code",
+  "/account-recovery",
 ];
 
 export async function proxy(request: NextRequest) {
@@ -167,7 +169,9 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const isPublicPath = PUBLIC_PATHS.includes(pathname);
+  const isPublicPath = PUBLIC_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(path),
+  );
 
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
@@ -176,10 +180,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isPublicPath && currentToken && pathname !== "/onboarding") {
+  if (isPublicPath) {
     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
       return NextResponse.redirect(new URL("/mu/home", request.url));
     }
+    return NextResponse.next();
   }
 
   try {
@@ -232,7 +237,6 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-      console.log(userData, "userData==========");
 
       const isOnboarded =
         userData?.data?.is_onboarding ?? userData?.is_onboarding;

@@ -64,9 +64,10 @@ const authSlice = baseApiSlice.injectEndpoints({
       }),
     }),
     recoverYourAccount: builder.mutation({
-      query: () => ({
+      query: (payload) => ({
         url: "/account/restore",
         method: "POST",
+        body: payload,
       }),
     }),
     resetPassword: builder.mutation({
