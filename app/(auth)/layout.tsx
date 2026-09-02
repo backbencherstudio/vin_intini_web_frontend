@@ -25,14 +25,14 @@ function layout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-base">
               <Link
                 href="/login"
-                className="px-2 sm:px-4 py-0.5 sm:py-2 border border-[#07C3BB] rounded-lg sm:rounded-xl hover:rounded-md hover:bg-[#07C3BB] hover:text-white transition-all duration-300"
+                className="px-3 sm:px-4 py-2 sm:py-2 border border-[#07C3BB] rounded-lg sm:rounded-xl hover:rounded-md hover:bg-[#07C3BB] hover:text-white transition-all duration-300"
               >
                 Sign in
               </Link>
             </div>
           </div>
         </header>
-        <div className="max-w-lg bg-whiteColor rounded-lg p-4 md:p-6   mx-auto">
+        <div className="max-w-lg  bg-whiteColor rounded-lg p-4 md:p-6 mx-4  sm:mx-auto">
           {children}
         </div>
         <div className="mt-40">
