@@ -11,7 +11,7 @@ export default function SecuritySettings() {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
 
   return (
-    <main className="min-h-screen bg-[#FAFAFA] ">
+    <main className="min-h-screen  ">
       {/* Header */}
       <div className="mb-5 flex items-start justify-between">
         <div>
