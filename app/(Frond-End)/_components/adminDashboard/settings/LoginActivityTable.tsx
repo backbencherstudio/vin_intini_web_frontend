@@ -6,11 +6,13 @@ import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import Pagination from "@/components/reusable/Pagination";
 import {
+  useDeleteActiveSessionsMutation,
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
+  useLogoutActiveSessionsMutation,
 } from "@/feature/slice/admin/securitySettings";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
-import { Monitor } from "lucide-react";
+import { Delete, Monitor, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -54,15 +56,27 @@ export default function LoginActivityTable() {
     setSelectedLogin(row);
   };
 
-  const [deleteLoginActivity, { isLoading: deleteLoading }] =
+  const [logoutActivity, { isLoading: logoutLoading }] =
     useDeleteLoginActivityMutation();
 
+  const [deleteLoginActivity, { isLoading: deleteLoading }] =
+    useLogoutActiveSessionsMutation();
+
   const handleLogout = async (id: number) => {
+    try {
+      await logoutActivity(id).unwrap();
+      toast.success("Logout successful");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const handelDelete = async (id: number) => {
     try {
       await deleteLoginActivity(id).unwrap();
       toast.success("Logout successful");
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.log(error);
     }
   };
 
@@ -70,7 +84,9 @@ export default function LoginActivityTable() {
     {
       header: "No.",
       cell: (row) => (
-        <span className="text-[13px] font-medium text-[#4A4C56]">{row.id}</span>
+        <span className="text-[13px] font-medium text-[#4A4C56]">
+          {(page - 1) * limit + loginActivities.indexOf(row) + 1}
+        </span>
       ),
     },
 
@@ -128,30 +144,63 @@ export default function LoginActivityTable() {
       header: "Status",
       cell: (row) => (
         <CustomBadge
-          color={row.status === "Successful" ? "green" : "red"}
+          color={
+            row.signin_status === "Active"
+              ? "green"
+              : row.signin_status === "Current device"
+                ? "green"
+                : "red"
+          }
           className={
-            row.status === "Successful"
+            row.signin_status === "Active" ||
+            row.signin_status === "Current device"
               ? "!rounded-[4px] !border !border-[#72DED1] !bg-[#F0FFFD] !px-2.5 !py-1 text-[11px] !text-[#287F6E]"
               : "!rounded-[4px] !border !border-red-200 !bg-red-50 !px-2.5 !py-1 text-[11px] !text-red-500"
           }
         >
-          {row.status}
+          {row.signin_status}
         </CustomBadge>
       ),
     },
     {
       header: "Actions",
-      cell: (row: LoginActivity) => (
-        <div className="flex items-center gap-2.5 whitespace-nowrap">
-          <button
-            onClick={() => handleLogout(row.id)}
-            className="flex items-center gap-1 rounded-sm cursor-pointer bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500"
-          >
-            <LogoutIcon className="h-4 w-4" />
-            Logout
-          </button>
-        </div>
-      ),
+      cell: (row: LoginActivity) => {
+        const isCurrentDevice = row.signin_status === "Current device";
+        const isLoggedOut = row.signin_status === "Logged out";
+
+        const isLogoutDisabled = isCurrentDevice || isLoggedOut;
+        const isDeleteDisabled = isCurrentDevice;
+
+        return (
+          <div className="flex items-center gap-2.5 whitespace-nowrap">
+            {/* Delete */}
+            <button
+              onClick={() => !isDeleteDisabled && handelDelete(row.id)}
+              disabled={isDeleteDisabled}
+              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
+                isDeleteDisabled
+                  ? "cursor-not-allowed opacity-40"
+                  : "cursor-pointer"
+              }`}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+
+            {/* Logout */}
+            <button
+              onClick={() => !isLogoutDisabled && handelDelete(row.id)}
+              disabled={isLogoutDisabled}
+              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
+                isLogoutDisabled
+                  ? "cursor-not-allowed opacity-40"
+                  : "cursor-pointer"
+              }`}
+            >
+              <LogoutIcon className="h-4 w-4" />
+            </button>
+          </div>
+        );
+      },
     },
   ];
 

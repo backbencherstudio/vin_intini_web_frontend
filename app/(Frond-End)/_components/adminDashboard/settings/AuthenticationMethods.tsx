@@ -92,13 +92,7 @@ export default function AuthenticationMethods() {
               <Monitor size={24} className="text-black" />
             </div>
 
-            <div
-              className="min-w-0 flex-1 cursor-pointer"
-              onClick={() => {
-                setStep(1);
-                setRecoveryModalOpen(true);
-              }}
-            >
+            <div className="min-w-0 flex-1 cursor-pointer">
               <p className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
                 Recovery Email
               </p>
@@ -109,6 +103,17 @@ export default function AuthenticationMethods() {
             </div>
 
             <span className="text-[9px] text-[#287F6E]">Verified</span>
+
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => {
+                setStep(1);
+                setRecoveryModalOpen(true);
+              }}
+            >
+              <MoreHorizontal size={16} className="text-black" />
+            </button>
           </div>
         </div>
       </section>
