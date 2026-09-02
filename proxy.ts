@@ -141,7 +141,7 @@ const PUBLIC_PATHS = [
   "/account-recovery",
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
@@ -163,7 +163,6 @@ export async function middleware(request: NextRequest) {
       const decoded = JSON.parse(atob(tokenQuery));
       if (decoded?.token) {
         const newToken = decoded.token;
-
         const url = request.nextUrl.clone();
         url.searchParams.delete("auth");
         const response = NextResponse.redirect(url);
@@ -253,6 +252,7 @@ export async function middleware(request: NextRequest) {
           const res = NextResponse.redirect(new URL("/login", request.url));
           res.cookies.delete("accessToken");
           res.cookies.delete("accessTokenIssuedAt");
+   
           res.cookies.delete("tokenIssueAt"); 
           return res;
         }
@@ -264,7 +264,7 @@ export async function middleware(request: NextRequest) {
     if (userResponse.ok) {
       const userData = await userResponse.json();
 
-
+    
       if (userData?.is_trashed) {
         if (pathname !== "/account-recovery") {
           return NextResponse.redirect(new URL("/account-recovery", request.url));
@@ -288,11 +288,11 @@ export async function middleware(request: NextRequest) {
     console.error("Middleware Auth Fetch Error:", error);
     return NextResponse.next();
   }
+
   return NextResponse.next();
 }
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
-  
 };
 
