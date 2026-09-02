@@ -158,11 +158,26 @@ export async function proxy(request: NextRequest) {
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   let currentToken = cookieToken || null;
 
+
   if (tokenQuery) {
     try {
       const decoded = JSON.parse(atob(tokenQuery));
       if (decoded?.token) {
-        currentToken = decoded.token;
+        const newToken = decoded.token;
+
+   
+        const url = request.nextUrl.clone();
+        url.searchParams.delete("auth");
+
+        const response = NextResponse.redirect(url);
+        response.cookies.set("accessToken", newToken, {
+          path: "/",
+          maxAge: COOKIE_MAX_AGE,
+          sameSite: "lax",
+          secure: true,
+        });
+
+        return response; 
       }
     } catch (e) {
       console.error("Token decoding failed");
@@ -173,12 +188,14 @@ export async function proxy(request: NextRequest) {
     (path) => pathname === path || pathname.startsWith(path),
   );
 
+
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL("/login", request.url));
   }
+
 
   if (isPublicPath) {
     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
@@ -188,6 +205,7 @@ export async function proxy(request: NextRequest) {
   }
 
   try {
+
     let userResponse = await fetch(`${API_BASE_URL}/me`, {
       method: "GET",
       headers: {
@@ -237,7 +255,6 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-
       const isOnboarded =
         userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
@@ -256,18 +273,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const finalResponse = NextResponse.next();
-
-  if (tokenQuery && currentToken) {
-    finalResponse.cookies.set("accessToken", currentToken, {
-      path: "/",
-      maxAge: COOKIE_MAX_AGE,
-      sameSite: "lax",
-      secure: true,
-    });
-  }
-
-  return finalResponse;
+  return NextResponse.next();
 }
 
 export const config = {
