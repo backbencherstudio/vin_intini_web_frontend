@@ -131,7 +131,9 @@ export default function SecurityOverview({
             Security Score
           </p>
 
-          <p className="text-primaryColor text-center text-2xl font-semibold leading-[130%] tracking-[0.12px] mt-1 ">
+          <p
+            className={` text-center text-2xl font-semibold leading-[130%] tracking-[0.12px] mt-1 ${OverviewData?.security_score?.rating === "Strong" ? "text-primaryColor" : OverviewData?.security_score?.rating === "Medium" ? "text-[#ffc107]" : "text-red-500"}`}
+          >
             {OverviewData?.security_score?.rating}
           </p>
 
@@ -165,9 +167,14 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Account Recovery"
             value={OverviewData?.account_recovery}
-            icon={<DangerIcon />}
+            icon={
+              OverviewData?.recovery_email_verified ? (
+                <CorrectIcon />
+              ) : (
+                <DangerIcon />
+              )
+            }
           />
-
           <SecurityStatus
             title="Login Activity"
             value={OverviewData?.login_activity}
