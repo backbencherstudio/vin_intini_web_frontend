@@ -12,7 +12,7 @@ import {
   useLogoutActiveSessionsMutation,
 } from "@/feature/slice/admin/securitySettings";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
-import { Delete, Monitor, Trash2 } from "lucide-react";
+import { Delete, Monitor, Phone, Smartphone, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -24,6 +24,7 @@ type LoginActivity = {
   ip_address: string;
   status: "Successful" | "Failed";
   is_active: boolean;
+  is_mobile: boolean;
   is_current: boolean;
   signin_status: string;
   login_at: string;
@@ -94,8 +95,13 @@ export default function LoginActivityTable() {
       header: "Device / Browser",
       cell: (row) => (
         <div className="flex items-center gap-2.5 whitespace-nowrap">
-          <Monitor size={16} strokeWidth={2} className="text-headerColor" />
-
+          <span>
+            {row?.is_mobile === true ? (
+              <Smartphone className="h-5 w-5 stroke-headerColor" />
+            ) : (
+              <Monitor className="h-5 w-5 stroke-headerColor" />
+            )}
+          </span>
           <span className="text-[13px] font-semibold text-[#0A0A0A]">
             {row.device} • {row.browser}
           </span>
@@ -145,17 +151,16 @@ export default function LoginActivityTable() {
       cell: (row) => (
         <CustomBadge
           color={
-            row.signin_status === "Active"
+            row.signin_status === "Signed in" ||
+            row.signin_status === "Current device"
               ? "green"
-              : row.signin_status === "Current device"
-                ? "green"
-                : "red"
+              : "red"
           }
           className={
-            row.signin_status === "Active" ||
+            row.signin_status === "Signed in" ||
             row.signin_status === "Current device"
               ? "!rounded-[4px] !border !border-[#72DED1] !bg-[#F0FFFD] !px-2.5 !py-1 text-[11px] !text-[#287F6E]"
-              : "!rounded-[4px] !border !border-red-200 !bg-red-50 !px-2.5 !py-1 text-[11px] !text-red-500"
+              : "!rounded-[4px] !border !border-gray-400 !bg-gray-100 !px-2.5 !py-1 text-[11px] !text-gray-500"
           }
         >
           {row.signin_status}
@@ -173,19 +178,6 @@ export default function LoginActivityTable() {
 
         return (
           <div className="flex items-center gap-2.5 whitespace-nowrap">
-            {/* Delete */}
-            <button
-              onClick={() => !isDeleteDisabled && handelDelete(row.id)}
-              disabled={isDeleteDisabled}
-              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
-                isDeleteDisabled
-                  ? "cursor-not-allowed opacity-40"
-                  : "cursor-pointer"
-              }`}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-
             {/* Logout */}
             <button
               onClick={() => !isLogoutDisabled && handelDelete(row.id)}
@@ -197,6 +189,19 @@ export default function LoginActivityTable() {
               }`}
             >
               <LogoutIcon className="h-4 w-4" />
+            </button>
+
+            {/* Delete */}
+            <button
+              onClick={() => !isDeleteDisabled && handelDelete(row.id)}
+              disabled={isDeleteDisabled}
+              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
+                isDeleteDisabled
+                  ? "cursor-not-allowed opacity-40"
+                  : "cursor-pointer"
+              }`}
+            >
+              <Trash2 className="h-4 w-4" />
             </button>
           </div>
         );
