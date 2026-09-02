@@ -102,7 +102,9 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            <span className="text-[9px] text-[#287F6E]">Verified</span>
+            {securityData?.recovery_email_verified === true && (
+              <span className="text-[9px] text-[#287F6E]">Verified</span>
+            )}
 
             <button
               type="button"
