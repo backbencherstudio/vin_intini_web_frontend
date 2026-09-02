@@ -124,8 +124,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
-
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
 const PUBLIC_PATHS = [
   "/",
@@ -134,12 +134,15 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/privecy-policy",
   "/tearm-condition",
+  "/two-factor",
+  "/backup-codes",
+  "/recovery-email",
+  "/email-verify-code",
+  "/account-recovery",
 ];
-
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
 
   if (
     pathname === "/favicon.ico" ||
@@ -159,14 +162,37 @@ export async function proxy(request: NextRequest) {
     try {
       const decoded = JSON.parse(atob(tokenQuery));
       if (decoded?.token) {
-        currentToken = decoded.token;
+        const newToken = decoded.token;
+        const url = request.nextUrl.clone();
+        url.searchParams.delete("auth");
+        const response = NextResponse.redirect(url);
+        
+        const timestamp = Math.floor(Date.now() / 1000).toString();
+
+        response.cookies.set("accessToken", newToken, {
+          path: "/",
+          maxAge: COOKIE_MAX_AGE,
+          sameSite: "lax",
+          secure: true,
+        });
+
+        response.cookies.set("accessTokenIssuedAt", timestamp, {
+          path: "/",
+          maxAge: COOKIE_MAX_AGE,
+          sameSite: "lax",
+          secure: true,
+        });
+        
+        return response;
       }
     } catch (e) {
       console.error("Token decoding failed");
     }
   }
 
-  const isPublicPath = PUBLIC_PATHS.includes(pathname);
+  const isPublicPath = PUBLIC_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(path)
+  );
 
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
@@ -175,10 +201,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isPublicPath && currentToken && pathname !== "/onboarding") {
-     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
-        return NextResponse.redirect(new URL("/mu/home", request.url));
-     }
+  if (isPublicPath) {
+    if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
+    return NextResponse.next();
   }
 
   try {
@@ -192,37 +219,59 @@ export async function proxy(request: NextRequest) {
     });
 
     if (userResponse.status === 401) {
-      const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
-      });
-      
+      console.log("Access token expired, attempting refresh...");
 
-      if (refreshResponse.ok) {
-        const refreshData = await refreshResponse.json();
-        const newToken = refreshData?.data?.token || refreshData?.token;
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+            Accept: "application/json",
+          },
+        });
 
-        if (newToken) {
-          const response = NextResponse.next();
-          response.cookies.set("accessToken", newToken, {
-            path: "/",
-            maxAge: COOKIE_MAX_AGE,
-            sameSite: "lax",
-            secure: true,
-          });
-          return response;
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          const newToken = refreshData?.data?.token || refreshData?.token;
+
+          if (newToken) {
+            const response = NextResponse.next();
+            const timestamp = Math.floor(Date.now() / 1000).toString();
+
+            response.cookies.set("accessToken", newToken, {
+              path: "/", maxAge: COOKIE_MAX_AGE, sameSite: "lax", secure: true,
+            });
+            response.cookies.set("accessTokenIssuedAt", timestamp, {
+              path: "/", maxAge: COOKIE_MAX_AGE, sameSite: "lax", secure: true,
+            });
+            return response;
+          }
         }
+
+        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+          const res = NextResponse.redirect(new URL("/login", request.url));
+          res.cookies.delete("accessToken");
+          res.cookies.delete("accessTokenIssuedAt");
+   
+          res.cookies.delete("tokenIssueAt"); 
+          return res;
+        }
+      } catch (refreshErr) {
+        return NextResponse.next();
       }
-      const res = NextResponse.redirect(new URL("/login", request.url));
-      res.cookies.delete("accessToken");
-      return res;
     }
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
+
+    
+      if (userData?.is_trashed) {
+        if (pathname !== "/account-recovery") {
+          return NextResponse.redirect(new URL("/account-recovery", request.url));
+        }
+        return NextResponse.next();
+      }
+
       const isOnboarded = userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
       if (!isOnboarded) {
@@ -230,27 +279,17 @@ export async function proxy(request: NextRequest) {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
       } else {
-        if (pathname.startsWith("/onboarding")) {
+        if (pathname.startsWith("/onboarding") || pathname === "/account-recovery") {
           return NextResponse.redirect(new URL("/mu/home", request.url));
         }
       }
     }
   } catch (error) {
-    console.error("Auth Error:", error);
+    console.error("Middleware Auth Fetch Error:", error);
+    return NextResponse.next();
   }
 
-  const finalResponse = NextResponse.next();
-  
-  if (tokenQuery && currentToken) {
-    finalResponse.cookies.set("accessToken", currentToken, {
-      path: "/",
-      maxAge: COOKIE_MAX_AGE,
-      sameSite: "lax",
-      secure: true,
-    });
-  }
-
-  return finalResponse;
+  return NextResponse.next();
 }
 
 export const config = {

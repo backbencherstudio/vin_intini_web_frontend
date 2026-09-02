@@ -93,6 +93,43 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["overview"],
     }),
+    // code verify ===
+    twoFactorEmailCodeVerify: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/verify-login",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    // code verify ===
+    twoFactorRecoveryEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-init",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    twoFactorRecoveryCodeSentEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-send-otp",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    twoFactorRecoveryCodeVerifyEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery-verify",
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    generateTwoFactorRecoveryCodeEmail: builder.mutation({
+      query: (payload) => ({
+        url: "/2fa/recovery/resend-otp",
+        method: "POST",
+        body: payload,
+      }),
+    }),
 
     //desable pass
     DesablePasswd: builder.mutation({
@@ -139,19 +176,20 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetSecurityOverviewQuery,
-
   usePostChangePasswordMutation,
-
   useGetActiveSessionsQuery,
   useDeleteActiveSessionsMutation,
   useDeletAllSessionsMutation,
-
   useDeleteLoginActivityMutation,
-
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
   useEnablePasswordMutation,
   useProviderEmailCodeMutation,
+  useTwoFactorEmailCodeVerifyMutation,
+  useTwoFactorRecoveryEmailMutation,
+  useTwoFactorRecoveryCodeSentEmailMutation,
+  useTwoFactorRecoveryCodeVerifyEmailMutation,
+  useGenerateTwoFactorRecoveryCodeEmailMutation,
   useDesablePasswdMutation,
   useGenerateCodeMutation,
 

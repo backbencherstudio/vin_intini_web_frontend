@@ -1,6 +1,6 @@
 "use client";
 
-import { GeneralSettingIcon, SettingIcon } from "@/public/svgIcons/Icons";
+import { GeneralSettingIcon, NotificationIcon, SecurityIcon, SettingIcon } from "@/public/svgIcons/Icons";
 import { Briefcase, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,16 +20,16 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
       slug: "/mu/settings/general",
       icon: GeneralSettingIcon,
     },
-    // {
-    //   label: "Notification Settings",
-    //   slug: "/mu/settings/notifications",
-    //   icon: NotificationIcon,
-    // },
-    // {
-    //   label: "Security Settings",
-    //   slug: "/mu/settings/security",
-    //   icon: SecurityIcon,
-    // },
+    {
+      label: "Notification Settings",
+      slug: "/mu/settings/notifications",
+      icon: NotificationIcon,
+    },
+    {
+      label: "Security Settings",
+      slug: "/mu/settings/security",
+      icon: SecurityIcon,
+    },
   ];
 
   useEffect(() => {
