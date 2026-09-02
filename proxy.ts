@@ -160,29 +160,36 @@ export async function proxy(request: NextRequest) {
 
 
   if (tokenQuery) {
-    try {
-      const decoded = JSON.parse(atob(tokenQuery));
-      if (decoded?.token) {
-        const newToken = decoded.token;
+  try {
+    const decoded = JSON.parse(atob(tokenQuery));
+    if (decoded?.token) {
+      const newToken = decoded.token;
 
-   
-        const url = request.nextUrl.clone();
-        url.searchParams.delete("auth");
+      const url = request.nextUrl.clone();
+      url.searchParams.delete("auth");
+      
+      const response = NextResponse.redirect(url);
+      
+      response.cookies.set("accessToken", newToken, {
+        path: "/",
+        maxAge: COOKIE_MAX_AGE,
+        sameSite: "lax",
+        secure: true,
+      });
 
-        const response = NextResponse.redirect(url);
-        response.cookies.set("accessToken", newToken, {
-          path: "/",
-          maxAge: COOKIE_MAX_AGE,
-          sameSite: "lax",
-          secure: true,
-        });
-
-        return response; 
-      }
-    } catch (e) {
-      console.error("Token decoding failed");
+      response.cookies.set("tokenIssueAt", new Date().toISOString(), {
+        path: "/",
+        maxAge: COOKIE_MAX_AGE,
+        sameSite: "lax",
+        secure: true,
+      });
+      
+      return response;
     }
+  } catch (e) {
+    console.error("Token decoding failed");
   }
+}
 
   const isPublicPath = PUBLIC_PATHS.some(
     (path) => pathname === path || pathname.startsWith(path),
