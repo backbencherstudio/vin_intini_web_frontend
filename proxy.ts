@@ -158,43 +158,41 @@ export async function proxy(request: NextRequest) {
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   let currentToken = cookieToken || null;
 
-
   if (tokenQuery) {
-  try {
-    const decoded = JSON.parse(atob(tokenQuery));
-    if (decoded?.token) {
-      const newToken = decoded.token;
+    try {
+      const decoded = JSON.parse(atob(tokenQuery));
+      if (decoded?.token) {
+        const newToken = decoded.token;
+        const url = request.nextUrl.clone();
+        url.searchParams.delete("auth");
+        const response = NextResponse.redirect(url);
+        
+        const timestamp = Math.floor(Date.now() / 1000).toString();
 
-      const url = request.nextUrl.clone();
-      url.searchParams.delete("auth");
-      
-      const response = NextResponse.redirect(url);
-      
-      response.cookies.set("accessToken", newToken, {
-        path: "/",
-        maxAge: COOKIE_MAX_AGE,
-        sameSite: "lax",
-        secure: true,
-      });
+        response.cookies.set("accessToken", newToken, {
+          path: "/",
+          maxAge: COOKIE_MAX_AGE,
+          sameSite: "lax",
+          secure: true,
+        });
 
-      response.cookies.set("tokenIssueAt", new Date().toISOString(), {
-        path: "/",
-        maxAge: COOKIE_MAX_AGE,
-        sameSite: "lax",
-        secure: true,
-      });
-      
-      return response;
+        response.cookies.set("accessTokenIssuedAt", timestamp, {
+          path: "/",
+          maxAge: COOKIE_MAX_AGE,
+          sameSite: "lax",
+          secure: true,
+        });
+        
+        return response;
+      }
+    } catch (e) {
+      console.error("Token decoding failed");
     }
-  } catch (e) {
-    console.error("Token decoding failed");
   }
-}
 
   const isPublicPath = PUBLIC_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(path),
+    (path) => pathname === path || pathname.startsWith(path)
   );
-
 
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
@@ -202,7 +200,6 @@ export async function proxy(request: NextRequest) {
     }
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
 
   if (isPublicPath) {
     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
@@ -239,11 +236,13 @@ export async function proxy(request: NextRequest) {
 
           if (newToken) {
             const response = NextResponse.next();
+            const timestamp = Math.floor(Date.now() / 1000).toString();
+
             response.cookies.set("accessToken", newToken, {
-              path: "/",
-              maxAge: COOKIE_MAX_AGE,
-              sameSite: "lax",
-              secure: true,
+              path: "/", maxAge: COOKIE_MAX_AGE, sameSite: "lax", secure: true,
+            });
+            response.cookies.set("accessTokenIssuedAt", timestamp, {
+              path: "/", maxAge: COOKIE_MAX_AGE, sameSite: "lax", secure: true,
             });
             return response;
           }
@@ -252,25 +251,35 @@ export async function proxy(request: NextRequest) {
         if (refreshResponse.status === 401 || refreshResponse.status === 403) {
           const res = NextResponse.redirect(new URL("/login", request.url));
           res.cookies.delete("accessToken");
+          res.cookies.delete("accessTokenIssuedAt");
+   
+          res.cookies.delete("tokenIssueAt"); 
           return res;
         }
       } catch (refreshErr) {
-        console.error("Network error during refresh, session preserved.");
         return NextResponse.next();
       }
     }
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-      const isOnboarded =
-        userData?.data?.is_onboarding ?? userData?.is_onboarding;
+
+    
+      if (userData?.is_trashed) {
+        if (pathname !== "/account-recovery") {
+          return NextResponse.redirect(new URL("/account-recovery", request.url));
+        }
+        return NextResponse.next();
+      }
+
+      const isOnboarded = userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
       if (!isOnboarded) {
         if (!pathname.startsWith("/onboarding")) {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
       } else {
-        if (pathname.startsWith("/onboarding")) {
+        if (pathname.startsWith("/onboarding") || pathname === "/account-recovery") {
           return NextResponse.redirect(new URL("/mu/home", request.url));
         }
       }
@@ -286,3 +295,4 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };
+
