@@ -70,6 +70,13 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    deleteYourAccount: builder.mutation({
+      query: (payload) => ({
+        url: "/account/delete-request",
+        method: "POST",
+        body: payload,
+      }),
+    }),
     resetPassword: builder.mutation({
       query: ({ email, new_password, new_password_confirmation }) => ({
         url: "/password-reset",
@@ -92,4 +99,5 @@ export const {
   useResetPasswordMutation,
   useRecoverYourAccountMutation,
   useContactSubmitMutation,
+  useDeleteYourAccountMutation,
 } = authSlice;
