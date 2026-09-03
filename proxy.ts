@@ -124,8 +124,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api";
 
 const PUBLIC_PATHS = [
   "/",
@@ -134,17 +133,11 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/privecy-policy",
   "/tearm-condition",
-  "/two-factor",
-  "/backup-codes",
-  "/recovery-email",
-  "/email-verify-code",
-  "/account-recovery",
 ];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Static assets bypass
   if (
     pathname === "/favicon.ico" ||
     pathname.startsWith("/_next") ||
@@ -159,44 +152,20 @@ export async function proxy(request: NextRequest) {
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   let currentToken = cookieToken || null;
 
-  // 1. Social Login / URL Auth Query Handling
   if (tokenQuery) {
     try {
       const decoded = JSON.parse(atob(tokenQuery));
       if (decoded?.token) {
         currentToken = decoded.token;
-        const url = request.nextUrl.clone();
-        url.searchParams.delete("auth");
-        const response = NextResponse.redirect(url);
-
-        const timestamp = Math.floor(Date.now() / 1000).toString();
-
-        response.cookies.set("accessToken", currentToken, {
-          path: "/",
-          maxAge: COOKIE_MAX_AGE,
-          sameSite: "lax",
-          secure: true,
-        });
-
-        response.cookies.set("accessTokenIssuedAt", timestamp, {
-          path: "/",
-          maxAge: COOKIE_MAX_AGE,
-          sameSite: "lax",
-          secure: true,
-        });
-
-        return response;
       }
     } catch (e) {
-      console.error("Token decoding failed:", e);
+      console.error("Token decoding failed");
     }
   }
 
-  const isPublicPath = PUBLIC_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(path)
-  );
+  const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
-  // 2. Unauthenticated Check
+
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
       return NextResponse.next();
@@ -204,16 +173,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // 3. Public Path Access by Authenticated User
-  if (isPublicPath) {
-    if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
-      return NextResponse.redirect(new URL("/mu/home", request.url));
-    }
-    return NextResponse.next();
+  if (isPublicPath && currentToken && pathname !== "/onboarding") {
+     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
+        return NextResponse.redirect(new URL("/mu/home", request.url));
+     }
   }
 
-  // 4. Authenticated Request & Token Validation Flow
   try {
+
     let userResponse = await fetch(`${API_BASE_URL}/me`, {
       method: "GET",
       headers: {
@@ -222,68 +189,52 @@ export async function proxy(request: NextRequest) {
       },
     });
 
-    // Handle 401 Unauthorized -> Attempt Token Refresh
+
     if (userResponse.status === 401) {
-      console.log("Access token expired (401), calling /refresh API...");
+      console.log("Access token expired, attempting refresh...");
+      
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+            Accept: "application/json",
+          },
+        });
 
-      const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
-      });
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          const newToken = refreshData?.data?.token || refreshData?.token;
 
-      console.log("Refresh Response Status:", refreshResponse.status);
-
-      if (refreshResponse.ok) {
-        const refreshData = await refreshResponse.json();
-        const newToken = refreshData?.data?.token || refreshData?.token;
-
-        if (newToken) {
-          console.log("Token successfully refreshed! Extended session cookie.");
-
-          // Request redirect with newly issued token cookies
-          const response = NextResponse.redirect(request.url);
-          const timestamp = Math.floor(Date.now() / 1000).toString();
-
-          response.cookies.set("accessToken", newToken, {
-            path: "/",
-            maxAge: COOKIE_MAX_AGE, // Resets cookie expiry (Rolling session)
-            sameSite: "lax",
-            secure: true,
-          });
-
-          response.cookies.set("accessTokenIssuedAt", timestamp, {
-            path: "/",
-            maxAge: COOKIE_MAX_AGE,
-            sameSite: "lax",
-            secure: true,
-          });
-
-          return response;
+          if (newToken) {
+            const response = NextResponse.next();
+            response.cookies.set("accessToken", newToken, {
+              path: "/",
+              maxAge: COOKIE_MAX_AGE,
+              sameSite: "lax",
+              secure: true,
+            });
+            return response;
+          }
+        } 
+        
+     
+        if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+            const res = NextResponse.redirect(new URL("/login", request.url));
+            res.cookies.delete("accessToken");
+            return res;
         }
-      }
 
-      // If refresh API fails or token is invalid
-      console.log("Refresh failed. Redirecting user to /login...");
-      const res = NextResponse.redirect(new URL("/login", request.url));
-      res.cookies.delete("accessToken");
-      res.cookies.delete("accessTokenIssuedAt");
-      return res;
-    }
-
-    // 5. Success Flow
-    if (userResponse.ok) {
-      const userData = await userResponse.json();
-
-      if (userData?.is_trashed) {
-        if (pathname !== "/account-recovery") {
-          return NextResponse.redirect(new URL("/account-recovery", request.url));
-        }
+      } catch (refreshErr) {
+       
+        console.error("Network error during refresh, session preserved.");
         return NextResponse.next();
       }
+    }
 
+  
+    if (userResponse.ok) {
+      const userData = await userResponse.json();
       const isOnboarded = userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
       if (!isOnboarded) {
@@ -291,7 +242,7 @@ export async function proxy(request: NextRequest) {
           return NextResponse.redirect(new URL("/onboarding", request.url));
         }
       } else {
-        if (pathname.startsWith("/onboarding") || pathname === "/account-recovery") {
+        if (pathname.startsWith("/onboarding")) {
           return NextResponse.redirect(new URL("/mu/home", request.url));
         }
       }
@@ -301,12 +252,25 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  return NextResponse.next();
+
+  const finalResponse = NextResponse.next();
+  
+  if (tokenQuery && currentToken) {
+    finalResponse.cookies.set("accessToken", currentToken, {
+      path: "/",
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+      secure: true,
+    });
+  }
+
+  return finalResponse;
 }
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };
+
 
 
 
