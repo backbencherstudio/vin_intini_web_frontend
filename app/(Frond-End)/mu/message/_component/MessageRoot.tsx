@@ -413,18 +413,18 @@ function MessageRoot() {
 
             {isOtherUserTyping && <TypingIndicator />}
           </div>
-
-          <MessageInputBar
-            isConnected={
-              Boolean(conversation?.other_user?.is_connected) || true
-            }
-            sending={sendingMessage}
-            replyTo={replyTo}
-            onTyping={whisperTyping}
-            onCancelReply={() => setReplyTo(null)}
-            onSendText={handleSendText}
-            onSendVoice={handleSendVoice}
-          />
+         
+            <MessageInputBar
+              isConnected={conversation?.other_user}
+              sending={sendingMessage}
+              isFetchingMore={isFetchingMore}
+              replyTo={replyTo}
+              onTyping={whisperTyping}
+              onCancelReply={() => setReplyTo(null)}
+              onSendText={handleSendText}
+              onSendVoice={handleSendVoice}
+            />
+          
         </div>
       </div>
 
