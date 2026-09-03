@@ -21,6 +21,7 @@ function PasswordInput({
   value,
   onChange,
   placeholder,
+  disabled = false,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,21 +33,23 @@ function PasswordInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        disabled={disabled}
         className="pr-10"
       />
 
-      <button
-        type="button"
-        onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute right-3 top-[45px] cursor-pointer text-[#8C8C8C] transition-colors hover:text-[#4A4C56]"
-        aria-label={showPassword ? "Hide password" : "Show password"}
-      >
-        {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-      </button>
+      {!disabled && (
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          className="absolute right-3 top-[45px] cursor-pointer text-[#8C8C8C] transition-colors hover:text-[#4A4C56]"
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+        </button>
+      )}
     </div>
   );
 }
-
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -103,7 +106,7 @@ export default function ChangePassword() {
           value={currentPassword}
           onChange={setCurrentPassword}
           placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
-          // disabled={OverviewData?.has_password === false}
+          disabled={OverviewData?.has_password === false}
         />
 
         <PasswordInput

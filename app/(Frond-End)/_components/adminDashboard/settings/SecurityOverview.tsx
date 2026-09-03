@@ -181,7 +181,9 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Login Activity"
             value={OverviewData?.login_activity}
-            icon={OverviewData?.is_suspicious ? <CorrectIcon /> : <CrossIcon />}
+            icon={
+              OverviewData?.is_suspicious ? <DangerIcon /> : <CorrectIcon />
+            }
           />
         </div>
       </div>

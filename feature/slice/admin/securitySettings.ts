@@ -133,21 +133,26 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["overview"],
     }),
 
+    //singele trusted session
+    SingeleSessionTrusted: builder.mutation({
+      query: (id) => ({
+        url: `/security/resolve/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
     //
   }),
 });
 
 export const {
   useGetSecurityOverviewQuery,
-
   usePostChangePasswordMutation,
-
   useGetActiveSessionsQuery,
   useDeleteActiveSessionsMutation,
   useDeletAllSessionsMutation,
-
   useDeleteLoginActivityMutation,
-
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
   useEnablePasswordMutation,
@@ -157,4 +162,5 @@ export const {
 
   useRecoveryEmailOtpVerifyMutation,
   useRecoveryEmailUpdateMutation,
+  useSingeleSessionTrustedMutation,
 } = securitySettingsSlice;
