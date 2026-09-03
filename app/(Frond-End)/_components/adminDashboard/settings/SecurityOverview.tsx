@@ -97,7 +97,7 @@ export default function SecurityOverview({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[328px_1fr]">
         {/* Security Score */}
         <div className="flex flex-col items-center justify-center border p-6 rounded-sm">
-          <div className="relative flex h-48 w-48 items-center justify-center">
+          <div className="relative flex h-38 w-38 items-center justify-center">
             {/* Progress Circle */}
             <div
               className="absolute inset-0 rounded-full"
