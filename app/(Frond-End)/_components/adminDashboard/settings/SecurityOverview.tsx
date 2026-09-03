@@ -138,6 +138,7 @@ export default function SecurityOverview({
           </p>
 
           <p className="text-[#4A4C56] text-sm font-normal leading-[140%] tracking-[0.07px] mt-1">
+            Last checked:{" "}
             {dayjs(OverviewData?.security_score?.last_checked).format(
               "DD-MM-YYYY, hh:mm A",
             )}
@@ -155,7 +156,9 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Two-Factor Authentication"
             value={OverviewData?.two_factor_auth}
-            icon={<CrossIcon />}
+            icon={
+              OverviewData?.two_factor_enabled ? <CorrectIcon /> : <CrossIcon />
+            }
           />
 
           <SecurityStatus
@@ -178,7 +181,7 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Login Activity"
             value={OverviewData?.login_activity}
-            icon={<CorrectIcon />}
+            icon={OverviewData?.is_suspicious ? <CorrectIcon /> : <CrossIcon />}
           />
         </div>
       </div>

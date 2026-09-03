@@ -9,6 +9,7 @@ import RecoveryEmail from "./recoverymailSetup/RecoveryEmail";
 import VerifyOtp from "./recoverymailSetup/VerifyOtp";
 import Success from "./recoverymailSetup/Success";
 import RegenerateBackupCode from "./2FactorAuthentication/Enable2FactorModal/RegenerateBackupCode";
+import { divIcon } from "leaflet";
 
 export default function AuthenticationMethods() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,9 +57,13 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            <span className="rounded-full border border-[#287F6E] px-2 py-1 text-center text-[12px] font-semibold leading-[132%] text-[#287F6E]">
-              Primary
-            </span>
+            {securityData?.two_factor_enabled ? (
+              <span className="rounded-full border border-[#287F6E] px-2 py-1 text-center text-[12px] font-semibold leading-[132%] text-[#287F6E]">
+                Active
+              </span>
+            ) : (
+              <span></span>
+            )}
           </div>
 
           {/* Backup Codes */}

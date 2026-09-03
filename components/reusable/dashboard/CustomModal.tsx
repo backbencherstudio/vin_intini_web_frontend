@@ -69,11 +69,9 @@ export default function CustomModal(props: CustomModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        // showCloseButton={false}
         className={clsx(
-          "flex flex-col items-start gap-6 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-4 md:py-8 rounded-2xl ",
-          // Allow max-h-[90vh] across ALL screens (including md and up)
-          "max-h-[95vh] overflow-hidden ",
+          "flex flex-col items-start gap-3 [background:var(--Greyscale-0,#FFF)] px-4 py-5 md:px-4 md:py-8 rounded-2xl",
+          "max-h-[95vh] overflow-hidden",
           sizeClasses[size],
           className,
         )}

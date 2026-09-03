@@ -81,7 +81,7 @@ export default function TwoFactorAuthentication() {
 
                   setShowDisableModal(true);
                 }}
-                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
+                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px]  text-redColor"
               >
                 Disable 2FA
               </button>
