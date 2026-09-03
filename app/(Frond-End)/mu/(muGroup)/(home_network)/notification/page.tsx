@@ -1,6 +1,8 @@
 "use client";
 
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import {
+  useClearNotificationsMutation,
   useGetNotificationsQuery,
   useUpdateNotificationReadStatusMutation,
 } from "@/feature/slice/notifications/notificationSlice";
@@ -9,6 +11,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { calculateTime } from "./_components/CalculateTime";
 import NotificationSkeleton from "./_components/NotificationSkeleton";
+import toast from "react-hot-toast";
 
 type NotificationDataType = {
   connection_request_id: number;
@@ -32,7 +35,8 @@ type NotificationItem = {
 function NotificationPage() {
   const { data, isLoading, error } = useGetNotificationsQuery("notifications");
   const [markAsRead] = useUpdateNotificationReadStatusMutation();
-
+  const [clearNotifications, { isLoading: isClearing }] =
+    useClearNotificationsMutation();
   useEffect(() => {
     markAsRead("mark-all-as-read");
   }, [markAsRead]);
@@ -40,12 +44,29 @@ function NotificationPage() {
   if (isLoading) {
     return <NotificationSkeleton />;
   }
+  const handleClear = async () => {
+    try {
+      await clearNotifications(undefined).unwrap();
+      toast.success("All notifications cleared successfully!");
+    } catch (error) {
+      console.error("Error clearing notifications:", error);
+    }
+  };
 
   return (
     <section className="w-full bg-white px-3 pb-12 pt-4 md:px-4">
-      <h1 className="text-lg font-semibold leading-tight text-headerColor">
-        Notifications
-      </h1>
+      <div className="flex items-center justify-between ">
+        <h1 className="text-lg font-semibold leading-tight text-headerColor">
+          Notifications
+        </h1>
+        <ButtonReuseable
+          title="Clear All"
+          onClick={handleClear}
+          loading={isClearing}
+          sendingMsg={"clearing..."}
+          className="py-2! text-sm! bg-primaryColor!"
+        />
+      </div>
 
       <div className="mt-4 border-t border-borderColor">
         {data?.data.map((item) => (
