@@ -62,7 +62,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/sessions/revoke/${id}`,
         method: "POST",
       }),
-      invalidatesTags: ["activeSessions"],
+      invalidatesTags: ["loginActivities"],
     }),
 
     //logout user
