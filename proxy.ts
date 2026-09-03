@@ -141,10 +141,25 @@ const PUBLIC_PATHS = [
   "/account-recovery",
 ];
 
+function setAuthCookie(response: NextResponse, token: string) {
+  response.cookies.set("accessToken", token, {
+    path: "/",
+    maxAge: COOKIE_MAX_AGE,
+    sameSite: "lax",
+    secure: true,
+  });
+  return response;
+}
+
+function clearAuthCookie(response: NextResponse) {
+  response.cookies.delete("accessToken");
+  return response;
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Static / internal / api routes — skip middleware entirely
   if (
     pathname === "/favicon.ico" ||
     pathname.startsWith("/_next") ||
@@ -158,20 +173,41 @@ export async function proxy(request: NextRequest) {
   const cookieToken = request.cookies.get("accessToken")?.value;
   const tokenQuery = request.nextUrl.searchParams.get("auth");
   let currentToken = cookieToken || null;
+  let tokenFromQuery: string | null = null;
 
+  // Token came from social-login redirect (?auth=base64(...))
   if (tokenQuery) {
     try {
       const decoded = JSON.parse(atob(tokenQuery));
       if (decoded?.token) {
         currentToken = decoded.token;
+        tokenFromQuery = decoded.token;
       }
     } catch (e) {
       console.error("Token decoding failed");
     }
   }
 
-  const isPublicPath = PUBLIC_PATHS.includes(pathname);
+  // Helper: attach the query-token cookie (if present) to ANY outgoing response,
+  // including redirects. This is what was missing before — redirects returned
+  // early without ever calling finalResponse.cookies.set(), so first-time
+  // social-login users lost their token on the way to /onboarding.
+  const withQueryTokenCookie = (response: NextResponse) => {
+    if (tokenFromQuery) {
+      setAuthCookie(response, tokenFromQuery);
+    }
+    return response;
+  };
 
+  // Prefix-match public paths so nested screens under a public flow
+  // (e.g. "/forgot-password/otp", "/two-factor/verify") are also treated
+  // as public. "/" is kept as an EXACT match only — startsWith("/") would
+  // match literally every path and make everything public.
+  const isPublicPath = PUBLIC_PATHS.some((path) =>
+    path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`)
+  );
+
+  // ── No token at all ─────────────────────────────────────────────
   if (!currentToken) {
     if (isPublicPath || pathname.startsWith("/onboarding")) {
       return NextResponse.next();
@@ -179,14 +215,18 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isPublicPath && currentToken && pathname !== "/onboarding") {
+  // Logged-in user hitting login/signup/home ("/") → send to home
+  if (isPublicPath && pathname !== "/onboarding") {
     if (pathname === "/login" || pathname === "/" || pathname === "/sign-up") {
-      return NextResponse.redirect(new URL("/mu/home", request.url));
+      return withQueryTokenCookie(
+        NextResponse.redirect(new URL("/mu/home", request.url))
+      );
     }
   }
 
+  // ── Validate token against /me ──────────────────────────────────
   try {
-    let userResponse = await fetch(`${API_BASE_URL}/me`, {
+    const userResponse = await fetch(`${API_BASE_URL}/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${currentToken}`,
@@ -194,6 +234,7 @@ export async function proxy(request: NextRequest) {
       },
     });
 
+    // Token expired → try refresh
     if (userResponse.status === 401) {
       console.log("Access token expired, attempting refresh...");
 
@@ -211,21 +252,42 @@ export async function proxy(request: NextRequest) {
           const newToken = refreshData?.data?.token || refreshData?.token;
 
           if (newToken) {
-            const response = NextResponse.next();
-            response.cookies.set("accessToken", newToken, {
-              path: "/",
-              maxAge: COOKIE_MAX_AGE,
-              sameSite: "lax",
-              secure: true,
+            // Re-check onboarding status with the NEW token before deciding
+            // where this request should land.
+            const meWithNewToken = await fetch(`${API_BASE_URL}/me`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${newToken}`,
+                Accept: "application/json",
+              },
             });
-            return response;
+
+            let response = NextResponse.next();
+
+            if (meWithNewToken.ok) {
+              const userData = await meWithNewToken.json();
+              const isOnboarded =
+                userData?.data?.is_onboarding ?? userData?.is_onboarding;
+
+              if (!isOnboarded && !pathname.startsWith("/onboarding")) {
+                response = NextResponse.redirect(
+                  new URL("/onboarding", request.url)
+                );
+              } else if (isOnboarded && pathname.startsWith("/onboarding")) {
+                response = NextResponse.redirect(
+                  new URL("/mu/home", request.url)
+                );
+              }
+            }
+
+            return setAuthCookie(response, newToken);
           }
         }
 
+        // Refresh failed → force re-login, clear stale cookie
         if (refreshResponse.status === 401 || refreshResponse.status === 403) {
           const res = NextResponse.redirect(new URL("/login", request.url));
-          res.cookies.delete("accessToken");
-          return res;
+          return clearAuthCookie(res);
         }
       } catch (refreshErr) {
         console.error("Network error during refresh, session preserved.");
@@ -233,6 +295,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
+    // Token valid → check onboarding status
     if (userResponse.ok) {
       const userData = await userResponse.json();
       const isOnboarded =
@@ -240,11 +303,15 @@ export async function proxy(request: NextRequest) {
 
       if (!isOnboarded) {
         if (!pathname.startsWith("/onboarding")) {
-          return NextResponse.redirect(new URL("/onboarding", request.url));
+          return withQueryTokenCookie(
+            NextResponse.redirect(new URL("/onboarding", request.url))
+          );
         }
       } else {
         if (pathname.startsWith("/onboarding")) {
-          return NextResponse.redirect(new URL("/mu/home", request.url));
+          return withQueryTokenCookie(
+            NextResponse.redirect(new URL("/mu/home", request.url))
+          );
         }
       }
     }
@@ -253,18 +320,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const finalResponse = NextResponse.next();
-
-  if (tokenQuery && currentToken) {
-    finalResponse.cookies.set("accessToken", currentToken, {
-      path: "/",
-      maxAge: COOKIE_MAX_AGE,
-      sameSite: "lax",
-      secure: true,
-    });
-  }
-
-  return finalResponse;
+  // ── Default: continue, persisting query-token cookie if present ──
+  return withQueryTokenCookie(NextResponse.next());
 }
 
 export const config = {
