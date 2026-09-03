@@ -50,6 +50,7 @@ export default function page() {
 
   const handleChange = (index: number, value: string) => {
     const digitsOnly = value.replace(/\D/g, "");
+    
     if (!digitsOnly) {
       const nextOtp = [...otp];
       nextOtp[index] = "";

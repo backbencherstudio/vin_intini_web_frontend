@@ -70,32 +70,34 @@ function GroupHeroSection({ groupId }: { groupId: string }) {
               />
             )}
           </div>
-          <div className="flex gap-6 ">
-            <button
-              aria-label="notify-open"
-              onClick={() => setIsNotify(true)}
-              className="cursor-pointer"
-            >
-              <NotificationIcon />
-            </button>
-            {!IsAdmin ? (
+          {data?.data?.is_current_user_member && (
+            <div className="flex gap-6 ">
               <button
-                aria-label="leave-open"
-                onClick={() => setILeaved(true)}
+                aria-label="notify-open"
+                onClick={() => setIsNotify(true)}
                 className="cursor-pointer"
               >
-                <LogoutIcon />
+                <NotificationIcon />
               </button>
-            ) : (
-              <button
-                aria-label="leave-open"
-                onClick={() => setIsEdite(true)}
-                className="cursor-pointer"
-              >
-                <EditeIcon />
-              </button>
-            )}
-          </div>
+              {!IsAdmin ? (
+                <button
+                  aria-label="leave-open"
+                  onClick={() => setILeaved(true)}
+                  className="cursor-pointer"
+                >
+                  <LogoutIcon />
+                </button>
+              ) : (
+                <button
+                  aria-label="leave-open"
+                  onClick={() => setIsEdite(true)}
+                  className="cursor-pointer"
+                >
+                  <EditeIcon />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="mt-12 border-b border-borderColor pb-4">
