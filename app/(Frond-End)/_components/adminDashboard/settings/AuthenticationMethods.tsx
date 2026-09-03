@@ -1,6 +1,7 @@
 "use client";
 
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
+import { BiQr } from "react-icons/bi";
 import { Copy, Monitor, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import RegenerateCode from "./2FactorAuthentication/RegenerateCode";
@@ -10,6 +11,8 @@ import VerifyOtp from "./recoverymailSetup/VerifyOtp";
 import Success from "./recoverymailSetup/Success";
 import RegenerateBackupCode from "./2FactorAuthentication/Enable2FactorModal/RegenerateBackupCode";
 import { divIcon } from "leaflet";
+import { MdOutlineMailLock } from "react-icons/md";
+import { BsKey } from "react-icons/bs";
 
 export default function AuthenticationMethods() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,7 +47,7 @@ export default function AuthenticationMethods() {
           {/* Authenticator App */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <BiQr size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -69,7 +72,7 @@ export default function AuthenticationMethods() {
           {/* Backup Codes */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <BsKey size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -94,7 +97,7 @@ export default function AuthenticationMethods() {
           {/* Recovery Email */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <MdOutlineMailLock size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1 cursor-pointer">

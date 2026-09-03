@@ -10,7 +10,9 @@ import {
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
+  useSingeleSessionTrustedMutation,
 } from "@/feature/slice/admin/securitySettings";
+import { TikIcon } from "@/public/svgIcons/AdminIcon";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
 import { Delete, Monitor, Phone, Smartphone, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -29,6 +31,9 @@ type LoginActivity = {
   signin_status: string;
   login_at: string;
   created_at: string;
+  is_suspicious: boolean;
+  is_trusted: boolean;
+  activity_status: string;
 };
 
 export default function LoginActivityTable() {
@@ -41,27 +46,22 @@ export default function LoginActivityTable() {
   });
 
   const loginActivities: LoginActivity[] = data?.data?.items || [];
-
-  const [deleteOpen, setDeleteOpen] = useState(false);
-
-  const [selectedLogin, setSelectedLogin] = useState<LoginActivity | null>(
-    null,
-  );
-
-  const openDelete = (row: LoginActivity) => {
-    setSelectedLogin(row);
-    setDeleteOpen(true);
-  };
-
-  const openEdit = (row: LoginActivity) => {
-    setSelectedLogin(row);
-  };
-
   const [logoutActivity, { isLoading: logoutLoading }] =
     useDeleteLoginActivityMutation();
 
   const [deleteLoginActivity, { isLoading: deleteLoading }] =
     useLogoutActiveSessionsMutation();
+  const [singeleSessionTrusted, { isLoading: singeleSessionTrustedLoading }] =
+    useSingeleSessionTrustedMutation();
+
+  const handleSingeleSessionTrusted = async (id: number) => {
+    try {
+      await singeleSessionTrusted(id).unwrap();
+      toast.success("Session trusted successfully");
+    } catch (error) {
+      console.error("Session trusted failed:", error);
+    }
+  };
 
   const handleLogout = async (id: number) => {
     try {
@@ -102,19 +102,15 @@ export default function LoginActivityTable() {
               <Monitor className="h-5 w-5 stroke-headerColor" />
             )}
           </span>
-          <span className="text-[13px] font-semibold text-[#0A0A0A]">
-            {row.device} • {row.browser}
-          </span>
+          <div className="flex flex-col">
+            <span className="text-[13px] font-semibold text-[#0A0A0A]">
+              {row.device} • {row.browser}
+            </span>
+            <span className="whitespace-nowrap text-[13px] font-semibold text-grayColor1">
+              {row.location}
+            </span>
+          </div>
         </div>
-      ),
-    },
-
-    {
-      header: "Location",
-      cell: (row) => (
-        <span className="whitespace-nowrap text-[13px] font-semibold text-[#0A0A0A]">
-          {row.location}
-        </span>
       ),
     },
 
@@ -159,12 +155,29 @@ export default function LoginActivityTable() {
           className={
             row.signin_status === "Signed in" ||
             row.signin_status === "Current device"
-              ? "!rounded-[4px] !border !border-[#72DED1] !bg-[#F0FFFD] !px-2.5 !py-1 text-[11px] !text-[#287F6E]"
-              : "!rounded-[4px] !border !border-gray-400 !bg-gray-100 !px-2.5 !py-1 text-[11px] !text-gray-500"
+              ? "rounded-sm border border-[#72DED1] bg-[#F0FFFD] px-2 py-2 text-[12px] font-semibold text-[#22CAAD] text-right leading-[132%] tracking-[0.06px] "
+              : "rounded-sm border border-gray-400 bg-gray-100 px-2 py-2 text-[12px] font-semibold text-grayColor1"
           }
         >
           {row.signin_status}
         </CustomBadge>
+      ),
+    },
+
+    {
+      header: "Activity",
+      cell: (row) => (
+        <span
+          className={`rounded-sm border px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
+            row.activity_status === "Trusted Device"
+              ? "text-[#22CAAD] border-[#72DED1] bg-[#F0FFFD]"
+              : row.activity_status === "Suspicious"
+                ? "text-[#EB3D4D] border-[#F38B94] bg-[#FEECEE]"
+                : "text-[#7B7B7B] border-[#D9D9D9] bg-[#F5F5F5]"
+          }`}
+        >
+          {row.activity_status}
+        </span>
       ),
     },
     {
@@ -175,12 +188,29 @@ export default function LoginActivityTable() {
 
         const isLogoutDisabled = isCurrentDevice || isLoggedOut;
         const isDeleteDisabled = isCurrentDevice;
+        const isTrustedDisabled = isCurrentDevice || !row?.is_suspicious;
 
         return (
           <div className="flex items-center gap-2.5 whitespace-nowrap">
+            {/* suspecious */}
+
+            <button
+              onClick={() =>
+                isLogoutDisabled && handleSingeleSessionTrusted(row.id)
+              }
+              disabled={isTrustedDisabled}
+              className={`flex items-center gap-1 rounded-sm bg-[#E9FAF7] p-2 text-[12px] font-medium  ${
+                isTrustedDisabled
+                  ? "cursor-not-allowed opacity-40"
+                  : "cursor-pointer"
+              }`}
+            >
+              <TikIcon className="h-4 w-4" />
+            </button>
+            {/* Logout */}
             {/* Logout */}
             <button
-              onClick={() => !isLogoutDisabled && handelDelete(row.id)}
+              onClick={() => !isLogoutDisabled && handleLogout(row.id)}
               disabled={isLogoutDisabled}
               className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
                 isLogoutDisabled

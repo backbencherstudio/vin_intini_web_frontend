@@ -170,6 +170,15 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["overview"],
     }),
 
+    //singele trusted session
+    SingeleSessionTrusted: builder.mutation({
+      query: (id) => ({
+        url: `/security/resolve/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
     //
   }),
 });
@@ -195,4 +204,5 @@ export const {
 
   useRecoveryEmailOtpVerifyMutation,
   useRecoveryEmailUpdateMutation,
+  useSingeleSessionTrustedMutation,
 } = securitySettingsSlice;
