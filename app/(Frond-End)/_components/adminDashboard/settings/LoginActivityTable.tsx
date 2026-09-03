@@ -51,6 +51,7 @@ export default function LoginActivityTable() {
 
   const [deleteLoginActivity, { isLoading: deleteLoading }] =
     useLogoutActiveSessionsMutation();
+
   const [singeleSessionTrusted, { isLoading: singeleSessionTrustedLoading }] =
     useSingeleSessionTrustedMutation();
 
@@ -195,12 +196,10 @@ export default function LoginActivityTable() {
             {/* suspecious */}
 
             <button
-              onClick={() =>
-                isLogoutDisabled && handleSingeleSessionTrusted(row.id)
-              }
-              disabled={isTrustedDisabled}
-              className={`flex items-center gap-1 rounded-sm bg-[#E9FAF7] p-2 text-[12px] font-medium  ${
-                isTrustedDisabled
+              onClick={() => handleSingeleSessionTrusted(row.id)}
+              disabled={isTrustedDisabled || singeleSessionTrustedLoading}
+              className={`flex items-center gap-1 rounded-sm bg-[#E9FAF7] p-2 text-[12px] font-medium ${
+                isTrustedDisabled || singeleSessionTrustedLoading
                   ? "cursor-not-allowed opacity-40"
                   : "cursor-pointer"
               }`}
