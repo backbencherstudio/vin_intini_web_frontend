@@ -134,7 +134,13 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/privecy-policy",
   "/tearm-condition",
+  "/two-factor",
+  "/backup-codes",
+  "/recovery-email",
+  "/email-verify-code",
+  "/account-recovery",
 ];
+
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
