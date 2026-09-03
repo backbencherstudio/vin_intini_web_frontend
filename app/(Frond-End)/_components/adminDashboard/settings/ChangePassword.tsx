@@ -1,7 +1,10 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
-import { usePostChangePasswordMutation } from "@/feature/slice/admin/securitySettings";
+import {
+  useGetSecurityOverviewQuery,
+  usePostChangePasswordMutation,
+} from "@/feature/slice/admin/securitySettings";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
@@ -10,6 +13,7 @@ interface PasswordInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  disabled?: boolean;
 }
 
 function PasswordInput({
@@ -53,6 +57,10 @@ export default function ChangePassword() {
     "success",
   );
 
+  const { data, isLoading: overViewLoading } = useGetSecurityOverviewQuery({});
+  const OverviewData = data?.data;
+  console.log(OverviewData, "fingd");
+
   const [postChangePassword, { isLoading }] = usePostChangePasswordMutation();
 
   const updatePassword = async () => {
@@ -85,30 +93,31 @@ export default function ChangePassword() {
         Change Password
       </h2>
 
-      <p className=" mt-1  text-sm font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
+      <p className=" mt-2  text-sm font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
         Update your password regularly to keep your account secure.
       </p>
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-4.5 space-y-3">
         <PasswordInput
           label="Current Password"
           value={currentPassword}
           onChange={setCurrentPassword}
-          placeholder="*************************"
+          placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
+          // disabled={OverviewData?.has_password === false}
         />
 
         <PasswordInput
           label="New Password"
           value={newPassword}
           onChange={setNewPassword}
-          placeholder="*************************"
+          placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
         />
 
         <PasswordInput
           label="Confirm New Password"
           value={confirmPassword}
           onChange={setConfirmPassword}
-          placeholder="*************************"
+          placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
         />
 
         {/* <div className="flex items-center gap-1">
@@ -136,7 +145,7 @@ export default function ChangePassword() {
           type="button"
           onClick={updatePassword}
           disabled={isLoading}
-          className="h-9 w-full rounded-md border border-primaryColor bg-[#D3F4EF] text-[14px] font-semibold text-primaryColor transition cursor-pointer mt-3"
+          className="py-2 w-full rounded-md border border-buttonColor bg-[#D3F4EF] text-center  text-[14px] font-semibold leading-[140%] tracking-[0.07px]  text-primaryColor transition cursor-pointer mt-4"
         >
           {isLoading ? "Updating..." : "Update Password"}
         </button>

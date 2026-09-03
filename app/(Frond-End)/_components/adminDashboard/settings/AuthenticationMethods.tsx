@@ -35,7 +35,7 @@ export default function AuthenticationMethods() {
   return (
     <div>
       <section className="h-full rounded-md border p-4">
-        <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+        <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px] ">
           Authentication Method
         </h2>
 
@@ -102,7 +102,7 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            {securityData?.recovery_email_verified === true && (
+            {securityData?.recovery_email_verified && (
               <span className="text-[9px] text-[#287F6E]">Verified</span>
             )}
 

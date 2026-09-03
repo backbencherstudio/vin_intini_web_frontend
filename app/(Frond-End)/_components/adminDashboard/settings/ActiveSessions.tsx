@@ -85,7 +85,7 @@ export default function ActiveSessions() {
                   className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
 "
                 >
-                  {session.location} • {session.ip_address} •
+                  {session.location} • {session.ip_address} •{" "}
                   {dayjs(session.login_at).format("DD-MM-YYYY, hh:mm A")}
                 </p>
               </div>
@@ -118,8 +118,7 @@ export default function ActiveSessions() {
         <button
           type="button"
           onClick={logoutAllSessions}
-          className="mt-4 w-full rounded-md border border-[#F3B5B5] bg-[#FFE1E1] py-2 cursor-pointer text-[#EB3D4D] text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px]
- hover:bg-[#ffd5d5]"
+          className="mt-4 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] cursor-pointer py-2 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor"
         >
           Sign out all the sessions
         </button>
