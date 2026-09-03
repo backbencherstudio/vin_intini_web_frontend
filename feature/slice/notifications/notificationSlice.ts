@@ -1,3 +1,4 @@
+import { use } from "react";
 import baseApiSlice from "../baseApi";
 
 const notificationSlice = baseApiSlice.injectEndpoints({
@@ -23,11 +24,19 @@ const notificationSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Notifications'],
     }),
+    clearNotifications: builder.mutation({
+      query: () => ({
+        url: `/notifications`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ['Notifications'],
+    }),
   }),
 });
 
 export const { 
   useGetNotificationsQuery, 
   useGetNotificationCountQuery, 
-  useUpdateNotificationReadStatusMutation 
+  useUpdateNotificationReadStatusMutation ,
+  useClearNotificationsMutation
 } = notificationSlice;

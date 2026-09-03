@@ -2,19 +2,15 @@
 
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import { AttatchIcon, SendIcon, VoiceIcon } from "@/public/svgIcons/Icons";
-import {
-  useRef,
-  useState,
-  type ChangeEvent,
-  type KeyboardEvent,
-} from "react";
+import { useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
 import { IoClose } from "react-icons/io5";
 import { getMessagePreview } from "./MessageBubble";
 import { useVoiceRecorder } from "./useVoiceRecorder";
 
 interface MessageInputBarProps {
-  isConnected: boolean;
+  isConnected: any;
   sending: boolean;
+  isFetchingMore: boolean;
   replyTo: any;
   onTyping: () => void;
   onCancelReply: () => void;
@@ -28,6 +24,7 @@ export default function MessageInputBar({
   replyTo,
   onTyping,
   onCancelReply,
+  isFetchingMore,
   onSendText,
   onSendVoice,
 }: MessageInputBarProps) {
@@ -36,7 +33,7 @@ export default function MessageInputBar({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
- 
+
   const {
     isRecording,
     recordingSeconds,
@@ -93,6 +90,7 @@ export default function MessageInputBar({
       handleSend();
     }
   };
+  const isConnectedUser = isConnected?.is_connected ;
 
   return (
     <div className="p-3 border-t flex flex-col mt-auto">
@@ -122,7 +120,7 @@ export default function MessageInputBar({
         </div>
       )}
 
-      {attachments && (
+      {attachments  && (
         <div className="flex items-center gap-2 bg-[#F3F4F6] rounded-lg px-3 py-2 text-xs max-w-45 mb-2">
           <AttatchIcon className="w-4 h-4 shrink-0" />
           <span className="truncate">{attachments.name}</span>
@@ -135,7 +133,7 @@ export default function MessageInputBar({
         </div>
       )}
 
-      {isConnected ? (
+      {isConnectedUser || isFetchingMore ? (
         <div className="flex items-start gap-1 md:gap-3">
           <button
             onClick={() => fileInputRef.current?.click()}

@@ -59,22 +59,24 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
             </div>
 
             {/* Remaining Count Badge */}
-         {   data?.data?.mutual_members?.length > 5 && 
-            <div className="z-10 -ml-3 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[12px] font-medium text-gray-600 shadow-sm">
-              {data?.data?.mutual_members_count || 0}+
-            </div>
-            }
+            {data?.data?.mutual_members?.length > 5 && (
+              <div className="z-10 -ml-3 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-[12px] font-medium text-gray-600 shadow-sm">
+                {data?.data?.mutual_members_count || 0}+
+              </div>
+            )}
           </div>
         </div>
 
         {/* Action Button */}
-        <button
-          type="button"
-          onClick={() => setIsInviteOpen(true)}
-          className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-sm lg:text-base font-semibold text-white transition-all hover:bg-primaryColor active:scale-95"
-        >
-          Invite a Connection
-        </button>
+        {data?.data?.is_current_user_member && (
+          <button
+            type="button"
+            onClick={() => setIsInviteOpen(true)}
+            className="px-6 rounded-full bg-primaryColor py-2 cursor-pointer  text-sm lg:text-base font-semibold text-white transition-all hover:bg-primaryColor active:scale-95"
+          >
+            Invite a Connection
+          </button>
+        )}
       </div>
       <div className="max-w-full rounded-xl border border-borderColor/30 bg-bgLightColor p-4 ">
         <div className="mb-3 border-b border-borderColor/90 pb-3">
@@ -97,7 +99,9 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
 
             <div className="flex-1">
               <h4 className="text-base md:text-lg font-semibold text-headerColor">
-                {groupData?.creator?.first_name + " " + groupData?.creator?.last_name || "Unknown Creator"}
+                {groupData?.creator?.first_name +
+                  " " +
+                  groupData?.creator?.last_name || "Unknown Creator"}
               </h4>
               <p className="text-sm text-descriptionColor line-clamp-2">
                 {groupData?.creator?.title || "No headline available."}
