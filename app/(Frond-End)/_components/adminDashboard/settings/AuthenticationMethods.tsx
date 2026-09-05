@@ -89,7 +89,7 @@ export default function AuthenticationMethods() {
               type="button"
               className="cursor-pointer"
               onClick={() => {
-                if (securityData?.recovery_email_verified === true) {
+                if (securityData?.two_factor_enabled === true) {
                   setIsModalOpen(true);
                 } else {
                   setShowVerifyEmailModal(true);
