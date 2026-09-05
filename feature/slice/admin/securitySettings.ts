@@ -56,6 +56,16 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       providesTags: ["loginActivities"],
     }),
 
+    //delet alll activity
+
+    DeleteAllLoginActivity: builder.mutation({
+      query: () => ({
+        url: `/security/login-activities/clear-all`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
     //delte activite
     DeleteLoginActivity: builder.mutation({
       query: (id) => ({
@@ -156,6 +166,7 @@ export const {
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
   useEnablePasswordMutation,
+  useDeleteAllLoginActivityMutation,
   useProviderEmailCodeMutation,
   useDesablePasswdMutation,
   useGenerateCodeMutation,

@@ -159,7 +159,7 @@ export default function AuthenticationMethods() {
       >
         <div className="px-3">
           <p className="text-[14px] text-[#7B7B7B]">
-            Please verify your recovery email before generating backup codes.
+            Please enable 2FA before generating a backup code.
           </p>
         </div>
       </CustomModal>
