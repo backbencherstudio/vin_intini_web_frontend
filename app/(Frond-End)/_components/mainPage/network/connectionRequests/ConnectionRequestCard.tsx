@@ -52,7 +52,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                   />
                   <span className="">
                     <Link
-                      href={`/mu/profile/${item?.mutual_connections[0]?.id}`}
+                      href={`/mu/profile/${item?.mutual_connections[0]?.username}`}
                       className="text-headerColor"
                     >
                       {item?.mutual_connections[0]?.name}

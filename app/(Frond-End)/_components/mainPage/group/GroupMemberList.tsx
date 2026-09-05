@@ -21,7 +21,7 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
   if (isError) {
     return <Error />;
   }
-
+ 
   return (
     <div className="space-y-4">
       <div className="max-w-full rounded-xl border border-borderColor/30 bg-bgLightColor p-4 ">
@@ -43,7 +43,7 @@ const GroupMemberList = ({ groupId }: { groupId: string }) => {
             <div className="flex -space-x-3 overflow-hidden">
               {data?.data?.mutual_members?.slice(0, 5).map((src, index) => (
                 <Link
-                  href={`/mu/${src?.id}`}
+                  href={`/mu/profile/${src?.username}`}
                   key={index}
                   className="inline-block h-10 w-10 rounded-full border-2 border-white bg-gray-200"
                 >

@@ -1,6 +1,4 @@
 import Breadcrumb from "../../../_components/Breadcrumb";
-import JobsLeftSidebar from "./_component/JobsLeftSidebar";
-import TopJobsRightbar from "./_component/TopJobsRightbar";
 
 export default function FrontEndLayout({
   children,
@@ -11,7 +9,7 @@ export default function FrontEndLayout({
     <div>
       <div className="">
         <Breadcrumb />
-        <div className="lg:grid lg:grid-cols-12  sm:pb-8 pb-6 gap-4 xl:gap-6 mb-10">
+        {/* <div className="lg:grid lg:grid-cols-12  sm:pb-8 pb-6 gap-4 xl:gap-6 mb-10">
           <div className="hidden lg:block col-span-3   lg:sticky lg:top-19  lg:overflow-y-auto self-start">
             <JobsLeftSidebar />
           </div>
@@ -21,7 +19,8 @@ export default function FrontEndLayout({
           <div className="hidden lg:block col-span-3   lg:sticky lg:top-19  lg:overflow-y-auto self-start">
             <TopJobsRightbar />
           </div>
-        </div>
+        </div> */}
+        <div>{ children }</div>
       </div>
     </div>
   );

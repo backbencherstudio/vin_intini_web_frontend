@@ -1,7 +1,11 @@
 "use client";
 
-import { GeneralSettingIcon, NotificationIcon, SecurityIcon, SettingIcon } from "@/public/svgIcons/Icons";
-import { Briefcase, ChevronDown } from "lucide-react";
+import {
+  GeneralSettingIcon,
+  SecurityIcon,
+  SettingIcon,
+} from "@/public/svgIcons/Icons";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,11 +24,11 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
       slug: "/mu/settings/general",
       icon: GeneralSettingIcon,
     },
-    {
-      label: "Notification Settings",
-      slug: "/mu/settings/notifications",
-      icon: NotificationIcon,
-    },
+    // {
+    //   label: "Notification Settings",
+    //   slug: "/mu/settings/notifications",
+    //   icon: NotificationIcon,
+    // },
     {
       label: "Security Settings",
       slug: "/mu/settings/security",
@@ -43,7 +47,7 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
   return (
     <div className="space-y-1 select-none">
       {/* 1. Apply for a Position */}
-      <Link
+      {/* <Link
         href="/mu/jobs/apply"
         onClick={onItemClick}
         className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
@@ -54,7 +58,7 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
       >
         <Briefcase className="w-4.5 h-4.5" />
         <span>Apply for a position</span>
-      </Link>
+      </Link> */}
 
       {/* 2. Settings Collapsible Parent */}
       <div>
