@@ -4,9 +4,14 @@ import AdminPagination from "@/components/reusable/dashboard/AdminPagination";
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import Pagination from "@/components/reusable/Pagination";
 import {
   useDeleteActiveSessionsMutation,
+  useDeleteAllLoginActivityMutation,
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
@@ -14,9 +19,12 @@ import {
 } from "@/feature/slice/admin/securitySettings";
 import { TikIcon } from "@/public/svgIcons/AdminIcon";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
+import dayjs from "dayjs";
 import { Delete, Monitor, Phone, Smartphone, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type LoginActivity = {
   id: number;
@@ -40,6 +48,8 @@ export default function LoginActivityTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   const { data, isLoading } = useGetLoginActivityQuery({
     page,
     limit,
@@ -54,6 +64,9 @@ export default function LoginActivityTable() {
 
   const [singeleSessionTrusted, { isLoading: singeleSessionTrustedLoading }] =
     useSingeleSessionTrustedMutation();
+
+  const [deletAllAcitivity, { isLoading: deletAllAcitivityLoading }] =
+    useDeleteAllLoginActivityMutation();
 
   const handleSingeleSessionTrusted = async (id: number) => {
     try {
@@ -77,6 +90,15 @@ export default function LoginActivityTable() {
     try {
       await deleteLoginActivity(id).unwrap();
       toast.success("Logout successful");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handelDeleteAll = async () => {
+    try {
+      await deletAllAcitivity({}).unwrap();
+      toast.success("All activity deleted successfully");
     } catch (error) {
       console.log(error);
     }
@@ -126,21 +148,17 @@ export default function LoginActivityTable() {
 
     {
       header: "Date & Time",
-      cell: (row) => {
-        const date = new Date(row.login_at);
+      cell: (row) => (
+        <div className="flex flex-col">
+          <span className="whitespace-nowrap text-[13px] font-medium text-headerColor">
+            {dayjs.utc(row.login_at).tz(userTimezone).format("DD/MM/YYYY")}
+          </span>
 
-        return (
-          <div className="flex flex-col">
-            <span className="whitespace-nowrap text-[13px] font-medium text-headerColor">
-              {date.toLocaleDateString()}
-            </span>
-
-            <span className="whitespace-nowrap text-[12px] text-[#A5A5AB]">
-              {date.toLocaleTimeString()}
-            </span>
-          </div>
-        );
-      },
+          <span className="whitespace-nowrap text-[12px] text-[#A5A5AB]">
+            {dayjs.utc(row.login_at).tz(userTimezone).format("hh:mm:ss A")}
+          </span>
+        </div>
+      ),
     },
 
     {
@@ -247,14 +265,24 @@ export default function LoginActivityTable() {
 
   return (
     <div className="w-full">
-      <div className="py-6">
-        <h2 className="text-headerColor text-[20px] font-semibold">
-          Login Activity
-        </h2>
+      <div className="py-6 flex justify-between">
+        <div>
+          <h2 className="text-headerColor text-[20px] font-semibold">
+            Login Activity
+          </h2>
 
-        <p className="mt-1 text-[#4A4C56] text-[14px]">
-          Review your recent account login activity.
-        </p>
+          <p className="mt-1 text-[#4A4C56] text-[14px]">
+            Review your recent account login activity.
+          </p>
+        </div>
+        <div className="flex justify-center items-center">
+          <button
+            onClick={handelDeleteAll}
+            className="cursor-pointer border border-[#FBD8DB] rounded-sm py-1 px-3 font-segoe text-[14px] font-normal leading-[140%] tracking-[0.07px] text-redColor"
+          >
+            <p>Clear all Session</p>
+          </button>
+        </div>
       </div>
 
       <DataTable columns={columns} data={loginActivities} />

@@ -132,7 +132,7 @@ export default function TwoFactorAuthentication() {
             <DialogTitle>Verify Your Email</DialogTitle>
 
             <DialogDescription className="pt-2 text-[14px] text-gray-500">
-              Please verify your recovery email before enabling or 2FA.
+              Please verify your recovery email before enabling 2FA.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
