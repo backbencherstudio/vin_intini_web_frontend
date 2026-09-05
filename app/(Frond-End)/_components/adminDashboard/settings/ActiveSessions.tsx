@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Monitor, MoreHorizontal } from "lucide-react";
+import { Monitor, MoreHorizontal, Smartphone } from "lucide-react";
 import {
   useDeletAllSessionsMutation,
   useDeleteActiveSessionsMutation,
@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import { BiMobile } from "react-icons/bi";
 
 interface Session {
   id: number;
@@ -65,10 +66,16 @@ export default function ActiveSessions() {
           {ActiveSession.map((session) => (
             <div
               key={session.id}
-              className="flex items-center gap-3   pb-3 last:border-0"
+              className="flex justify-between  gap-3   pb-3 last:border-0"
             >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center ">
-                <Monitor size={24} className="text-black" />
+              <div className="flex h-8 w-8 shrink-0  ">
+                {session?.is_mobile === true ? (
+                  <Smartphone size={16} className="text-black" />
+                ) : (
+                  <div>
+                    <Monitor size={16} className="text-black" />
+                  </div>
+                )}
               </div>
 
               <div className="min-w-0 flex-1">
