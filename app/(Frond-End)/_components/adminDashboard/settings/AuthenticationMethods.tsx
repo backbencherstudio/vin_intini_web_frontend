@@ -18,7 +18,7 @@ export default function AuthenticationMethods() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recoveryCodesModalOpen, setRecoveryCodesModalOpen] = useState(false);
   const [recoveryModalOpen, setRecoveryModalOpen] = useState(false);
-
+  const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
   const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
   const [step, setStep] = useState(1);
 
@@ -37,13 +37,13 @@ export default function AuthenticationMethods() {
   };
 
   return (
-    <div>
+    <div className="">
       <section className="h-full rounded-md border p-4">
         <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px] ">
           Authentication Method
         </h2>
 
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-5  ">
           {/* Authenticator App */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
@@ -88,7 +88,13 @@ export default function AuthenticationMethods() {
             <button
               type="button"
               className="cursor-pointer"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                if (securityData?.recovery_email_verified === true) {
+                  setIsModalOpen(true);
+                } else {
+                  setShowVerifyEmailModal(true);
+                }
+              }}
             >
               <MoreHorizontal size={16} className="text-black" />
             </button>
@@ -110,8 +116,14 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            {securityData?.recovery_email_verified && (
-              <span className="text-[9px] text-[#287F6E]">Verified</span>
+            {securityData?.recovery_email_verified ? (
+              <span className="rounded-full bg-green-100 px-2 py-1 text-[9px] font-semibold text-[#287F6E] border border-[#287F6E]">
+                Verified
+              </span>
+            ) : (
+              <span className="rounded-full bg-gray-100 px-2 py-1 text-[9px] font-semibold text-gray-500 border border-gray-500">
+                Unverified
+              </span>
             )}
 
             <button
@@ -129,6 +141,7 @@ export default function AuthenticationMethods() {
       </section>
 
       {/* Generate Backup Codes Modal */}
+
       <CustomModal
         open={isModalOpen}
         onOpenChange={(open) => setIsModalOpen(open)}
@@ -136,6 +149,19 @@ export default function AuthenticationMethods() {
         size="sm"
       >
         <RegenerateCode onSuccess={handleGenerateSuccess} />
+      </CustomModal>
+
+      <CustomModal
+        open={showVerifyEmailModal}
+        onOpenChange={setShowVerifyEmailModal}
+        title="Verify Recovery Email"
+        size="sm"
+      >
+        <div className="px-3">
+          <p className="text-[14px] text-[#7B7B7B]">
+            Please verify your recovery email before generating backup codes.
+          </p>
+        </div>
       </CustomModal>
 
       {/* Generated Recovery Codes Modal */}
@@ -176,9 +202,7 @@ export default function AuthenticationMethods() {
         size="sm"
       >
         {step === 1 && <RecoveryEmail onSuccess={() => setStep(2)} />}
-
         {step === 2 && <VerifyOtp onSuccess={() => setStep(3)} />}
-
         {step === 3 && <Success onClose={() => setRecoveryModalOpen(false)} />}
       </CustomModal>
     </div>
