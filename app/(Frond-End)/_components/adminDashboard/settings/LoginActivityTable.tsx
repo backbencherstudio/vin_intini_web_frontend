@@ -150,14 +150,14 @@ export default function LoginActivityTable() {
           color={
             row.signin_status === "Signed in" ||
             row.signin_status === "Current device"
-              ? "green"
-              : "red"
+              ? "active"
+              : "logout"
           }
           className={
             row.signin_status === "Signed in" ||
             row.signin_status === "Current device"
-              ? "rounded-sm border border-[#72DED1] bg-[#F0FFFD] px-2 py-2 text-[12px] font-semibold text-[#22CAAD] text-right leading-[132%] tracking-[0.06px] "
-              : "rounded-sm border border-gray-400 bg-gray-100 px-2 py-2 text-[12px] font-semibold text-grayColor1"
+              ? "rounded-sm border whitespace-nowrap border-[#72DED1] bg-[#F0FFFD] px-2 py-2 text-[12px] font-semibold text-[#22CAAD] text-right leading-[132%] tracking-[0.06px] "
+              : "rounded-sm border whitespace-nowrap border-gray-400 bg-gray-100 px-2 py-2 text-[12px] font-semibold text-grayColor1"
           }
         >
           {row.signin_status}
@@ -169,7 +169,7 @@ export default function LoginActivityTable() {
       header: "Activity",
       cell: (row) => (
         <span
-          className={`rounded-sm border px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
+          className={`rounded-sm border font-['Segoe_UI'] px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
             row.activity_status === "Trusted Device"
               ? "text-[#22CAAD] border-[#72DED1] bg-[#F0FFFD]"
               : row.activity_status === "Suspicious"
@@ -181,6 +181,7 @@ export default function LoginActivityTable() {
         </span>
       ),
     },
+
     {
       header: "Actions",
       cell: (row: LoginActivity) => {
@@ -198,22 +199,28 @@ export default function LoginActivityTable() {
             <button
               onClick={() => handleSingeleSessionTrusted(row.id)}
               disabled={isTrustedDisabled || singeleSessionTrustedLoading}
-              className={`flex items-center gap-1 rounded-sm bg-[#E9FAF7] p-2 text-[12px] font-medium ${
+              className={`flex items-center gap-1  rounded-sm bg-[#E9FAF7] p-3 text-[12px] font-medium ${
                 isTrustedDisabled || singeleSessionTrustedLoading
-                  ? "cursor-not-allowed opacity-40"
+                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
                   : "cursor-pointer"
               }`}
             >
-              <TikIcon className="h-4 w-4" />
+              <TikIcon
+                className={`h-4 w-4 ${
+                  isTrustedDisabled || singeleSessionTrustedLoading
+                    ? "text-[#A0A0A0]"
+                    : "text-[#1D1F2C]"
+                }`}
+              />
             </button>
-            {/* Logout */}
+
             {/* Logout */}
             <button
               onClick={() => !isLogoutDisabled && handleLogout(row.id)}
               disabled={isLogoutDisabled}
-              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
+              className={`flex items-center gap-1 rounded-sm bg-bgLightColor p-2 text-[12px] font-medium text-[#1D1F2C] ${
                 isLogoutDisabled
-                  ? "cursor-not-allowed opacity-40"
+                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
                   : "cursor-pointer"
               }`}
             >
@@ -224,10 +231,10 @@ export default function LoginActivityTable() {
             <button
               onClick={() => !isDeleteDisabled && handelDelete(row.id)}
               disabled={isDeleteDisabled}
-              className={`flex items-center gap-1 rounded-sm bg-[#FEECEE] px-2 py-1 text-[12px] font-medium text-red-500 ${
+              className={`flex items-center gap-1 rounded-sm p-2 text-[12px] font-medium text-red-500 ${
                 isDeleteDisabled
-                  ? "cursor-not-allowed opacity-40"
-                  : "cursor-pointer"
+                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
+                  : "cursor-pointer bg-[#FEECEE]"
               }`}
             >
               <Trash2 className="h-4 w-4" />
