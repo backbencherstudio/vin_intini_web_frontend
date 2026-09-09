@@ -36,6 +36,8 @@ export const baseApiSlice = createApi({
     "Like",
     "experience",
     "study",
+    "university",
+    "state",
   ],
 });
 
