@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
-import { DateRange } from "react-day-picker";
+import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
 import { DeletIcon, EditIcon } from "@/public/svgIcons/AdminIcon";
 import { Plan, PlanFeatureValue, PlanPayload } from "@/feature/slice/admin/subscription/subscriptionType";
 import { useCreatePlanMutation, useGetPlanFeaturesQuery, useUpdatePlanMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
@@ -16,11 +15,11 @@ interface CreatePlanModalProps {
   onSuccess?: () => void;
 }
 
-const toDateRange = (value?: string): DateRange | undefined => {
+const toDateValue = (value?: string): Date | undefined => {
   if (!value) return undefined;
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return undefined;
-  return { from: parsed, to: parsed };
+  return parsed;
 };
 
 const formatDateValue = (value?: Date) => {
@@ -53,7 +52,7 @@ export default function CreatePlan({
   });
 
   const [selectedFeatures, setSelectedFeatures] = useState<PlanFeatureValue[]>([]);
-  const [date, setDate] = useState<DateRange | undefined>(toDateRange(data?.discount_duration));
+  const [date, setDate] = useState<Date | undefined>(toDateValue(data?.discount_duration));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function CreatePlan({
       billing_rate: Number(formData.billingRate) || 0,
       billing_cycle: formData.billingCycle === "yearly" ? "yearly" : "monthly",
       discount_percent: Number(formData.discount) || 0,
-      discount_duration: formatDateValue(date?.to ?? date?.from),
+      discount_duration: formatDateValue(date),
       badge_color: formData.badgeColor,
       status: formData.status ? "active" : "inactive",
       features: selectedFeatures,
@@ -205,7 +204,7 @@ export default function CreatePlan({
               </div>
             </div>
 
-            <DateRangePicker
+            <DatePicker
               label="Discount Duration"
               date={date}
               setDate={setDate}
@@ -248,20 +247,7 @@ export default function CreatePlan({
         Select and configure features for this plan
       </p>
        <div className="flex items-center justify-center gap-2 py-4 w-full">
-      <button
-        type="button"
-        className="flex h-8 w-8 items-center justify-center rounded-md   hover:bg-gray-50"
-        title="Delete"
-      >
-        <DeletIcon />
-      </button>
-      <button
-        type="button"
-        className="flex h-8 w-8 items-center justify-center rounded-md  hover:bg-gray-50"
-        title="Edit"
-      >
-        <EditIcon />
-      </button>
+      
     </div>
    
   </div>
