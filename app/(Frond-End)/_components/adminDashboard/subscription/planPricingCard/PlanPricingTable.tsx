@@ -154,8 +154,11 @@ export default function PlanPricingTable() {
 
     return (
         <div>
+
+            <h2 className="text-2xl font-bold">Plan Pricing</h2>
+            <p className="text-sm text-gray-500 mb-4">Manage your subscription plans and pricing.</p>
             {/* Filters */}
-            <div className="flex w-full justify-start lg:justify-end">
+            {/* <div className="flex w-full justify-start lg:justify-end">
                 <div className="mb-6 flex flex-col w-full lg:w-full xl:w-2/3 lg:flex-row items-center justify-start gap-4 ">
                     <div className="relative w-full  xl:w-[300px]">
                         <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
@@ -203,7 +206,7 @@ export default function PlanPricingTable() {
                         Export
                     </button>
                 </div>
-            </div>
+            </div> */}
 
             {isLoading ? (
                 <p className="py-12 text-center text-sm text-gray-400">Loading plans...</p>
