@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
-import { DeletIcon, EditIcon } from "@/public/svgIcons/AdminIcon";
 import { Plan, PlanFeatureValue, PlanPayload } from "@/feature/slice/admin/subscription/subscriptionType";
 import { useCreatePlanMutation, useGetPlanFeaturesQuery, useUpdatePlanMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface CreatePlanModalProps {
   data?: Plan | null;
@@ -38,6 +38,7 @@ export default function CreatePlan({
   const [createPlan] = useCreatePlanMutation();
   const [updatePlan] = useUpdatePlanMutation();
   const { data: featuresResponse, isLoading: isFeaturesLoading, isError: isFeaturesError } = useGetPlanFeaturesQuery();
+  const router = useRouter();
 
   const featureOptions = featuresResponse?.data;
 
@@ -106,6 +107,7 @@ export default function CreatePlan({
       }
       onSuccess?.();
       onClose?.();
+      router.push("/dashboard/subscription/plan-pricing");
     } catch (err) {
       console.error(err);
       toast.error(data?.id ? "Failed to update plan." : "Failed to create plan.");
@@ -222,7 +224,7 @@ export default function CreatePlan({
               <button
                 type="button"
                 onClick={() => handleChange("status", !formData.status)}
-                className={`relative h-6 w-11 rounded-full transition-colors ${
+                className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer ${
                   formData.status ? "bg-primaryColor" : "bg-gray-300"
                 }`}
               >
