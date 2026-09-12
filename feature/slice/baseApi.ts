@@ -38,6 +38,9 @@ export const baseApiSlice = createApi({
     "study",
     "university",
     "state",
+    "residencies",
+    "facilities",
+    "Employment",
   ],
 });
 

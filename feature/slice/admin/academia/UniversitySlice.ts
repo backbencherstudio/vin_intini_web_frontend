@@ -11,30 +11,41 @@ const universitySlice = baseApiSlice.injectEndpoints({
       providesTags: ["university"],
     }),
 
+    //all sate list
+
+    getAllState: builder.query({
+      query: () => ({
+        url: `/admin/academia/state`,
+        method: "GET",
+      }),
+      providesTags: ["state"],
+    }),
+
     //change-password
-    postChangePassword: builder.mutation({
+    createUniversity: builder.mutation({
       query: (payload) => ({
-        url: "/profile/change-password",
+        url: "/admin/academia/university/create",
         method: "POST",
         body: payload,
       }),
     }),
 
-    DeleteAllLoginActivity: builder.mutation({
-      query: () => ({
-        url: `/security/login-activities/clear-all`,
-        method: "DELETE",
+    editUniversity: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `admin/academia/university/update/${id}`,
+        method: "PUT",
+        body: data,
       }),
-      invalidatesTags: ["loginActivities"],
+      invalidatesTags: ["university"],
     }),
 
     //logout user
-    LogoutActiveSessions: builder.mutation({
+    deleteUniversity: builder.mutation({
       query: (id) => ({
-        url: `/security/login-activities/${id}`,
+        url: `/admin/academia/university/delete/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["loginActivities"],
+      invalidatesTags: ["university"],
     }),
 
     //
@@ -43,8 +54,9 @@ const universitySlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetUniversityQuery,
-  usePostChangePasswordMutation,
-  useLogoutActiveSessionsMutation,
+  useGetAllStateQuery,
+  useCreateUniversityMutation,
+  useDeleteUniversityMutation,
 
-  useDeleteAllLoginActivityMutation,
+  useEditUniversityMutation,
 } = universitySlice;
