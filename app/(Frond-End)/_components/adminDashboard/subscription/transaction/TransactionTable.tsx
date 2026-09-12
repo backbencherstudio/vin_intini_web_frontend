@@ -16,8 +16,8 @@ import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker"
 import { DateRange } from "react-day-picker";
 import EditTransactionForm from "./EditTransactionForm";
 import Pagination from "@/components/reusable/Pagination";
-import { useGetTransactionListQuery } from "@/feature/slice/admin/subscription/subscriptionApi";
-import { Transaction as ApiTransaction } from "@/feature/slice/admin/subscription/subscriptionType";
+import { useGetPlansQuery, useGetTransactionListQuery } from "@/feature/slice/admin/subscription/subscriptionApi";
+import { Transaction as ApiTransaction, Plan } from "@/feature/slice/admin/subscription/subscriptionType";
 
 type Transaction = {
     id: number;
@@ -70,13 +70,22 @@ export default function TransactionTable() {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
     const queryParams: Record<string, unknown> = { page, per_page: perPage };
-    if (planFilter) queryParams.plan = planFilter;
+    if (planFilter) queryParams.plan_id = planFilter;
     if (statusFilter) queryParams.status = statusFilter;
     if (search.trim()) queryParams.search = search.trim();
-    if (date?.from) queryParams.from = date.from.toISOString().split("T")[0];
-    if (date?.to) queryParams.to = date.to.toISOString().split("T")[0];
+    if (date?.from) queryParams.date_from = date.from.toISOString().split("T")[0];
+    if (date?.to) queryParams.date_to = date.to.toISOString().split("T")[0];
 
     const { data: apiResponse, isLoading, isError } = useGetTransactionListQuery({ query: queryParams });
+
+    const {data: planData, isLoading: isPlanLoading, isError: isPlanError} = useGetPlansQuery();
+
+    const planOptions = planData?.data?.map((plan: Plan) => ({
+        label: plan.name,
+        value: plan.id,
+    })) || [];
+    
+    console.log("planData", planOptions);
 
     const apiTransactions: Transaction[] = useMemo(() => {
         return (apiResponse?.data ?? []).map((t: ApiTransaction) => ({
@@ -260,11 +269,7 @@ export default function TransactionTable() {
                             setPlanFilter(value === "default" ? "" : value);
                             setPage(1);
                         }}
-                        options={[
-                            { label: "All Plans", value: "default" },
-                            { label: "Premium", value: "Premium" },
-                            { label: "Basic", value: "Basic" },
-                        ]}
+                        options={planOptions}
                     />
 
                     {/* All Status */}
@@ -277,10 +282,10 @@ export default function TransactionTable() {
                         }}
                         options={[
                             { label: "All Status", value: "default" },
+                            { label: "Pending", value: "pending" },
                             { label: "Completed", value: "succeeded" },
                             { label: "Failed", value: "failed" },
                             { label: "Refunded", value: "refunded" },
-                            { label: "Pending", value: "pending" },
                         ]}
                     />
 
@@ -293,10 +298,10 @@ export default function TransactionTable() {
                     />
 
                     {/* Export */}
-                    <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 text-white transition hover:bg-[#038a9c]">
+                    {/* <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 text-white transition hover:bg-[#038a9c]">
                         <ArrowDownToLine className="h-4 w-4" />
                         Export
-                    </button>
+                    </button> */}
                 </div>
             </div>
 
