@@ -42,6 +42,7 @@ export const baseApiSlice = createApi({
     "facilities",
     "Employment",
     "subscription",
+    "plan",
   ],
 });
 

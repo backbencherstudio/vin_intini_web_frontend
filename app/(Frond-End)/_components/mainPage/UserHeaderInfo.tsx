@@ -16,9 +16,11 @@ import echo from "@/lib/echo";
 import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
+  CompanyIcon,
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
+  OfficeBuildingIcon,
   SettingIcon,
   UserCircleIcon,
 } from "@/public/svgIcons/Icons";
@@ -135,7 +137,7 @@ function UserHeaderInfo() {
             href={`/mu/message`}
             className="flex justify-center relative items-center"
           >
-            {!isMessagePage && newMessagePopup  && (
+            {!isMessagePage && newMessagePopup && (
               <div
                 key={newMessagePopup.key}
                 className="animate-pop-in absolute top-full right-0 mt-2 z-50 w-60 rounded-lg bg-white shadow-lg border border-gray-100 p-3 cursor-pointer"
@@ -196,10 +198,10 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-50.5 p-3">
+              <DropdownMenuContent align="end" className="w-55.5 p-3">
                 <div className="">
-                  <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
-                    <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
+                  <div className="flex items-center gap-2 pb-2 border-b border-borderColor">
+                    <div className=" w-10 h-10 rounded-md border overflow-hidden ">
                       <Image
                         src={
                           userProfileData?.user?.profile_image_url || emptyImage
@@ -223,11 +225,11 @@ function UserHeaderInfo() {
                     </div>
                   </div>
                 </div>
-                <div className="py-2 space-y-1">
+                <div className="py-1.5 space-y-0.5">
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/profile`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <UserCircleIcon className="w-5 h-5 text-grayColor1" />
                       Profile
@@ -237,14 +239,23 @@ function UserHeaderInfo() {
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/settings/general`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <SettingIcon className="w-5 h-5 text-grayColor1  " />
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/settings/general`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                    >
+                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                      Create a Company Page
+                    </Link>
+                  </DropdownMenuItem>
                 </div>
-                <div className="pt-3  border-t border-borderColor">
+                <div className="pt-2  border-t border-borderColor">
                   <button
                     onClick={handleLogout}
                     className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
@@ -262,4 +273,4 @@ function UserHeaderInfo() {
   );
 }
 
-export default UserHeaderInfo;
+export default UserHeaderInfo; 
