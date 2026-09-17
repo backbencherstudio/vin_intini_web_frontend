@@ -41,6 +41,7 @@ export const baseApiSlice = createApi({
     "residencies",
     "facilities",
     "Employment",
+    "subscription",
   ],
 });
 
