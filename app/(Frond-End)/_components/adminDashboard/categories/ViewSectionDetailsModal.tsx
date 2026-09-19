@@ -2,14 +2,14 @@
 
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import { Pencil, X } from "lucide-react";
-import type { CategorySection } from "./CategorySectionCard";
+import type { CategorySection, SubcategoryItem } from "./CategorySectionCard";
 
 interface ViewSectionDetailsModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     section: CategorySection | null;
-    onEditTab?: (tabName: string) => void;
-    onDeleteTab?: (tabName: string) => void;
+    onEditTab?: (subcategory: string | SubcategoryItem) => void;
+    onDeleteTab?: (subcategory: string | SubcategoryItem) => void;
 }
 
 const badgeStyles: Record<string, string> = {
@@ -27,6 +27,13 @@ export default function ViewSectionDetailsModal({
     onDeleteTab,
 }: ViewSectionDetailsModalProps) {
     if (!section) return null;
+
+    const getSubcategoryInfo = (item: string | SubcategoryItem) => {
+        if (typeof item === "string") {
+            return { key: item, name: item };
+        }
+        return { key: String(item.id), name: item.name };
+    };
 
     return (
         <CustomModal
@@ -59,33 +66,36 @@ export default function ViewSectionDetailsModal({
                         </p>
                     ) : (
                         <div className="flex flex-col gap-3">
-                            {section.subsections.map((subsection) => (
-                                <div
-                                    key={subsection}
-                                    className="flex w-full items-center justify-between rounded-full border border-[#E0E0E0] px-3 py-2 text-sm text-[#4A4C56]"
-                                >
-                                    <span className="truncate">{subsection}</span>
-                                    <div className="ml-3 flex shrink-0 items-center">
-                                        <span className="mx-2 h-5 w-px bg-[#E0E0E0]" />
-                                        <button
-                                            type="button"
-                                            aria-label={`Edit ${subsection}`}
-                                            className="rounded p-0.5 hover:bg-gray-100"
-                                            onClick={() => onEditTab?.(subsection)}
-                                        >
-                                            <Pencil className="h-3.5 w-3.5" />
-                                        </button>
-                                        <button
-                                            type="button"
-                                            aria-label={`Remove ${subsection}`}
-                                            className="ml-1.5 rounded p-0.5 hover:bg-gray-100"
-                                            onClick={() => onDeleteTab?.(subsection)}
-                                        >
-                                            <X className="h-3.5 w-3.5" />
-                                        </button>
+                            {section.subsections.map((item) => {
+                                const info = getSubcategoryInfo(item);
+                                return (
+                                    <div
+                                        key={info.key}
+                                        className="flex w-full items-center justify-between rounded-full border border-[#E0E0E0] px-3 py-2 text-sm text-[#4A4C56]"
+                                    >
+                                        <span className="truncate">{info.name}</span>
+                                        <div className="ml-3 flex shrink-0 items-center">
+                                            <span className="mx-2 h-5 w-px bg-[#E0E0E0]" />
+                                            <button
+                                                type="button"
+                                                aria-label={`Edit ${info.name}`}
+                                                className="rounded p-0.5 hover:bg-gray-100"
+                                                onClick={() => onEditTab?.(item)}
+                                            >
+                                                <Pencil className="h-3.5 w-3.5" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                aria-label={`Remove ${info.name}`}
+                                                className="ml-1.5 rounded p-0.5 hover:bg-gray-100"
+                                                onClick={() => onDeleteTab?.(item)}
+                                            >
+                                                <X className="h-3.5 w-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

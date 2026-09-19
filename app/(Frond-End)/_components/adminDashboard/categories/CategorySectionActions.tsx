@@ -6,7 +6,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, Trash2 } from "lucide-react";
+import { EllipsisVertical, Trash2 , Pencil} from "lucide-react";
 
 import { CategorySection } from "./CategorySectionCard";
 
@@ -34,13 +34,13 @@ export default function CategorySectionActions({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-32 bg-white">
-                {/* <DropdownMenuItem
+                <DropdownMenuItem
                     onSelect={() => onEdit?.(section)}
                     className="cursor-pointer"
                 >
                     <Pencil />
                     Edit
-                </DropdownMenuItem> */}
+                </DropdownMenuItem>
                 <DropdownMenuItem
                     variant="destructive"
                     onSelect={() => onDelete?.(section)}

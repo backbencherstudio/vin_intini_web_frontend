@@ -38,6 +38,7 @@ export const baseApiSlice = createApi({
     "study",
     "subscription",
     "plan",
+    "category",
   ],
 });
 
