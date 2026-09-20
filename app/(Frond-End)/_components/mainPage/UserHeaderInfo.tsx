@@ -251,6 +251,15 @@ function UserHeaderInfo() {
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/settings/general`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                    >
+                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
                       Create a Company Page
                     </Link>
                   </DropdownMenuItem>
