@@ -1,22 +1,19 @@
-import React from 'react' 
 "use client";
 
+import MainPageBottomNav from "@/app/(Frond-End)/_components/mainPage/MainPageBottomNav";
 import {
-  GroupUserIcon,
+  AdvertisementIcon,
+  BarChartIcon,
+  DashboardIcon,
   JobsIcon,
   MessageIcon,
-  MultiUserIcon,
-  PlusUserIcon,
-  PremiumAnalyticsIcon,
   SaveJobIcon,
-  SingleUserIcon,
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import MainPageBottomNav from '@/app/(Frond-End)/_components/mainPage/MainPageBottomNav';
-import SubscriptionCard from '../../(subscription)/_component/SubscriptionCard';
-import { LayoutDashboardIcon } from 'lucide-react';
+import SubscriptionCard from "../../(subscription)/_component/SubscriptionCard";
+import ProIndustrySetting from "./ProIndustrySetting";
 
 function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
@@ -24,33 +21,38 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
 
   const menuItems = [
     {
+      label: "Industry Profile",
+      slug: "/mu/industry-profile",
+      icon: DashboardIcon,
+    },
+    {
       label: "Recruiter Dashboard",
-      slug: "/mu/my-network/my-connection",
-      icon: LayoutDashboardIcon,
+      slug: "/mu/recruiter-dashboard",
+      icon: DashboardIcon,
     },
     {
       label: "Advertisement",
-      slug: "/mu/my-network/connection-requests",
-      icon: JobsIcon,
+      slug: "/mu/advertisement",
+      icon: AdvertisementIcon,
     },
     {
       label: "Job Listing",
-      slug: "/mu/my-network/following",
-      icon: SingleUserIcon,
+      slug: "/mu/job-listing",
+      icon: JobsIcon,
     },
     {
       label: "Analytics",
-      slug: "/mu/my-network/groups",
-      icon: PremiumAnalyticsIcon,
+      slug: "/mu/analytics",
+      icon: BarChartIcon,
     },
     {
       label: "Message",
-      slug: "/mu/my-network/groups",
+      slug: "/mu/message",
       icon: MessageIcon,
     },
     {
       label: "Saved job",
-      slug: "/mu/my-network/groups",
+      slug: "/mu/saved-jobs",
       icon: SaveJobIcon,
     },
   ];
@@ -72,7 +74,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
       {/* Top Navigation */}
       <div>
         <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold text-headerColor">
-         Pro Industry Dashboard
+          Pro Industry Dashboard
         </h3>
 
         <div className="mt-4 space-y-1">
@@ -96,7 +98,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
 
       {/* Bottom Common Navigation */}
       <div className="pt-6  ">
-        <MainPageBottomNav onItemClick={onItemClick} />
+        <ProIndustrySetting onItemClick={onItemClick} />
       </div>
       <div className="pt-6">
         <SubscriptionCard />
