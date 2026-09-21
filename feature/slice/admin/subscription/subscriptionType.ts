@@ -196,6 +196,7 @@ export type PlanFeatureValue =
 export interface PlanFeatureOption {
   value: PlanFeatureValue;
   label: string;
+  plan_types?: Array<"premium" | "industry">;
 }
 
 export interface GetPlanFeaturesResponse {

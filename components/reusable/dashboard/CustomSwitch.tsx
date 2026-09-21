@@ -3,20 +3,24 @@ import React from "react";
 interface CustomSwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
+  disabled?: boolean;
   className?: string;
 }
 
 const CustomSwitch = React.forwardRef<HTMLButtonElement, CustomSwitchProps>(
-  ({ checked, onChange, className = "" }, ref) => {
+  ({ checked, onChange, disabled = false, className = "" }, ref) => {
     return (
       <button
         ref={ref}
         type="button"
         role="switch"
         aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-          checked ? "bg-primaryColor" : "bg-gray-300"
+        aria-disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-50 bg-gray-300"
+            : `cursor-pointer ${checked ? "bg-primaryColor" : "bg-gray-300"}`
         } ${className}`}
       >
         <span

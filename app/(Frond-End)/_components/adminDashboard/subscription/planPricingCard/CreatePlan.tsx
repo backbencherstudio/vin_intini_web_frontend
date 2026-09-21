@@ -9,6 +9,7 @@ import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
 import {
   Plan,
+  PlanFeatureOption,
   PlanFeatureValue,
   PlanPayload,
 } from "@/feature/slice/admin/subscription/subscriptionType";
@@ -39,6 +40,15 @@ const formatDateValue = (value?: Date) => {
   const month = String(value.getMonth() + 1).padStart(2, "0");
   const day = String(value.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+const isFeatureAvailableForType = (
+  feature?: PlanFeatureOption,
+  type?: "premium" | "industry",
+) => {
+  if (!feature) return true;
+  if (!type || !feature.plan_types?.length) return true;
+  return feature.plan_types.includes(type);
 };
 
 export default function CreatePlan({
@@ -89,15 +99,31 @@ export default function CreatePlan({
         const match = featureOptions.find(
           (option) => option.value === feature || option.label === feature,
         );
-        return match?.value;
+        return match;
       })
-      .filter((value): value is PlanFeatureValue => Boolean(value));
+      .filter(
+        (option): option is PlanFeatureOption =>
+          Boolean(option) && isFeatureAvailableForType(option, planType),
+      )
+      .map((option) => option.value);
 
     setSelectedFeatures(mapped);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureOptions, data?.features]);
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePlanTypeChange = (value: string) => {
+    setPlanType(value as "premium" | "industry");
+    const type = value as "premium" | "industry";
+    setSelectedFeatures((prev) =>
+      prev.filter((feature) => {
+        const option = featureOptions?.find((f) => f.value === feature);
+        return !option || isFeatureAvailableForType(option, type);
+      }),
+    );
   };
 
   const handleFeatureToggle = (value: PlanFeatureValue) => {
@@ -184,7 +210,7 @@ export default function CreatePlan({
                 <CustomRadioButton
                   label="Plan Type"
                   value={planType}
-                  onChange={(v) => setPlanType(v as "premium" | "industry")}
+                  onChange={handlePlanTypeChange}
                   options={[
                     { label: "Premium", value: "premium" },
                     { label: "Industry", value: "industry" },
@@ -317,7 +343,7 @@ export default function CreatePlan({
             </div>
 
             {/* Feature List */}
-            <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
+            <div className="space-y-3 overflow-y-auto pr-1">
               {isFeaturesLoading ? (
                 <p className="px-4 py-3 text-sm text-[#777980]">
                   Loading features...
@@ -332,17 +358,35 @@ export default function CreatePlan({
                 </p>
               ) : (
                 featureOptions.map((item) => {
-                  const isEnabled = selectedFeatures.includes(item.value);
+                  const isAvailable = isFeatureAvailableForType(
+                    item,
+                    planType,
+                  );
+                  const isEnabled =
+                    selectedFeatures.includes(item.value) && isAvailable;
                   return (
                     <div
                       key={item.value}
                       className="flex items-center justify-between rounded-lg pr-5 pb-5"
                     >
-                      <span className=" text-lg font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">
-                        {item.label}
-                      </span>
+                      <div>
+                        <span
+                          className={`text-lg font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56] ${
+                            !isAvailable ? "opacity-50" : ""
+                          }`}
+                        >
+                          {item.label}
+                        </span>
+                        {!isAvailable && (
+                          <p className="mt-1 text-xs font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB]">
+                            Available for{" "}
+                            {item.plan_types?.join(" & ") || "all"} plans only
+                          </p>
+                        )}
+                      </div>
                       <CustomSwitch
                         checked={isEnabled}
+                        disabled={!isAvailable}
                         onChange={() => handleFeatureToggle(item.value)}
                       />
                     </div>
