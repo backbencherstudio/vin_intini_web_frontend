@@ -224,7 +224,7 @@ export default function PlanPricingTable() {
             <CustomModal
                 open={editOpen}
                 onOpenChange={setEditOpen}
-                size="lg"
+                size="xl"
                 showCloseButton={false}
             >
                 <CreatePlan

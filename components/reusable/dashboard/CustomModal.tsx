@@ -19,7 +19,7 @@ type CustomModalProps = {
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
   title?: string;
-  size?: "sm" | "md" | "lg" | "mmd" | "xsm";
+  size?: "sm" | "md" | "lg" | "mmd" | "xsm" | "xl";
   className?: string;
   showCloseButton?: boolean;
 } & CloseButtonConfig;
@@ -43,6 +43,7 @@ export default function CustomModal(props: CustomModalProps) {
     md: "w-[calc(100%-1.5rem)] !max-w-[680px]",
     mmd: "w-[calc(100%-1.5rem)] !max-w-[684px]",
     lg: "w-[calc(100%-1.5rem)] !max-w-[858px]",
+    xl: "w-[calc(100%-1.5rem)] !max-w-[1200px]",
   };
 
   const shadcnCloseProps =
