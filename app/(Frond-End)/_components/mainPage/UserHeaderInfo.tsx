@@ -17,6 +17,7 @@ import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
   CompanyIcon,
+  DashboardIcon,
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
@@ -24,6 +25,7 @@ import {
   SettingIcon,
   UserCircleIcon,
 } from "@/public/svgIcons/Icons";
+import { LayoutDashboardIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -247,16 +249,16 @@ function UserHeaderInfo() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/mu/settings/general`}
+                      href={`/mu/pro-industry`}
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
-                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                      <DashboardIcon className="w-5 h-5 text-grayColor1  " />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/mu/settings/general`}
+                      href={`/mu/create-company-page`}
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <CompanyIcon className="w-5 h-5 text-grayColor1  " />

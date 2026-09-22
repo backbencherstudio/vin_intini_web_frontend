@@ -1,17 +1,20 @@
-import React from "react";
-import ProIndustrySidebar from "./_component/ProIndustrySidebar";
+import React from 'react'
+import ProIndustrySidebar from './_component/ProIndustrySidebar'
 
-export default function ProIndustryLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-6 py-6 justify-center px-4">
-      <aside className="hidden lg:block w-64 shrink-0">
-        <ProIndustrySidebar />
-      </aside>
-      <main className="flex-1 max-w-3xl">{children}</main>
+    <div>
+       
+        <div className="lg:grid lg:grid-cols-8 xl:grid-cols-10 sm:py-8 py-6 gap-6 md:py-10 mb-10">
+          <div className="hidden lg:block col-span-2   lg:sticky lg:top-25  lg:overflow-y-auto self-start">
+             <ProIndustrySidebar/>
+          </div>
+          <div className="xl:col-span-8 lg:border-l lg:pl-6 border-[#D2D2D5] lg:col-span-6 col-span-12">
+            <div>{children}</div>
+          </div>
+        </div>
     </div>
-  );
+  )
 }
+
+export default layout
