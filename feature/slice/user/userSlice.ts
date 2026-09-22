@@ -14,7 +14,6 @@ const userSlice = baseApiSlice.injectEndpoints({
         url: "/me",
         method: "GET",
       }),
-      providesTags: ["User"],
     }),
     getInstitution: builder.query({
       query: () => ({

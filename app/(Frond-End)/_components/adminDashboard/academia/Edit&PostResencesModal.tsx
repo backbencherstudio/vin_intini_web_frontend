@@ -135,6 +135,13 @@ export default function MedicalResidencyForm({
           value={formData.programName}
           onChange={(e) => updateField("programName", e.target.value)}
         />
+        <CustomInput
+          label="title name"
+          required
+          placeholder="Enter title Name"
+          value={formData.programName}
+          onChange={(e) => updateField("programName", e.target.value)}
+        />
 
         <div className="grid grid-cols-2 gap-4">
           <CustomSelect
@@ -159,6 +166,14 @@ export default function MedicalResidencyForm({
           <p className="text-grayColor1 font-semibold text-base mb-4">
             Map Coordinates
           </p>
+          <span>map header</span>
+          <CustomInput
+            label="Map header"
+            value={formData.city}
+            onChange={(e) => updateField("city", e.target.value)}
+            required
+            placeholder=""
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <CustomInput

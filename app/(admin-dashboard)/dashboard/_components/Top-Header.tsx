@@ -5,14 +5,18 @@ import Image from "next/image";
 import { IoMdNotifications } from "react-icons/io";
 import { Menu, X } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useGetMyProfileQuery } from "@/feature/slice/user/userSlice";
+import {
+  useGetMyProfileQuery,
+  useGetUserProfileQuery,
+} from "@/feature/slice/user/userSlice";
 import adminProfile from "@/public/images/admin/profile.png";
 
 export default function TopHeader() {
   const { openMobile, setOpenMobile } = useSidebar();
 
-  const { data, error, isLoading, isSuccess } = useGetMyProfileQuery("");
-  const profile = data?.data;
+  const { data, error, isLoading, isSuccess } = useGetUserProfileQuery("");
+  const profile = data?.user;
+  console.log(profile, "profile");
 
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] flex h-16 items-center justify-between border-b bg-white px-4">
