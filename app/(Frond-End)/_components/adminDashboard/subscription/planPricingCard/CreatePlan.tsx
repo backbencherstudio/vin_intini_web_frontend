@@ -4,8 +4,16 @@ import { useEffect, useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
-import { Plan, PlanFeatureValue, PlanPayload } from "@/feature/slice/admin/subscription/subscriptionType";
-import { useCreatePlanMutation, useGetPlanFeaturesQuery, useUpdatePlanMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
+import {
+  Plan,
+  PlanFeatureValue,
+  PlanPayload,
+} from "@/feature/slice/admin/subscription/subscriptionType";
+import {
+  useCreatePlanMutation,
+  useGetPlanFeaturesQuery,
+  useUpdatePlanMutation,
+} from "@/feature/slice/admin/subscription/subscriptionApi";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -37,7 +45,11 @@ export default function CreatePlan({
 }: CreatePlanModalProps) {
   const [createPlan] = useCreatePlanMutation();
   const [updatePlan] = useUpdatePlanMutation();
-  const { data: featuresResponse, isLoading: isFeaturesLoading, isError: isFeaturesError } = useGetPlanFeaturesQuery();
+  const {
+    data: featuresResponse,
+    isLoading: isFeaturesLoading,
+    isError: isFeaturesError,
+  } = useGetPlanFeaturesQuery();
   const router = useRouter();
 
   const featureOptions = featuresResponse?.data;
@@ -52,8 +64,12 @@ export default function CreatePlan({
     status: data ? data.status === "active" : true,
   });
 
-  const [selectedFeatures, setSelectedFeatures] = useState<PlanFeatureValue[]>([]);
-  const [date, setDate] = useState<Date | undefined>(toDateValue(data?.discount_duration));
+  const [selectedFeatures, setSelectedFeatures] = useState<PlanFeatureValue[]>(
+    [],
+  );
+  const [date, setDate] = useState<Date | undefined>(
+    toDateValue(data?.discount_duration),
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -62,7 +78,7 @@ export default function CreatePlan({
     const mapped = (data?.features ?? [])
       .map((feature) => {
         const match = featureOptions.find(
-          (option) => option.value === feature || option.label === feature
+          (option) => option.value === feature || option.label === feature,
         );
         return match?.value;
       })
@@ -77,7 +93,9 @@ export default function CreatePlan({
 
   const handleFeatureToggle = (value: PlanFeatureValue) => {
     setSelectedFeatures((prev) =>
-      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value],
     );
   };
 
@@ -110,7 +128,9 @@ export default function CreatePlan({
       router.push("/dashboard/subscription/plan-pricing");
     } catch (err) {
       console.error(err);
-      toast.error(data?.id ? "Failed to update plan." : "Failed to create plan.");
+      toast.error(
+        data?.id ? "Failed to update plan." : "Failed to create plan.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -127,8 +147,6 @@ export default function CreatePlan({
           <p className="mt-2  text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
             Create a new subscription plan with pricing and features.
           </p>
-
-        
         </div>
 
         <div className="py-4">
@@ -139,8 +157,12 @@ export default function CreatePlan({
           {/* Left Side - Plan Information */}
           <div className="space-y-5 border border-[#E2E8F0] p-4 rounded-lg">
             <div>
-              <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">Plan Information</h3>
-              <p className=" mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">Add Subscription</p>
+              <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
+                Plan Information
+              </h3>
+              <p className=" mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+                Add Subscription
+              </p>
             </div>
 
             <CustomInput
@@ -188,7 +210,6 @@ export default function CreatePlan({
                 onChange={(e) => handleChange("discount", e.target.value)}
               />
               <div>
-              
                 <div className="flex items-center gap-2 relative mt-">
                   <input
                     type="color"
@@ -197,7 +218,7 @@ export default function CreatePlan({
                     className="h-10 w-12 cursor-pointer rounded mt-7  absolute left-2"
                   />
                   <CustomInput
-                  label="Badge Color"
+                    label="Badge Color"
                     value={formData.badgeColor}
                     onChange={(e) => handleChange("badgeColor", e.target.value)}
                     className="ps-16"
@@ -216,10 +237,12 @@ export default function CreatePlan({
             {/* Status Toggle */}
             <div className="flex items-center justify-between rounded-lg  px-4 py-3">
               <div>
-                <p className=" text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">Plan Status</p>
-                <p className=" text-sm font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB] mt-1">You can activate or deactivate this plan.</p>
-              
-                
+                <p className=" text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">
+                  Plan Status
+                </p>
+                <p className=" text-sm font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB] mt-1">
+                  You can activate or deactivate this plan.
+                </p>
               </div>
               <button
                 type="button"
@@ -237,59 +260,62 @@ export default function CreatePlan({
             </div>
           </div>
 
-    
           {/* Right Side - Features */}
-<div className="space-y-5 border p-4 rounded-lg">
-  
-    <div>
-      <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
-        Plan Feature
-      </h3>
-      <p className="mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
-        Select and configure features for this plan
-      </p>
-       <div className="flex items-center justify-center gap-2 py-4 w-full">
-      
-    </div>
-   
-  </div>
+          <div className="space-y-5 border p-4 rounded-lg">
+            <div>
+              <h3 className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
+                Plan Feature
+              </h3>
+              <p className="mt-1  text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
+                Select and configure features for this plan
+              </p>
+              <div className="flex items-center justify-center gap-2 py-4 w-full"></div>
+            </div>
 
-  {/* Feature List */}
-  <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
-    {isFeaturesLoading ? (
-      <p className="px-4 py-3 text-sm text-[#777980]">Loading features...</p>
-    ) : isFeaturesError ? (
-      <p className="px-4 py-3 text-sm text-red-500">Failed to load features.</p>
-    ) : !featureOptions?.length ? (
-      <p className="px-4 py-3 text-sm text-[#777980]">No features available.</p>
-    ) : (
-      featureOptions.map((item) => {
-        const isEnabled = selectedFeatures.includes(item.value);
-        return (
-          <div
-            key={item.value}
-            className="flex items-center justify-between rounded-lg  px-4 py-3"
-          >
-            <span className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">{item.label}</span>
-            <button
-              type="button"
-              onClick={() => handleFeatureToggle(item.value)}
-              className={`relative h-6 w-11 rounded-full transition-colors ${
-                isEnabled ? "bg-primaryColor" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-                  isEnabled ? "translate-x-5" : ""
-                }`}
-              />
-            </button>
+            {/* Feature List */}
+            <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
+              {isFeaturesLoading ? (
+                <p className="px-4 py-3 text-sm text-[#777980]">
+                  Loading features...
+                </p>
+              ) : isFeaturesError ? (
+                <p className="px-4 py-3 text-sm text-red-500">
+                  Failed to load features.
+                </p>
+              ) : !featureOptions?.length ? (
+                <p className="px-4 py-3 text-sm text-[#777980]">
+                  No features available.
+                </p>
+              ) : (
+                featureOptions.map((item) => {
+                  const isEnabled = selectedFeatures.includes(item.value);
+                  return (
+                    <div
+                      key={item.value}
+                      className="flex items-center justify-between rounded-lg  px-4 py-3"
+                    >
+                      <span className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">
+                        {item.label}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleFeatureToggle(item.value)}
+                        className={`relative h-6 w-11 rounded-full transition-colors ${
+                          isEnabled ? "bg-primaryColor" : "bg-gray-300"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                            isEnabled ? "translate-x-5" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
-        );
-      })
-    )}
-  </div>
-</div>
         </div>
 
         {/* Footer */}

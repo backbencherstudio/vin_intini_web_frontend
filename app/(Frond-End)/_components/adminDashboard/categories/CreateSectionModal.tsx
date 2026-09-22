@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 
 const defaultIndustryOptions = [
-    { label: "Biotechnologies", value: "biotechnology" },
+    { label: "Biotechnology", value: "biotechnology" },
     { label: "Psychotropics", value: "psychotropics" },
 ];
 
@@ -15,6 +15,7 @@ interface CreateSectionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     industryOptions?: { label: string; value: string }[];
+    initialValues?: { industryType: string; sectionHeading: string };
     onSubmit?: (data: { industryType: string; sectionHeading: string }) => void;
 }
 
@@ -22,17 +23,29 @@ export default function CreateSectionModal({
     open,
     onOpenChange,
     industryOptions = defaultIndustryOptions,
+    initialValues,
     onSubmit,
 }: CreateSectionModalProps) {
     const emptyForm = {
-        industryType: industryOptions[0]?.value ?? "",
-        sectionHeading: "",
+        industryType: initialValues?.industryType || industryOptions[0]?.value || "",
+        sectionHeading: initialValues?.sectionHeading || "",
     };
+
     const [form, setForm] = useState(emptyForm);
     const [errors, setErrors] = useState<{
         industryType?: string;
         sectionHeading?: string;
     }>({});
+
+    useEffect(() => {
+        if (open) {
+            setForm({
+                industryType: initialValues?.industryType || industryOptions[0]?.value || "",
+                sectionHeading: initialValues?.sectionHeading || "",
+            });
+            setErrors({});
+        }
+    }, [open, initialValues, industryOptions]);
 
     const resetForm = () => {
         setForm(emptyForm);
@@ -69,7 +82,7 @@ export default function CreateSectionModal({
         <CustomModal
             open={open}
             onOpenChange={handleOpenChange}
-            title="Create New Section"
+            title={initialValues ? "Edit Section" : "Create New Section"}
             size="md"
             className="gap-4 px-5 py-5 md:px-6 md:py-6"
         >
@@ -114,7 +127,7 @@ export default function CreateSectionModal({
                         Cancel
                     </CustomButton>
                     <CustomButton type="submit" className="rounded-full px-5">
-                        Save Section Information
+                        {initialValues ? "Save Changes" : "Save Section Information"}
                     </CustomButton>
                 </div>
             </form>
