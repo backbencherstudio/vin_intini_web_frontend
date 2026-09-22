@@ -7,10 +7,12 @@ import CreateSectionModal from "./CreateSectionModal";
 
 interface CategoryAddSectionActionProps {
     industryOptions?: { label: string; value: string }[];
+    onSubmit?: (data: { industryType: string; sectionHeading: string }) => void;
 }
 
 export default function CategoryAddSectionAction({
     industryOptions,
+    onSubmit,
 }: CategoryAddSectionActionProps) {
     const [open, setOpen] = useState(false);
 
@@ -25,6 +27,7 @@ export default function CategoryAddSectionAction({
                 open={open}
                 onOpenChange={setOpen}
                 industryOptions={industryOptions}
+                onSubmit={onSubmit}
             />
         </>
     );

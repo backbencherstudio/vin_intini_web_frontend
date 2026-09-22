@@ -1,48 +1,25 @@
-import CustomTitleDescription from '@/components/reusable/dashboard/CustomTitleDes'
-import FilterTabs from '@/components/reusable/dashboard/FilterTabs';
-import { CategorySection } from '../CategorySectionCard';
-import CategoryAddSectionAction from '../CategoryAddSectionAction';
-import CategorySectionList from '../CategorySectionList';
+"use client";
+
+import toast from "react-hot-toast";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import FilterTabs from "@/components/reusable/dashboard/FilterTabs";
+import Loading from "@/components/reusable/Loader";
+import { CategorySection } from "../CategorySectionCard";
+import CategoryAddSectionAction from "../CategoryAddSectionAction";
+import CategorySectionList from "../CategorySectionList";
+import {
+    useCreatePsychologySectionMutation,
+    useGetPsychologySectionsQuery,
+    useUpdatePsychologySectionMutation,
+} from "@/feature/slice/admin/categories";
 
 interface PsychologyStructurePageProps {
     activeTab?: string;
 }
 
-const sections: CategorySection[] = [
-    {
-        id: "experimental-tools",
-        category: "biotechnology",
-        categoryLabel: "Biotechnologies",
-        title: "Experimental Tools for Behavioral and Cognitive Studies",
-        subsections: [
-            "Stimulus Generation Tools",
-            "Response Measurement Devices",
-            "Motor Sensory Equipment",
-        ],
-        hasMore: true,
-    },
-    {
-        id: "laboratory-setup",
-        category: "biotechnology",
-        categoryLabel: "Biotechnologies",
-        title: "General Laboratory and Clinical Setup",
-        subsections: [
-            "General Supplies",
-            "Environmental Control Systems",
-        ],
-    },
-    {
-        id: "assessment-tools",
-        category: "psychotropics",
-        categoryLabel: "Psychotropics",
-        title: "Psychological Assessment Tools",
-        subsections: [
-            "Cognitive and Intelligence Assessments",
-            "Personality Evaluation Tools",
-            "Neuropsychological Evaluation Tools",
-        ],
-        hasMore: true,
-    },
+const industryOptions = [
+    { label: "Biotechnology", value: "biotechnology" },
+    { label: "Psychotropics", value: "psychotropics" },
 ];
 
 export default function PsychologyStructurePage({
@@ -54,6 +31,64 @@ export default function PsychologyStructurePage({
         { id: "psychotropics", label: "Psychotropics" },
     ];
 
+    const typeFilter = activeTab === "all" ? "" : activeTab;
+    const { data, isLoading, isError } = useGetPsychologySectionsQuery({
+        query: { type: typeFilter, per_page: 50, page: 1 },
+    });
+
+    const [createPsychologySection] = useCreatePsychologySectionMutation();
+    const [updatePsychologySection] = useUpdatePsychologySectionMutation();
+
+    const handleCreateSection = async (formData: {
+        industryType: string;
+        sectionHeading: string;
+    }) => {
+        try {
+            await createPsychologySection({
+                industry_type: formData.industryType,
+                name: formData.sectionHeading,
+            }).unwrap();
+            toast.success("Psychology section created successfully!");
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to create section");
+        }
+    };
+
+    const handleUpdateSection = async (
+        section: CategorySection,
+        formData: { industryType: string; sectionHeading: string }
+    ) => {
+        try {
+            await updatePsychologySection({
+                id: section.id,
+                body: {
+                    industry_type: formData.industryType,
+                    name: formData.sectionHeading,
+                },
+            }).unwrap();
+            toast.success("Psychology section updated successfully!");
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to update section");
+        }
+    };
+
+    const sections: CategorySection[] = (data?.data?.sections || []).map((sec) => ({
+        id: sec.id,
+        category: sec.industry_type,
+        categoryLabel:
+            sec.industry_type === "biotechnology"
+                ? "Biotechnology"
+                : sec.industry_type === "psychotropics"
+                ? "Psychotropics"
+                : sec.industry_type,
+        title: sec.name,
+        subsections: (sec.categories || []).map((c) => ({
+            id: c.id,
+            name: c.category_name,
+        })),
+        hasMore: (sec.categories || []).length > 3,
+    }));
+
     return (
         <>
             <div className="pb-4 border-b border-[#E0E0E0]">
@@ -62,10 +97,8 @@ export default function PsychologyStructurePage({
                     description="Manage your industry sections and tabs."
                     action={
                         <CategoryAddSectionAction
-                            industryOptions={[
-                                { label: "Biotechnologies", value: "biotechnology" },
-                                { label: "Psychotropics", value: "psychotropics" },
-                            ]}
+                            industryOptions={industryOptions}
+                            onSubmit={handleCreateSection}
                         />
                     }
                 />
@@ -73,7 +106,26 @@ export default function PsychologyStructurePage({
 
             <FilterTabs tabs={tabs} paramKey="tab" className="my-4" />
 
-            <CategorySectionList sections={sections} activeTab={activeTab} />
+            {isLoading ? (
+                <div className="py-12">
+                    <Loading text="Loading psychology sections..." />
+                </div>
+            ) : isError ? (
+                <div className="py-12 text-center text-red-500">
+                    Failed to load psychology sections. Please try again.
+                </div>
+            ) : sections.length === 0 ? (
+                <div className="py-12 text-center text-gray-500">
+                    No psychology sections found.
+                </div>
+            ) : (
+                <CategorySectionList
+                    sections={sections}
+                    activeTab={activeTab}
+                    onEditSection={handleUpdateSection}
+                    industryOptions={industryOptions}
+                />
+            )}
         </>
     );
 }

@@ -4,12 +4,17 @@ import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import { Pencil, X } from "lucide-react";
 import CategorySectionActions from "./CategorySectionActions";
 
+export interface SubcategoryItem {
+    id: number | string;
+    name: string;
+}
+
 export interface CategorySection {
-    id: string;
+    id: string | number;
     category: string;
     categoryLabel: string;
     title: string;
-    subsections: string[];
+    subsections: (string | SubcategoryItem)[];
     hasMore?: boolean;
 }
 
@@ -19,8 +24,8 @@ interface CategorySectionCardProps {
     onDelete?: (section: CategorySection) => void;
     onCreateTab?: (section: CategorySection) => void;
     onSeeMore?: (section: CategorySection) => void;
-    onEditTab?: (section: CategorySection, tabName: string) => void;
-    onDeleteTab?: (section: CategorySection, tabName: string) => void;
+    onEditTab?: (section: CategorySection, subcategory: string | SubcategoryItem) => void;
+    onDeleteTab?: (section: CategorySection, subcategory: string | SubcategoryItem) => void;
 }
 
 const badgeStyles: Record<string, string> = {
@@ -39,6 +44,13 @@ export default function CategorySectionCard({
     onEditTab,
     onDeleteTab,
 }: CategorySectionCardProps) {
+    const getSubcategoryInfo = (item: string | SubcategoryItem) => {
+        if (typeof item === "string") {
+            return { key: item, id: item, name: item };
+        }
+        return { key: String(item.id), id: item.id, name: item.name };
+    };
+
     return (
         <article className="flex min-h-85 flex-col rounded-2xl border border-[#E0E0E0] bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -66,31 +78,34 @@ export default function CategorySectionCard({
                 </p>
 
                 <div className="space-y-3">
-                    {section.subsections.slice(0, 3).map((subsection) => (
-                        <div
-                            key={subsection}
-                            className="flex w-fit max-w-full items-center rounded-full border border-[#E0E0E0] px-3 py-2 text-sm text-[#4A4C56]"
-                        >
-                            <span className="truncate">{subsection}</span>
-                            <span className="mx-2 h-5 w-px bg-[#E0E0E0]" />
-                            <button
-                                type="button"
-                                aria-label={`Edit ${subsection}`}
-                                className="shrink-0 rounded p-0.5 hover:bg-gray-100"
-                                onClick={() => onEditTab?.(section, subsection)}
+                    {section.subsections.slice(0, 3).map((item) => {
+                        const info = getSubcategoryInfo(item);
+                        return (
+                            <div
+                                key={info.key}
+                                className="flex w-fit max-w-full items-center rounded-full border border-[#E0E0E0] px-3 py-2 text-sm text-[#4A4C56]"
                             >
-                                <Pencil className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                                type="button"
-                                aria-label={`Remove ${subsection}`}
-                                className="ml-1.5 shrink-0 rounded p-0.5 hover:bg-gray-100"
-                                onClick={() => onDeleteTab?.(section, subsection)}
-                            >
-                                <X className="h-3.5 w-3.5" />
-                            </button>
-                        </div>
-                    ))}
+                                <span className="truncate">{info.name}</span>
+                                <span className="mx-2 h-5 w-px bg-[#E0E0E0]" />
+                                <button
+                                    type="button"
+                                    aria-label={`Edit ${info.name}`}
+                                    className="shrink-0 rounded p-0.5 hover:bg-gray-100"
+                                    onClick={() => onEditTab?.(section, item)}
+                                >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                    type="button"
+                                    aria-label={`Remove ${info.name}`}
+                                    className="ml-1.5 shrink-0 rounded p-0.5 hover:bg-gray-100"
+                                    onClick={() => onDeleteTab?.(section, item)}
+                                >
+                                    <X className="h-3.5 w-3.5" />
+                                </button>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {(section.hasMore || section.subsections.length > 3) && (

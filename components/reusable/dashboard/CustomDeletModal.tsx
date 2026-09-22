@@ -39,33 +39,23 @@ export default function CustomDeletModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-30.75 h-9 cursor-pointer rounded-sm border border-[#8C8C8C] px-3 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-[#777980] transition-colors"
+            className="min-w-[125px] h-9 cursor-pointer rounded-lg border border-[#DFDFDF] px-3 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-[#777980] transition-colors"
           >
             {cancelText}
           </button>
 
-
-                <div className="flex items-center justify-end gap-2.5 ] w-full pt-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-3 py-2 rounded-lg border border-[#DFDFDF] text-[#777980] font-['Segoe_UI'] text-[14px] min-w-[125px] font-semibold leading-[140%] tracking-[0.07px] cursor-pointer transition-colors"
-                    >
-                        {cancelText}
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            onConfirm();
-                            onClose();
-                        }}
-                        className="px-5 py-2.5 rounded-lg bg-[#EB3D4D] text-[#FFF] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] cursor-pointer transition-colors"
-                    >
-                        {confirmText}
-                    </button>
-                </div>
-            </div>
-        </CustomModal>
-    );
+          <button
+            type="button"
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+            className="min-w-[125px] h-9 cursor-pointer rounded-lg bg-redColor px-5 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-white transition-colors"
+          >
+            {confirmText}
+          </button>
+        </div>
+      </div>
+    </CustomModal>
+  );
 }

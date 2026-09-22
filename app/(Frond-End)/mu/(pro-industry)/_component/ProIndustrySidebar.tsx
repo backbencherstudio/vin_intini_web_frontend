@@ -1,6 +1,5 @@
 "use client";
 
-import MainPageBottomNav from "@/app/(Frond-End)/_components/mainPage/MainPageBottomNav";
 import {
   AdvertisementIcon,
   BarChartIcon,
