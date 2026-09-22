@@ -2570,6 +2570,21 @@ export const UserCircleIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const DashboardIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M0 0H5.58333V5.58333H0V0ZM8 0H13.5833V5.58333H8V0ZM0 8H5.58333V13.5833H0V8ZM10.25 8H11.3333V10.25H13.5833V11.3333H11.3333V13.5833H10.25V11.3333H8V10.25H10.25V8ZM9.08333 1.08333V4.5H12.5V1.08333H9.08333ZM1.08333 1.08333V4.5H4.5V1.08333H1.08333ZM1.08333 9.08333V12.5H4.5V9.08333H1.08333Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 export const SettingIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -2825,4 +2840,14 @@ export const StrategyIcon = ({ className }: { className?: string }) => (
       fill="#6E38D5"
     />
   </svg>
+);
+export const AdvertisementIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="11" viewBox="0 0 13 11" fill="none" className={className}>
+  <path d="M9.39104 5.89104V4.80771H12.0704V5.89104H9.39104ZM10.4054 10.6667L8.26604 9.04646L8.92146 8.19563L11.0817 9.79479L10.4054 10.6667ZM8.88938 2.47125L8.23396 1.62021L10.3733 0L11.0496 0.871876L8.88938 2.47125ZM0 6.93271V3.76604H2.75958L6.16667 0.359166V10.3396L2.75958 6.93271H0ZM5.08333 2.97438L3.20833 4.84938H1.08333V5.84938H3.20833L5.08333 7.72438V2.97438Z" fill="currentColor"/>
+</svg>
+);
+export const BarChartIcon = ({ className }: { className?: string }) => (
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none" className={className}>
+  <path d="M0 13.1667V12.0833H15.1667V13.1667H0ZM1 10.7627V6H2.58333V10.7627H1ZM4.85583 10.7627V2H6.43917V10.7627H4.85583ZM8.71958 10.7627V4.5H10.3029V10.7627H8.71958ZM12.5833 10.7627V0H14.1667V10.7627H12.5833Z" fill="currentColor"/>
+</svg>
 );

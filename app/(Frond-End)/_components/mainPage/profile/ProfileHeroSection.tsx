@@ -41,6 +41,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   const [showImagePreview, setShowImagePreview] = useState(false);
   const coverImgRef = useRef<HTMLInputElement>(null);
   const profileImgRef = useRef<HTMLInputElement>(null);
+  
 
   useEffect(() => {
     if (!coverImageFile) {

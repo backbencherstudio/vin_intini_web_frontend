@@ -39,7 +39,7 @@ export default function CustomDeletModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-30.75 h-9 cursor-pointer rounded-sm border border-[#8C8C8C] px-3 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-[#777980] transition-colors"
+            className="min-w-[125px] h-9 cursor-pointer rounded-lg border border-[#DFDFDF] px-3 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-[#777980] transition-colors"
           >
             {cancelText}
           </button>
@@ -50,7 +50,7 @@ export default function CustomDeletModal({
               onConfirm();
               onClose();
             }}
-            className="rounded-lg bg-[#EB3D4D] px-5 py-2.5 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-[#FFF] cursor-pointer transition-colors"
+            className="min-w-[125px] h-9 cursor-pointer rounded-lg bg-redColor px-5 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-white transition-colors"
           >
             {confirmText}
           </button>

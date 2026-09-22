@@ -280,6 +280,48 @@ export default function OverViewTable() {
               ]}
             />
 
+            {/* Search */}
+            <div className="relative w-full min-w-80">
+              <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
+
+              <input
+                className="h-10 w-full rounded-md border px-3.5 pl-9 text-sm"
+                type="text"
+                placeholder="Search by user name, email or plan..."
+              />
+            </div>
+
+            <CustomSelect
+              className=" h-[38px] text-nowrap"
+              value={planFilter || "default"}
+              onChange={(value: string) =>
+                setPlanFilter(value === "default" ? "" : value)
+              }
+              options={planOptions}
+            />
+
+            <CustomSelect
+              value={statusFilter || "default"}
+              className=" h-[38px] text-nowrap"
+              onChange={(value: string) =>
+                setStatusFilter(value === "default" ? "" : value)
+              }
+              options={[
+                {
+                  label: "All Status",
+                  value: "default",
+                },
+                {
+                  label: "Active",
+                  value: "active",
+                },
+                {
+                  label: "Suspended",
+                  value: "cancelled",
+                },
+              ]}
+            />
+
             <DateRangePicker
               className=" h-[38px]"
               date={date}
