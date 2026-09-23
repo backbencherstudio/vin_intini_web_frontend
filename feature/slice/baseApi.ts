@@ -44,6 +44,7 @@ export const baseApiSlice = createApi({
     "subscription",
     "plan",
     "category",
+    "Company",
   ],
 });
 
