@@ -1,9 +1,13 @@
-import React from 'react'
+import IndustryHeroSection from "./_component/IndustryHeroSection";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <div>
+        <IndustryHeroSection />
+      </div>
+    </div>
+  );
 }
 
-export default page
+export default page;
