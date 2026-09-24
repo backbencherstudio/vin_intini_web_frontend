@@ -1,7 +1,8 @@
 "use client";
 
+import Breadcrumb from "@/app/(Frond-End)/_components/Breadcrumb";
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import Breadcrumb from "@/components/reusable/dashboard/BreadCumb";
+
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
@@ -12,6 +13,7 @@ import emptyUser from "@/public/empty_user.jpg";
 import { CloudUpload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -81,6 +83,7 @@ export default function CreateCompanyPage() {
   const [createCompany, { isLoading, isSuccess, isError }] =
     useCreateCompanyMutation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
   // Watch form fields for live preview
   const watchedName = watch("name");
   const watchedAddress = watch("address");
@@ -154,8 +157,8 @@ export default function CreateCompanyPage() {
 
     try {
       const response = await createCompany(payload).unwrap();
-      console.log(response, "response");
       toast.success("Company page created successfully!");
+      router.push(`/mu/industry-profile`);
     } catch (error) {
       console.error("Error creating company:", error);
       setErrorMessage(

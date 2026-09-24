@@ -1,10 +1,11 @@
-import IndustryHeroSection from "./_component/IndustryHeroSection";
+import CreateCompanyPage from "../_component/company/CompanyCreatePage";
+
 
 function page() {
   return (
     <div>
       <div>
-        <IndustryHeroSection />
+        <CreateCompanyPage />
       </div>
     </div>
   );

@@ -117,7 +117,7 @@ function UserHeaderInfo() {
     // Redirect to the login page
   };
   const isMessagePage = patheName.startsWith("/mu/message");
-  console.log(userProfileData, "userProfileData");
+
   const isPremium = userProfileData?.subscription?.plan_type === "premium";
   const isIndustry = userProfileData?.subscription?.plan_type === "industry";
   const planName = userProfileData?.subscription?.plan_name || "Basic User";
@@ -276,7 +276,7 @@ function UserHeaderInfo() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      href={`/mu/create-company-page`}
+                      href={`/mu/create-company-page/`}
                       className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <CompanyIcon className="w-5 h-5 text-grayColor1  " />

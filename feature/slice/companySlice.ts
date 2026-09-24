@@ -27,8 +27,8 @@ const companySlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["Company"],
     }),
     getCompany: builder.query({
-      query: () => ({
-        url: "/industry/show",
+      query: (companyId) => ({
+        url: `/industry/show/${companyId}`,
         method: "GET",
       }),
       providesTags: ["Company"],
@@ -36,4 +36,4 @@ const companySlice = baseApiSlice.injectEndpoints({
   }),
 });
 
-export const { useCreateCompanyMutation, useGetCompanyQuery } = companySlice;
+export const { useCreateCompanyMutation, useGetCompanyQuery, useUpdateCompanyMutation, useFollowCompanyMutation } = companySlice;
