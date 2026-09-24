@@ -5,16 +5,22 @@ const jobSlice = baseApiSlice.injectEndpoints({
     getJobs: builder.query({
       query: (data) => ({
         url: `/industry/my-job-posts`,
-        method: "POST",
-        body: data,
+        method: "GET",
       }),
       providesTags: ["Job"],
     }),
     getJobsArchive: builder.query({
       query: (data) => ({
         url: `/industry/my-archived-job-posts`,
-        method: "POST",
+        method: "GET",
         body: data,
+      }),
+      providesTags: ["Job"],
+    }),
+    getStateByCity: builder.query({
+      query: (code) => ({
+        url: `/states/${code}/cities`,
+        method: "GET",
       }),
       providesTags: ["Job"],
     }),
@@ -65,6 +71,7 @@ export const {
   useGetJobDetailsQuery,
   useCreateJobsMutation,
   useStatusUpdateForJobsMutation,
+  useGetStateByCityQuery,
   useUpdateJobsMutation,
   useDeleteJobsMutation,
 } = jobSlice;

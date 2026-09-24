@@ -7,6 +7,7 @@ import {
   DashboardIcon,
   JobsIcon,
   MessageIcon,
+  PencileIcon,
   SaveJobIcon,
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
@@ -55,6 +56,11 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
       label: "Saved job",
       slug: "/mu/saved-jobs",
       icon: SaveJobIcon,
+    },
+    {
+      label: "Post a job position",
+      slug: "/mu/post-job-position",
+      icon: PencileIcon,
     },
   ];
 
