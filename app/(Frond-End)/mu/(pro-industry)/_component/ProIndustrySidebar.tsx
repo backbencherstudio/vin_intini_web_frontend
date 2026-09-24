@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   AdvertisementIcon,
   BarChartIcon,
@@ -17,11 +18,12 @@ import ProIndustrySetting from "./ProIndustrySetting";
 function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
   const [isMobile, setOpenMobile] = useState(false);
+  const { data, isLoading, isError } = useGetUserProfileQuery("Profile");
 
   const menuItems = [
     {
       label: "Industry Profile",
-      slug: "/mu/industry-profile",
+      slug: `/mu/industry-profile/${data?.user?.company_id}`,
       icon: DashboardIcon,
     },
     {
