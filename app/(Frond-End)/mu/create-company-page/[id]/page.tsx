@@ -1,11 +1,11 @@
 import CreateCompanyPage from "../_component/company/CompanyCreatePage";
 
-
-function page() {
+async function page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return (
     <div>
       <div>
-        <CreateCompanyPage />
+        <CreateCompanyPage UId={id} />
       </div>
     </div>
   );

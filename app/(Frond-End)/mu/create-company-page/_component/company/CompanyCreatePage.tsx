@@ -8,13 +8,17 @@ import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputFiel
 import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCreateCompanyMutation } from "@/feature/slice/companySlice";
+import {
+  useCreateCompanyMutation,
+  useGetCompanyQuery,
+  useUpdateCompanyMutation,
+} from "@/feature/slice/companySlice";
 import emptyUser from "@/public/empty_user.jpg";
 import { CloudUpload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -29,6 +33,19 @@ interface CompanyFormData {
   description: string;
   cover_image: File | null;
   authorization_confirmed: boolean;
+}
+
+interface CompanyData {
+  id: number;
+  name: string;
+  address: string;
+  website: string;
+  industry: string;
+  company_size: string;
+  tagline: string;
+  description: string;
+  logo: string | null;
+  cover_image: string | null;
 }
 
 const companySizeOptions = [
@@ -50,12 +67,11 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/jpg",
 ];
 
-export default function CreateCompanyPage() {
+export default function CreateCompanyPage({ UId }: { UId?: string }) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
   const [isCoverDragging, setIsCoverDragging] = useState(false);
-
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -65,6 +81,7 @@ export default function CreateCompanyPage() {
     control,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<CompanyFormData>({
     defaultValues: {
@@ -80,8 +97,47 @@ export default function CreateCompanyPage() {
       authorization_confirmed: false,
     },
   });
-  const [createCompany, { isLoading, isSuccess, isError }] =
-    useCreateCompanyMutation();
+  const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
+  const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
+  const { data } = useGetCompanyQuery(UId, {
+    skip: !UId,
+  });
+  const isLoading = isCreating || isUpdating;
+
+  useEffect(() => {
+    const company = (data?.data ?? data) as CompanyData | undefined;
+    if (!company) return;
+
+    const industry =
+      industryOptions.find(
+        (option) =>
+          option.value.toLowerCase() === company.industry?.trim().toLowerCase(),
+      )?.value || "";
+    const companySize =
+      companySizeOptions.find(
+        (option) =>
+          option.value.toLowerCase() ===
+          company.company_size?.trim().toLowerCase(),
+      )?.value || "";
+
+    reset({
+      name: company.name || "",
+      address: company.address || "",
+      website: company.website || "",
+      industry,
+      company_size: companySize,
+      tagline: company.tagline || "",
+      description: company.description || "",
+      logo: null,
+      cover_image: null,
+      authorization_confirmed: false,
+    });
+    setValue("industry", industry, { shouldValidate: true });
+    setValue("company_size", companySize, { shouldValidate: true });
+    setLogoPreview(company.logo || null);
+    setCoverPreview(company.cover_image || null);
+  }, [data, reset, setValue, UId]);
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   // Watch form fields for live preview
@@ -128,11 +184,11 @@ export default function CreateCompanyPage() {
   };
 
   const onSubmit = async (data: CompanyFormData) => {
-    if (!data.logo) {
+    if (!UId && !data.logo) {
       toast.error("Please upload a logo image");
       return;
     }
-    if (!data.cover_image) {
+    if (!UId && !data.cover_image) {
       toast.error("Please upload a cover image");
       return;
     }
@@ -154,11 +210,21 @@ export default function CreateCompanyPage() {
       "authorization_confirmed",
       String(data.authorization_confirmed),
     );
-
+    if (UId) {
+      payload.append("id", UId);
+    }
+    let response;
     try {
-      const response = await createCompany(payload).unwrap();
-      toast.success("Company page created successfully!");
-      router.push(`/mu/industry-profile`);
+      if (UId) {
+        response = await updateCompany(payload).unwrap();
+        toast.success("Company page updated successfully!");
+      } else {
+        response = await createCompany(payload).unwrap();
+        toast.success("Company page created successfully!");
+      }
+      console.log(response, " response");
+
+      router.push(`/mu/industry-profile/${UId || response?.data?.id}`);
     } catch (error) {
       console.error("Error creating company:", error);
       setErrorMessage(
@@ -236,8 +302,9 @@ export default function CreateCompanyPage() {
                     rules={{ required: "industry  is required" }}
                     render={({ field }) => (
                       <SelecteInputField
+                        key={`industry-${field.value || "empty"}`}
                         id="industry"
-                        value={field.value}
+                        value={field.value || undefined}
                         onChange={field.onChange}
                         placeholder="Ex: Information & Technology Service"
                         options={industryOptions}
@@ -265,8 +332,9 @@ export default function CreateCompanyPage() {
                     rules={{ required: "Company size is required" }}
                     render={({ field }) => (
                       <SelecteInputField
+                        key={`company-size-${field.value || "empty"}`}
                         id="company_size"
-                        value={field.value}
+                        value={field.value || undefined}
                         onChange={field.onChange}
                         placeholder="Select Company Size"
                         options={companySizeOptions}
@@ -502,9 +570,9 @@ export default function CreateCompanyPage() {
                   type="submit"
                   disabled={isLoading}
                   loading={isLoading}
-                  sendingMsg={"Creating..."}
+                  sendingMsg={UId ? "Updating..." : "Creating..."}
                   className="w-full"
-                  title={<div>{ "Create Page"}</div>}
+                  title={<div>{UId ? "Update Page" : "Create Page"}</div>}
                 />
               </form>
             </div>
