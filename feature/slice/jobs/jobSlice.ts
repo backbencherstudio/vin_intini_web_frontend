@@ -33,9 +33,10 @@ const jobSlice = baseApiSlice.injectEndpoints({
       providesTags: ["Job"],
     }),
     getJobApplicants: builder.query({
-      query: (id) => ({
-        url: `/industry/job-applications/${id}`,
+      query: ({ applicantId, status }) => ({
+        url: `/industry/job-applications/${applicantId}`,
         method: "GET",
+        params: status ? { status } : {},
       }),
       providesTags: ["Job"],
     }),
