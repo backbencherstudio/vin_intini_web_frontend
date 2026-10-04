@@ -25,7 +25,7 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="">
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <form onSubmit={handleSubmit} className="relative w-full sm:flex-1">
           <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
@@ -50,14 +50,14 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex items-center gap-2.5 overflow-x-auto mt-4 pb-5 scrollbar-hide">
         {FILTER_TYPES.map((filter) => {
           const isActive = activeFilter === filter.value;
           return (
             <button
               key={filter.value}
               onClick={() => onFilterChange(filter.value)}
-              className={`px-5 py-2 cursor-pointer hover:shadow-xl rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-5 py-2 cursor-pointer hover:shadow-lg rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 isActive
                   ? "bg-primaryColor text-white"
                   : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"

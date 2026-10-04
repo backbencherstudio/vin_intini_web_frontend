@@ -76,7 +76,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
               <button
                 type="button"
                 aria-label={`Save ${job.job_title}`}
-                className="flex-col justify-center items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
+                className="flex-col text-grayColor1 justify-center items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
               >
                 <FiBookmark className="w-7 h-6" />
                 Save

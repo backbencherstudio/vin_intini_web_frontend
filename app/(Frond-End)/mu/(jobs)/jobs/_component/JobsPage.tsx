@@ -25,8 +25,8 @@ export default function JobsPage() {
             ? "Short Term"
             : "Remote";
   return (
-    <main className="w-full  space-y-6">
-      <header>
+    <main className="w-full  ">
+      <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
           {jobsType} Jobs
         </h1>
