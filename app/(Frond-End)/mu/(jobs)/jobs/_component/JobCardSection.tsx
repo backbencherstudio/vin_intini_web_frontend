@@ -1,15 +1,14 @@
 "use client";
 
+import { userJobType } from "@/lib/type";
 import React from "react";
 import { BsArrowRight } from "react-icons/bs";
-import { JobItem } from "./jobdata";
 import { JobCard } from "./JobCard";
-
 
 interface JobCardSectionProps {
   title: string;
   subtitle: string;
-  jobs: JobItem[];
+  jobs: userJobType[];
 }
 
 export const JobCardSection: React.FC<JobCardSectionProps> = ({
@@ -17,8 +16,6 @@ export const JobCardSection: React.FC<JobCardSectionProps> = ({
   subtitle,
   jobs,
 }) => {
-  if (!jobs.length) return null;
-
   return (
     <section className="bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6 ">
       <div>
@@ -27,7 +24,7 @@ export const JobCardSection: React.FC<JobCardSectionProps> = ({
       </div>
 
       <div className="divide-y divide-gray-100">
-        {jobs.map((job) => (
+        {jobs?.map((job) => (
           <JobCard key={job.id} job={job} />
         ))}
       </div>
