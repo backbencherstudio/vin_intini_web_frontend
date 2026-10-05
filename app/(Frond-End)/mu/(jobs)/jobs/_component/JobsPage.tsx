@@ -7,9 +7,10 @@ import { JobCardSkeleton } from "./JobCardSkeleton";
 import { JobSearchBar } from "./JobSearchBar";
 
 export default function JobsPage() {
+  const limit = 10;
   const { params, updateParam } = useUrlQueryParams();
-  const activeFilter = params.filter || "all";
-  const searchParam = params.search || "";
+  const activeFilter = params?.filter || "all";
+  const searchParam = params?.search || "";
 
   const { data, isLoading, isError } = useGetUserAllJobsQuery(params);
   const jobs = data?.data || [];

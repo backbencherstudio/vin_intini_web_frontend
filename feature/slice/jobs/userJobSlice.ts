@@ -59,7 +59,7 @@ const userJobSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
-  useGetUserAllJobsQuery,
+   useGetUserAllJobsQuery,
   useGetUserJobsApplicationsQuery,
   useGetUserSingleJobQuery,
   useGetAllSavedJobsQuery,

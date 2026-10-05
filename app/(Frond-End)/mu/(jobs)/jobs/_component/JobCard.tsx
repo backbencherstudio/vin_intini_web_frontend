@@ -1,13 +1,27 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
 import { userJobType } from "@/lib/type";
 import Image from "next/image";
+import Link from "next/link";
 import { memo } from "react";
+import toast from "react-hot-toast";
 import { FiBookmark } from "react-icons/fi";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 
 export const JobCard = memo(({ job }: { job: userJobType }) => {
+  const [saveUserJob, { isLoading, isSuccess, isError }] =
+    useSaveUserJobMutation();
+  const handleSaveJob = async (id) => {
+    try {
+      const response = await saveUserJob(id).unwrap();
+      console.log(response, "response");
+      toast.success(response?.message || "Job saved successfully!");
+    } catch (error) {
+      console.error("Error saving job:", error);
+    }
+  };
   return (
     <div className="py-5 first:pt-0 w-full  flex gap-3 last:pb-0 ">
       <div className="relative hidden md:block w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
@@ -63,11 +77,17 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
           </div>
 
           <div className="gap-3 flex justify-between items-center mt-3 h-full ">
-            <div className="">
+            <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
               <ButtonReuseable
                 title="Apply Now"
-                className="px-5 py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
+                className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
               />
+              <Link
+                className="text-sm font-semibold text-primaryColor"
+                href={`/mu/industry-profile/${job?.company?.id}`}
+              >
+                View Company
+              </Link>
             </div>
             <div className="flex items-end gap-3 text-sm  ">
               <p className="text-headerColor">
@@ -75,6 +95,9 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
               </p>
               <button
                 type="button"
+                onClick={() => handleSaveJob(job?.id)}
+                disabled={isLoading || isSuccess}
+                aria-busy={isLoading}
                 aria-label={`Save ${job.job_title}`}
                 className="flex-col text-grayColor1 justify-center items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
               >

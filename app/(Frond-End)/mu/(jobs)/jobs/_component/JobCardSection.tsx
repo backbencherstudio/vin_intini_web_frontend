@@ -2,19 +2,23 @@
 
 import { userJobType } from "@/lib/type";
 import React from "react";
-import { BsArrowRight } from "react-icons/bs";
 import { JobCard } from "./JobCard";
+import LoadMoreButton from "./LoadMoreButton";
 
 interface JobCardSectionProps {
   title: string;
   subtitle: string;
   jobs: userJobType[];
+  showAllPath?: string;
+  showAllParams?: Record<string, string | number | boolean | undefined>;
+  showAllLabel?: string;
 }
 
 export const JobCardSection: React.FC<JobCardSectionProps> = ({
   title,
   subtitle,
   jobs,
+
 }) => {
   return (
     <section className="rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6 ">
@@ -29,12 +33,7 @@ export const JobCardSection: React.FC<JobCardSectionProps> = ({
         ))}
       </div>
 
-      <div className="pt-2 text-center border-t border-gray-50">
-        <button className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#00A896] hover:underline">
-          <span>Show All</span>
-          <BsArrowRight className="text-sm" />
-        </button>
-      </div>
+   
     </section>
   );
 };
