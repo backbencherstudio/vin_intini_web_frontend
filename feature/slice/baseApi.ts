@@ -7,6 +7,7 @@ const rawBaseQuery = fetchBaseQuery({
   credentials: "include",
   prepareHeaders: async (headers) => {
     const token = await getToken();
+
     if (token) headers.set("Authorization", `Bearer ${token}`);
     headers.set("Accept", "application/json");
     return headers;

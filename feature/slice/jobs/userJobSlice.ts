@@ -35,7 +35,7 @@ const userJobSlice = baseApiSlice.injectEndpoints({
     }),
     applyUserJob: builder.mutation<any, any | void>({
       query: ({ data, id }) => ({
-        url: `/industry/job-post/${id}/save`,
+        url: `/industry/job-post/${id}/apply`,
         method: "POST",
         body: data,
       }),

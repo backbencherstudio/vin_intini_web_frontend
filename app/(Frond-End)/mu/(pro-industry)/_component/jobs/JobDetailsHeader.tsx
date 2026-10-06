@@ -11,13 +11,15 @@ import {
 } from "@/public/svgIcons/Icons";
 import { Clock3 } from "lucide-react";
 import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import { useState } from "react";
+import ApplyTypeModal from "../../../(jobs)/jobs/_component/ApplyTypeModal";
 import DetailsSkeleton from "./JobsSIngleSkleton";
 import JobStatusChange from "./JobStatusChange";
 function JobDetailsHeader() {
   const params = useParams();
   const id = params.id as string | number;
-  const router = useRouter();
+  const [isApplying, setIsApplying] = useState(false);
   const pathName = usePathname();
   const { data, isLoading, isError } = useGetJobDetailsQuery(id, { skip: !id });
 
@@ -85,6 +87,7 @@ function JobDetailsHeader() {
               <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
                 <ButtonReuseable
                   title="Apply Now"
+                  onClick={() => setIsApplying(true)}
                   className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
                 />
                 <Link
@@ -109,6 +112,15 @@ function JobDetailsHeader() {
           </span>
         </div>
       </section>
+      {isApplying && (
+        <ApplyTypeModal
+          open={isApplying}
+          setOpen={setIsApplying}
+          companyName={job?.industry?.name}
+          jobTitle={job?.job_title}
+          jobId={id}
+        />
+      )}
     </div>
   );
 }
