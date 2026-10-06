@@ -247,7 +247,7 @@ export interface JobDetails {
   applications_count: number;
   state?: { name: string } | null;
   city?: { name: string } | null;
-  industry?: { name: string; logo?: string | null } | null;
+  industry?: { id: number; name: string; logo?: string | null } | null;
   announcement_start_date: string;
   announcement_end_date: string;
 }

@@ -45,9 +45,12 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
             />
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <h3 className="font-semibold text-headerColor text-sm sm:text-base leading-snug hover:text-primaryColor cursor-pointer">
+            <Link
+              href={`/mu/jobs-details/${job?.id}`}
+              className="font-semibold text-headerColor text-sm sm:text-base leading-snug hover:text-primaryColor cursor-pointer"
+            >
               {job?.job_title} - Job ID: {job?.job_id}
-            </h3>
+            </Link>
 
             <HiOutlineCheckBadge className="text-primaryColor text-base shrink-0" />
           </div>

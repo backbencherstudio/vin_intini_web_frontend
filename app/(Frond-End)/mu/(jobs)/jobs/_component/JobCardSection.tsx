@@ -3,7 +3,6 @@
 import { userJobType } from "@/lib/type";
 import React from "react";
 import { JobCard } from "./JobCard";
-import LoadMoreButton from "./LoadMoreButton";
 
 interface JobCardSectionProps {
   title: string;

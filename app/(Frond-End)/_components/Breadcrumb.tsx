@@ -2,7 +2,7 @@
 
 import { DoubleArrowIcon, LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const LABEL_MAP: Record<string, string> = {
   home: "Home",
@@ -34,7 +34,7 @@ function toLabel(slug: string): string {
 export default function Breadcrumb({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
-
+  const router = useRouter()
   // Filter out dynamic numeric IDs (e.g., /mu/message/28 -> hide "28")
   const filteredSegments = segments.filter((seg, i) => {
     if (/^\d+$/.test(seg) && segments[i - 1] === "message") return false;
@@ -57,13 +57,13 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
 
   return (
     <div className={`flex gap-6 truncate items-center my-4 md:my-6 ${className}`}>
-      <Link
-        href={backHref}
+      <button
+        onClick={()=>router.back()}
         className="flex cursor-pointer gap-1.5 font-semibold text-headerColor items-center"
       >
         <LeftArrowIcon />
         Back
-      </Link>
+      </button>
       <div className="flex gap-2 items-center">
         {items.map((item, i) => (
           <span key={item.href} className="flex text-nowrap items-center gap-2">
