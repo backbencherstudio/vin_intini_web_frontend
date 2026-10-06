@@ -193,7 +193,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
   const companyName = job?.industry?.name || "Betopia Group Limited";
 
   return (
-    <div className="  ">
+    <div className="  pb-6 md:pb-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* ================= LEFT COLUMN: Job Overview ================= */}
         <div className="lg:col-span-5">

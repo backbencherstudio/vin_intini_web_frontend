@@ -64,13 +64,13 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
 
       {/* Metric Cards Row 1: Level & Salary Range */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-[#f8fafc] border border-grayColor2/60 rounded-xl p-3 text-center">
+        <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Level</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
             {job?.level || "Mid-Senior"}
           </p>
         </div>
-        <div className="bg-[#f8fafc] border border-grayColor2/60 rounded-xl p-3 text-center">
+        <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Salary Range</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
             {salaryText}
@@ -80,19 +80,19 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
 
       {/* Metric Cards Row 2: Experience, Job Type & Work Type */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-[#f8fafc] border border-grayColor2/60 rounded-xl p-3 text-center">
+        <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Experience</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
             {job?.experience || "2 Years"}
           </p>
         </div>
-        <div className="bg-[#f8fafc] border border-grayColor2/60 rounded-xl p-3 text-center">
+        <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Job Type</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
             {job?.employment_type || "Full-Time"}
           </p>
         </div>
-        <div className="bg-[#f8fafc] border border-grayColor2/60 rounded-xl p-3 text-center">
+        <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Work Type</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
             {job?.work_mode || "On-Site"}
