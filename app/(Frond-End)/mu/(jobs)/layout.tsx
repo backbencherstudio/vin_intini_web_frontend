@@ -5,8 +5,9 @@ function layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="">
       <Breadcrumb />
-      <div>{children}</div>
-
+      <div>
+        <div>{children}</div>
+      </div>
       {/* <div>{children}</div> */}
     </div>
   );

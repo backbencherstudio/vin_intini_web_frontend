@@ -1,5 +1,6 @@
 "use client";
 
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import RootDialog from "@/components/reusable/RootDialog";
 import { useApplyUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
@@ -125,9 +126,11 @@ function QuickApplyModal({
     try {
       if (jobId) {
         const formData = new FormData();
+        formData.append("application_type", "quick");
         formData.append("email", values.email);
-        formData.append("type", "quick");
+        formData.append("phone_number", values.phone);
         formData.append("phone", values.phone);
+        formData.append("expected_salary", values.salaryExpectation);
         formData.append("salary_expectation", values.salaryExpectation);
         if (values.resume) {
           formData.append("resume", values.resume);
@@ -338,20 +341,20 @@ function QuickApplyModal({
 
           {/* Fixed Footer Buttons (Does not scroll) */}
           <div className="shrink-0 border-t border-borderColor px-5 sm:px-6 py-3.5 sm:py-4 flex items-center justify-end gap-3 bg-white">
-            <button
-              type="button"
+            <ButtonReuseable
+              className="bg-white! py-2! px-4! text-grayColor1! border border-gray2Color!"
+              title="Cancel"
               onClick={() => setOpen(false)}
-              className="h-10 px-6 rounded-lg border border-borderColor bg-white text-sm font-medium text-descriptionColor hover:bg-gray-50 transition cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
+            />
+
+            <ButtonReuseable
               type="submit"
+              className="px-4! py-2! bg-primaryColor!"
               disabled={isSubmitting || isApplying}
-              className="h-10 px-6 rounded-lg bg-[#009da0] hover:bg-[#00898c] text-white text-sm font-medium transition cursor-pointer disabled:opacity-50 shadow-xs"
-            >
-              {isSubmitting || isApplying ? "Submitting..." : "Submit Now"}
-            </button>
+              title={
+                isSubmitting || isApplying ? "Submitting..." : "Submit Now"
+              }
+            />
           </div>
         </form>
       </div>

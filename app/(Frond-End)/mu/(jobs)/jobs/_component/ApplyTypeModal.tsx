@@ -2,6 +2,7 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import RootDialog from "@/components/reusable/RootDialog";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import QuickApplyModal from "./QuickApplyModal";
 
@@ -20,6 +21,7 @@ function ApplyTypeModal({
   jobTitle,
   jobId,
 }: ApplyTypeModalProps) {
+  const router = useRouter();
   const [quickApplyOpen, setQuickApplyOpen] = useState(false);
 
   useEffect(() => {
@@ -59,6 +61,12 @@ function ApplyTypeModal({
             <ButtonReuseable
               className="bg-white! py-2! px-4! text-grayColor1! border border-gray2Color!"
               title="Custom Apply"
+              onClick={() => {
+                setOpen(false);
+                if (jobId) {
+                  router.push(`/mu/jobs-details/${jobId}/custom-apply`);
+                }
+              }}
             />
             <ButtonReuseable
               className="px-4! py-2! bg-primaryColor!"
