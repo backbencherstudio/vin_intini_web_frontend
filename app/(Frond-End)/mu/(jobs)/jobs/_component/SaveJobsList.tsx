@@ -1,8 +1,8 @@
 "use client";
 import { useGetAllSavedJobsQuery } from "@/feature/slice/jobs/userJobSlice";
+import SaveJobcard from "./SaveJobcard";
 import { SaveJobcardSkeleton } from "./SaveJobcardSkeleton";
 import SaveJobsNotFound from "./SaveJobsNotFound";
-import SaveJobcard from "./SaveJobcard";
 
 function SaveJobsList() {
   const { data, isLoading, isError } = useGetAllSavedJobsQuery("saved-jobs");
@@ -10,11 +10,7 @@ function SaveJobsList() {
   return (
     <div>
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <SaveJobcardSkeleton key={index} />
-          ))}
-        </div>
+        <SaveJobcardSkeleton />
       ) : isError ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-500">
           Failed to load saved jobs. Please try again later.

@@ -33,6 +33,14 @@ const userJobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["UserJob"],
     }),
+    getMyJobApplications: builder.query<any, any | void>({
+      query: (params) => ({
+        url: `/industry/my-job-applications`,
+        method: "GET",
+        params,
+      }),
+      providesTags: ["UserJob"],
+    }),
     applyUserJob: builder.mutation<any, any | void>({
       query: ({ data, id }) => ({
         url: `/industry/job-post/${id}/apply`,
@@ -59,10 +67,11 @@ const userJobSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
-   useGetUserAllJobsQuery,
+  useGetUserAllJobsQuery,
   useGetUserJobsApplicationsQuery,
   useGetUserSingleJobQuery,
   useGetAllSavedJobsQuery,
+  useGetMyJobApplicationsQuery,
   useApplyUserJobMutation,
   useLikeByUserJobPostMutation,
   useSaveUserJobMutation,

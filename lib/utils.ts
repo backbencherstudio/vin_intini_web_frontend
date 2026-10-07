@@ -100,3 +100,61 @@ export const formatNumberIntoK = ({
       ? text.slice(0, maxLength).trim() + "..."
       : text;
   }
+
+  
+  export const getApplicationStatusConfig = (statusRaw?: string) => {
+    const s = String(statusRaw || "")
+      .toLowerCase()
+      .trim();
+  
+    if (s === "pending" || s.includes("review")) {
+      return {
+        label: "Appliaction is being reviewed",
+        className: "bg-[#FEF6D8] text-[#B45309]",
+      };
+    }
+    if (s.includes("interview")) {
+      return {
+        label: "Interview HR",
+        className: "bg-[#E6F8F6] text-[#0D9488]",
+      };
+    }
+    if (s.includes("assessment")) {
+      return {
+        label: "Assessment",
+        className: "bg-[#E8F0FE] text-[#2563EB]",
+      };
+    }
+    if (s.includes("offer")) {
+      return {
+        label: "Offering",
+        className: "bg-[#F3E8FF] text-[#7E22CE]",
+      };
+    }
+    if (s === "hired" || s.includes("accept")) {
+      return {
+        label: "Hired",
+        className: "bg-[#E6F8F6] text-[#059669]",
+      };
+    }
+    if (s.includes("reject")) {
+      return {
+        label: "Rejected",
+        className: "bg-[#FEE2E2] text-[#DC2626]",
+      };
+    }
+    if (s.includes("close")) {
+      return {
+        label: "Hiring Closed",
+        className: "bg-[#F3F4F6] text-[#6B7280]",
+      };
+    }
+  
+    const formatted = s
+      ? s.charAt(0).toUpperCase() + s.slice(1)
+      : "Appliaction is being reviewed";
+    return {
+      label: formatted,
+      className: "bg-[#FEF6D8] text-[#B45309]",
+    };
+  };

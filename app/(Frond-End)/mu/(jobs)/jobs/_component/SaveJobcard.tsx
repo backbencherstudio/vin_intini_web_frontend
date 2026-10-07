@@ -1,30 +1,37 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Bookmark, MapPin } from "lucide-react";
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
+import { getApplicationStatusConfig } from "@/lib/utils";
+import { Bookmark, MapPin } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import toast from "react-hot-toast";
 
 export interface SaveJobcardProps {
   job: any;
   onUnsave?: (jobId: string | number) => void;
+  showSaveButton?: boolean;
+  status?: string;
 }
 
-
-
-function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
+function SaveJobcard({
+  job,
+  onUnsave,
+  showSaveButton = true,
+  status,
+}: SaveJobcardProps) {
   const [saveUserJob, { isLoading: isUnsaving }] = useSaveUserJobMutation();
   const jobData = job?.job ?? job;
   const company = jobData?.company || jobData?.industry;
-  const companyName = company?.name || "Dropbox";
+  const companyName = company?.name || "Company";
   const jobTitle = jobData?.job_title || jobData?.title || "UI/UX Designer";
   const jobId = jobData?.id || job?.id;
 
   const workMode = jobData?.work_mode || "Remote";
   const employmentType = jobData?.employment_type || "Full-time";
-  const networkType = jobData?.network_type || jobData?.category || "Design";
+  const networkType =
+    jobData?.network_type || jobData?.category || jobData?.position || "Design";
 
   const rawDescription =
     jobData?.job_description ||
@@ -48,6 +55,8 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
         ? `$${Number(jobData.salary_min).toLocaleString()}`
         : "$6,200.00";
 
+  const statusConfig = getApplicationStatusConfig(status);
+
   const handleToggleSave = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -64,7 +73,7 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-borderColor/80 p-4 sm:p-5 hover:shadow-md transition-shadow duration-200 flex flex-col justify-between">
+    <div className="bg-white rounded-2xl border border-borderColor/80 p-4  hover:shadow-md transition-shadow duration-200 flex flex-col justify-between">
       <div>
         {/* Top Header Row */}
         <div className="flex items-start justify-between gap-3">
@@ -101,34 +110,36 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
           </div>
 
           {/* Bookmark Button */}
-          <button
-            type="button"
-            onClick={handleToggleSave}
-            disabled={isUnsaving}
-            className="flex flex-col items-center justify-center text-primaryColor hover:opacity-80 transition cursor-pointer shrink-0 disabled:opacity-50"
-            title="Saved job"
-          >
-            <Bookmark className="w-5 h-5 fill-primaryColor text-primaryColor" />
-            <span className="text-[11px] text-grayColor1 font-medium mt-0.5">
-              Saved
-            </span>
-          </button>
+          {showSaveButton && (
+            <button
+              type="button"
+              onClick={handleToggleSave}
+              disabled={isUnsaving}
+              className="flex flex-col items-center justify-center text-primaryColor hover:opacity-80 transition cursor-pointer shrink-0 disabled:opacity-50"
+              title="Saved job"
+            >
+              <Bookmark className="w-5 h-5 fill-primaryColor text-primaryColor" />
+              <span className="text-[11px] text-grayColor1 font-medium mt-0.5">
+                Saved
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Badges Row */}
         <div className="flex flex-wrap items-center gap-2 mt-3.5">
           {employmentType && (
-            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-bgColor text-grayColor1 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
               {employmentType}
             </span>
           )}
           {workMode && (
-            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-bgColor text-grayColor1 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
               {workMode}
             </span>
           )}
           {networkType && (
-            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-bgColor text-grayColor1 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
               {networkType}
             </span>
           )}
@@ -140,22 +151,32 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
         </p>
       </div>
 
-      {/* Bottom Row */}
-      <div className="flex items-center justify-between gap-2 mt-4 pt-2 border-t border-gray-50 text-sm">
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm text-grayColor1 min-w-0 truncate">
-          <MapPin className="w-4 h-4 text-grayColor1 shrink-0" />
-          <span className="truncate">{location}</span>
+      {/* Bottom Row: Status Banner or Location/Salary */}
+      {status !== undefined ? (
+        <div className="mt-4 pt-2">
+          <div
+            className={`w-full py-2.5 px-4 rounded-lg text-center text-sm font-medium transition-colors select-none ${statusConfig.className}`}
+          >
+            {statusConfig.label}
+          </div>
         </div>
-        <div className="shrink-0 text-right">
-          <span className="text-sm sm:text-base font-bold text-headerColor">
-            {salaryDisplay}
-          </span>
-          <span className="text-xs sm:text-sm text-grayColor1 font-normal">
-            {" "}
-            /month
-          </span>
+      ) : (
+        <div className="flex items-center justify-between gap-2 mt-4 pt-2 border-t border-gray-50 text-sm">
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-grayColor1 min-w-0 truncate">
+            <MapPin className="w-4 h-4 text-grayColor1 shrink-0" />
+            <span className="truncate">{location}</span>
+          </div>
+          <div className="shrink-0 text-right">
+            <span className="text-sm sm:text-base font-bold text-headerColor">
+              {salaryDisplay}
+            </span>
+            <span className="text-xs sm:text-sm text-grayColor1 font-normal">
+              {" "}
+              /month
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
