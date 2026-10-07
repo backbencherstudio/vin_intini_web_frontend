@@ -12,49 +12,10 @@ export interface SaveJobcardProps {
   onUnsave?: (jobId: string | number) => void;
 }
 
-export function SaveJobcardSkeleton() {
-  return (
-    <div className="bg-white rounded-2xl border border-borderColor/80 p-4 sm:p-5 animate-pulse space-y-3.5">
-      {/* Top row */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-12 h-12 rounded-full bg-gray-200 shrink-0" />
-          <div className="space-y-2 flex-1">
-            <div className="h-4 bg-gray-200 rounded w-2/3" />
-            <div className="h-3 bg-gray-200 rounded w-1/3" />
-          </div>
-        </div>
-        <div className="flex flex-col items-center gap-1 shrink-0">
-          <div className="w-5 h-5 bg-gray-200 rounded" />
-          <div className="w-8 h-2.5 bg-gray-200 rounded" />
-        </div>
-      </div>
 
-      {/* Badges */}
-      <div className="flex items-center gap-2 pt-1">
-        <div className="h-6 w-16 bg-gray-200 rounded-full" />
-        <div className="h-6 w-16 bg-gray-200 rounded-full" />
-        <div className="h-6 w-16 bg-gray-200 rounded-full" />
-      </div>
-
-      {/* Description */}
-      <div className="space-y-1.5 pt-1">
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-4/5" />
-      </div>
-
-      {/* Bottom row */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-        <div className="h-3 bg-gray-200 rounded w-1/3" />
-        <div className="h-4 bg-gray-200 rounded w-1/4" />
-      </div>
-    </div>
-  );
-}
 
 function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
   const [saveUserJob, { isLoading: isUnsaving }] = useSaveUserJobMutation();
-
   const jobData = job?.job ?? job;
   const company = jobData?.company || jobData?.industry;
   const companyName = company?.name || "Dropbox";
@@ -109,7 +70,7 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             {/* Logo */}
-            <div className="w-12 h-12 rounded-full bg-[#f4f7fa] border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+            <div className="w-12 h-12 rounded-full bg-bgColor border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
               {company?.logo ? (
                 <Image
                   src={company.logo}
@@ -144,10 +105,10 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
             type="button"
             onClick={handleToggleSave}
             disabled={isUnsaving}
-            className="flex flex-col items-center justify-center text-[#009da0] hover:opacity-80 transition cursor-pointer shrink-0 disabled:opacity-50"
+            className="flex flex-col items-center justify-center text-primaryColor hover:opacity-80 transition cursor-pointer shrink-0 disabled:opacity-50"
             title="Saved job"
           >
-            <Bookmark className="w-5 h-5 fill-[#009da0] text-[#009da0]" />
+            <Bookmark className="w-5 h-5 fill-primaryColor text-primaryColor" />
             <span className="text-[11px] text-grayColor1 font-medium mt-0.5">
               Saved
             </span>
@@ -157,17 +118,17 @@ function SaveJobcard({ job, onUnsave }: SaveJobcardProps) {
         {/* Badges Row */}
         <div className="flex flex-wrap items-center gap-2 mt-3.5">
           {employmentType && (
-            <span className="bg-[#f1f3f6] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
               {employmentType}
             </span>
           )}
           {workMode && (
-            <span className="bg-[#f1f3f6] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
               {workMode}
             </span>
           )}
           {networkType && (
-            <span className="bg-[#f1f3f6] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
+            <span className="bg-[#ECEFF3] text-grayColor1 text-xs font-medium px-3 py-1 rounded-full capitalize">
               {networkType}
             </span>
           )}
