@@ -1,6 +1,5 @@
 "use client";
 
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useGetJobDetailsQuery } from "@/feature/slice/jobs/jobSlice";
 import { JobDetails } from "@/lib/type";
 import {
@@ -12,14 +11,13 @@ import {
 import { Clock3 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { useState } from "react";
-import ApplyTypeModal from "../../../(jobs)/jobs/_component/ApplyTypeModal";
+import JobApplyAaction from "../../../(jobs)/jobs/_component/JobApplyAaction";
 import DetailsSkeleton from "./JobsSIngleSkleton";
 import JobStatusChange from "./JobStatusChange";
 function JobDetailsHeader() {
   const params = useParams();
   const id = params.id as string | number;
-  const [isApplying, setIsApplying] = useState(false);
+
   const pathName = usePathname();
   const { data, isLoading, isError } = useGetJobDetailsQuery(id, { skip: !id });
 
@@ -84,19 +82,14 @@ function JobDetailsHeader() {
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
           {pathName.includes("mu/jobs-details") ? (
             <div>
-              <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
-                <ButtonReuseable
-                  title="Apply Now"
-                  onClick={() => setIsApplying(true)}
-                  className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
-                />
-                <Link
-                  className="text-sm font-semibold text-primaryColor"
-                  href={`/mu/industry-profile/${job?.industry?.id}`}
-                >
-                  View Company
-                </Link>
-              </div>
+              <JobApplyAaction
+                jobData={{
+                  company_name: job?.industry?.name,
+                  company_id : job?.industry?.id,
+                  jobTitle: job?.job_title,
+                  jobId: id,
+                }}
+              />
             </div>
           ) : (
             <Link
@@ -112,15 +105,6 @@ function JobDetailsHeader() {
           </span>
         </div>
       </section>
-      {isApplying && (
-        <ApplyTypeModal
-          open={isApplying}
-          setOpen={setIsApplying}
-          companyName={job?.industry?.name}
-          jobTitle={job?.job_title}
-          jobId={id}
-        />
-      )}
     </div>
   );
 }

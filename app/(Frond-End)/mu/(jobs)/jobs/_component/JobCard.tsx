@@ -9,6 +9,7 @@ import { memo } from "react";
 import toast from "react-hot-toast";
 import { FiBookmark } from "react-icons/fi";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
+import JobApplyAaction from "./JobApplyAaction";
 
 export const JobCard = memo(({ job }: { job: userJobType }) => {
   const [saveUserJob, { isLoading, isSuccess, isError }] =
@@ -80,18 +81,14 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
           </div>
 
           <div className="gap-3 flex justify-between items-center mt-3 h-full ">
-            <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
-              <ButtonReuseable
-                title="Apply Now"
-                className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
+           <JobApplyAaction
+                jobData={{
+                  company_name: job?.company?.name,
+                  company_id : job?.company?.id,
+                  jobTitle: job?.job_title,
+                  jobId: job?.id,
+                }}
               />
-              <Link
-                className="text-sm font-semibold text-primaryColor"
-                href={`/mu/industry-profile/${job?.company?.id}`}
-              >
-                View Company
-              </Link>
-            </div>
             <div className="flex items-end gap-3 text-sm  ">
               <p className="text-headerColor">
                 {job?.applications_count} applied

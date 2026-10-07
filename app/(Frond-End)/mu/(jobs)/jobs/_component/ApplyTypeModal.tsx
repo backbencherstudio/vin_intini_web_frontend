@@ -5,21 +5,19 @@ import RootDialog from "@/components/reusable/RootDialog";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import QuickApplyModal from "./QuickApplyModal";
+import { ApplyActionType } from "./JobApplyAaction";
 
 interface ApplyTypeModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  companyName?: string;
-  jobTitle?: string;
-  jobId?: string | number;
+ 
+  jobData?: ApplyActionType;
 }
 
 function ApplyTypeModal({
   open,
   setOpen,
-  companyName = "Mindunite.com",
-  jobTitle,
-  jobId,
+  jobData
 }: ApplyTypeModalProps) {
   const router = useRouter();
   const [quickApplyOpen, setQuickApplyOpen] = useState(false);
@@ -63,8 +61,8 @@ function ApplyTypeModal({
               title="Custom Apply"
               onClick={() => {
                 setOpen(false);
-                if (jobId) {
-                  router.push(`/mu/jobs-details/${jobId}/custom-apply`);
+                if (jobData?.jobId) {
+                  router.push(`/mu/jobs-details/${jobData.jobId}/custom-apply`);
                 }
               }}
             />
@@ -80,9 +78,7 @@ function ApplyTypeModal({
       <QuickApplyModal
         open={quickApplyOpen}
         setOpen={handleCloseQuickApply}
-        companyName={companyName}
-        jobTitle={jobTitle}
-        jobId={jobId}
+        jobData={jobData}
       />
     </>
   );
