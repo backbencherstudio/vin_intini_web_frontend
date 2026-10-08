@@ -25,6 +25,14 @@ const jobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["Job"],
     }),
+    getRecruiterDashboardData: builder.query({
+      query: () => ({
+        url: `/industry/recruiter-dashboard`,
+        method: "GET",
+      }),
+      providesTags: ["Job"],
+    }),
+
     getJobDetails: builder.query({
       query: (id) => ({
         url: `/industry/job-post/${id}`,
@@ -97,6 +105,7 @@ const jobSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetJobsQuery,
   useGetJobsArchiveQuery,
+  useGetRecruiterDashboardDataQuery,
   useGetJobDetailsQuery,
   useCreateJobsMutation,
   useGetAllJobApplicantsQuery,

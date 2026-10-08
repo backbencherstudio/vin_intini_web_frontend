@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import SubscriptionCard from "../../(subscription)/_component/SubscriptionCard";
 import ProIndustrySetting from "./ProIndustrySetting";
 
@@ -25,7 +26,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
     {
       label: "Industry Profile",
       slug: `/mu/industry-profile/${data?.industry?.company?.id}`,
-      icon: DashboardIcon,
+      icon: HiOutlineBuildingOffice2,
     },
     {
       label: "Recruiter Dashboard",
