@@ -1,8 +1,9 @@
 "use client";
 
 import { useGetRecruiterDashboardDataQuery } from "@/feature/slice/jobs/jobSlice";
-import { Plus, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import DetailsSkeleton from "../jobs/JobsSIngleSkleton";
 import ApplicantOverview from "./ApplicantOverview";
 import RecentJobsList from "./RecentJobsList";
 import RecruiterApplicantOverview from "./RecruiterApplicantOverview";
@@ -47,21 +48,28 @@ export default function RecruiterPage() {
           </Link>
         </div>
       </div>
+      <div>
+        {isLoading ? (
+          <DetailsSkeleton />
+        ) : (
+          <div className="space-y-7">
+            {/* Top 4 Metric Cards */}
+            <RecruiterStateList cards={cards} isLoading={isLoading} />
 
-      {/* Top 4 Metric Cards */}
-      <RecruiterStateList cards={cards} isLoading={isLoading} />
+            {/* Section 2: Recent Job Listings */}
+            <RecentJobsList recentJobs={recentJobs} />
 
-      {/* Section 2: Recent Job Listings */}
-      <RecentJobsList recentJobs={recentJobs} />
+            {/* Section 3: Middle Row (Chart + Activity Feed) */}
+            <RecruiterApplicantOverview
+              applicantsChart={applicantsChart}
+              activityFeed={activityFeed}
+            />
 
-      {/* Section 3: Middle Row (Chart + Activity Feed) */}
-      <RecruiterApplicantOverview
-        applicantsChart={applicantsChart}
-        activityFeed={activityFeed}
-      />
-
-      {/* Section 4: Applicant Overview */}
-      <ApplicantOverview recentApplicants={recentApplicants} />
+            {/* Section 4: Applicant Overview */}
+            <ApplicantOverview recentApplicants={recentApplicants} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

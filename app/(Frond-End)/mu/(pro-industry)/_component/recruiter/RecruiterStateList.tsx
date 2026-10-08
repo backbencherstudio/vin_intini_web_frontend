@@ -93,7 +93,7 @@ function RecruiterStateList({ cards, isLoading }: RecruiterStateListProps) {
             </div>
             <div className="mt-2">
                  <h3 className="text-3xl font-bold text-headerColor">
-                  {isLoading ? "—" : item.value}
+                  {isLoading ? "0" : item.value}
                 </h3>
               <div className="flex items-end justify-between mt-1.5">
                
