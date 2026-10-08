@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 // If loading a variable font, you don't need to specify the font weight
-const metroR = localFont({
+const segoeUi = localFont({
   src: "../public/font/Segoe UI.ttf",
 });
 
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${metroR.className}`}>
+      <body className={`${segoeUi.className}`}>
         <Toaster />
         <ReduxProvider>{children}</ReduxProvider>
       </body>

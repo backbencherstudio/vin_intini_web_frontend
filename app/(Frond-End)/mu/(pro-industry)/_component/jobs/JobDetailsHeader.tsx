@@ -2,16 +2,23 @@
 
 import { useGetJobDetailsQuery } from "@/feature/slice/jobs/jobSlice";
 import { JobDetails } from "@/lib/type";
-import { EditeIcon, JobsIcon, LocationIcon } from "@/public/svgIcons/Icons";
+import {
+  DotIcon,
+  EditeIcon,
+  JobsIcon,
+  LocationIcon,
+} from "@/public/svgIcons/Icons";
 import { Clock3 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import JobApplyAaction from "../../../(jobs)/jobs/_component/JobApplyAaction";
 import DetailsSkeleton from "./JobsSIngleSkleton";
 import JobStatusChange from "./JobStatusChange";
 function JobDetailsHeader() {
   const params = useParams();
   const id = params.id as string | number;
 
+  const pathName = usePathname();
   const { data, isLoading, isError } = useGetJobDetailsQuery(id, { skip: !id });
 
   if (isLoading) return <DetailsSkeleton />;
@@ -38,13 +45,23 @@ function JobDetailsHeader() {
             <p className="text-descriptionColor  flex justify-center items-center capitalize bg-bgLightColor text-sm px-5 py-1.5 rounded-full">
               {job.network_type}
             </p>
-            <JobStatusChange value={job.status} row={{ id: id }} />
-            <Link
-              href={`/mu/job-listing/${id}/edite`}
-              className="cursor-pointer px-4 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center"
-            >
-              <EditeIcon className="w-4 h-4" /> Edit
-            </Link>
+            {pathName.includes("mu/jobs-details") ? (
+              <div>
+                <button>
+                  <DotIcon />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <JobStatusChange value={job.status} row={{ id: id }} />
+                <Link
+                  href={`/mu/job-listing/${id}/edite`}
+                  className="cursor-pointer px-4 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center"
+                >
+                  <EditeIcon className="w-4 h-4" /> Edit
+                </Link>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-descriptionColor">
@@ -63,12 +80,26 @@ function JobDetailsHeader() {
           <span className="flex items-center gap-1.5">{salary}</span>
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
-          <Link
-            href={`/mu/job-listing/${id}/applicants`}
-            className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
-          >
-            View Applicants ({job.applications_count ?? 0})
-          </Link>
+          {pathName.includes("mu/jobs-details") ? (
+            <div>
+              <JobApplyAaction
+                jobData={{
+                  company_name: job?.industry?.name,
+                  company_id : job?.industry?.id,
+                  jobTitle: job?.job_title,
+                  jobId: id,
+                }}
+              />
+            </div>
+          ) : (
+            <Link
+              href={`/mu/job-listing/${id}/applicants`}
+              className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
+            >
+              View Applicants ({job.applications_count ?? 0})
+            </Link>
+          )}
+
           <span className="text-sm md:text-base text-descriptionColor">
             JOB ID #{job.job_id}
           </span>

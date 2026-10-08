@@ -1,0 +1,289 @@
+"use client";
+
+import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
+import CommonStateCard from "@/components/reusable/CommonStateCard";
+import DynamicTable from "@/components/reusable/DynamicTable";
+import {
+  useGetAdvertisementDashboardQuery,
+  useGetAdvertisementDataQuery,
+} from "@/feature/slice/jobs/advertisementSlice";
+import { OpenEyeIcon } from "@/public/svgIcons/Icons";
+import { Eye, FileText, Megaphone, Pencil, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo } from "react";
+
+export default function AdvertisementsPage() {
+  const { data: dashboardResponse, isLoading: isDashboardLoading } =
+    useGetAdvertisementDashboardQuery({});
+
+  const {
+    data: listingResponse,
+    isLoading: isListingLoading,
+    isError,
+    refetch,
+  } = useGetAdvertisementDataQuery({});
+
+  const dashboardData = dashboardResponse?.data;
+  const advertisements = listingResponse?.data || [];
+
+  // Table Columns Definition matching the screenshot design
+  const columns = useMemo(
+    () => [
+      {
+        label: "No.",
+        accessor: "no",
+        formatter: (_: any, __: any, index: number) => (
+          <span className="text-xs font-medium text-headerColor px-3">
+            {index + 1}
+          </span>
+        ),
+      },
+      {
+        label: "Ad Details",
+        accessor: "product_name",
+        formatter: (_: any, row: any) => (
+          <div className="flex items-center gap-3 py-2 px-3 min-w-[220px]">
+            <div className="w-14 h-12 rounded-lg bg-bgColor border border-borderColor/60 overflow-hidden shrink-0 flex items-center justify-center">
+              {row.image_url || row.image ? (
+                <Image
+                  src={row.image_url || row.image}
+                  alt={row.product_name || "Product"}
+                  width={56}
+                  height={48}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-xs font-bold text-primaryColor">
+                  {(row.product_name || "P").charAt(0)}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <Link
+                href={`/mu/advertisement/${row.id}`}
+                className="text-sm font-semibold text-headerColor hover:text-primaryColor transition-colors block truncate max-w-xs"
+              >
+                {row.product_name}
+              </Link>
+              <p className="text-xs text-descriptionColor truncate mt-0.5">
+                {row.industry?.name || row.creator?.name || "BioPac Systems"}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        label: "Network",
+        accessor: "network_type",
+        formatter: (val: string) => {
+          const isPsychology = val?.toLowerCase() === "psychology";
+          return (
+            <div className="px-3">
+              <span
+                className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                  isPsychology
+                    ? "bg-[#FFF4ED] text-[#FF693B] border border-[#FFE6D8]"
+                    : "bg-[#EEF4FF] text-[#3538CD] border border-[#D1E0FF]"
+                }`}
+              >
+                {val || "Psychology"}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        label: "Industry",
+        accessor: "industry_type",
+        formatter: (val: string) => {
+          const lower = val?.toLowerCase();
+          const isBiotech = lower === "biotechnology" || lower === "biotech";
+          const isPsychotropic = lower === "psychotropic";
+          return (
+            <div className="px-3">
+              <span
+                className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                  isBiotech
+                    ? "bg-[#FFF4ED] text-[#FF693B] border border-[#FFE6D8]"
+                    : isPsychotropic
+                      ? "bg-[#ECFDF3] text-[#027A48] border border-[#ABEFC6]"
+                      : "bg-[#F9F5FF] text-[#6941C6] border border-[#E9D7FE]"
+                }`}
+              >
+                {isBiotech ? "Biotech" : val || "Biotech"}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        label: "Status",
+        accessor: "status",
+        formatter: (val: string) => {
+          const lower = val?.toLowerCase();
+          const isActive = lower === "active";
+          const isInactive = lower === "inactive";
+          return (
+            <div className="px-3">
+              <span
+                className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                  isActive
+                    ? "bg-[#ECFDF3] text-[#027A48] border border-[#ABEFC6]"
+                    : isInactive
+                      ? "bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]"
+                      : "bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]"
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    isActive ? "bg-[#027A48]" : "bg-[#B42318]"
+                  }`}
+                />
+                {val || "Active"}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        label: "Views",
+        accessor: "views_count",
+        formatter: (val: number) => (
+          <span className="text-xs font-medium text-descriptionColor px-3 block">
+            {(val ?? 0).toLocaleString()}
+          </span>
+        ),
+      },
+      {
+        label: "Like",
+        accessor: "likes_count",
+        formatter: (val: number) => (
+          <span className="text-xs font-medium text-descriptionColor px-3 block">
+            {(val ?? 0).toLocaleString()}
+          </span>
+        ),
+      },
+      {
+        label: "Action",
+        accessor: "actions",
+        position: "justify-end",
+        formatter: (_: any, row: any) => (
+          <div className="flex items-center justify-end gap-1.5 pr-3">
+            <Link
+              href={`/mu/advertisement/${row.id}`}
+              className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
+              title="View Ad"
+            >
+              <Eye className="w-4 h-4" />
+            </Link>
+            <button
+              type="button"
+              className="p-1.5 rounded-lg border border-borderColor hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
+              title="Delete Ad"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+            <Link
+              href={`/mu/advertisement/edit/${row.id}`}
+              className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
+              title="Edit Ad"
+            >
+              <Pencil className="w-4 h-4" />
+            </Link>
+          </div>
+        ),
+      },
+    ],
+    [],
+  );
+
+  return (
+    <div className="w-full space-y-7 pb-10">
+      {/* Top Header: Title + Action Buttons */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="max-w-113">
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor">
+            Advertisements Dashboard
+          </h1>
+          <p className="text-sm leading-[140%] sm:text-base text-descriptionColor mt-1">
+            Submit, track and measure clinical outreach campaigns across the
+            Mind Unite professional network.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+          <Link
+            href="/mu/advertisement/create"
+            className="flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 py-2 lg:py-3 rounded-sm text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Product</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Top 3 Cards using CommonStateCard */}
+      {isDashboardLoading ? (
+        <StateCardSkleton />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <CommonStateCard
+            title="All Advertisements"
+            total={dashboardData?.total_advertisements ?? 0}
+            growthPercentage={2.8}
+            badgeText="+2.8%"
+            isPositive={true}
+            growthText=""
+            icon={Megaphone}
+          />
+          <CommonStateCard
+            title="Total Active"
+            total={dashboardData?.total_advertisements ?? 0}
+            badgeText="Stable"
+            isPositive={true}
+            growthText=""
+            icon={FileText}
+          />
+          <CommonStateCard
+            title="Total Views"
+            total={dashboardData?.total_views ?? 0}
+            growthPercentage={54}
+            badgeText="+54%"
+            isPositive={true}
+            growthText=""
+            icon={OpenEyeIcon}
+          />
+        </div>
+      )}
+
+      {/* Product Advertisements Listings Section */}
+      <div className="space-y-4">
+        <h2 className="text-lg sm:text-xl font-bold text-headerColor">
+          Your Product Advertisements Listings
+        </h2>
+
+        <div className="overflow-hidden">
+          <DynamicTable
+            columns={columns}
+            data={advertisements}
+            tableMinWidth="960px"
+            header={{
+              bg: "#F9FAFB",
+              padding: "12px 14px",
+              text: "#4B5563",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+            rowStyle={{
+              hover: true,
+              hoverbg: "hover:bg-gray-50/70",
+              border: "border-b border-x-0 border-borderColor/60",
+            }}
+            noDataMessage="No product advertisements found."
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

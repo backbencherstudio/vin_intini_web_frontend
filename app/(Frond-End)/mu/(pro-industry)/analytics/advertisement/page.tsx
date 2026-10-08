@@ -1,10 +1,10 @@
 import React from "react";
-import AnalyticsPage from "../_component/analytics/AnalyticsPage";
+import AdvertisementPage from "../../_component/analytics/AdvertisementPage";
 
 function page() {
   return (
     <div>
-      <AnalyticsPage />
+      <AdvertisementPage />
     </div>
   );
 }

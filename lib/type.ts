@@ -247,7 +247,7 @@ export interface JobDetails {
   applications_count: number;
   state?: { name: string } | null;
   city?: { name: string } | null;
-  industry?: { name: string; logo?: string | null } | null;
+  industry?: { id: number; name: string; logo?: string | null } | null;
   announcement_start_date: string;
   announcement_end_date: string;
 }
@@ -352,4 +352,39 @@ export interface JobPositionFormData {
   end_date?: Date;
   tags?: string;
   information_confirmed: boolean;
+}
+
+export interface CompanyType {
+  id: number;
+  name: string;
+  slug: string;
+  logo: string;
+  website: string;
+}
+
+export interface userJobType {
+  id: number;
+  job_id: string;
+  job_title: string;
+  slug: string;
+  position: string;
+  work_mode: string;
+  employment_type: string;
+  location: string;
+  applications_count: number;
+  created_at_human: string;
+  is_saved: boolean;
+  is_liked: boolean;
+  is_applied: boolean;
+  application_status: string | null;
+  network_type: string;
+  employment_offering: string;
+  category: string;
+  sub_category: string | null;
+  salary_type: string;
+  salary_min: string;
+  salary_max: string;
+  state_id: number;
+  city_id: number;
+  company:  CompanyType;
 }

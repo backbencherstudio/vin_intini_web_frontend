@@ -38,20 +38,18 @@ export const yearOptions = Array.from(
 );
 
 export const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
+  { value: "full_time", label: "Full-time" },
+  { value: "part_time", label: "Part-time" },
+  { value: "short_term", label: "Short Term" },
+  { value: "contract", label: "Contract" },
+  { value: "internship", label: "Internship" },
+  
 ];
 
 export const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
+  { value: "on_site", label: "On-site" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "remote", label: "Remote" },
 ];
 
 export const monthAliasMap: Record<string, string> = {
