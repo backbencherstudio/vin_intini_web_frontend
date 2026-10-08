@@ -1,7 +1,9 @@
 "use client";
 
 import { useGetUserAllJobsQuery } from "@/feature/slice/jobs/userJobSlice";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
+import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
 import { JobSearchBar } from "./JobSearchBar";
@@ -12,8 +14,18 @@ export default function JobsPage() {
   const activeFilter = params?.filter || "all";
   const searchParam = params?.search || "";
 
-  const { data, isLoading, isError } = useGetUserAllJobsQuery(params);
-  const jobs = data?.data || [];
+  const queryLimit = params?.limit ? Number(params.limit) : limit;
+
+  const {
+    combinedData: jobs,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    lastElementRef,
+    observerRef,
+  } = useCursorQuery(useGetUserAllJobsQuery, params, {
+    limit: queryLimit,
+  });
 
   const jobsType =
     activeFilter === "all"
@@ -25,8 +37,9 @@ export default function JobsPage() {
           : activeFilter === "short-term"
             ? "Short Term"
             : "Remote";
+
   return (
-    <main className="w-full  ">
+    <main className="w-full">
       <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
           {jobsType} Jobs
@@ -43,7 +56,7 @@ export default function JobsPage() {
         onSearchChange={(val) => updateParam("search", val)}
       />
 
-      {isLoading ? (
+      {isInitialLoading ? (
         <div className="divide-y space-y-4 divide-gray-100">
           {Array.from({ length: 5 }).map((_, index) => (
             <JobCardSkeleton key={index} />
@@ -54,12 +67,32 @@ export default function JobsPage() {
           No jobs found matching your criteria.
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6">
           <JobCardSection
             title={`${jobsType} Time Jobs`}
             subtitle="Because you expressed interest in remote work"
-            jobs={jobs}
           />
+
+          <div className="divide-y space-y-4 divide-gray-100">
+            {jobs?.map((job, index) => (
+              <div
+                key={job.id}
+                ref={index === jobs.length - 1 ? lastElementRef : null}
+              >
+                <JobCard job={job} />
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom loader while fetching more pages */}
+          {isFetchingMore && (
+            <div className="divide-y space-y-4 divide-gray-100 pt-2">
+              <JobCardSkeleton />
+            </div>
+          )}
+
+          {/* Sentinel observer element */}
+          <div ref={observerRef} className="h-2 w-full pointer-events-none" />
         </div>
       )}
     </main>

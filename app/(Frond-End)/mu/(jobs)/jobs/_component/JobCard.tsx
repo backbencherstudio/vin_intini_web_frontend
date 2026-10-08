@@ -1,6 +1,5 @@
 "use client";
 
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
 import { userJobType } from "@/lib/type";
 import Image from "next/image";
@@ -24,7 +23,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
     }
   };
   return (
-    <div className="py-5 first:pt-0 w-full  flex gap-3 last:pb-0 ">
+    <div className="py-5! first:pt-0 w-full  flex gap-3 last:pb-0 ">
       <div className="relative hidden md:block w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
         <Image
           src={job?.company?.logo}
@@ -81,14 +80,14 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
           </div>
 
           <div className="gap-3 flex justify-between items-center mt-3 h-full ">
-           <JobApplyAaction
-                jobData={{
-                  company_name: job?.company?.name,
-                  company_id : job?.company?.id,
-                  jobTitle: job?.job_title,
-                  jobId: job?.id,
-                }}
-              />
+            <JobApplyAaction
+              jobData={{
+                company_name: job?.company?.name,
+                company_id: job?.company?.id,
+                jobTitle: job?.job_title,
+                jobId: job?.id,
+              }}
+            />
             <div className="flex items-end gap-3 text-sm  ">
               <p className="text-headerColor">
                 {job?.applications_count} applied
