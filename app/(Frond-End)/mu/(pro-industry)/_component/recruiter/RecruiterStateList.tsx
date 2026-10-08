@@ -98,7 +98,7 @@ function RecruiterStateList({ cards, isLoading }: RecruiterStateListProps) {
               <div className="flex items-end justify-between mt-1.5">
                
                 <span
-                  className={`text-xs leading-[132%] text-lightGreenColor2/80 bg-lightGreenColor px-1.5 py-0.5 font-semibold rounded-full `}
+                  className={`text-xs leading-[132%] text-lightGreenColor2/80 bg-lightGreenColor/60 px-2 py-0.5 font-semibold rounded-full `}
                 >
                   {item.growth}
                 </span>
