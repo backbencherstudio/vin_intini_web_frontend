@@ -5,6 +5,7 @@ export interface CommonStateCardProps {
   title: string;
   total: number | string;
   growthPercentage?: number | string;
+  badgeText?: string;
   isPositive?: boolean;
   growthText?: string;
   icon?: React.ComponentType<{ className?: string }> | React.ReactNode;
@@ -17,6 +18,7 @@ export default function CommonStateCard({
   title,
   total,
   growthPercentage,
+  badgeText,
   isPositive = true,
   growthText = "From last month",
   icon: Icon,
@@ -52,7 +54,7 @@ export default function CommonStateCard({
       </h3>
 
       {/* Growth Badge + Description */}
-      {growthPercentage !== undefined && (
+      {(growthPercentage !== undefined || badgeText) && (
         <div className="flex items-center gap-2 mt-2">
           <span
             className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-xs ${
@@ -67,11 +69,12 @@ export default function CommonStateCard({
               <TrendingDown className="w-3 h-3" />
             )}
             <span>
-              {isPositive ? "+" : "-"}
-              {growthPercentage}%
+              {badgeText ?? `${isPositive ? "+" : "-"}${growthPercentage}%`}
             </span>
           </span>
-          <span className="text-xs text-grayColor1">{growthText}</span>
+          {growthText && (
+            <span className="text-xs text-grayColor1">{growthText}</span>
+          )}
         </div>
       )}
     </div>

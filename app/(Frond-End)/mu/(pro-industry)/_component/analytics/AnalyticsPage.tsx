@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
     return (
-      <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-[170px] text-xs">
+      <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-42.5 text-xs">
         <p className="font-bold text-headerColor text-xs pb-1.5 mb-2 border-b border-borderColor/60">
           {graph?.subtitle || "Applications Over Time"}
         </p>

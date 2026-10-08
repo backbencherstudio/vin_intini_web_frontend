@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import AdvertisementsPage from "../_component/advertisements/AdvertisementsPage";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <AdvertisementsPage />
+    </div>
+  );
 }
 
-export default page
+export default page;
