@@ -24,7 +24,7 @@ function AnalyticsMenue({
           <Link
             key={menu.id}
             href={menu.href}
-            className={`text-sm  border font-semibold hover:shadow-md rounded-full text-grayColor1  py-2 px-3 ${isActive(menu.href) ? "text-whiteColor bg-primaryColor border-primaryColor transition-all duration-200" : ""}`}
+            className={`text-sm  border text-nowrap font-semibold hover:shadow-md rounded-full text-grayColor1  py-2 px-3 ${isActive(menu.href) ? "text-whiteColor bg-primaryColor border-primaryColor transition-all duration-200" : ""}`}
           >
             {menu.title}
           </Link>
