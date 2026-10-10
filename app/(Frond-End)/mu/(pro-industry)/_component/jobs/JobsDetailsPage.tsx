@@ -15,7 +15,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4 text-descriptionColor text-sm lg:text-base">
       <span className="">{label}</span>
-      <span className="text-right font-semibold ">{value}</span>
+      <span className="text-right capitalize font-semibold ">
+        {value.split("_").join(" ")}
+      </span>
     </div>
   );
 }
@@ -39,6 +41,7 @@ function ContactRow({
         {href ? (
           <Link
             href={href}
+            target="_blank"
             className="break-all font-semibold text-primaryColor hover:underline"
           >
             {value}

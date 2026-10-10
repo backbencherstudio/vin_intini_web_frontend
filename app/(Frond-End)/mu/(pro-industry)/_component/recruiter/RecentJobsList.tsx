@@ -118,7 +118,7 @@ export default function RecentJobsList({
       formatter: (_: any, row: any) => (
         <div className="flex items-center justify-end gap-2 pr-3">
           <Link
-            href={`/mu/jobs-details/${row.id}`}
+            href={`/mu/recruiter-dashboard/${row.id}`}
             className="p-1.5 rounded-lg border border-borderColor hover:bg-primaryColor text-grayColor1 hover:text-whiteColor transition-colors"
             title="View Job"
           >

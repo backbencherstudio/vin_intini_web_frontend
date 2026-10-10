@@ -85,12 +85,19 @@ function JobDetailsHeader() {
               <JobApplyAaction
                 jobData={{
                   company_name: job?.industry?.name,
-                  company_id : job?.industry?.id,
+                  company_id: job?.industry?.id,
                   jobTitle: job?.job_title,
                   jobId: id,
                 }}
               />
             </div>
+          ) : pathName.includes("applicants") ? (
+            <Link
+              href={`/mu/job-listing/${id}/job-details`}
+              className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
+            >
+              View Details
+            </Link>
           ) : (
             <Link
               href={`/mu/job-listing/${id}/applicants`}
