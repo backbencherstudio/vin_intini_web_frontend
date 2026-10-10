@@ -1,6 +1,7 @@
 "use client";
 
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
+import JoditEditor from "@/components/reusable/InputFiled/JoditEditor";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,7 +48,6 @@ const networkOptions = [
 const industryOptions = [
   { value: "biotechnology", label: "Biotechnology" },
   { value: "psychotropics", label: "Psychotropics" },
-  
 ];
 
 export default function CreateAdvertisementForm({
@@ -105,7 +105,9 @@ export default function CreateAdvertisementForm({
     useGetAdvertisemetSectionQuery(sectionParams, {
       skip: !selectedNetworkType && !selectedIndustryType,
     });
-  const { data: editResponse } = useGetAdvertisemetEditeQuery(id, { skip: !id });
+  const { data: editResponse } = useGetAdvertisemetEditeQuery(id, {
+    skip: !id,
+  });
 
   // File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -113,7 +115,6 @@ export default function CreateAdvertisementForm({
   const [imageError, setImageError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
 
   // Format section options for CreatableSelectField with fallback for edit mode
   const sectionOptions = useMemo(() => {
@@ -223,7 +224,12 @@ export default function CreateAdvertisementForm({
   // Image handling
   const handleImageFile = (file?: File) => {
     if (!file) return;
-    const acceptedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    const acceptedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+    ];
     if (!acceptedTypes.includes(file.type)) {
       toast.error("Please upload a valid image file (JPG, PNG, or WEBP)");
       return;
@@ -343,7 +349,9 @@ export default function CreateAdvertisementForm({
       console.error("Error submitting advertisement:", error);
       const serverErrors = error?.data?.errors;
       if (serverErrors && typeof serverErrors === "object") {
-        const firstErrorMessage = Object.values(serverErrors).flat()[0] as string;
+        const firstErrorMessage = Object.values(
+          serverErrors,
+        ).flat()[0] as string;
         toast.error(firstErrorMessage || "Validation error occurred.");
       } else {
         toast.error(
@@ -493,7 +501,9 @@ export default function CreateAdvertisementForm({
               )}
             />
             {errors.section_id && (
-              <p className="text-redColor text-xs">{errors.section_id.message}</p>
+              <p className="text-redColor text-xs">
+                {errors.section_id.message}
+              </p>
             )}
           </div>
 
@@ -543,27 +553,40 @@ export default function CreateAdvertisementForm({
           >
             Detailed Description <span className="text-redColor">*</span>
           </Label>
-          <textarea
-            id="description"
-            rows={4}
-            placeholder="Describe the product, its purpose, benefits, and key features."
+          <div
             className={cn(
-              "w-full rounded-lg border border-borderColor p-3 text-sm text-headerColor placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all resize-y min-h-30",
-              errors.description && "border-redColor",
+              "overflow-hidden rounded-lg border",
+              errors.description ? "border-redColor" : "border-borderColor",
             )}
-            maxLength={5000}
-            {...register("description", {
-              required: "Detailed description is required",
-              maxLength: {
-                value: 5000,
-                message: "Description cannot exceed 5000 characters",
-              },
-            })}
-          />
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-gray-400 font-normal">
-              {(watchedDescription || "").length}/5000
-            </span>
+          >
+            <Controller
+              name="description"
+              control={control}
+              rules={{
+                validate: (value) => {
+                  const plainText = value
+                    .replace(/<[^>]*>/g, " ")
+                    .replace(/&nbsp;/g, " ")
+                    .trim();
+
+                  if (!plainText) {
+                    return "Detailed description is required";
+                  }
+
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <JoditEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  placeholder="Describe the product, its purpose, benefits, and key features."
+                />
+              )}
+            />
+          </div>
+          <div className="flex  items-center text-xs">
             {errors.description && (
               <p className="text-redColor">{errors.description.message}</p>
             )}
@@ -743,8 +766,8 @@ export default function CreateAdvertisementForm({
               htmlFor="information_confirmed"
               className="text-xs md:text-sm text-descriptionColor leading-snug cursor-pointer select-none"
             >
-              I confirm that all submitted information is accurate and that I have
-              permission to advertise this product.
+              I confirm that all submitted information is accurate and that I
+              have permission to advertise this product.
             </label>
           </div>
           {errors.information_confirmed && (

@@ -9,6 +9,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Advertisement"],
     }),
     getAdvertisementData: builder.query({
       query: (params) => {
@@ -18,6 +19,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
           params,
         };
       },
+      providesTags: ["Advertisement"],
     }),
     getAdvertisemetSection: builder.query({
       query: (params) => {
@@ -62,6 +64,14 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
         };
       },
     }),
+    deleteAdvertisement: builder.mutation({
+      query: ( id  ) => ({
+       
+          url: `/industry/advertisements/${id}/delete`,
+          method: "DELETE",
+      }),
+      invalidatesTags: ["Advertisement"],
+    }),
   }),
 });
 
@@ -73,4 +83,5 @@ export const {
   useCreateAdvertisementMutation,
   useUpdateAdvertisementMutation,
   useGetAdvertisemetEditeQuery,
+  useDeleteAdvertisementMutation
 } = advertisementSlice;

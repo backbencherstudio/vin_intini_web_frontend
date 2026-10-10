@@ -13,9 +13,13 @@ import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { Eye, FileText, Megaphone, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
 
 export default function AdvertisementsPage() {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedAdId, setSelectedAdId] = useState<string | number | null>(null);
+
   const { data: dashboardResponse, isLoading: isDashboardLoading } =
     useGetAdvertisementDashboardQuery({});
 
@@ -209,6 +213,10 @@ export default function AdvertisementsPage() {
             </Link>
             <button
               type="button"
+              onClick={() => {
+                setSelectedAdId(row.id);
+                setDeleteModalOpen(true);
+              }}
               className="p-1.5 rounded-lg border border-borderColor hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
               title="Delete Ad"
             >
@@ -291,6 +299,12 @@ export default function AdvertisementsPage() {
           />
         </div>
       </div>
+
+      <AdvertisementDeleteModal
+        open={deleteModalOpen}
+        setOpen={setDeleteModalOpen}
+        adId={selectedAdId}
+      />
     </div>
   );
 }
