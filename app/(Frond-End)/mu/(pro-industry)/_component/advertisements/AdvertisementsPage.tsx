@@ -1,5 +1,6 @@
 "use client";
 
+import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonStateCard, {
   CommonStateCardProps,
@@ -9,17 +10,23 @@ import {
   useGetAdvertisementDashboardQuery,
   useGetAdvertisementDataQuery,
 } from "@/feature/slice/jobs/advertisementSlice";
-import { OpenEyeIcon } from "@/public/svgIcons/Icons";
-import { Eye, FileText, Megaphone, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  AdvertisementIcon,
+  LikeIcon,
+  OpenEyeIcon,
+} from "@/public/svgIcons/Icons";
+import { Eye, FileText, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
 import AdvertismentViewModal from "./AdvertismentViewModal";
 
 export default function AdvertisementsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedAdId, setSelectedAdId] = useState<string | number | null>(null);
+  const [selectedAdId, setSelectedAdId] = useState<string | number | null>(
+    null,
+  );
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewAdId, setViewAdId] = useState<string | number | null>(null);
@@ -44,7 +51,7 @@ export default function AdvertisementsPage() {
       badgeText: "+2.8%",
       isPositive: true,
       growthText: "",
-      icon: Megaphone,
+      icon: AdvertisementIcon,
     },
     {
       title: "Total Active",
@@ -63,186 +70,192 @@ export default function AdvertisementsPage() {
       growthText: "",
       icon: OpenEyeIcon,
     },
+    {
+      title: "Total Likes",
+      total: dashboardData?.total_likes ?? 0,
+      growthPercentage: 54,
+      badgeText: "+67%",
+      isPositive: true,
+      growthText: "",
+      icon: LikeIcon,
+    },
   ];
 
   // Table Columns Definition matching the screenshot design
-  const columns = useMemo(
-    () => [
-      {
-        label: "No.",
-        accessor: "no",
-        formatter: (_: any, __: any, index: number) => (
-          <span className="text-sm font-semibold text-headerColor px-3">
-            {index + 1}
-          </span>
-        ),
-      },
-      {
-        label: "Ad Details",
-        accessor: "product_name",
-        formatter: (_: any, row: any) => (
-          <div className="flex items-center gap-3 py-2 px-3 min-w-55">
-            <div className="w-14 h-12 rounded-lg bg-bgColor border border-borderColor/60 overflow-hidden shrink-0 flex items-center justify-center">
-              {row.image_url || row.image ? (
-                <Image
-                  src={row.image_url || row.image}
-                  alt={row.product_name || "Product"}
-                  width={56}
-                  height={48}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-sm font-bold text-primaryColor">
-                  {(row.product_name || "P").charAt(0)}
-                </span>
-              )}
-            </div>
-            <div className="min-w-0">
-              <Link
-                href={`/mu/advertisement/${row.id}`}
-                className="text-sm font-semibold text-headerColor hover:text-primaryColor transition-colors block truncate max-w-xs"
-              >
-                {row.product_name}
-              </Link>
-              <p className="text-sm text-descriptionColor truncate mt-0.5">
-                {row.industry?.name || row.creator?.name || "BioPac Systems"}
-              </p>
-            </div>
+  const columns = [
+    {
+      label: "No.",
+      accessor: "no",
+      formatter: (_: any, __: any, index: number) => (
+        <span className="text-sm font-semibold text-headerColor px-3">
+          {index + 1}
+        </span>
+      ),
+    },
+    {
+      label: "Ad Details",
+      accessor: "product_name",
+      formatter: (_: any, row: any) => (
+        <div className="flex items-center gap-3 py-2 px-3 min-w-55">
+          <div className="w-14 h-12 rounded-lg bg-bgColor border border-borderColor/60 overflow-hidden shrink-0 flex items-center justify-center">
+            {row.image_url || row.image ? (
+              <Image
+                src={row.image_url || row.image}
+                alt={row.product_name || "Product"}
+                width={56}
+                height={48}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-sm font-bold text-primaryColor">
+                {(row.product_name || "P").charAt(0)}
+              </span>
+            )}
           </div>
-        ),
-      },
-      {
-        label: "Network",
-        accessor: "network_type",
-        formatter: (val: string) => {
-          const isPsychology = val?.toLowerCase() === "psychology";
-          return (
-            <div className="px-3">
-              <span
-                className={`inline-block text-sm font-medium px-2.5 py-0.5 leading-[120%] rounded-full capitalize ${
-                  isPsychology
-                    ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
-                    : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
-                }`}
-              >
-                {val || "Psychology"}
-              </span>
-            </div>
-          );
-        },
-      },
-      {
-        label: "Industry",
-        accessor: "industry_type",
-        formatter: (val: string) => {
-          const lower = val?.toLowerCase();
-          const isBiotech = lower === "biotechnology" || lower === "biotech";
-          const isPsychotropic = lower === "psychotropic";
-          return (
-            <div className="px-3">
-              <span
-                className={`inline-block text-sm font-medium px-2.5 leading-[120%] py-0.5 rounded-full capitalize ${
-                  isBiotech
-                    ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
-                    : isPsychotropic
-                      ? "bg-lightGreenColor2/10 text-lightGreenColor2 border border-lightGreenColor2/30"
-                      : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
-                }`}
-              >
-                {isBiotech ? "Biotech" : val || "Biotech"}
-              </span>
-            </div>
-          );
-        },
-      },
-      {
-        label: "Status",
-        accessor: "status",
-        formatter: (val: string) => {
-          const lower = val?.toLowerCase();
-          const isActive = lower === "active";
-          const isInactive = lower === "inactive";
-          return (
-            <div className="px-3">
-              <span
-                className={`inline-flex items-center gap-1.5 leading-[120%] text-sm font-medium px-2.5 py-0.5 rounded-full capitalize ${
-                  isActive
-                    ? "bg-lightGreenColor2/10 text-lightGreenColor2 text-shadow-lightGreenColor2 border border-lightGreenColor2/30"
-                    : isInactive
-                      ? "bg-redColor/10 text-redColor border border-redColor/30"
-                      : "bg-redColor/10 text-redColor border border-redColor/30"
-                }`}
-              >
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    isActive ? "bg-lightGreenColor2" : "bg-redColor"
-                  }`}
-                />
-                {val || "Active"}
-              </span>
-            </div>
-          );
-        },
-      },
-      {
-        label: "Views",
-        accessor: "views_count",
-        formatter: (val: number) => (
-          <span className="text-sm font-medium text-descriptionColor px-3 block">
-            {(val ?? 0).toLocaleString()}
-          </span>
-        ),
-      },
-      {
-        label: "Like",
-        accessor: "likes_count",
-        formatter: (val: number) => (
-          <span className="text-sm font-medium text-descriptionColor px-3 block">
-            {(val ?? 0).toLocaleString()}
-          </span>
-        ),
-      },
-      {
-        label: "Action",
-        accessor: "actions",
-        position: "justify-end",
-        formatter: (_: any, row: any) => (
-          <div className="flex items-center justify-end gap-1.5 pr-3">
-            <button
-              type="button"
-              onClick={() => {
-                setViewAdId(row.id);
-                setViewModalOpen(true);
-              }}
-              className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
-              title="View Ad"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedAdId(row.id);
-                setDeleteModalOpen(true);
-              }}
-              className="p-1.5 rounded-lg border border-borderColor hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
-              title="Delete Ad"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
+          <div className="min-w-0">
             <Link
-              href={`/mu/advertisement/${row.id}/edit`}
-              className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
-              title="Edit Ad"
+              href={`/mu/advertisement/${row.id}`}
+              className="text-sm font-semibold text-headerColor hover:text-primaryColor transition-colors block truncate max-w-xs"
             >
-              <Pencil className="w-4 h-4" />
+              {row.product_name}
             </Link>
+            <p className="text-sm text-descriptionColor truncate mt-0.5">
+              {row.industry?.name || row.creator?.name || "BioPac Systems"}
+            </p>
           </div>
-        ),
+        </div>
+      ),
+    },
+    {
+      label: "Network",
+      accessor: "network_type",
+      formatter: (val: string) => {
+        const isPsychology = val?.toLowerCase() === "psychology";
+        return (
+          <div className="px-3">
+            <span
+              className={`inline-block text-sm font-medium px-2.5 py-0.5 leading-[120%] rounded-full capitalize ${
+                isPsychology
+                  ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
+                  : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
+              }`}
+            >
+              {val || "Psychology"}
+            </span>
+          </div>
+        );
       },
-    ],
-    [],
-  );
+    },
+    {
+      label: "Industry",
+      accessor: "industry_type",
+      formatter: (val: string) => {
+        const lower = val?.toLowerCase();
+        const isBiotech = lower === "biotechnology" || lower === "biotech";
+        const isPsychotropic = lower === "psychotropic";
+        return (
+          <div className="px-3">
+            <span
+              className={`inline-block text-sm font-medium px-2.5 leading-[120%] py-0.5 rounded-full capitalize ${
+                isBiotech
+                  ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
+                  : isPsychotropic
+                    ? "bg-lightGreenColor2/10 text-lightGreenColor2 border border-lightGreenColor2/30"
+                    : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
+              }`}
+            >
+              {isBiotech ? "Biotech" : val || "Biotech"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      label: "Status",
+      accessor: "status",
+      formatter: (val: string) => {
+        const lower = val?.toLowerCase();
+        const isActive = lower === "active";
+        const isInactive = lower === "inactive";
+        return (
+          <div className="px-3">
+            <span
+              className={`inline-flex items-center gap-1.5 leading-[120%] text-sm font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                isActive
+                  ? "bg-lightGreenColor2/10 text-lightGreenColor2 text-shadow-lightGreenColor2 border border-lightGreenColor2/30"
+                  : isInactive
+                    ? "bg-redColor/10 text-redColor border border-redColor/30"
+                    : "bg-redColor/10 text-redColor border border-redColor/30"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isActive ? "bg-lightGreenColor2" : "bg-redColor"
+                }`}
+              />
+              {val || "Active"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      label: "Views",
+      accessor: "views_count",
+      formatter: (val: number) => (
+        <span className="text-sm font-medium text-descriptionColor px-3 block">
+          {(val ?? 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      label: "Like",
+      accessor: "likes_count",
+      formatter: (val: number) => (
+        <span className="text-sm font-medium text-descriptionColor px-3 block">
+          {(val ?? 0).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      label: "Action",
+      accessor: "actions",
+      position: "justify-end",
+      formatter: (_: any, row: any) => (
+        <div className="flex items-center justify-end gap-1.5 pr-3">
+          <button
+            type="button"
+            onClick={() => {
+              setViewAdId(row.id);
+              setViewModalOpen(true);
+            }}
+            className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
+            title="View Ad"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedAdId(row.id);
+              setDeleteModalOpen(true);
+            }}
+            className="p-1.5 rounded-lg border border-borderColor hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
+            title="Delete Ad"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+          <Link
+            href={`/mu/advertisement/${row.id}/edit`}
+            className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
+            title="Edit Ad"
+          >
+            <Pencil className="w-4 h-4" />
+          </Link>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="w-full space-y-7 pb-10">
@@ -271,9 +284,12 @@ export default function AdvertisementsPage() {
 
       {/* Top 3 Cards using CommonStateCard */}
       {isDashboardLoading ? (
-        <StateCardSkleton />
+        <div className="space-y-4">
+          <StateCardSkleton />
+          <GraphSkeleton />
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
           {stateCards.map((card) => (
             <CommonStateCard key={card.title} {...card} />
           ))}

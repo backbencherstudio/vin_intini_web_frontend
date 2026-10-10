@@ -4,7 +4,6 @@ import RootDialog from "@/components/reusable/RootDialog";
 import { useGetAdvertisemetEditeQuery } from "@/feature/slice/jobs/advertisementSlice";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { useMemo } from "react";
 
 interface AdvertismentViewModalProps {
   open: boolean;
@@ -23,31 +22,7 @@ export default function AdvertismentViewModal({
 
   const ad = response?.data || response;
 
-  const tagsList = useMemo(() => {
-    if (!ad?.tags) return [];
-    if (Array.isArray(ad.tags)) return ad.tags;
-    if (typeof ad.tags === "string") {
-      try {
-        const parsed = JSON.parse(ad.tags);
-        if (Array.isArray(parsed)) return parsed;
-      } catch {}
-      return ad.tags
-        .split(",")
-        .map((t: string) => t.trim())
-        .filter(Boolean);
-    }
-    return [];
-  }, [ad?.tags]);
-
-  const imageSrc = useMemo(() => {
-    if (ad?.image_url) return ad.image_url;
-    if (ad?.image) {
-      return ad.image.startsWith("http")
-        ? ad.image
-        : `https://vini.pixelstack.cloud/storage/${ad.image}`;
-    }
-    return null;
-  }, [ad?.image, ad?.image_url]);
+  const imageSrc = ad?.image_url;
 
   return (
     <RootDialog
@@ -204,13 +179,13 @@ export default function AdvertismentViewModal({
             </div>
 
             {/* Product Tags */}
-            {tagsList.length > 0 && (
+            {ad?.tags?.length > 0 && (
               <div className="space-y-4">
                 <h4 className="text-sm md:text-base font-semibold text-descriptionColor  ">
                   Product Tags
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {tagsList.map((tag: string, index: number) => (
+                  {ad?.tags.map((tag: string, index: number) => (
                     <span
                       key={`${tag}-${index}`}
                       className="inline-block px-3 py-1 rounded-full border leading-[140%] border-borderColor bg-bgLightColor text-sm text-descriptionColor font-normal"
@@ -239,7 +214,7 @@ export default function AdvertismentViewModal({
                 </div>
                 <div>
                   <p className="font-semibold text-descriptionColor ">Email</p>
-                  <p className=" text-descriptionColor mt-04 truncate">
+                  <p className=" text-descriptionColor mt-4 truncate">
                     {ad.poc_email || ad.contact_email || "N/A"}
                   </p>
                 </div>
