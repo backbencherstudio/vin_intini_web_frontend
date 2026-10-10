@@ -54,6 +54,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
           body: data,
         };
       },
+        invalidatesTags: ["Advertisement"],
     }),
     updateAdvertisement: builder.mutation({
       query: ({ id, data }) => {
@@ -63,6 +64,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
           body: data,
         };
       },
+        invalidatesTags: ["Advertisement"],
     }),
     deleteAdvertisement: builder.mutation({
       query: ( id  ) => ({

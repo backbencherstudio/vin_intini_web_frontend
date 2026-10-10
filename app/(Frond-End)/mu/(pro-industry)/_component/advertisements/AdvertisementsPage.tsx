@@ -15,10 +15,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
+import AdvertismentViewModal from "./AdvertismentViewModal";
 
 export default function AdvertisementsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedAdId, setSelectedAdId] = useState<string | number | null>(null);
+
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewAdId, setViewAdId] = useState<string | number | null>(null);
 
   const { data: dashboardResponse, isLoading: isDashboardLoading } =
     useGetAdvertisementDashboardQuery({});
@@ -204,13 +208,17 @@ export default function AdvertisementsPage() {
         position: "justify-end",
         formatter: (_: any, row: any) => (
           <div className="flex items-center justify-end gap-1.5 pr-3">
-            <Link
-              href={`/mu/advertisement/${row.id}`}
+            <button
+              type="button"
+              onClick={() => {
+                setViewAdId(row.id);
+                setViewModalOpen(true);
+              }}
               className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
               title="View Ad"
             >
               <Eye className="w-4 h-4" />
-            </Link>
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -304,6 +312,12 @@ export default function AdvertisementsPage() {
         open={deleteModalOpen}
         setOpen={setDeleteModalOpen}
         adId={selectedAdId}
+      />
+
+      <AdvertismentViewModal
+        open={viewModalOpen}
+        setOpen={setViewModalOpen}
+        adId={viewAdId}
       />
     </div>
   );
