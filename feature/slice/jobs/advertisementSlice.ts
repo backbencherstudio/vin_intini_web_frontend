@@ -20,10 +20,11 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
       },
     }),
     getAdvertisemetSection: builder.query({
-      query: () => {
+      query: (params) => {
         return {
           url: "/industry/advertisements/sections",
           method: "GET",
+          params,
         };
       },
     }),
@@ -46,7 +47,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     createAdvertisement: builder.mutation({
       query: (data) => {
         return {
-          url: `/industry/advertisements`,
+          url: `/industry/advertisements/create`,
           method: "POST",
           body: data,
         };
@@ -55,8 +56,8 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     updateAdvertisement: builder.mutation({
       query: ({ id, data }) => {
         return {
-          url: `/industry/advertisements/${id}`,
-          method: "PUT",
+          url: `/industry/advertisements/${id}/update`,
+          method: "POST",
           body: data,
         };
       },
@@ -70,5 +71,6 @@ export const {
   useGetAdvertisemetSectionQuery,
   useGetAdvertisemetCategoriesQuery,
   useCreateAdvertisementMutation,
+  useUpdateAdvertisementMutation,
   useGetAdvertisemetEditeQuery,
 } = advertisementSlice;

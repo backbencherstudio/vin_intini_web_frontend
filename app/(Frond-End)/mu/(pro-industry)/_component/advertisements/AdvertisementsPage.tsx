@@ -1,7 +1,9 @@
 "use client";
 
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
-import CommonStateCard from "@/components/reusable/CommonStateCard";
+import CommonStateCard, {
+  CommonStateCardProps,
+} from "@/components/reusable/CommonStateCard";
 import DynamicTable from "@/components/reusable/DynamicTable";
 import {
   useGetAdvertisementDashboardQuery,
@@ -26,6 +28,34 @@ export default function AdvertisementsPage() {
 
   const dashboardData = dashboardResponse?.data;
   const advertisements = listingResponse?.data || [];
+  const stateCards: CommonStateCardProps[] = [
+    {
+      title: "All Advertisements",
+      total: dashboardData?.total_advertisements ?? 0,
+      growthPercentage: 2.8,
+      badgeText: "+2.8%",
+      isPositive: true,
+      growthText: "",
+      icon: Megaphone,
+    },
+    {
+      title: "Total Active",
+      total: dashboardData?.total_advertisements ?? 0,
+      badgeText: "Stable",
+      isPositive: true,
+      growthText: "",
+      icon: FileText,
+    },
+    {
+      title: "Total Views",
+      total: dashboardData?.total_views ?? 0,
+      growthPercentage: 54,
+      badgeText: "+54%",
+      isPositive: true,
+      growthText: "",
+      icon: OpenEyeIcon,
+    },
+  ];
 
   // Table Columns Definition matching the screenshot design
   const columns = useMemo(
@@ -34,7 +64,7 @@ export default function AdvertisementsPage() {
         label: "No.",
         accessor: "no",
         formatter: (_: any, __: any, index: number) => (
-          <span className="text-xs font-medium text-headerColor px-3">
+          <span className="text-sm font-semibold text-headerColor px-3">
             {index + 1}
           </span>
         ),
@@ -43,7 +73,7 @@ export default function AdvertisementsPage() {
         label: "Ad Details",
         accessor: "product_name",
         formatter: (_: any, row: any) => (
-          <div className="flex items-center gap-3 py-2 px-3 min-w-[220px]">
+          <div className="flex items-center gap-3 py-2 px-3 min-w-55">
             <div className="w-14 h-12 rounded-lg bg-bgColor border border-borderColor/60 overflow-hidden shrink-0 flex items-center justify-center">
               {row.image_url || row.image ? (
                 <Image
@@ -54,7 +84,7 @@ export default function AdvertisementsPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-xs font-bold text-primaryColor">
+                <span className="text-sm font-bold text-primaryColor">
                   {(row.product_name || "P").charAt(0)}
                 </span>
               )}
@@ -66,7 +96,7 @@ export default function AdvertisementsPage() {
               >
                 {row.product_name}
               </Link>
-              <p className="text-xs text-descriptionColor truncate mt-0.5">
+              <p className="text-sm text-descriptionColor truncate mt-0.5">
                 {row.industry?.name || row.creator?.name || "BioPac Systems"}
               </p>
             </div>
@@ -81,10 +111,10 @@ export default function AdvertisementsPage() {
           return (
             <div className="px-3">
               <span
-                className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                className={`inline-block text-sm font-medium px-2.5 py-0.5 leading-[120%] rounded-full capitalize ${
                   isPsychology
-                    ? "bg-[#FFF4ED] text-[#FF693B] border border-[#FFE6D8]"
-                    : "bg-[#EEF4FF] text-[#3538CD] border border-[#D1E0FF]"
+                    ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
+                    : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
                 }`}
               >
                 {val || "Psychology"}
@@ -103,12 +133,12 @@ export default function AdvertisementsPage() {
           return (
             <div className="px-3">
               <span
-                className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                className={`inline-block text-sm font-medium px-2.5 leading-[120%] py-0.5 rounded-full capitalize ${
                   isBiotech
-                    ? "bg-[#FFF4ED] text-[#FF693B] border border-[#FFE6D8]"
+                    ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30 "
                     : isPsychotropic
-                      ? "bg-[#ECFDF3] text-[#027A48] border border-[#ABEFC6]"
-                      : "bg-[#F9F5FF] text-[#6941C6] border border-[#E9D7FE]"
+                      ? "bg-lightGreenColor2/10 text-lightGreenColor2 border border-lightGreenColor2/30"
+                      : "bg-LiteBlueColor/10 text-LiteBlueColor border border-LiteBlueColor/30"
                 }`}
               >
                 {isBiotech ? "Biotech" : val || "Biotech"}
@@ -127,17 +157,17 @@ export default function AdvertisementsPage() {
           return (
             <div className="px-3">
               <span
-                className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${
+                className={`inline-flex items-center gap-1.5 leading-[120%] text-sm font-medium px-2.5 py-0.5 rounded-full capitalize ${
                   isActive
-                    ? "bg-[#ECFDF3] text-[#027A48] border border-[#ABEFC6]"
+                    ? "bg-lightGreenColor2/10 text-lightGreenColor2 text-shadow-lightGreenColor2 border border-lightGreenColor2/30"
                     : isInactive
-                      ? "bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]"
-                      : "bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]"
+                      ? "bg-redColor/10 text-redColor border border-redColor/30"
+                      : "bg-redColor/10 text-redColor border border-redColor/30"
                 }`}
               >
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    isActive ? "bg-[#027A48]" : "bg-[#B42318]"
+                    isActive ? "bg-lightGreenColor2" : "bg-redColor"
                   }`}
                 />
                 {val || "Active"}
@@ -150,7 +180,7 @@ export default function AdvertisementsPage() {
         label: "Views",
         accessor: "views_count",
         formatter: (val: number) => (
-          <span className="text-xs font-medium text-descriptionColor px-3 block">
+          <span className="text-sm font-medium text-descriptionColor px-3 block">
             {(val ?? 0).toLocaleString()}
           </span>
         ),
@@ -159,7 +189,7 @@ export default function AdvertisementsPage() {
         label: "Like",
         accessor: "likes_count",
         formatter: (val: number) => (
-          <span className="text-xs font-medium text-descriptionColor px-3 block">
+          <span className="text-sm font-medium text-descriptionColor px-3 block">
             {(val ?? 0).toLocaleString()}
           </span>
         ),
@@ -185,7 +215,7 @@ export default function AdvertisementsPage() {
               <Trash2 className="w-4 h-4" />
             </button>
             <Link
-              href={`/mu/advertisement/edit/${row.id}`}
+              href={`/mu/advertisement/${row.id}/edit`}
               className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
               title="Edit Ad"
             >
@@ -214,7 +244,7 @@ export default function AdvertisementsPage() {
 
         <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
           <Link
-            href="/mu/advertisement/create"
+            href="/mu/advertisement/create-advertisement"
             className="flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 py-2 lg:py-3 rounded-sm text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
@@ -228,32 +258,9 @@ export default function AdvertisementsPage() {
         <StateCardSkleton />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <CommonStateCard
-            title="All Advertisements"
-            total={dashboardData?.total_advertisements ?? 0}
-            growthPercentage={2.8}
-            badgeText="+2.8%"
-            isPositive={true}
-            growthText=""
-            icon={Megaphone}
-          />
-          <CommonStateCard
-            title="Total Active"
-            total={dashboardData?.total_advertisements ?? 0}
-            badgeText="Stable"
-            isPositive={true}
-            growthText=""
-            icon={FileText}
-          />
-          <CommonStateCard
-            title="Total Views"
-            total={dashboardData?.total_views ?? 0}
-            growthPercentage={54}
-            badgeText="+54%"
-            isPositive={true}
-            growthText=""
-            icon={OpenEyeIcon}
-          />
+          {stateCards.map((card) => (
+            <CommonStateCard key={card.title} {...card} />
+          ))}
         </div>
       )}
 
