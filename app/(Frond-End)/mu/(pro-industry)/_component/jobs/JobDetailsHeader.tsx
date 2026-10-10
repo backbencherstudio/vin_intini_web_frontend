@@ -71,11 +71,16 @@ function JobDetailsHeader() {
           </span>
           <span className="flex items-center gap-1.5">
             <JobsIcon className="h-3.5 w-3.5" />
-            {job.work_mode}
+            <span className=" capitalize  ">
+              {job.work_mode.split("_").join(" ")}
+            </span>
           </span>
           <span className="flex items-center gap-1.5">
             <Clock3 className="h-3.5 w-3.5" />
-            {job.employment_type}
+
+            <span className="capitalize  ">
+              {job.employment_type.split("_").join(" ")}
+            </span>
           </span>
           <span className="flex items-center gap-1.5">{salary}</span>
         </div>
@@ -85,12 +90,20 @@ function JobDetailsHeader() {
               <JobApplyAaction
                 jobData={{
                   company_name: job?.industry?.name,
-                  company_id : job?.industry?.id,
+                  company_id: job?.industry?.id,
                   jobTitle: job?.job_title,
                   jobId: id,
+                  job_apply: job?.is_applied,
                 }}
               />
             </div>
+          ) : pathName.includes("applicants") ? (
+            <Link
+              href={`/mu/job-listing/${id}/job-details`}
+              className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
+            >
+              View Details
+            </Link>
           ) : (
             <Link
               href={`/mu/job-listing/${id}/applicants`}

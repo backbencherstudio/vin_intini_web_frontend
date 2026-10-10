@@ -242,6 +242,7 @@ export interface JobDetails {
   website: string;
   salary_min: string;
   salary_max: string;
+  is_applied: boolean;
   tags: string[];
   status: string;
   applications_count: number;

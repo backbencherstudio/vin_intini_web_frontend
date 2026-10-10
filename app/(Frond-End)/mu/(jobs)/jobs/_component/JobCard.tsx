@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { FiBookmark } from "react-icons/fi";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import JobApplyAaction from "./JobApplyAaction";
+import { Bookmark } from "lucide-react";
 
 export const JobCard = memo(({ job }: { job: userJobType }) => {
   const [saveUserJob, { isLoading, isSuccess, isError }] =
@@ -86,6 +87,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
                 company_id: job?.company?.id,
                 jobTitle: job?.job_title,
                 jobId: job?.id,
+                job_apply: job?.is_applied,
               }}
             />
             <div className="flex items-end gap-3 text-sm  ">
@@ -95,12 +97,16 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
               <button
                 type="button"
                 onClick={() => handleSaveJob(job?.id)}
-                disabled={isLoading || isSuccess}
+                disabled={isLoading}
                 aria-busy={isLoading}
                 aria-label={`Save ${job.job_title}`}
-                className="flex-col text-grayColor1 justify-center items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
+                className="flex-col text-grayColor1 justify-center disabled:cursor-not-allowed items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
               >
-                <FiBookmark className="w-7 h-6" />
+                 {job?.is_saved ? (
+                <Bookmark className="w-6 h-6 fill-primaryColor ml-0.75 text-primaryColor" />
+                ) : (
+                <FiBookmark className="w-6 h-6 ml-0.75" />
+                )}
                 Save
               </button>
             </div>

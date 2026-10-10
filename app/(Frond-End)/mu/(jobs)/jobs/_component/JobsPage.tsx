@@ -11,7 +11,7 @@ import { JobSearchBar } from "./JobSearchBar";
 export default function JobsPage() {
   const limit = 10;
   const { params, updateParam } = useUrlQueryParams();
-  const activeFilter = params?.filter || "all";
+  const activeFilter = params?.employment_type || "all";
   const searchParam = params?.search || "";
 
   const queryLimit = params?.limit ? Number(params.limit) : limit;
@@ -30,9 +30,9 @@ export default function JobsPage() {
   const jobsType =
     activeFilter === "all"
       ? "All"
-      : activeFilter === "full-time"
+      : activeFilter === "full_time"
         ? "Full Time"
-        : activeFilter === "part-time"
+        : activeFilter === "part_time"
           ? "Part Time"
           : activeFilter === "short-term"
             ? "Short Term"
@@ -52,7 +52,7 @@ export default function JobsPage() {
       <JobSearchBar
         activeFilter={activeFilter}
         searchParam={searchParam}
-        onFilterChange={(val) => updateParam("filter", val, "all")}
+        onFilterChange={(val) => updateParam("employment_type", val, "all")}
         onSearchChange={(val) => updateParam("search", val)}
       />
 

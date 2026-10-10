@@ -7,6 +7,7 @@ export interface ApplyActionType {
   jobTitle: string;
   jobId: string | number;
   company_id: string | number;
+  job_apply?: boolean;
 }
 
 interface JobApplyAactionProps {
@@ -15,14 +16,24 @@ interface JobApplyAactionProps {
 
 function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const [isApplying, setIsApplying] = useState(false);
+  console.log(jobData);
+
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
-        <ButtonReuseable
-          title="Apply Now"
-          onClick={() => setIsApplying(true)}
-          className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
-        />
+        {jobData?.job_apply ? (
+          <ButtonReuseable
+            title="Applied"
+            disabled
+            className="px-5 font-semibold! py-2! rounded-full!  disabled:bg-gray-200! disabled:text-gray-500! disabled:border-gray-300! cursor-not-allowed! text-sm!"
+          />
+        ) : (
+          <ButtonReuseable
+            title="Apply Now"
+            onClick={() => setIsApplying(true)}
+            className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
+          />
+        )}
         <Link
           className="text-sm font-semibold text-primaryColor"
           href={`/mu/industry-profile/${jobData?.company_id}`}
@@ -31,7 +42,11 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
         </Link>
       </div>
       {isApplying && (
-        <ApplyTypeModal open={isApplying} jobData={jobData} setOpen={setIsApplying} />
+        <ApplyTypeModal
+          open={isApplying}
+          jobData={jobData}
+          setOpen={setIsApplying}
+        />
       )}
     </div>
   );
