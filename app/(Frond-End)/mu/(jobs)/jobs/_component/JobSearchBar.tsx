@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { FiSearch, FiSliders } from "react-icons/fi";
-import { FILTER_TYPES } from "./jobdata";
+
 import JobFilterModal from "./JobFilterModal";
+import { JOB_TYPE_OPTIONS } from "./jobdata";
 
 interface JobSearchBarProps {
   activeFilter: string;
@@ -62,7 +63,7 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-2.5 overflow-x-auto mt-4 pb-5 scrollbar-hide">
-        {FILTER_TYPES.map((filter) => {
+        {JOB_TYPE_OPTIONS.map((filter) => {
           const isActive = activeFilter === filter.value;
           return (
             <button

@@ -14,10 +14,10 @@ import DetailsSkeleton from "./JobsSIngleSkleton";
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4 text-descriptionColor text-sm lg:text-base">
-      <span className="">{label}</span>
-      <span className="text-right capitalize font-semibold ">
+      <h4 className="">{label}</h4>
+      <p className="text-right capitalize font-semibold ">
         {value.split("_").join(" ")}
-      </span>
+      </p>
     </div>
   );
 }
