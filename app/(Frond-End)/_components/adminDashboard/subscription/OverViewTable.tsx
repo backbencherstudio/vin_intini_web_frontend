@@ -114,7 +114,7 @@ export default function OverViewTable() {
                             alt={row.Subscribers}
                             width={24}
                             height={24}
-                            className="rounded-full"
+                            className="h-6 w-6 shrink-0 rounded-full object-cover"
                         />
                     )}
                     {row.Subscribers}

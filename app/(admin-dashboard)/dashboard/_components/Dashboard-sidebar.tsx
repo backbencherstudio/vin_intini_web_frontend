@@ -68,6 +68,12 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/user-management/pro-users",
         icon: ProUserIcon,
       },
+      {
+        id: "leave-management",
+        name: "Leave Request",
+        href: "/dashboard/user-management/leave-management",
+        icon: ProUserIcon,
+      },
     ],
   },
 
@@ -98,12 +104,12 @@ export const SidebarData: SidebarItem[] = [
     ]
   },
 
-  {
-    id: "payments",
-    name: "Payment Management",
-    href: "/dashboard/payments",
-    icon: PaymentManagementIcon,
-  },
+  // {
+  //   id: "payments",
+  //   name: "Payment Management",
+  //   href: "/dashboard/payments",
+  //   icon: PaymentManagementIcon,
+  // },
 
   {
     id: "advertise",
@@ -112,25 +118,25 @@ export const SidebarData: SidebarItem[] = [
     icon: AdvertizementIcon,
   },
 
-  {
-    id: "platform-content",
-    name: "Platform Content",
-    icon: PlatFromIcon,
-    children: [
-      {
-        id: "content",
-        name: "Content Management",
-        href: "/dashboard/platform-content",
-        icon: List,
-      },
-      {
-        id: "categories",
-        name: "Categories",
-        href: "/dashboard/categories",
-        icon: Shapes,
-      },
-    ],
-  },
+  // {
+  //   id: "platform-content",
+  //   name: "Platform Content",
+  //   icon: PlatFromIcon,
+  //   children: [
+  //     {
+  //       id: "content",
+  //       name: "Content Management",
+  //       href: "/dashboard/platform-content",
+  //       icon: List,
+  //     },
+  //     {
+  //       id: "categories",
+  //       name: "Categories",
+  //       href: "/dashboard/categories",
+  //       icon: Shapes,
+  //     },
+  //   ],
+  // },
 
   {
     id: "academia",
@@ -197,13 +203,13 @@ export const SidebarData: SidebarItem[] = [
         icon: Brain,
       },
       {
-        id:  "psychotropics",
+        id: "psychotropics",
         name: "Psychotropics",
         href: "/dashboard/phychology/psychotropics",
         icon: Brain,
       },
       {
-        id:  "publications",
+        id: "publications",
         name: "Publications",
         href: "/dashboard/phychology/publications",
         icon: Brain,
@@ -230,6 +236,12 @@ export const SidebarData: SidebarItem[] = [
     name: "Partners",
     href: "/dashboard/partners",
     icon: PartnerIcon,
+  },
+  {
+    id: "publications",
+    name: "Publications",
+    href: "/dashboard/publications",
+    icon: List,
   },
   {
     id: "settings",

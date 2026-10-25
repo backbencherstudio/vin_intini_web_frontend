@@ -157,7 +157,7 @@ export default function PremiumeUser() {
               alt={row.name}
               width={24}
               height={24}
-              className="rounded-full"
+              className="h-6 w-6 shrink-0 rounded-full object-cover"
             />
           )}
           {row.name}

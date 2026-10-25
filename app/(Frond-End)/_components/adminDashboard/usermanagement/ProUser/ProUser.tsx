@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
 import ProUserEditModal from "./ProUserEdit";
 
 type Job = {
@@ -154,6 +155,22 @@ export default function ProUser() {
     }
   };
 
+  const handleToggleBlock = (id: number) => {
+    setJobs((prevJobs) =>
+      prevJobs.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status:
+                item.status?.toLowerCase() === "suspended"
+                  ? "Active"
+                  : "Suspended",
+            }
+          : item,
+      ),
+    );
+  };
+
   const columns: Column<Job>[] = [
     {
       header: "No.",
@@ -170,7 +187,7 @@ export default function ProUser() {
               alt={row.name}
               width={24}
               height={24}
-              className="rounded-full"
+              className="h-6 w-6 shrink-0 rounded-full object-cover"
             />
           )}
           {row.name}
@@ -244,6 +261,16 @@ export default function ProUser() {
         </span>
       ),
     },
+    {
+      header: "Block User",
+      cell: (row) => (
+        <CustomSwitch
+          checked={row.status?.toLowerCase() === "suspended"}
+          aria-label={`Block user ${row.name}`}
+          onChange={() => handleToggleBlock(row.id)}
+        />
+      ),
+    },
   ];
 
   return (
@@ -301,9 +328,9 @@ export default function ProUser() {
         <DataTable
           columns={columns}
           data={jobs}
-          onView={openView}
-          onEdit={openEdit}
-          onDelete={openDelete}
+          // onView={openView}
+          // onEdit={openEdit}
+          // onDelete={openDelete}
         />
 
         {/* View Job Details */}
