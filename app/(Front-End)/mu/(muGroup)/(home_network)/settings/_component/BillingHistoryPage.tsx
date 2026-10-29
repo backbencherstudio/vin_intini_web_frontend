@@ -114,7 +114,7 @@ const CardBrandIcon = ({
 };
 
 export default function BillingHistoryPage() {
-  const [activeTab, setActiveTab] = useState<"subscription" | "boosting">("boosting");
+  const [activeTab, setActiveTab] = useState<"subscription" | "boosting">("subscription");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
