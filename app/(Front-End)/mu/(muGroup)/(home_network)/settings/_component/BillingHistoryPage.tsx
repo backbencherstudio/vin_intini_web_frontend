@@ -7,6 +7,15 @@ import dayjs from "dayjs";
 import { CheckCircle2, CreditCard, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
+export interface PlanInfo {
+  id?: number;
+  name?: string;
+  plan_type?: string;
+  billing_cycle?: string;
+  billing_rate?: number;
+  badge_color?: string;
+}
+
 export interface PackageInfo {
   id?: number;
   name?: string;
@@ -30,6 +39,9 @@ export interface BillingHistoryItem {
   transaction_id?: string;
   status?: string;
   payment_status?: string;
+  plan?: PlanInfo;
+  issue_date?: string;
+  due_date?: string;
   payment_date?: string;
   payment_date_formatted?: string;
   payment_method?: string;
@@ -42,19 +54,28 @@ export interface BillingHistoryItem {
   duration_formatted?: string;
   amount_duration_formatted?: string;
   package?: PackageInfo;
-  plan?: {
-    name?: string;
-    billing_cycle?: string;
-  };
   product?: ProductInfo;
+  receipt_url?: string | null;
+  boost_period?: {
+    starts_at?: string;
+    ends_at?: string;
+    campaign_status?: string;
+  };
 }
 
 // Brand icon component
-const CardBrandIcon = ({ brand }: { brand?: string }) => {
-  const normalized = (brand || "visa").toLowerCase();
+const CardBrandIcon = ({
+  brand,
+  rawMethod,
+}: {
+  brand?: string;
+  rawMethod?: string;
+}) => {
+  const normalized = `${brand || ""} ${rawMethod || ""}`.toLowerCase();
+
   if (normalized.includes("visa")) {
     return (
-      <span className="font-black italic text-[#1A1F71] text-xs tracking-tight select-none">
+      <span className="font-black italic text-blueColor text-xs tracking-tight select-none font-sans">
         VISA
       </span>
     );
@@ -76,13 +97,24 @@ const CardBrandIcon = ({ brand }: { brand?: string }) => {
     );
   }
 
-  return <CreditCard className="w-4 h-4 text-gray-500 shrink-0" />;
+  if (
+    normalized.includes("amex") ||
+    normalized.includes("american") ||
+    normalized.includes("express")
+  ) {
+    return (
+      <span className="bg-blueColor text-whiteColor text-[7px] font-extrabold px-1 py-0.5 rounded leading-tight text-center uppercase tracking-tighter inline-block shrink-0 select-none">
+        <span className="block leading-none">AMERICAN</span>
+        <span className="block leading-none">EXPRESS</span>
+      </span>
+    );
+  }
+
+  return <CreditCard className="w-4 h-4 text-grayColor1 shrink-0" />;
 };
 
 export default function BillingHistoryPage() {
-  const [activeTab, setActiveTab] = useState<"subscription" | "boosting">(
-    "boosting",
-  );
+  const [activeTab, setActiveTab] = useState<"subscription" | "boosting">("boosting");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -111,7 +143,187 @@ export default function BillingHistoryPage() {
     setPage(1);
   };
 
-  const columns = [
+  const getMaskedCardNumber = (row: BillingHistoryItem) => {
+    if (row.card_last4) {
+      return `•••• ${row.card_last4}`;
+    }
+    if (row.payment_method) {
+      const lastFour = row.payment_method.match(/(\d{4})\s*$/)?.[1];
+      if (lastFour) return `•••• ${lastFour}`;
+      return row.payment_method.replace(/\*{2,}/g, "••••").trim();
+    }
+    return "-";
+  };
+
+  // -------------------------------------------------------------
+  // 1. Subscription Columns (Original Design & Format)
+  // -------------------------------------------------------------
+  const subscriptionColumns = [
+    {
+      label: "Invoice No.",
+      accessor: "invoice_no",
+      position: "justify-start",
+      width: "110px",
+      formatter: (_: any, row: BillingHistoryItem) => (
+        <div className="py-4 px-4 text-left font-semibold text-sm text-headerColor whitespace-nowrap">
+          {row.invoice_no || `#MU${String(row.id).padStart(6, "0")}`}
+        </div>
+      ),
+    },
+    {
+      label: "Status",
+      accessor: "status",
+      position: "justify-center",
+      width: "85px",
+      formatter: (_: any, row: BillingHistoryItem) => {
+        const normalized = (row.status || row.payment_status || "").toLowerCase();
+        const isPaid =
+          normalized === "paid" ||
+          normalized === "succeeded" ||
+          normalized === "completed";
+        const isExpired =
+          normalized === "expired" ||
+          normalized === "failed" ||
+          normalized === "unpaid";
+
+        if (isPaid) {
+          return (
+            <div className="flex items-center justify-center py-4 px-2">
+              <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-lightGreenColor bg-lightGreenColor/40 text-lightGreenColor2">
+                Paid
+              </span>
+            </div>
+          );
+        }
+
+        if (isExpired) {
+          return (
+            <div className="flex items-center justify-center py-4 px-2">
+              <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-redColor/30 bg-redColor/10 text-redColor">
+                {row.status || "Expired"}
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <div className="flex items-center justify-center py-4 px-2">
+            <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-orengeColor/30 bg-orengeColor/10 text-orengeColor capitalize">
+              {row.status || "Pending"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      label: "Plan",
+      accessor: "plan",
+      position: "justify-center",
+      width: "105px",
+      formatter: (_: any, row: BillingHistoryItem) => (
+        <div className="flex items-center justify-center py-4 px-2">
+          <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-orengeColor/30 bg-orengeColor/10 text-orengeColor whitespace-nowrap">
+            {row.plan?.name || row.package?.name || "Premium"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      label: "Issue Date",
+      accessor: "issue_date",
+      position: "justify-start",
+      width: "110px",
+      formatter: (val: string, row: BillingHistoryItem) => {
+        const dateVal = val || row.payment_date;
+        return (
+          <div className="py-4 px-3 text-left">
+            <p className="text-sm font-medium text-grayColor1 whitespace-nowrap">
+              {dateVal ? dayjs(dateVal).format("DD MMM YYYY") : "-"}
+            </p>
+            <p className="text-xs text-grayColor1 whitespace-nowrap mt-0.5">
+              {dateVal ? dayjs(dateVal).format("hh:mm A") : ""}
+            </p>
+          </div>
+        );
+      },
+    },
+    {
+      label: "Due Date",
+      accessor: "due_date",
+      position: "justify-start",
+      width: "110px",
+      formatter: (val: string, row: BillingHistoryItem) => {
+        const dateVal = val || row.boost_period?.ends_at;
+        return (
+          <div className="py-4 px-3 text-left">
+            <p className="text-sm font-medium text-descriptionColor whitespace-nowrap">
+              {dateVal ? dayjs(dateVal).format("DD MMM YYYY") : "-"}
+            </p>
+            <p className="text-xs text-liteDescriptionColor whitespace-nowrap mt-0.5">
+              {dateVal ? dayjs(dateVal).format("hh:mm A") : ""}
+            </p>
+          </div>
+        );
+      },
+    },
+    {
+      label: "Payment Method",
+      accessor: "payment_method",
+      position: "justify-start",
+      width: "160px",
+      formatter: (_: any, row: BillingHistoryItem) => (
+        <div className="flex items-center gap-2.5 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
+          <CardBrandIcon brand={row.card_brand} rawMethod={row.payment_method} />
+          <span className="font-normal text-descriptionColor tracking-wider text-xs sm:text-sm">
+            {getMaskedCardNumber(row)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      label: "Amount",
+      accessor: "amount",
+      position: "justify-start",
+      width: "120px",
+      formatter: (_: any, row: BillingHistoryItem) => {
+        if (row.amount_formatted) {
+          const parts = row.amount_formatted.split("/");
+          return (
+            <div className="py-4 px-3 text-sm whitespace-nowrap text-left">
+              <span className="font-semibold text-headerColor">
+                {parts[0]?.trim()}
+              </span>
+              {parts[1] && (
+                <span className="text-grayColor1 font-normal">
+                  {" "}
+                  / {parts[1]?.trim()}
+                </span>
+              )}
+            </div>
+          );
+        }
+        const currencySymbol =
+          row.currency?.toLowerCase() === "usd" || !row.currency
+            ? "$"
+            : row.currency;
+        const price = `${currencySymbol}${Number(row.amount || 0).toFixed(2)}`;
+        const period = row.plan?.billing_cycle
+          ? ` / ${row.plan.billing_cycle}`
+          : " / month";
+        return (
+          <div className="py-4 px-3 text-sm whitespace-nowrap text-left">
+            <span className="font-semibold text-headerColor">{price}</span>
+            <span className="text-grayColor1 font-normal">{period}</span>
+          </div>
+        );
+      },
+    },
+  ];
+
+  // -------------------------------------------------------------
+  // 2. Boosting Columns (New Design from Image)
+  // -------------------------------------------------------------
+  const boostingColumns = [
     {
       label: "Invoice No.",
       accessor: "invoice_no",
@@ -129,23 +341,19 @@ export default function BillingHistoryPage() {
       position: "justify-center",
       width: "95px",
       formatter: (_: any, row: BillingHistoryItem) => {
-        const normalized = (
-          row.status ||
-          row.payment_status ||
-          ""
-        ).toLowerCase();
+        const normalized = (row.status || row.payment_status || "").toLowerCase();
         const isPaid =
           normalized.includes("paid") || normalized.includes("succeeded");
 
         return (
           <div className="flex items-center justify-center py-4 px-2">
             {isPaid ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-[#A6F4C5] bg-[#ECFDF3] text-lightGreenColor2">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-lightGreenColor bg-lightGreenColor/40 text-lightGreenColor2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-lightGreenColor2" />
                 Paid
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-amber-200 bg-amber-50 text-amber-700 capitalize">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-orengeColor/30 bg-orengeColor/10 text-orengeColor capitalize">
                 {row.status || "Pending"}
               </span>
             )}
@@ -154,29 +362,20 @@ export default function BillingHistoryPage() {
       },
     },
     {
-      label: activeTab === "boosting" ? "Product ID" : "Plan ID",
+      label: "Product ID",
       accessor: "product_id",
       position: "justify-start",
-      width: "150px",
+      width: "120px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="py-3 px-3 text-left">
-          <div className="inline-block px-2.5 py-0.5 text-xs font-bold text-white bg-black rounded-md uppercase tracking-wider">
-            {row.product?.product_id ||
-              (activeTab === "subscription" ? "PLAN" : `#${row.id}`)}
+        <div className="py-3 px-3 text-left w-30">
+          <div className="inline-block px-2.5 py-0.5 text-xs font-bold text-whiteColor bg-blackColor rounded-md uppercase tracking-wider">
+            {row.product?.product_id || `#${row.id}`}
           </div>
           <p
-            className="text-xs text-gray-500 font-medium truncate max-w-35 mt-1"
-            title={
-              row.product?.product_name ||
-              row.product?.name ||
-              row.package?.name
-            }
+            className="text-xs text-descriptionColor font-medium truncate  mt-1"
+            title={row.product?.product_name || row.product?.name}
           >
-            {row.product?.product_name ||
-              row.product?.name ||
-              (activeTab === "subscription"
-                ? row.package?.name || row.plan?.name || "Subscription"
-                : "Product")}
+            {row.product?.product_name || row.product?.name || "Product"}
           </p>
         </div>
       ),
@@ -185,11 +384,11 @@ export default function BillingHistoryPage() {
       label: "Package",
       accessor: "package",
       position: "justify-center",
-      width: "120px",
+      width: "140px",
       formatter: (_: any, row: BillingHistoryItem) => (
         <div className="flex items-center justify-center py-4 px-2">
-          <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-[#EAECF0] text-[#344054] whitespace-nowrap">
-            {row.package?.name || row.plan?.name || "Standard Boost"}
+          <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-sectionColor border border-borderColor text-descriptionColor whitespace-nowrap">
+            {row.package?.name || "Standard Boost"}
           </span>
         </div>
       ),
@@ -206,7 +405,7 @@ export default function BillingHistoryPage() {
             <p className="text-sm font-medium text-headerColor whitespace-nowrap">
               {dateVal ? dayjs(dateVal).format("DD MMM YYYY") : "-"}
             </p>
-            <p className="text-xs text-gray-500 whitespace-nowrap mt-0.5">
+            <p className="text-xs text-descriptionColor whitespace-nowrap mt-0.5">
               {dateVal ? dayjs(dateVal).format("hh:mm A") : ""}
             </p>
           </div>
@@ -219,11 +418,10 @@ export default function BillingHistoryPage() {
       position: "justify-start",
       width: "160px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center gap-2 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
-          <CreditCard className="w-4 h-4 text-descriptionColor shrink-0" />
-          <CardBrandIcon brand={row.card_brand} />
-          <span className="text-xs text-descriptionColor font-medium tracking-wider">
-            •••• {row.card_last4 || "4242"}
+        <div className="flex items-center gap-2.5 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
+          <CardBrandIcon brand={row.card_brand} rawMethod={row.payment_method} />
+          <span className="font-normal text-descriptionColor tracking-wider text-xs sm:text-sm">
+            {getMaskedCardNumber(row)}
           </span>
         </div>
       ),
@@ -249,34 +447,39 @@ export default function BillingHistoryPage() {
     },
   ];
 
+  const columns = activeTab === "subscription" ? subscriptionColumns : boostingColumns;
+
   return (
     <div className="w-full space-y-6 pb-12">
       {/* ----------------- Top Header Section ----------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2">
         <div>
-          <h1 className="text-2xl sm:text-[32px] font-bold text-headerColor tracking-tight">
+          <h1 className="text-2xl sm:text-[28px] font-bold text-headerColor tracking-tight">
             Billing History
           </h1>
+          <p className="text-sm text-descriptionColor mt-1 font-normal">
+            Review your billing history and manage your invoices.
+          </p>
         </div>
       </div>
 
       {/* ----------------- Transactions Section ----------------- */}
-      <div className="bg-white border border-borderColor rounded-2xl p-5 sm:p-6 space-y-5">
+      <div className="space-y-5">
         {/* Card Header: Title + Pill Tabs */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-gray-100">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-borderColor">
           <h2 className="text-xl font-bold text-headerColor tracking-tight">
             Transactions
           </h2>
 
           {/* Pill Tabs: Subscription & Boosting */}
-          <div className="inline-flex items-center p-1 rounded-xl bg-gray-50 border border-gray-200 self-start sm:self-auto">
+          <div className="inline-flex  items-center p-1 rounded-xl bg-sectionColor border border-borderColor self-start sm:self-auto">
             <button
               type="button"
               onClick={() => handleTabChange("subscription")}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
                 activeTab === "subscription"
-                  ? "bg-primaryColor text-white shadow-xs"
-                  : "text-grayColor1 hover:text-headerColor bg-transparent"
+                  ? "bg-primaryColor text-whiteColor shadow-xs"
+                  : "text-descriptionColor hover:text-headerColor bg-transparent"
               }`}
             >
               Subscription
@@ -286,8 +489,8 @@ export default function BillingHistoryPage() {
               onClick={() => handleTabChange("boosting")}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
                 activeTab === "boosting"
-                  ? "bg-primaryColor text-white shadow-xs"
-                  : "text-grayColor1 hover:text-headerColor bg-transparent"
+                  ? "bg-primaryColor text-whiteColor shadow-xs"
+                  : "text-descriptionColor hover:text-headerColor bg-transparent"
               }`}
             >
               Boosting
@@ -296,21 +499,23 @@ export default function BillingHistoryPage() {
         </div>
 
         {/* Dynamic Table Container */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto border rounded-lg">
           {isLoading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-3 text-gray-500">
-              <Loader2 className="w-8 h-8 animate-spin text-LiteBlueColor" />
-              <p className="text-sm font-medium">Loading billing history...</p>
+            <div className="py-20 flex flex-col items-center justify-center gap-3 text-grayColor1">
+              <Loader2 className="w-8 h-8 animate-spin text-primaryColor" />
+              <p className="text-sm font-medium text-descriptionColor">
+                Loading billing history...
+              </p>
             </div>
           ) : isError ? (
             <div className="py-16 text-center space-y-3">
-              <p className="text-sm text-red-500 font-medium">
+              <p className="text-sm text-redColor font-medium">
                 Failed to load billing history.
               </p>
               <button
                 type="button"
                 onClick={() => refetch()}
-                className="px-4 py-1.5 rounded-lg bg-LiteBlueColor text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-lg bg-primaryColor text-whiteColor text-xs font-semibold hover:opacity-90 transition-opacity"
               >
                 Retry
               </button>
@@ -321,16 +526,16 @@ export default function BillingHistoryPage() {
               data={billingList}
               tableMinWidth="100%"
               header={{
-                bg: "#F9FAFB",
+                bg: "var(--color-bgLightColor, #F8FAFB)",
                 padding: "12px 16px",
-                text: "#475467",
+                text: "var(--color-headerColor, #475467)",
                 fontWeight: "600",
                 fontSize: "13px",
               }}
               rowStyle={{
                 hover: true,
-                hoverbg: "hover:bg-gray-50/70",
-                border: "border-b border-[#F2F4F7]",
+                hoverbg: "hover:bg-sectionColor",
+                border: "border-b border-x-0 last:border-0 border-borderColor",
               }}
               noDataMessage="No billing transactions found."
             />
