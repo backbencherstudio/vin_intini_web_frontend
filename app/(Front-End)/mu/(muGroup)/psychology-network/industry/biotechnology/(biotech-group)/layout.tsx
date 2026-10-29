@@ -39,7 +39,7 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
       },
       {
         id: "sections",
-        label: "Section-wise View",
+        label: "Categorys View",
         href: "/mu/psychology-network/industry/biotechnology/sections",
         icon: <Menu className="w-4 h-4" />,
         count: sectionsCount,

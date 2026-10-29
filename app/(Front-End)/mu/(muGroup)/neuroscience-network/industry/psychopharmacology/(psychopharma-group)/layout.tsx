@@ -49,7 +49,7 @@ function NeurosciencePsycopharmaLayout({
     },
     {
       id: "sections",
-      label: "Section-wise View",
+      label: "Categorys View",
       href: "/mu/neuroscience-network/industry/psychopharmacology/sections",
       icon: <Menu className="w-4 h-4" />,
       count: sectionsCount,
