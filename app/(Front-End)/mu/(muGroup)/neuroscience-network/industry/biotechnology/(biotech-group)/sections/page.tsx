@@ -24,7 +24,7 @@ export default function NeuroscienceBiotechnologySectionsPage() {
   const { data, isLoading } = useGetBiotechnologyQuery(queryParams);
 
   const raw = data?.data;
-  const sections = raw ? raw : raw?.sections || [];
+  const sections = Array.isArray(raw) ? raw : raw?.sections || [];
 
   return (
     <div className="flex w-full flex-col min-w-0">
@@ -55,14 +55,16 @@ export default function NeuroscienceBiotechnologySectionsPage() {
                     initialProducts={products}
                     sectionId={sectionId}
                   />
-                  <div className="flex w-full items-center justify-center pt-2">
-                    <Link
-                      href={`/mu/neuroscience-network/industry/biotechnology/${sectionId}`}
-                      className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
-                    >
-                      View All
-                    </Link>
-                  </div>
+                  {section?.has_more && (
+                    <div className="flex w-full items-center justify-center pt-2">
+                      <Link
+                        href={`/mu/neuroscience-network/industry/biotechnology/${sectionId}`}
+                        className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
+                      >
+                        View All
+                      </Link>
+                    </div>
+                  )}
                 </div>
               );
             })

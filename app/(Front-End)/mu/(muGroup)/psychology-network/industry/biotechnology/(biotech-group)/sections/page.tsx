@@ -23,12 +23,9 @@ export default function BiotechnologySectionsPage() {
 
   const { data, isLoading } = useGetBiotechnologyQuery(queryParams);
 
-  const sections = useMemo(() => {
-    const raw = data?.data;
-    if (Array.isArray(raw)) return raw;
-    if (Array.isArray(raw?.sections)) return raw.sections;
-    return [];
-  }, [data]);
+  const raw = data?.data;
+  const sections = Array.isArray(raw) ? raw : raw?.sections || [];
+
 
   return (
     <div className="flex w-full flex-col min-w-0">
@@ -57,15 +54,16 @@ export default function BiotechnologySectionsPage() {
                     industryData={categories}
                     initialProducts={products}
                   />
-
-                  <div className="flex w-full items-center justify-center pt-2">
-                    <Link
-                      href={`/mu/psychology-network/industry/biotechnology/${sectionId}`}
-                      className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
-                    >
-                      View All
-                    </Link>
-                  </div>
+                  {section?.has_more && (
+                    <div className="flex w-full items-center justify-center pt-2">
+                      <Link
+                        href={`/mu/psychology-network/industry/biotechnology/${sectionId}`}
+                        className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
+                      >
+                        View All
+                      </Link>
+                    </div>
+                  )}
                 </div>
               );
             })
