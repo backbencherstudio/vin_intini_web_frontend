@@ -18,8 +18,8 @@ export interface BoostPackage {
 export interface CustomSliderConfig {
   enabled: boolean;
   daily_rate: number; // e.g. 3.00
-  min_days: number;   // e.g. 3
-  max_days: number;   // e.g. 60
+  min_days: number; // e.g. 3
+  max_days: number; // e.g. 60
   daily_estimated_impressions?: string;
   daily_estimated_impressions_min?: number;
   daily_estimated_impressions_max?: number;
@@ -37,20 +37,20 @@ export interface BoostPackagesResponse {
 
 // Order Summary (Screen 3 & Screen 4)
 export interface OrderSummary {
-  product_id: string;          // e.g. "10XEYC"
-  product_name: string;        // e.g. "BioPac MP160"
+  product_id: string; // e.g. "10XEYC"
+  product_name: string; // e.g. "BioPac MP160"
   product_image: string | null;
-  plan_title: string;          // e.g. "Basic Free Boosting" or "Custom Boosting (20 Days)"
-  duration_days: number;       // e.g. 7
-  duration_text: string;       // e.g. "7 Days"
+  plan_title: string; // e.g. "Basic Free Boosting" or "Custom Boosting (20 Days)"
+  duration_days: number; // e.g. 7
+  duration_text: string; // e.g. "7 Days"
   estimated_impressions: string; // e.g. "Est. 5k – 10k Impression"
-  subtotal: number;            // e.g. 19.99
-  subtotal_formatted: string;  // e.g. "$19.99"
-  vat: number;                 // e.g. 0.00
-  vat_formatted: string;       // e.g. "$0.00"
-  total: number;               // e.g. 19.99
-  total_formatted: string;     // e.g. "$19.99"
-  currency: string;            // "USD"
+  subtotal: number; // e.g. 19.99
+  subtotal_formatted: string; // e.g. "$19.99"
+  vat: number; // e.g. 0.00
+  vat_formatted: string; // e.g. "$0.00"
+  total: number; // e.g. 19.99
+  total_formatted: string; // e.g. "$19.99"
+  currency: string; // "USD"
 }
 
 // Order Summary API Response
@@ -123,7 +123,7 @@ export interface PurchaseRequiresActionResponse {
     payment_status: "requires_action";
     campaign_id: number;
   };
-}// Plan Configuration for Steps
+} // Plan Configuration for Steps
 export interface PlanConfig {
   pkgId: number | null;
   customDays: number;
@@ -170,6 +170,7 @@ export interface BoostCampaignItem {
   starts_at_formatted: string;
   ends_at_formatted: string;
   remaining_days: number;
+  boost_days_left: number;
   remaining_seconds: number;
   progress_percentage: number;
   freeze_days_remaining: number | null;
