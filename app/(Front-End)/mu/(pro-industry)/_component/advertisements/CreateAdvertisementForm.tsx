@@ -64,6 +64,7 @@ export default function CreateAdvertisementForm({
     watch,
     reset,
     setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<AdvertisementFormData>({
     defaultValues: {
@@ -103,7 +104,7 @@ export default function CreateAdvertisementForm({
 
   const { data: sectionData, isLoading: isSectionsLoading } =
     useGetAdvertisemetSectionQuery(sectionParams, {
-      skip: !selectedNetworkType && !selectedIndustryType,
+      skip: !selectedNetworkType || !selectedIndustryType,
     });
   const { data: editResponse } = useGetAdvertisemetEditeQuery(id, {
     skip: !id,
@@ -118,6 +119,7 @@ export default function CreateAdvertisementForm({
 
   // Format section options for CreatableSelectField with fallback for edit mode
   const sectionOptions = useMemo(() => {
+    if (!selectedNetworkType || !selectedIndustryType) return [];
     const list = sectionData?.data || [];
     const mapped = Array.isArray(list)
       ? list.map((sec: any) => ({
@@ -127,7 +129,14 @@ export default function CreateAdvertisementForm({
       : [];
 
     const ad = editResponse?.data || editResponse;
+    const isOriginalNetworkAndIndustry =
+      Boolean(id) &&
+      Boolean(ad) &&
+      (!ad.network_type || String(ad.network_type) === String(selectedNetworkType)) &&
+      (!ad.industry_type || String(ad.industry_type) === String(selectedIndustryType));
+
     if (
+      isOriginalNetworkAndIndustry &&
       ad?.section_id &&
       !mapped.some((item: any) => String(item.value) === String(ad.section_id))
     ) {
@@ -137,7 +146,7 @@ export default function CreateAdvertisementForm({
       });
     }
     return mapped;
-  }, [sectionData, editResponse]);
+  }, [sectionData, editResponse, id, selectedNetworkType, selectedIndustryType]);
 
   // Find actual numeric ID if section was selected
   const selectedSectionObj = useMemo(() => {
@@ -164,6 +173,7 @@ export default function CreateAdvertisementForm({
 
   // Format category options for CreatableSelectField with fallback for edit mode
   const categoryOptions = useMemo(() => {
+    if (!selectedSectionId) return [];
     const raw = categoryData?.data;
     const list = Array.isArray(raw?.categories)
       ? raw.categories
@@ -176,7 +186,13 @@ export default function CreateAdvertisementForm({
     }));
 
     const ad = editResponse?.data || editResponse;
+    const isOriginalSection =
+      Boolean(id) &&
+      Boolean(ad) &&
+      String(ad.section_id) === String(selectedSectionId);
+
     if (
+      isOriginalSection &&
       ad?.category_id &&
       !mapped.some((item: any) => String(item.value) === String(ad.category_id))
     ) {
@@ -186,7 +202,7 @@ export default function CreateAdvertisementForm({
       });
     }
     return mapped;
-  }, [categoryData, editResponse]);
+  }, [categoryData, editResponse, id, selectedSectionId]);
 
   // Populate data when editing
   useEffect(() => {
@@ -410,8 +426,10 @@ export default function CreateAdvertisementForm({
                   value={field.value || undefined}
                   onChange={(val) => {
                     field.onChange(val);
+                    setValue("industry_type", "");
                     setValue("section_id", "");
                     setValue("category_id", "");
+                    clearErrors(["industry_type", "section_id", "category_id"]);
                   }}
                   placeholder="Select Network"
                   options={networkOptions}
@@ -446,8 +464,14 @@ export default function CreateAdvertisementForm({
                     field.onChange(val);
                     setValue("section_id", "");
                     setValue("category_id", "");
+                    clearErrors(["section_id", "category_id"]);
                   }}
-                  placeholder="Select Industry"
+                  placeholder={
+                    !selectedNetworkType
+                      ? "Select Network first"
+                      : "Select Industry"
+                  }
+                  disabled={!selectedNetworkType}
                   options={industryOptions}
                   className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
                 />
@@ -476,23 +500,25 @@ export default function CreateAdvertisementForm({
               rules={{ required: "Section is required" }}
               render={({ field }) => (
                 <CreatableSelectField
-                  key={`section-select-${selectedNetworkType || "none"}-${selectedIndustryType || "none"}`}
+                  key={`section-select-${selectedNetworkType || "none"}-${selectedIndustryType || "none"}-${field.value || "empty"}`}
                   value={field.value || undefined}
                   onChange={(val) => {
                     field.onChange(val);
                     setValue("category_id", "");
+                    clearErrors("category_id");
                   }}
                   options={sectionOptions}
                   placeholder={
                     isSectionsLoading
                       ? "Loading sections..."
-                      : !selectedNetworkType && !selectedIndustryType
+                      : !selectedNetworkType || !selectedIndustryType
                         ? "Select Network & Industry first"
                         : "Select a Section"
                   }
                   isDisabled={
                     isSectionsLoading ||
-                    (!selectedNetworkType && !selectedIndustryType)
+                    !selectedNetworkType ||
+                    !selectedIndustryType
                   }
                   allowCustomInput
                   className="w-full"
@@ -519,7 +545,7 @@ export default function CreateAdvertisementForm({
               rules={{ required: "Category is required" }}
               render={({ field }) => (
                 <CreatableSelectField
-                  key={`category-select-${selectedSectionId || "none"}`}
+                  key={`category-select-${selectedSectionId || "none"}-${field.value || "empty"}`}
                   value={field.value || undefined}
                   onChange={field.onChange}
                   options={categoryOptions}
