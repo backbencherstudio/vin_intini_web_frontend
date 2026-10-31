@@ -156,6 +156,7 @@ export interface BoostCampaignItem {
   placements: string[];
   amount_paid: number;
   amount_paid_formatted: string;
+  boost_remaining_text: string;
   currency: string;
   duration_days: number;
   status: "active" | "paused" | "completed" | "cancelled" | string;
