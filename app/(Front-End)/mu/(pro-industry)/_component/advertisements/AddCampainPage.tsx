@@ -204,7 +204,7 @@ function AddCampaignContent() {
               {isItemActive && (
                 <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-bold bg-[#F5F3FF] border border-[#DDD6FE] text-LiteBlueColor">
                   <Zap className="w-3 h-3 fill-LiteBlueColor" />
-                  <span>{item.boost_days_left} days Left</span>
+                  <span>{item.boost_remaining_text}</span>
                 </div>
               )}
             </div>
