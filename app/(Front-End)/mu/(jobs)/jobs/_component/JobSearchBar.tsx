@@ -37,19 +37,19 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search Job.."
-            className="w-full pl-10 pr-4 py-2.5 rounded-full border text-sm focus:outline-none focus:border-primaryColor transition-colors"
+            className="w-full rounded-full border border-borderColor bg-white py-2.5 pl-10 pr-4 text-sm transition focus:border-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor/10"
           />
         </form>
         <button
           onClick={handleSubmit}
-          className="w-full cursor-pointer sm:w-auto px-7 py-2.5 bg-primaryColor hover:shadow-xl text-white rounded-full text-sm font-medium transition-colors"
+          className="w-full cursor-pointer rounded-full bg-primaryColor px-7 py-2.5 text-sm font-medium text-white transition hover:bg-primaryColor/90 sm:w-auto"
         >
           Search
         </button>
         <button
           type="button"
           onClick={() => setIsFilterModalOpen(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 border border-borderColor rounded-full text-sm text-descriptionColor hover:bg-bgColor transition-colors cursor-pointer"
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-borderColor bg-white px-5 py-2.5 text-sm text-descriptionColor transition hover:border-primaryColor/30 hover:bg-primaryColor/5 sm:w-auto"
         >
           <span>Filter</span>
           <FiSliders className="text-sm" />
@@ -62,17 +62,17 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
       />
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2.5 overflow-x-auto mt-4 pb-5 scrollbar-hide">
+      <div className="mt-5 flex items-center gap-2.5 overflow-x-auto pb-9 scrollbar-hide">
         {JOB_TYPE_OPTIONS.map((filter) => {
           const isActive = activeFilter === filter.value;
           return (
             <button
               key={filter.value}
               onClick={() => onFilterChange(filter.value)}
-              className={`px-5 py-2 cursor-pointer hover:shadow-lg rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`cursor-pointer whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition ${
                 isActive
                   ? "bg-primaryColor text-white"
-                  : "bg-white border border-borderColor text-descriptionColor hover:bg-bgColor"
+                  : "border border-borderColor bg-white text-descriptionColor hover:border-primaryColor/30 hover:bg-primaryColor/5"
               }`}
             >
               {filter.label}

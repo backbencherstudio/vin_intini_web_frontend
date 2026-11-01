@@ -55,7 +55,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
 
             <HiOutlineCheckBadge className="text-primaryColor text-base shrink-0" />
           </div>
-          <span className="px-3 py-1 rounded-full text-sm capitalize font-medium bg-primaryColor/20 text-primaryColor">
+          <span className="rounded-full border border-primaryColor/15 bg-primaryColor/10 px-3 py-1 text-sm font-medium capitalize text-primaryColor">
             {job?.work_mode.split("_").join(" ")}
           </span>
         </div>

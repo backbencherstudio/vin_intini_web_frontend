@@ -134,7 +134,7 @@ export default function MainNavbar() {
           />
         </Link>
 
-        <nav className="hidden space-x-6 text-base min-[1132px]:flex">
+        <nav className="hidden space-x-8 text-base min-[1132px]:flex">
           {mainMenuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
@@ -152,7 +152,7 @@ export default function MainNavbar() {
                     <button
                       type="button"
                       className={cn(
-                        "group flex w-fit flex-col items-center gap-1 text-sm transition cursor-pointer hover:text-headerColor",
+                        "group flex w-fit flex-col items-center gap-1 whitespace-nowrap text-sm transition cursor-pointer hover:text-headerColor",
                         isActive(item.slug) || isDropdownOpen
                           ? "text-headerColor"
                           : "text-grayColor1",
@@ -205,7 +205,7 @@ export default function MainNavbar() {
                 prefetch={false}
                 onClick={item.slug === "/mu/home" ? scrollToTop : undefined}
                 className={cn(
-                  "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
+                  "flex w-fit flex-col items-center gap-1 whitespace-nowrap text-sm transition hover:text-headerColor",
                   isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
                 )}
               >

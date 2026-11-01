@@ -60,7 +60,7 @@ export default function JobsPage() {
         {userData?.subscription?.plan_type == "industry" && (
           <div className="">
             <Link
-              className="flex items-center gap-1 text-whiteColor bg-primaryColor px-2  md:px-4 py-2 rounded-lg hover:shadow-lg"
+              className="flex items-center gap-1 whitespace-nowrap rounded-lg bg-primaryColor px-3 py-2 font-medium text-whiteColor transition hover:bg-primaryColor/90 md:px-4"
               href={`/mu/post-job-position`}
             >
               <PlusIcon size={16} /> Post A New Job
@@ -87,7 +87,7 @@ export default function JobsPage() {
           No jobs found matching your criteria.
         </div>
       ) : (
-        <div className="rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6">
+        <div className="space-y-5 rounded-2xl border border-borderColor/70 bg-white p-3 sm:p-4">
           <JobCardSection
             title={`${jobsType} Time Jobs`}
             subtitle="Because you expressed interest in remote work"
