@@ -3,7 +3,6 @@
 import { useGetMyJobApplicationsQuery } from "@/feature/slice/jobs/userJobSlice";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
 import { StatusCountsType } from "@/lib/type";
-import { useMemo } from "react";
 import SaveJobcard from "./SaveJobcard";
 import { SaveJobcardSkeleton } from "./SaveJobcardSkeleton";
 
@@ -30,20 +29,12 @@ const normalizeStatus = (status?: string): string => {
 function MyJobApplicationsApply() {
   const { params, updateParam } = useUrlQueryParams();
 
-  const activeTab = useMemo(
-    () => normalizeStatus(params?.status),
-    [params?.status],
-  );
+  const activeTab = normalizeStatus(params?.status);
 
-  const queryParams = useMemo(() => {
-    const q: Record<string, any> = {};
-    if (activeTab && activeTab !== "all") {
-      q.status = activeTab;
-    }
-    if (params?.search) q.search = params.search;
-    if (params?.page) q.page = params.page;
-    return q;
-  }, [activeTab, params?.search, params?.page]);
+  const queryParams: Record<string, any> = {};
+  if (activeTab && activeTab !== "all") queryParams.status = activeTab;
+  if (params?.search) queryParams.search = params.search;
+  if (params?.page) queryParams.page = params.page;
 
   const { data, isLoading, isError, refetch } = useGetMyJobApplicationsQuery(
     queryParams,

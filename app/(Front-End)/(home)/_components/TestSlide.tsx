@@ -79,7 +79,7 @@ export default function TestSlide({ data }: PropType) {
                               <FullStarIcon className="w-6 h-6 text-[#F9C80E]" />
                             </div>
                             <em className="text-[#3A3A3A] text-base font-light leading-[160%] tracking-[0.08px]">
-                              "{testimonial.review}"
+                              &quot;{testimonial.review}&quot;
                             </em>
                           </div>
                           <div

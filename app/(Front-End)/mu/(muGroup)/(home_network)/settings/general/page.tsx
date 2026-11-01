@@ -1,6 +1,6 @@
 import GeneralSettingsPage from "../_component/GeneralSettingsPage";
 
-function page() {
+function Page() {
   return (
     <div>
       <div>
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

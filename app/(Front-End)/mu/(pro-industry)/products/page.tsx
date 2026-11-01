@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import AdvertisementsPage from "../_component/advertisements/AdvertisementsPage";
 
-function page() {
+function Page() {
   return (
     <div>
       {/* Top Header: Title + Action Buttons */}
@@ -32,4 +32,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

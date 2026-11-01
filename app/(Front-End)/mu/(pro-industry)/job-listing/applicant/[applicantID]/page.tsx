@@ -1,6 +1,6 @@
 import ApplicantUserDetails from "../../../_component/applicant/ApplicantUserDetails";
 
-async function page({
+async function Page({
   params,
   searchParams,
 }: {
@@ -17,4 +17,4 @@ async function page({
   );
 }
 
-export default page;
+export default Page;

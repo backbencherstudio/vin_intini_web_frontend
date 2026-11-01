@@ -36,7 +36,7 @@ const degreeTokens = [
   { key: "PsyD", label: "PsyD" },
   { key: "EdD", label: "EdD" },
 ];
-export default function page() {
+export default function Page() {
   const [selectedDegree, setSelectedDegree] = useState<string>("all");
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);

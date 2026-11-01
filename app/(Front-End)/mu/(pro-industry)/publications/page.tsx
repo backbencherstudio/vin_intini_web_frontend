@@ -1,7 +1,7 @@
 import PublicationPage from "../_component/publication/PublicationPage";
 
 
-function page() {
+function Page() {
   return (
     <div className="">
      
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

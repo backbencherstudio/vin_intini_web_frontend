@@ -1,6 +1,6 @@
 import CreateMyGroupList from "@/app/(Front-End)/_components/mainPage/group/CreateMyGroupList";
 
-function page() {
+function Page() {
   return (
     <div>
       <CreateMyGroupList />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

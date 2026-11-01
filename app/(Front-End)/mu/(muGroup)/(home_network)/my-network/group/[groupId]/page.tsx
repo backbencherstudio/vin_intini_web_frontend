@@ -3,7 +3,7 @@ import GroupMemberList from "@/app/(Front-End)/_components/mainPage/group/GroupM
 import GroupPostCreateSection from "@/app/(Front-End)/_components/mainPage/group/GroupPostCreate";
 import GroupPostList from "@/app/(Front-End)/_components/mainPage/group/GroupPostList";
 
-async function page(props: { params: Promise<{ groupId: string }> }) {
+async function Page(props: { params: Promise<{ groupId: string }> }) {
   const { groupId } = await props.params;
 
   return (
@@ -22,4 +22,4 @@ async function page(props: { params: Promise<{ groupId: string }> }) {
   );
 }
 
-export default page;
+export default Page;

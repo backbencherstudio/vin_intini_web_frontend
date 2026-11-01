@@ -1,7 +1,7 @@
 import React from "react";
 import AnalyticsPublicationPage from "../../_component/analytics/AnalyticsPublicationPage";
 
-function page() {
+function Page() {
   return (
     <div>
       <AnalyticsPublicationPage />
@@ -9,4 +9,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -26,9 +26,13 @@ import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
 function ProfileHeroSection({ userId }: { userId?: string }) {
-  const { data, isLoading } = userId
-    ? useGetProfileByIdQuery(userId)
-    : useGetMyProfileQuery("profile");
+  const profileQuery = useGetProfileByIdQuery(userId ?? "", {
+    skip: !userId,
+  });
+  const myProfileQuery = useGetMyProfileQuery("profile", {
+    skip: Boolean(userId),
+  });
+  const { data, isLoading } = userId ? profileQuery : myProfileQuery;
   const [profileImageUpdate] = useProfileImageUpdateMutation();
   const [openEducationForm, setOpenEducationForm] = useState(false);
   const [openExperienceForm, setOpenExperienceForm] = useState(false);

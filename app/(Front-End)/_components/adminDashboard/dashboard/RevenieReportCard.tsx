@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { RotateCw, ArrowUp, Calendar } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
-import { DateRangePicker } from '@/components/reusable/dashboard/DataRangePiker';
+import { DateRangePicker } from '@/components/reusable/dashboard/DateRangePicker';
 
 export default function RevenueReportCard({ data = defaultData, onRefresh = () => { } }) {
 

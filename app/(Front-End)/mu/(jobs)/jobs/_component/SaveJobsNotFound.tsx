@@ -12,7 +12,7 @@ function SaveJobsNotFound() {
           No saved jobs yet
         </h3>
         <p className="text-sm text-grayColor1 mt-1 mb-5">
-          You haven't saved any jobs yet. When you find jobs you're interested
+          You haven&apos;t saved any jobs yet. When you find jobs you&apos;re interested
           in, save them to apply later.
         </p>
         <Link

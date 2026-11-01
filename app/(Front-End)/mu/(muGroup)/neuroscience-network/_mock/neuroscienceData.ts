@@ -46,7 +46,6 @@ export const neuroscienceFields: NeuroscienceField[] = [
     bulletPoints: [
       "Neurogenetics: The study of the genetic basis of the nervous system and inherited neurological diseases.",
       "Neurolinguistics: Investigates the neural mechanisms that control language acquisition and production.",
-      "Neurolinguistics: Investigates the neural mechanisms that control language acquisition and production.",
     ],
   },
   {

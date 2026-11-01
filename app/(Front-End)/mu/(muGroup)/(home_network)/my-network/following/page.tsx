@@ -1,6 +1,6 @@
 import FollowerList from "@/app/(Front-End)/_components/mainPage/follower/FollowerList";
 
-function page() {
+function Page() {
   return (
     <div>
       <div className="">
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

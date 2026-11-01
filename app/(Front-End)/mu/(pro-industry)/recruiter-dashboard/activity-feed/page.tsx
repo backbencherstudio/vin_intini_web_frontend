@@ -1,7 +1,7 @@
 "use client";
 import { useGetRecruiterDashboardDataQuery } from "@/feature/slice/jobs/jobSlice";
 
-function page() {
+function Page() {
   const {
     data: response,
     isLoading,
@@ -55,4 +55,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

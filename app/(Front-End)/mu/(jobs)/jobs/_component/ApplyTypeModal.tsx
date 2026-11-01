@@ -51,7 +51,7 @@ function ApplyTypeModal({
             Apply for this Job?
           </h4>
           <p className="text-base text-grayColor1 pb-6 md:pb-8">
-            Choose how you'd like to apply for this position. Both options are
+            Choose how you&apos;d like to apply for this position. Both options are
             easy and secure.
           </p>
 

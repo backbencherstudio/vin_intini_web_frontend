@@ -2,7 +2,7 @@ import ConnectionRequestHeader from "@/app/(Front-End)/_components/mainPage/netw
 import ConnectionRequestList from "@/app/(Front-End)/_components/mainPage/network/connectionRequests/ConnectionRequestList";
 import SuggestConnectionList from "@/app/(Front-End)/_components/mainPage/network/connectionUsers/SuggestConnectionList";
 
-async function page({
+async function Page({
   searchParams,
 }: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -29,4 +29,4 @@ async function page({
   );
 }
 
-export default page;
+export default Page;

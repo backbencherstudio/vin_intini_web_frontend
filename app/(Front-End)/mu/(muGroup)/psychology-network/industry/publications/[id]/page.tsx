@@ -3,7 +3,7 @@ import { useGetSinglePublicationQuery } from "@/feature/slice/jobs/publicationSl
 import { useParams } from "next/navigation";
 import PublicationsDetails from "../../../../neuroscience-network/_components/PublicationsDetails";
 
-function page() {
+function Page() {
   const params = useParams();
   const id = params.id as string;
   const { data: response, isLoading } = useGetSinglePublicationQuery(id, {
@@ -30,4 +30,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

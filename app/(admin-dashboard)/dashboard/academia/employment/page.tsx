@@ -1,6 +1,6 @@
 import Employment from "@/app/(Front-End)/_components/adminDashboard/academia/Employment";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

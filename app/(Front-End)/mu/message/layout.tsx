@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import Breadcrumb from "../../_components/Breadcrumb";
 import MessageUserSection from "./_component/MessageUserSection";
 
-function layout({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
   const params = useParams();
   return (
     <div className="pb-6 md:pb-8">
@@ -25,4 +25,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

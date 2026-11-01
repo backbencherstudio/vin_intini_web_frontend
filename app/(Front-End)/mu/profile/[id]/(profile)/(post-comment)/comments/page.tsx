@@ -1,6 +1,6 @@
 import ProfileComment from "@/app/(Front-End)/_components/mainPage/profile/ProfileComment";
 
-function page() {
+function Page() {
   return (
     <div>
       <ProfileComment />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

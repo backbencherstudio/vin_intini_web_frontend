@@ -3,7 +3,7 @@ import GroupSidbarWrapper from "@/app/(Front-End)/_components/mainPage/GroupSidb
 import CreatePostSection from "@/app/(Front-End)/_components/mainPage/post/CreatePostSection";
 import PostList from "@/app/(Front-End)/_components/mainPage/post/PostList";
 
-function page() {
+function Page() {
   return (
     <div className="md:grid grid-cols-12 gap-6">
       <div className="md:col-span-8 col-span-12 space-y-6">
@@ -19,4 +19,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

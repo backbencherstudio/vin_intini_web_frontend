@@ -97,8 +97,13 @@ export function useConversationMessages(
       setChatMessages((prev) =>
         prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)),
       );
+      dispatch(
+        baseApiSlice.util.invalidateTags([
+          { type: "message", id: String(conversationId) },
+        ]),
+      );
     },
-    [],
+    [conversationId, dispatch],
   );
 
   const markConversationRead = useCallback(

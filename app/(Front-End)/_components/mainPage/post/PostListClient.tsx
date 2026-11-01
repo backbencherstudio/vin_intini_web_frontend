@@ -3,7 +3,7 @@
 import { useCursorPagination } from "@/hooks/useCursorPagination";
 import { useEffect, useState } from "react";
 
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import PostCard from "./PostCard";
 import PostCardSkleton from "./PostCardSkleton";
 import PostAddedCard from "./PostAddedCard";

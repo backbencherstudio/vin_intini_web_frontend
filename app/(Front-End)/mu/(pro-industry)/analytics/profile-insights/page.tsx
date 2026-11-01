@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileInsightsPage from "../../_component/analytics/ProfileInsightsPage";
 
-function page() {
+function Page() {
   return (
     <div>
       <ProfileInsightsPage />
@@ -9,4 +9,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

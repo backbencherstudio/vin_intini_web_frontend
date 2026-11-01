@@ -114,7 +114,7 @@ function DeleteResoneModal({ open, setOpen }: DeleteResoneModalProps) {
               Close and delete account
             </h3>
             <p className="text-sm text-descriptionColor mt-1">
-              {userName}, we're sorry to see you go.
+              {userName}, we&apos;re sorry to see you go.
             </p>
           </div>
 

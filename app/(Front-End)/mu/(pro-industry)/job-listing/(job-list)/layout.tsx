@@ -1,6 +1,6 @@
 import JobListFilterSection from "../../_component/jobs/JobListFilterSection";
 
-function layout({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <JobListFilterSection />
@@ -9,4 +9,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

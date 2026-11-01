@@ -1,6 +1,6 @@
 import CreateJobsFrom from "../_component/jobs/CreateJobsFrom";
 
-function page() {
+function Page() {
   return (
     <div>
       <CreateJobsFrom />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

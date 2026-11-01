@@ -1,7 +1,7 @@
 import ProfileSidebar from "@/app/(Front-End)/_components/mainPage/profile/profileSidbar";
 import React from "react";
 
-function layout({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="lg:grid lg:grid-cols-9 xl:grid-cols-11 sm:py-8 py-6 gap-6  md:py-10 mb-10">
@@ -16,4 +16,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

@@ -58,7 +58,7 @@ function CreateMyGroupList() {
             <GroupUserIcon className="w-7 h-7 text-whiteColor " />
           </div>
           <p className="text-center text-grayColor1 ">
-            You haven't created any groups yet.
+            You haven&apos;t created any groups yet.
           </p>
 
           <button

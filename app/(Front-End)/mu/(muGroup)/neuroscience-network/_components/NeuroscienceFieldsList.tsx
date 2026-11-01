@@ -57,7 +57,7 @@ export const NeuroscienceFieldsList = ({
     return (
       <div className="flex w-full flex-col items-center justify-center py-12">
         <p className="text-[#A5A5AB] font-['Segoe_UI'] text-lg">
-          No psychology fields found matching "{searchQuery}"
+          No psychology fields found matching &quot;{searchQuery}&quot;
         </p>
       </div>
     );

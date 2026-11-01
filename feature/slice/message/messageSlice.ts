@@ -33,7 +33,7 @@ const messageSlice = baseApiSlice.injectEndpoints({
       providesTags: (_result, _error, arg) => {
         const id =
           typeof arg === "string" || typeof arg === "number" ? arg : arg?.id;
-        return id ? [{ type: "message", id }] : ["message"];
+        return id != null ? [{ type: "message", id: String(id) }] : ["message"];
       },
       keepUnusedDataFor: 600,
     }),
@@ -46,11 +46,14 @@ const messageSlice = baseApiSlice.injectEndpoints({
     }),
 
     markReadMessage: builder.mutation({
-      query: (messageId) => ({
-        url: `/conversations/${messageId}/mark-read`,
+      query: (conversationId) => ({
+        url: `/conversations/${conversationId}/mark-read`,
         method: "POST",
       }),
-      invalidatesTags: ["conversationList", "message"],
+      invalidatesTags: (_result, _error, conversationId) => [
+        "conversationList",
+        { type: "message", id: String(conversationId) },
+      ],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -59,7 +62,10 @@ const messageSlice = baseApiSlice.injectEndpoints({
         body: data,
         formData: true,
       }),
-      invalidatesTags: ["conversationList"],
+      invalidatesTags: (_result, _error, { conversationId }) => [
+        "conversationList",
+        { type: "message", id: String(conversationId) },
+      ],
     }),
     markUnReadMessage: builder.mutation({
       query: (messageId) => ({
@@ -81,6 +87,9 @@ const messageSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: (_result, _error, { conversationId }) => [
+        { type: "message", id: String(conversationId) },
+      ],
     }),
     unarchiveMessage: builder.mutation({
       query: (messageId) => ({
@@ -94,14 +103,20 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${conversationId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["conversationList"],
+      invalidatesTags: (_result, _error, conversationId) => [
+        "conversationList",
+        { type: "message", id: String(conversationId) },
+      ],
     }),
     deleteMessage: builder.mutation({
-      query: (messageId) => ({
+      query: ({ messageId }) => ({
         url: `/messages/${messageId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["message"],
+      invalidatesTags: (_result, _error, { conversationId }) => [
+        "conversationList",
+        { type: "message", id: String(conversationId) },
+      ],
     }),
   }),
 });

@@ -2,7 +2,7 @@ import { getToken } from "@/lib/token";
 import SubscriptionFilter from "../_component/SubscriptionFilter";
 import SubscriptionCards from "../_component/SubscriptionPricingTable";
 
-async function page({
+async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ billing?: string; plan_type?: string }>;
@@ -50,4 +50,4 @@ async function page({
   );
 }
 
-export default page;
+export default Page;

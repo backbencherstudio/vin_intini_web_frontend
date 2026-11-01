@@ -13,9 +13,9 @@ import ProfileTimelinePost from "./ProfileTimelinePost";
 function ProfilePostList() {
   const { id } = useParams();
 
-  const { data: userProfile } = id
-    ? useGetProfileByIdQuery(id)
-    : useGetMyProfileQuery("user");
+  const profileQuery = useGetProfileByIdQuery(id ?? "", { skip: !id });
+  const myProfileQuery = useGetMyProfileQuery("user", { skip: Boolean(id) });
+  const { data: userProfile } = id ? profileQuery : myProfileQuery;
   const profileFilter = !userProfile?.data?.is_own_profile
     ? [{ id: 1, name: "Post" }]
     : [

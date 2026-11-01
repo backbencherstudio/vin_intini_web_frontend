@@ -1,6 +1,6 @@
 import CreateCompanyPage from "./_component/company/CompanyCreatePage";
 
-function page() {
+function Page() {
   return (
     <div>
       <div>
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

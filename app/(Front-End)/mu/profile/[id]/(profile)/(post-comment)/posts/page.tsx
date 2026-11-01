@@ -1,6 +1,6 @@
 import ProfileAllPost from "@/app/(Front-End)/_components/mainPage/profile/ProfileAllPost";
 
-function page() {
+function Page() {
   return (
     <div>
       <ProfileAllPost />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

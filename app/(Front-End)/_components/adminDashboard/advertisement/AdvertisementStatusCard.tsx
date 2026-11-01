@@ -1,6 +1,6 @@
 "use client"
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { IoIosTrendingDown, IoIosTrendingUp } from "react-icons/io";
 import { IoArrowForward } from "react-icons/io5";
 import { DateRange } from "react-day-picker";

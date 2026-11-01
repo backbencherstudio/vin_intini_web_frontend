@@ -424,13 +424,11 @@ export function useCursorQuery<T = any>(
   const [cursor, setCursor] = useState<string | null>(null);
 
   // Automatically append limit and cursor to query params
-  const queryParams = useMemo(() => {
-    return {
-      ...(options?.limit !== undefined ? { limit: options.limit } : {}),
-      ...params,
-      ...(cursor ? { cursor } : {}),
-    };
-  }, [params, cursor, options?.limit]);
+  const queryParams = {
+    ...(options?.limit !== undefined ? { limit: options.limit } : {}),
+    ...params,
+    ...(cursor ? { cursor } : {}),
+  };
 
   const queryResult = queryHook(queryParams);
 

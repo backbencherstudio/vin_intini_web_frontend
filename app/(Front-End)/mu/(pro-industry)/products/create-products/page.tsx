@@ -1,7 +1,7 @@
 import React from "react";
 import CreateAdvertisementForm from "../../_component/advertisements/CreateAdvertisementForm";
 
-function page() {
+function Page() {
   return (
     <div>
       <CreateAdvertisementForm />
@@ -9,4 +9,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

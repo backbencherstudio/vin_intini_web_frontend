@@ -3,7 +3,7 @@ import AdPerformanceOverview from "@/app/(Front-End)/_components/adminDashboard/
 import AdvertisementPerformance from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementPerfomance";
 import AdvertisementStatusCard from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementStatusCard";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div></div>

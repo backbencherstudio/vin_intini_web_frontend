@@ -1,6 +1,6 @@
 import Facilites from "@/app/(Front-End)/_components/adminDashboard/academia/Facilites";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

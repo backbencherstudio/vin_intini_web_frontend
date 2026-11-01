@@ -25,7 +25,7 @@ const tabs = [
   { label: "Veterans Affairs (VA) Facilities", value: "va_facility" },
 ];
 
-export default function page() {
+export default function Page() {
   const [selectedDegree, setSelectedDegree] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<string>("university_hospital");
   const { stateId } = useParams();

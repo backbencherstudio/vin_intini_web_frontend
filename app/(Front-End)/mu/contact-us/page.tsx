@@ -1,6 +1,6 @@
 import ContactPage from "../../_components/ContactPage";
 
-function page() {
+function Page() {
   return (
     <div>
       <ContactPage />
@@ -8,4 +8,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

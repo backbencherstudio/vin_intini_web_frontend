@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { ArrowDownToLine, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { useDeactivePlanMutation, useGetPlansQuery } from "@/feature/slice/admin/subscription/subscriptionApi";
 import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";

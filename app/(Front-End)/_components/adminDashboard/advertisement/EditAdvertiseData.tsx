@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 

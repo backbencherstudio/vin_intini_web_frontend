@@ -47,16 +47,6 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "127.0.0.1",
         port: "8000",
-      },
-      {
-        protocol: "http",
-        hostname: "10.10.9.117",
-        port: "9000",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-        port: "8000",
         pathname: "/storage/",
       },
       {

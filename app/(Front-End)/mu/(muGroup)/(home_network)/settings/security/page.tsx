@@ -2,7 +2,7 @@ import LoginActivityTable from "@/app/(Front-End)/_components/adminDashboard/set
 import SecuritySettings from "@/app/(Front-End)/_components/adminDashboard/settings/SecuritySetting";
 import DeleteAccountAction from "../_component/DeleteAccountAction";
 
-function page() {
+function Page() {
   return (
     <div>
       <div>
@@ -18,4 +18,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

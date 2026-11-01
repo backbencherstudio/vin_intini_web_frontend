@@ -1,7 +1,7 @@
 import LoginActivityTable from "@/app/(Front-End)/_components/adminDashboard/settings/LoginActivityTable";
 import SecuritySettings from "@/app/(Front-End)/_components/adminDashboard/settings/SecuritySetting";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <SecuritySettings />

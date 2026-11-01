@@ -128,7 +128,10 @@ function MessageRoot() {
     setContextMenu(null);
     if (replyTo?.id === id) setReplyTo(null);
     try {
-      await deleteMessage(id).unwrap();
+      await deleteMessage({
+        messageId: id,
+        conversationId,
+      }).unwrap();
       removeMessage(id);
     } catch (error) {
       console.error("Failed to delete message", error);
@@ -352,6 +355,7 @@ function MessageRoot() {
       try {
         await reactForeMessage({
           messageId,
+          conversationId,
           data: { reaction: emoji },
         }).unwrap();
       } catch (error) {

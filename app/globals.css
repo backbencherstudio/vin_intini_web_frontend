@@ -32,7 +32,6 @@
   --color-orengeColor: #ff6a55;
   --color-blueColor: #0068ef;
   --color-LiteBlueColor: #6b4dff;
-  --color-ratingColor: #ffc52e;
   --color-proIdustryColor: #F9C80E;
   --color-bgColor: var(--bgColor);
   --color-bgLightColor: #f8fafb;
@@ -164,16 +163,6 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.pointer-events-none {
-  pointer-events: none;
-  display: block !important;
-  opacity: 1 !important;
-}
-
-.selectbar-hidden-display {
-  display: none;
 }
 
 input:checked ~ .checkmark {

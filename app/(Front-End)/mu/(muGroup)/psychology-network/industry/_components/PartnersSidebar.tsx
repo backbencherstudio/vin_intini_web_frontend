@@ -16,14 +16,25 @@ export const PartnersSidebar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const pathname = usePathname();
 
-  const { data } =
-    pathname === `/mu/psychology-network/industry/biotechnology`
-      ? useGetBiotechnologyPartnersQuery("biotechnology")
-      : pathname === `/mu/psychology-network/industry/psychopharmacology`
-        ? useGetPsychologyOnePartnersQuery("psychopharmacology")
-        : pathname === `/mu/psychology-network/industry/publications`
-          ? useGetPublicationsOnePartnersQuery("publications")
-          : useGetBiotechnologyPartnersQuery("biotechnology");
+  const isBiotechnology = pathname.includes("/psychology-network/industry/biotechnology");
+  const isPsychopharmacology = pathname.includes("/psychology-network/industry/psychopharmacology");
+  const isPublications = pathname.includes("/psychology-network/industry/publications");
+  const biotechnologyQuery = useGetBiotechnologyPartnersQuery("biotechnology", {
+    skip: !isBiotechnology,
+  });
+  const psychopharmacologyQuery = useGetPsychologyOnePartnersQuery(
+    "psychopharmacology",
+    { skip: !isPsychopharmacology },
+  );
+  const publicationsQuery = useGetPublicationsOnePartnersQuery(
+    "publications",
+    { skip: !isPublications },
+  );
+  const data = isPsychopharmacology
+    ? psychopharmacologyQuery.data
+    : isPublications
+      ? publicationsQuery.data
+      : biotechnologyQuery.data;
 
   const navItems = [
     {

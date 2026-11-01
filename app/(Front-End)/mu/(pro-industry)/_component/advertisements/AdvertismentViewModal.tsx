@@ -30,13 +30,13 @@ export default function AdvertismentViewModal({
     setIsDescriptionExpanded(false);
   }, [adId, open]);
 
-  const { data: response, isLoading } = !is_owner
-    ? useGetAdvertisemetDetailsQuery(adId, {
-        skip: !adId || !open,
-      })
-    : useGetAdvertisemetEditeQuery(adId, {
-        skip: !adId || !open,
-      });
+  const detailsQuery = useGetAdvertisemetDetailsQuery(adId ?? "", {
+    skip: Boolean(is_owner || !adId || !open),
+  });
+  const editQuery = useGetAdvertisemetEditeQuery(adId ?? "", {
+    skip: Boolean(!is_owner || !adId || !open),
+  });
+  const { data: response, isLoading } = is_owner ? editQuery : detailsQuery;
 
   const ad = response?.data || response;
 

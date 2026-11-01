@@ -16,7 +16,10 @@ export function useVoiceRecorder(
   const mp3EncoderRef = useRef<Mp3Encoder | null>(null);
   const mp3ChunksRef = useRef<BlobPart[]>([]);
   const onSendRef = useRef(onSend);
-  onSendRef.current = onSend;
+
+  useEffect(() => {
+    onSendRef.current = onSend;
+  }, [onSend]);
 
   useEffect(() => {
     return () => {

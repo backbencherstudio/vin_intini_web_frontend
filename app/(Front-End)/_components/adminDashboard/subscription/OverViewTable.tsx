@@ -11,7 +11,7 @@ import { ArrowDownToLine, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import EditOverModal from "./EditOverModal";
 import { useGetMySubscribersQuery, useCancelSubscriptionMutation, useGetPlansQuery } from "@/feature/slice/admin/subscription/subscriptionApi";

@@ -1,6 +1,6 @@
 import AllConnectionFriendList from "@/app/(Front-End)/_components/mainPage/network/connectionUsers/AllConnectionFriendList";
 
-function page() {
+function Page() {
   return (
     <div>
       <div>
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

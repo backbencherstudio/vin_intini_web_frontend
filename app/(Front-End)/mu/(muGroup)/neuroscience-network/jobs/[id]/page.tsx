@@ -1,6 +1,6 @@
 import React from 'react'
 
-function page({params}: {params: {id: string}}) {
+function Page({params}: {params: {id: string}}) {
     const networkType = params.id;
   return (
     <div>
@@ -9,4 +9,4 @@ function page({params}: {params: {id: string}}) {
   )
 }
 
-export default page
+export default Page

@@ -501,7 +501,7 @@ export default function CreateGroupForm({
                       Require new posts to be reviewed by admins
                     </span>
                     <p className="text-sm text-descriptionColor">
-                      Members' posts will require admin approval within 14 days
+                      Members&apos; posts will require admin approval within 14 days
                       before they become visible to others.
                     </p>
                   </div>

@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowDownToLine, Copy, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import EditTransactionForm from "./EditTransactionForm";
 import Pagination from "@/components/reusable/Pagination";

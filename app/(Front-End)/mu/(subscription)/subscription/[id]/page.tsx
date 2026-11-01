@@ -1,7 +1,7 @@
 import SubscriptionPayment from "../../_component/SubscriptionPayment";
 
 
-async function page({ params }: { params: Promise<{ id: string }> }) {
+async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   return (
@@ -11,4 +11,4 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   );
 }
 
-export default page;
+export default Page;

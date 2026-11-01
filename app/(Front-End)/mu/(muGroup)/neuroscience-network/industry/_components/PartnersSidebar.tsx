@@ -18,14 +18,26 @@ export const PartnersSidebar = () => {
   const params = useParams();
   const pathname = usePathname();
 
-  const { data } =
-    pathname === `/mu/neuroscience-network/industry/biotechnology`
-      ? useGetNeuroscienceBiotechnologyPartnersQuery("biotechnology")
-      : pathname === `/mu/neuroscience-network/industry/psychopharmacology`
-        ? useGetNeuroscienceOnePartnersQuery("psychopharmacology")
-        : pathname === `/mu/neuroscience-network/industry/publications`
-          ? useGetNeurosciencePublicationsOnePartnersQuery("publications")
-          : useGetNeuroscienceBiotechnologyPartnersQuery("biotechnology");
+  const isBiotechnology = pathname.includes("/neuroscience-network/industry/biotechnology");
+  const isPsychopharmacology = pathname.includes("/neuroscience-network/industry/psychopharmacology");
+  const isPublications = pathname.includes("/neuroscience-network/industry/publications");
+  const biotechnologyQuery = useGetNeuroscienceBiotechnologyPartnersQuery(
+    "biotechnology",
+    { skip: !isBiotechnology },
+  );
+  const psychopharmacologyQuery = useGetNeuroscienceOnePartnersQuery(
+    "psychopharmacology",
+    { skip: !isPsychopharmacology },
+  );
+  const publicationsQuery = useGetNeurosciencePublicationsOnePartnersQuery(
+    "publications",
+    { skip: !isPublications },
+  );
+  const data = isPsychopharmacology
+    ? psychopharmacologyQuery.data
+    : isPublications
+      ? publicationsQuery.data
+      : biotechnologyQuery.data;
 
   const navItems = [
     {

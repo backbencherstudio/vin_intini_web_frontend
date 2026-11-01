@@ -26,7 +26,7 @@ interface RoleOption {
   Icon: ComponentType<{ className?: string }>;
 }
 
-function page() {
+function Page() {
   const stepThreeData = useSelector((state: any) => state.onboarding?.formData);
 
   const roleOptions: RoleOption[] = [
@@ -169,4 +169,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

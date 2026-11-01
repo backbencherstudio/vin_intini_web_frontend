@@ -1,6 +1,6 @@
 import AcademiaLayout from "./_components/AvademiaLayout";
 
-export default function layout({
+export default function Layout({
     children,
 }: {
     children: React.ReactNode;

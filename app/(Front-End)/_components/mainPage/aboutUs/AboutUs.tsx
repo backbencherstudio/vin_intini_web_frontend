@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useGetAboutUsQuery } from "@/feature/slice/aboutUs/aboutUs";
 import { AboutStar } from "@/public/svgIcons/Icons";
 
-export default function page() {
+export default function Page() {
   const { data, error, isLoading } = useGetAboutUsQuery({});
 
   return (

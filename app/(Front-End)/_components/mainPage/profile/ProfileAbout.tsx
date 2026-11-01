@@ -11,11 +11,13 @@ import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 function ProfileAbout({ userId }: { userId?: string }) {
   const [isNotify, setIsNotify] = useState(false);
 
-  const { data, isLoading } = userId
-    ? useGetProfileByIdQuery(userId || "", {
-        skip: !userId,
-      })
-    : useGetMyProfileQuery("profile");
+  const profileQuery = useGetProfileByIdQuery(userId ?? "", {
+    skip: !userId,
+  });
+  const myProfileQuery = useGetMyProfileQuery("profile", {
+    skip: Boolean(userId),
+  });
+  const { data, isLoading } = userId ? profileQuery : myProfileQuery;
 
   if (isLoading) {
     return (

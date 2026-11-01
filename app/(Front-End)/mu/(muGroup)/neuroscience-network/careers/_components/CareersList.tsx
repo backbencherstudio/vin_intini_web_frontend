@@ -37,7 +37,7 @@ export const CareersList = ({
     return (
       <div className="flex w-full flex-col items-center justify-center py-12">
         <p className="text-[#A5A5AB] font-['Segoe_UI'] text-base md:text-lg">
-          No careers found matching "{searchQuery}"
+          No careers found matching &quot;{searchQuery}&quot;
         </p>
       </div>
     );

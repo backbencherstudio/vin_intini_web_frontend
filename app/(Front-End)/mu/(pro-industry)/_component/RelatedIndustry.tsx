@@ -1,4 +1,4 @@
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import Image from "next/image";
 import { GrLocation } from "react-icons/gr";
 import RelatedIndustryFollowButton from "./RelatedIndustryFollowButton";
@@ -27,9 +27,6 @@ export default async function RelatedIndustry({
   try {
     response = await fetchWrapper(
       `/industry/${industryId}/related?per_page=5`,
-      {
-        next: { tags: ["related-industries"] },
-      },
     );
   } catch (error) {
     console.error("RelatedIndustry server fetch error:", error);

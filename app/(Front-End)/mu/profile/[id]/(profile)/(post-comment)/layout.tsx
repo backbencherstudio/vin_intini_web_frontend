@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import React from "react";
 
-function layout({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
   const params = useParams();
 
   const { data: userProfile } = useGetProfileByIdQuery(params.id, {
@@ -38,6 +38,7 @@ function layout({ children }: { children: React.ReactNode }) {
       <div className="w-full overflow-x-auto border-y flex  border-borderColor">
         {profileFilter.map((filter) => (
           <Link
+            key={filter.pathName}
             href={filter.pathName}
             className={`flex items-center justify-center whitespace-nowrap px-5 py-2 text-sm font-medium transition-colors cursor-pointer ${
               isActive(filter.pathName)
@@ -54,4 +55,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

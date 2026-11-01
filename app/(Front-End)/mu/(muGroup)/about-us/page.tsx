@@ -5,7 +5,7 @@ import FAQ from "@/app/(Front-End)/_components/mainPage/aboutUs/Faq";
 import VideoTutorial from "@/app/(Front-End)/_components/mainPage/aboutUs/VedioTutorial";
 import WhoAre from "../../../_components/mainPage/aboutUs/WhoAre";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

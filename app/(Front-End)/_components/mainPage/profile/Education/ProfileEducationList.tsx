@@ -12,9 +12,15 @@ import ProfileEducationForm from "./ProfileEducationForm";
 
 function ProfileEducationList({ userId }: { userId?: string }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const profileEducationQuery = useGetEducationListByIdQuery(userId ?? "", {
+    skip: !userId,
+  });
+  const myEducationQuery = useGetStudyQuery(undefined, {
+    skip: Boolean(userId),
+  });
   const { data, isLoading } = userId
-    ? useGetEducationListByIdQuery(userId)
-    : useGetStudyQuery(userId);
+    ? profileEducationQuery
+    : myEducationQuery;
   const educationItems: EducationType[] = data?.data || [];
 
   const openCreateForm = () => {

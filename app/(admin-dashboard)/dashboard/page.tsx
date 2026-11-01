@@ -7,7 +7,7 @@ import StatusCard from "@/app/(Front-End)/_components/adminDashboard/dashboard/S
 import TotalRevenuePieCard from "@/app/(Front-End)/_components/adminDashboard/dashboard/TotalReveniewCard";
 import UserGrowthCard from "@/app/(Front-End)/_components/adminDashboard/dashboard/UserGrothCard";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

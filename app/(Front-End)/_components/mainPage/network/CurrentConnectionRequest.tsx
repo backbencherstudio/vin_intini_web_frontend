@@ -1,6 +1,6 @@
 import Error from "@/components/reusable/Error";
 import { ConnectionRequestType } from "@/lib/type";
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import ConnectionNotFound from "./connectionRequests/ConnectionNotFound";
 import ConnectionRequestCard from "./connectionRequests/ConnectionRequestCard";
 
@@ -15,9 +15,6 @@ async function CurrentConnectionRequest({
   try {
     connectionRequests = await fetchWrapper(
       `/connections/requests?page=1&limit=5&search=${encodeURIComponent(query)}`,
-      {
-        next: { tags: ["connection"] },
-      },
     );
   } catch (error) {
     console.error("PostList server fetch error:", error);

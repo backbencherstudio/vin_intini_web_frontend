@@ -60,7 +60,7 @@ export default function WhoAre() {
 
                     <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 lg:p-6 bg-bgLightColor rounded-sm h-full w-full'>
                         <div>
-                            <p className='text-[32px] font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-primaryColor '>{aboutUs.name}</span></p>
+                            <p className='text-[32px] font-semibold text-[#0B0B0B] mb-2'>Hello, I&apos;m        <span className='text-3xl font-bold text-primaryColor '>{aboutUs.name}</span></p>
 
                             <p className='text-base font-normal text-[#0B0B0B] mb-8'>{aboutUs.designation}</p>
 

@@ -18,7 +18,7 @@ export default function FAQ() {
             <div className="mx-auto ">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <p className="text-primaryColor text-xl font-semibold leading-5 ">FAQ's</p>
+                    <p className="text-primaryColor text-xl font-semibold leading-5 ">FAQ&apos;s</p>
                     <h2 className="text-center text-black text-3xl md:text-4xl lg:text-5xl font-semibold leading-[130%] mt-4">
                         Frequently Asking Questions
                     </h2>

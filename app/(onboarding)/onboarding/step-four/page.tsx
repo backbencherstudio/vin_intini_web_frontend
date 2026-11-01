@@ -158,7 +158,7 @@ const fieldOfStudyOptions: GroupedOptionType[] = [
   },
 ];
 
-function page() {
+function Page() {
   const stepFourData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -433,4 +433,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

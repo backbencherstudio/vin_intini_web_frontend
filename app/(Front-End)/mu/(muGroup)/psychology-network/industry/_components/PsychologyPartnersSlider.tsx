@@ -20,14 +20,26 @@ interface Partner {
 export default function PsychologyPartnersSlider() {
   const pathname = usePathname();
 
-  const { data, isLoading } =
-    pathname === `/mu/psychology-network/industry/biotechnology`
-      ? useGetBiotechnologyPartnersQuery("biotechnology")
-      : pathname === `/mu/psychology-network/industry/psychopharmacology`
-        ? useGetPsychologyOnePartnersQuery("psychopharmacology")
-        : pathname === `/mu/psychology-network/industry/publications`
-          ? useGetPublicationsOnePartnersQuery("publications")
-          : useGetBiotechnologyPartnersQuery("biotechnology");
+  const isBiotechnology = pathname.includes("/psychology-network/industry/biotechnology");
+  const isPsychopharmacology = pathname.includes("/psychology-network/industry/psychopharmacology");
+  const isPublications = pathname.includes("/psychology-network/industry/publications");
+  const biotechnologyQuery = useGetBiotechnologyPartnersQuery("biotechnology", {
+    skip: !isBiotechnology,
+  });
+  const psychopharmacologyQuery = useGetPsychologyOnePartnersQuery(
+    "psychopharmacology",
+    { skip: !isPsychopharmacology },
+  );
+  const publicationsQuery = useGetPublicationsOnePartnersQuery(
+    "publications",
+    { skip: !isPublications },
+  );
+  const activeQuery = isPsychopharmacology
+    ? psychopharmacologyQuery
+    : isPublications
+      ? publicationsQuery
+      : biotechnologyQuery;
+  const { data, isLoading } = activeQuery;
 
   const navItems = [
     {

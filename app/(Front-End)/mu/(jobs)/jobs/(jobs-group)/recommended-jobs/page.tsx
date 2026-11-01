@@ -1,4 +1,4 @@
-function page() {
+function Page() {
   return (
     <div>
       <div>recommended jobs</div>
@@ -6,4 +6,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

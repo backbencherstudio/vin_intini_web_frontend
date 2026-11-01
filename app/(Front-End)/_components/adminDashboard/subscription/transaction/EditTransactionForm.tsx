@@ -10,7 +10,7 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import visaIcon from "@/public/images/admin/visa.png";
 import mastercardIcon from "@/public/images/admin/paypal.png";
 import americanExpressIcon from "@/public/images/admin/american.png";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 
 type Transaction = {

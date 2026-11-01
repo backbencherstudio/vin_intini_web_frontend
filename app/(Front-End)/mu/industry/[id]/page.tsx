@@ -1,7 +1,7 @@
 import PostList from "@/app/(Front-End)/_components/mainPage/post/PostList";
 import RelatedIndustry from "../../(pro-industry)/_component/RelatedIndustry";
 
-async function page({ params }: { params: Promise<{ id: string }> }) {
+async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
     <div className="">
@@ -17,4 +17,4 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   );
 }
 
-export default page;
+export default Page;

@@ -13,7 +13,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 
-export default function page() {
+export default function Page() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [errorRecovery, setErrorRecovery] = useState("");

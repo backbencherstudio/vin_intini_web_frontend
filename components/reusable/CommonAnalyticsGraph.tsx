@@ -26,6 +26,64 @@ export interface CommonAnalyticsGraphProps {
   className?: string;
 }
 
+type TooltipEntry = {
+  dataKey: string;
+  color?: string;
+  name?: string;
+  value?: unknown;
+};
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+  subtitle,
+  series,
+}: {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+  subtitle?: string;
+  series: GraphSeriesItem[];
+}) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-44 text-xs">
+      <p className="font-bold text-headerColor text-xs pb-1.5 mb-2 border-b border-borderColor/60">
+        {subtitle || `${label || ""} Insights`}
+      </p>
+      <div className="space-y-1.5">
+        {payload.map((entry, index) => {
+          const seriesConfig = series.find((item) => item.dataKey === entry.dataKey);
+          const color = seriesConfig?.color || entry.color;
+          const name = seriesConfig?.name || entry.name;
+
+          return (
+            <div
+              key={`${entry.dataKey}-${index}`}
+              className="flex items-center justify-between gap-4 text-descriptionColor"
+            >
+              <span className="flex items-center gap-1.5">
+                <span
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="text-gray-600 font-medium">{name}</span>
+              </span>
+              <span className="font-bold text-headerColor">
+                {entry.dataKey === "ctr"
+                  ? `${Number(entry.value ?? 0).toLocaleString()}%`
+                  : Number(entry.value ?? 0).toLocaleString()}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function CommonAnalyticsGraph({
   data = [],
   series = [],
@@ -87,44 +145,6 @@ export default function CommonAnalyticsGraph({
     return val.toString();
   };
 
-  // Custom Tooltip matching design exactly
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload || !payload.length) return null;
-    return (
-      <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-44 text-xs">
-        <p className="font-bold text-headerColor text-xs pb-1.5 mb-2 border-b border-borderColor/60">
-          {subtitle || `${label || ""} Insights`}
-        </p>
-        <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => {
-            const seriesConfig = series.find(
-              (s) => s.dataKey === entry.dataKey,
-            );
-            const color = seriesConfig?.color || entry.color;
-            const name = seriesConfig?.name || entry.name;
-            return (
-              <div
-                key={index}
-                className="flex items-center justify-between gap-4 text-descriptionColor"
-              >
-                <span className="flex items-center gap-1.5">
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: color }}
-                  />
-                  <span className="text-gray-600 font-medium">{name}</span>
-                </span>
-                <span className="font-bold text-headerColor">
-                  {entry.dataKey === "ctr" ? `${Number(entry.value ?? 0).toLocaleString()}%` : Number(entry.value ?? 0).toLocaleString()}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className={`w-full mt-6 ${height} ${className}`}>
       <ResponsiveContainer width="100%" height="100%">
@@ -158,7 +178,7 @@ export default function CommonAnalyticsGraph({
               strokeWidth: 5,
               strokeLinecap: "round",
             }}
-            content={<CustomTooltip />}
+            content={<CustomTooltip subtitle={subtitle} series={series} />}
           />
           {series.map((s) => (
             <Line

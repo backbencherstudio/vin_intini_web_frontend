@@ -1,7 +1,7 @@
 import React from "react";
 import AdvertisementPage from "../../_component/analytics/AnalyticsAdvertisementPage";
 
-function page() {
+function Page() {
   return (
     <div>
       <AdvertisementPage />
@@ -9,4 +9,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

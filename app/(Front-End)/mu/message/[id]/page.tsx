@@ -1,6 +1,6 @@
 import MessageRoot from "../_component/MessageRoot";
 
-function page() {
+function Page() {
   return (
     <div>
       <div>
@@ -10,4 +10,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

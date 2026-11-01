@@ -1,7 +1,7 @@
 import OverViewStatusCard from "@/app/(Front-End)/_components/adminDashboard/subscription/OverViewStatus";
 import OverViewTable from "@/app/(Front-End)/_components/adminDashboard/subscription/OverViewTable";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

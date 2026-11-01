@@ -1,7 +1,7 @@
 import { GroupDetailType } from "@/lib/type";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

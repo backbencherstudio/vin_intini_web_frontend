@@ -2,7 +2,7 @@
 
 import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
 import { ConnectionRequestType } from "@/lib/type";
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConnectionUserCard from "./ConnectionUserCard";

@@ -1,7 +1,7 @@
 import PlanPricingCard from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingCard";
 import PlanPricingTable from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingTable";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

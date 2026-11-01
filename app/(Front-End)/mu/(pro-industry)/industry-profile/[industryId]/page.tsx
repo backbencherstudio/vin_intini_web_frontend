@@ -2,7 +2,7 @@ import CreatePostSection from "@/app/(Front-End)/_components/mainPage/post/Creat
 import PostList from "@/app/(Front-End)/_components/mainPage/post/PostList";
 import IndustryHeroSection from "../_component/IndustryHeroSection";
 
-async function page({ params }: { params: Promise<{ industryId: string }> }) {
+async function Page({ params }: { params: Promise<{ industryId: string }> }) {
   const { industryId } = await params;
   return (
     <div className="space-y-4">
@@ -19,4 +19,4 @@ async function page({ params }: { params: Promise<{ industryId: string }> }) {
   );
 }
 
-export default page;
+export default Page;

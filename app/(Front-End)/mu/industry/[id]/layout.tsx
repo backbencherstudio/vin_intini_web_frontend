@@ -3,7 +3,7 @@ import AnalyticsMenue from "../../(pro-industry)/_component/analytics/AnalyticsM
 import RelatedIndustry from "../../(pro-industry)/_component/RelatedIndustry";
 import IndustryHeroSection from "../../(pro-industry)/industry-profile/_component/IndustryHeroSection";
 
-async function layout({
+async function Layout({
   children,
   params,
 }: {
@@ -43,4 +43,4 @@ async function layout({
   );
 }
 
-export default layout;
+export default Layout;

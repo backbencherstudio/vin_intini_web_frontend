@@ -1,6 +1,6 @@
 import CreatePlan from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/CreatePlan";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <CreatePlan />

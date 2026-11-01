@@ -1,6 +1,6 @@
 import TermsConditon from "@/app/(Front-End)/_components/TermsConditon";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <TermsConditon />

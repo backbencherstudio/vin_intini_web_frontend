@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import React from "react";
 import RootProtectedLayout from "../_components/RootProtectedLayout";
 
-async function layout({ children }: { children: React.ReactNode }) {
+async function Layout({ children }: { children: React.ReactNode }) {
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
 
@@ -15,4 +15,4 @@ async function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

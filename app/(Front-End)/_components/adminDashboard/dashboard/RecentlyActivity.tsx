@@ -1,6 +1,6 @@
 "use client";
 
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
+import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { Calendar, RotateCw, UserPlus, Megaphone, CreditCard, User, FileText } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";

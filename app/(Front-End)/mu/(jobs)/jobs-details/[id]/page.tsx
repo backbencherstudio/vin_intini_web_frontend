@@ -2,7 +2,7 @@ import JobsDetailsPage from "@/app/(Front-End)/mu/(pro-industry)/_component/jobs
 import JobDetailsHeader from "../../../(pro-industry)/_component/jobs/JobDetailsHeader";
 import TopJobsRightbar from "../../jobs/_component/TopJobsRightbar";
 
-async function page({ params }: { params: Promise<{ id: string }> }) {
+async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
     <div className="lg:grid lg:grid-cols-11  sm:pb-8 pb-6 gap-4 xl:gap-6 mb-10">
@@ -17,4 +17,4 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   );
 }
 
-export default page;
+export default Page;

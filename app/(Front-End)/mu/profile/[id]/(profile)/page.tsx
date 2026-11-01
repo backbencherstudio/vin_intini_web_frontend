@@ -1,7 +1,7 @@
 import ProfileHeroSection from "@/app/(Front-End)/_components/mainPage/profile/ProfileHeroSection";
 import ProfileLockedContent from "@/app/(Front-End)/_components/mainPage/profile/ProfileLockedContent";
 
-async function page(props: { params: Promise<{ id: string }> }) {
+async function Page(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
 
   return (
@@ -11,4 +11,4 @@ async function page(props: { params: Promise<{ id: string }> }) {
     </div>
   );
 }
-export default page;
+export default Page;

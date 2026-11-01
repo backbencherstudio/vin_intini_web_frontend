@@ -40,17 +40,6 @@ function DeleteGroup({
           : await deletePost(postId).unwrap();
       toast.success(response?.message || "Post deleted successfully");
       setOpen(false);
-      // ask server to revalidate the newsfeed path so server components refresh
-      try {
-        await fetch("/api/revalidate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ path: "/mu" }),
-        });
-      } catch (err) {
-        console.warn("Revalidate request failed", err);
-      }
-
       router.refresh();
     } catch (error) {
       console.error("Failed to delete post:", error);

@@ -17,7 +17,7 @@ import AcademiHeader from "../_components/AcademiHeader";
 import TableLoading from "../grad-undergrad-programs/_components/TableLoading";
 import MedResidencyTable from "./_components/MedResidencyTable";
 
-export default function page() {
+export default function Page() {
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [searchItem, setSearchItem] = useState<string>("");

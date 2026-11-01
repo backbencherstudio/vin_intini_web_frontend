@@ -6,7 +6,7 @@ import Footer from "../_components/Footer";
 import Navbar from "../_components/Navbar";
 import MainNavbar from "../_components/mainPage/MainNavbar";
 
-async function layout({ children }: { children: React.ReactNode }) {
+async function Layout({ children }: { children: React.ReactNode }) {
   const token = await getToken();
 
   return (
@@ -19,4 +19,4 @@ async function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

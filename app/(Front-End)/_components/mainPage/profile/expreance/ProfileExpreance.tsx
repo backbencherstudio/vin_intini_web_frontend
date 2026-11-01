@@ -12,9 +12,15 @@ import ProfileExpreanceCard from "./ProfileExpreanceCard";
 
 function ProfileExpreance({ userId }: { userId?: string }) {
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const profileExperienceQuery = useGetExperienceListByIdQuery(userId ?? "", {
+    skip: !userId,
+  });
+  const myExperienceQuery = useGetExperienceQuery("experience", {
+    skip: Boolean(userId),
+  });
   const { data, isLoading, isError } = userId
-    ? useGetExperienceListByIdQuery(userId)
-    : useGetExperienceQuery("experience");
+    ? profileExperienceQuery
+    : myExperienceQuery;
   const profileData = data?.data || [];
 
 

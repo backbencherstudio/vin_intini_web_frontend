@@ -8,7 +8,7 @@ import SaveJobcard from "../../../(jobs)/jobs/_component/SaveJobcard";
 import { SaveJobcardSkeleton } from "../../../(jobs)/jobs/_component/SaveJobcardSkeleton";
 import SaveJobsNotFound from "../../../(jobs)/jobs/_component/SaveJobsNotFound";
 
-function page() {
+function Page() {
   const params = useParams();
   const industryId =  params.id;
   const queryParams = useMemo(() => ({ industryId }), [industryId]);
@@ -58,4 +58,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

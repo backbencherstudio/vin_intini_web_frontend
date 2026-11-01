@@ -44,17 +44,6 @@ function GroupInviteAction({
     } else {
       try {
         const response = await removeGroupInvitation({ invitationId }).unwrap();
-        try {
-          await fetch("/api/revalidate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              path: "/mu/my-network/groups/",
-            }),
-          });
-        } catch (err) {
-          console.warn("Revalidate request failed", err);
-        }
         router.refresh();
         toast.success(
           response?.message || "Group invitation ignored successfully!",

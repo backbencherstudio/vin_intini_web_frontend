@@ -1,15 +1,12 @@
 import GroupInvitetionAllList from "@/app/(Front-End)/_components/mainPage/group/GroupInvitetionAllList";
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 export const dynamic = "force-dynamic";
 const limit = 9;
-async function page() {
+async function Page() {
   let initialData = { data: [] } as any;
   try {
     initialData = await fetchWrapper(
       `/group-invitations/requests?page=1&per_page=${limit}`,
-      {
-        next: { tags: ["posts"] },
-      },
     );
   } catch (err) {
     console.error("PostList server fetch error:", err);
@@ -22,4 +19,4 @@ async function page() {
   );
 }
 
-export default page;
+export default Page;

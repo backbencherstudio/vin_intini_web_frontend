@@ -7,7 +7,7 @@ import { USAMapType } from "@/lib/type";
 import { useGetAcademiaQuery } from "@/feature/slice/academia/academiaSlice";
 import MapSkeleton from "./_components/MapSkeleton";
 
-export default function page() {
+export default function Page() {
   const [mapData, setMapData] = useState<USAMapType[]>(null);
   const [redirect, setRedirect] = useState("");
   const { data, isLoading, error } = useGetAcademiaQuery("");

@@ -1,7 +1,7 @@
 import Breadcrumb from "@/app/(Front-End)/_components/Breadcrumb";
 import PublicationPage from "../../(pro-industry)/_component/publication/PublicationPage";
 
-function page() {
+function Page() {
   return (
     <div className="pb-6">
       <div className="pb-4">
@@ -12,4 +12,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

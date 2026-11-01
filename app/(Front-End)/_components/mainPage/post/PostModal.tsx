@@ -69,11 +69,20 @@ function PostModal({
   const pathName = usePathname();
   const idustry = pathName.includes("industry");
 
-  const [createPost, { isLoading, isError }] = idustry
-    ? useCreateIndustryPostMutation()
-    : useCreatePostMutation();
-  const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
-    idustry ? useUpdateIndustryPostMutation() : useUpdatePostMutation();
+  const [createStandardPost, standardPostState] = useCreatePostMutation();
+  const [createIndustryPost, industryPostState] =
+    useCreateIndustryPostMutation();
+  const [updateStandardPost, standardUpdateState] = useUpdatePostMutation();
+  const [updateIndustryPost, industryUpdateState] =
+    useUpdateIndustryPostMutation();
+  const createPost = idustry ? createIndustryPost : createStandardPost;
+  const updatePost = idustry ? updateIndustryPost : updateStandardPost;
+  const { isLoading, isError } = idustry
+    ? industryPostState
+    : standardPostState;
+  const { isLoading: isUpdating, isError: isUpdateError } = idustry
+    ? industryUpdateState
+    : standardUpdateState;
 
   // Populate initial text & media when editing
   useEffect(() => {

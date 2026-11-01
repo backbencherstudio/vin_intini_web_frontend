@@ -1,5 +1,5 @@
 import Error from "@/components/reusable/Error";
-import { fetchWrapper } from "@/src/utils/fetchWrapper";
+import { fetchWrapper } from "@/lib/fetch-wrapper";
 import SuggestConnectionListClient from "./SuggestConnectionListClient";
 
 async function SuggestConnectionList({
@@ -14,9 +14,6 @@ async function SuggestConnectionList({
   try {
     suggestedConnections = await fetchWrapper(
       `/connections/suggestions?page=1&per_page=${limit}&search=${encodeURIComponent(query)}`,
-      {
-        next: { tags: ["suggestions"] },
-      },
     );
   } catch (error) {
     console.error("SuggestConnectionList server fetch error:", error);

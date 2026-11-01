@@ -1,6 +1,6 @@
 import StateLayout from "./_components/StateLayout";
 
-export default function layout({
+export default function Layout({
     children,
 }: {
     children: React.ReactNode;

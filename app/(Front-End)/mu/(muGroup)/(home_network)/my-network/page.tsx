@@ -1,6 +1,6 @@
 import ConnectionRequestSection from "@/app/(Front-End)/_components/mainPage/network/ConnectionRequestSection";
 
-export default async function page({
+export default async function Page({
   searchParams,
 }: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
