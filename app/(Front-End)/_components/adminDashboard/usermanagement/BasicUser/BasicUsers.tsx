@@ -1,6 +1,6 @@
 "use client";
 
-import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
+import DataTable, { type Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
@@ -12,8 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetUsersQuery, useToggleUserSuspendMutation } from "@/feature/slice/admin/user-management";
-import { User } from "@/feature/slice/admin/user-management/userTypes";
+import {
+  useGetUsersQuery,
+  useToggleUserSuspendMutation,
+} from "@/feature/slice/admin/user-management";
+import type { User } from "@/feature/slice/admin/user-management/userTypes";
 import userIcon from "@/public/images/admin/parterner.png";
 import { ArrowDownToLine, ArrowUpDown, SearchIcon } from "lucide-react";
 import Image from "next/image";
@@ -41,7 +44,22 @@ export default function BasicUser() {
   const [toggleUserSuspend, { isLoading: isToggling }] =
     useToggleUserSuspendMutation();
 
-  const users = usersResponse?.data ?? [];
+  const users = [...(usersResponse?.data ?? [])];
+  if (sort === "a-z") {
+    users.sort((first, second) => first.full_name.localeCompare(second.full_name));
+  } else if (sort === "z-a") {
+    users.sort((first, second) => second.full_name.localeCompare(first.full_name));
+  } else if (sort === "newest") {
+    users.sort(
+      (first, second) =>
+        new Date(second.joined_at).getTime() - new Date(first.joined_at).getTime(),
+    );
+  } else if (sort === "oldest") {
+    users.sort(
+      (first, second) =>
+        new Date(first.joined_at).getTime() - new Date(second.joined_at).getTime(),
+    );
+  }
   const totalUsers =
     usersResponse?.pagination?.total ?? usersResponse?.total_users ?? 0;
   const totalPages = usersResponse?.pagination?.last_page ?? 0;
@@ -177,9 +195,10 @@ export default function BasicUser() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="default">Sort by</SelectItem>
-                <SelectItem value="connections">Connections</SelectItem>
                 <SelectItem value="z-a">Alphabet Z-A</SelectItem>
                 <SelectItem value="a-z">Alphabet A-Z</SelectItem>
+                <SelectItem value="newest">Newest joined</SelectItem>
+                <SelectItem value="oldest">Oldest joined</SelectItem>
               </SelectContent>
             </Select>
           </div>

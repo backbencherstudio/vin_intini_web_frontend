@@ -18,28 +18,31 @@ const CustomSwitch = React.forwardRef<HTMLButtonElement, CustomSwitchProps>(
       "aria-label": ariaLabel,
     },
     ref,
-  ) => (
-    <button
-      ref={ref}
-      type="button"
-      role="switch"
-      aria-label={ariaLabel}
-      aria-checked={checked}
-      aria-disabled={disabled}
-      onClick={() => !disabled && onChange(!checked)}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-        disabled
-          ? "cursor-not-allowed bg-gray-300 opacity-50"
-          : `cursor-pointer ${checked ? "bg-primaryColor" : "bg-gray-300"}`
-      } ${className}`}
-    >
-      <span
-        className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-          checked ? "translate-x-5" : ""
-        }`}
-      />
-    </button>
-  ),
+  ) => {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        role="switch"
+      disabled={disabled}
+        aria-label={ariaLabel}
+        aria-checked={checked}
+        aria-disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+          disabled
+            ? "cursor-not-allowed opacity-50 bg-gray-300"
+            : `cursor-pointer ${checked ? "bg-primaryColor" : "bg-gray-300"}`
+        } ${className}`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+            checked ? "translate-x-5" : ""
+          }`}
+        />
+      </button>
+    );
+  }
 );
 
 CustomSwitch.displayName = "CustomSwitch";
