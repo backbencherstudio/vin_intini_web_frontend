@@ -165,7 +165,7 @@ export default function BillingHistoryPage() {
       position: "justify-start",
       width: "110px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="py-4 px-4 text-left font-semibold text-sm text-headerColor whitespace-nowrap">
+        <div className="py-3 px-3 text-left text-sm font-medium text-headerColor whitespace-nowrap">
           {row.invoice_no || `#MU${String(row.id).padStart(6, "0")}`}
         </div>
       ),
@@ -188,8 +188,9 @@ export default function BillingHistoryPage() {
 
         if (isPaid) {
           return (
-            <div className="flex items-center justify-center py-4 px-2">
-              <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-lightGreenColor bg-lightGreenColor/40 text-lightGreenColor2">
+            <div className="flex items-center justify-center py-3 px-3">
+              <span className="inline-flex items-center gap-1 rounded-full border border-lightGreenColor bg-lightGreenColor/40 px-2.5 py-0.5 text-xs font-semibold text-lightGreenColor2">
+                <CheckCircle2 className="h-3.5 w-3.5" />
                 Paid
               </span>
             </div>
@@ -198,8 +199,8 @@ export default function BillingHistoryPage() {
 
         if (isExpired) {
           return (
-            <div className="flex items-center justify-center py-4 px-2">
-              <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-redColor/30 bg-redColor/10 text-redColor">
+            <div className="flex items-center justify-center py-3 px-3">
+              <span className="inline-flex items-center justify-center rounded-full border border-redColor/30 bg-redColor/10 px-2.5 py-0.5 text-xs font-semibold text-redColor">
                 {row.status || "Expired"}
               </span>
             </div>
@@ -207,8 +208,8 @@ export default function BillingHistoryPage() {
         }
 
         return (
-          <div className="flex items-center justify-center py-4 px-2">
-            <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-orengeColor/30 bg-orengeColor/10 text-orengeColor capitalize">
+          <div className="flex items-center justify-center py-3 px-3">
+            <span className="inline-flex items-center justify-center rounded-full border border-orengeColor/30 bg-orengeColor/10 px-2.5 py-0.5 text-xs font-semibold text-orengeColor capitalize">
               {row.status || "Pending"}
             </span>
           </div>
@@ -221,8 +222,8 @@ export default function BillingHistoryPage() {
       position: "justify-center",
       width: "105px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center justify-center py-4 px-2">
-          <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-orengeColor/30 bg-orengeColor/10 text-orengeColor whitespace-nowrap">
+        <div className="flex items-center justify-center py-3 px-3">
+          <span className="inline-flex items-center justify-center rounded-full border border-borderColor bg-sectionColor px-3 py-1 text-xs font-medium text-descriptionColor whitespace-nowrap">
             {row.plan?.name || row.package?.name || "Premium"}
           </span>
         </div>
@@ -236,11 +237,11 @@ export default function BillingHistoryPage() {
       formatter: (val: string, row: BillingHistoryItem) => {
         const dateVal = val || row.payment_date;
         return (
-          <div className="py-4 px-3 text-left">
-            <p className="text-sm font-medium text-grayColor1 whitespace-nowrap">
+          <div className="py-3 px-3 text-left">
+            <p className="text-sm font-medium text-headerColor whitespace-nowrap">
               {dateVal ? dayjs(dateVal).format("DD MMM YYYY") : "-"}
             </p>
-            <p className="text-xs text-grayColor1 whitespace-nowrap mt-0.5">
+            <p className="text-xs text-descriptionColor whitespace-nowrap mt-0.5">
               {dateVal ? dayjs(dateVal).format("hh:mm A") : ""}
             </p>
           </div>
@@ -255,11 +256,11 @@ export default function BillingHistoryPage() {
       formatter: (val: string, row: BillingHistoryItem) => {
         const dateVal = val || row.boost_period?.ends_at;
         return (
-          <div className="py-4 px-3 text-left">
-            <p className="text-sm font-medium text-descriptionColor whitespace-nowrap">
+          <div className="py-3 px-3 text-left">
+            <p className="text-sm font-medium text-headerColor whitespace-nowrap">
               {dateVal ? dayjs(dateVal).format("DD MMM YYYY") : "-"}
             </p>
-            <p className="text-xs text-liteDescriptionColor whitespace-nowrap mt-0.5">
+            <p className="text-xs text-descriptionColor whitespace-nowrap mt-0.5">
               {dateVal ? dayjs(dateVal).format("hh:mm A") : ""}
             </p>
           </div>
@@ -272,7 +273,7 @@ export default function BillingHistoryPage() {
       position: "justify-start",
       width: "160px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center gap-2.5 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
+        <div className="flex items-center gap-2.5 py-3 px-3 text-sm text-descriptionColor whitespace-nowrap">
           <CardBrandIcon brand={row.card_brand} rawMethod={row.payment_method} />
           <span className="font-normal text-descriptionColor tracking-wider text-xs sm:text-sm">
             {getMaskedCardNumber(row)}
@@ -289,7 +290,7 @@ export default function BillingHistoryPage() {
         if (row.amount_formatted) {
           const parts = row.amount_formatted.split("/");
           return (
-            <div className="py-4 px-3 text-sm whitespace-nowrap text-left">
+            <div className="py-3 px-3 text-sm whitespace-nowrap text-left">
               <span className="font-semibold text-headerColor">
                 {parts[0]?.trim()}
               </span>
@@ -311,7 +312,7 @@ export default function BillingHistoryPage() {
           ? ` / ${row.plan.billing_cycle}`
           : " / month";
         return (
-          <div className="py-4 px-3 text-sm whitespace-nowrap text-left">
+          <div className="py-3 px-3 text-sm whitespace-nowrap text-left">
             <span className="font-semibold text-headerColor">{price}</span>
             <span className="text-grayColor1 font-normal">{period}</span>
           </div>
@@ -330,7 +331,7 @@ export default function BillingHistoryPage() {
       position: "justify-start",
       width: "120px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="py-4 px-4 text-left font-medium text-sm text-headerColor whitespace-nowrap">
+        <div className="py-3 px-3 text-left text-sm font-medium text-headerColor whitespace-nowrap">
           {row.invoice_no || `#MU${String(row.id).padStart(6, "0")}`}
         </div>
       ),
@@ -343,17 +344,27 @@ export default function BillingHistoryPage() {
       formatter: (_: any, row: BillingHistoryItem) => {
         const normalized = (row.status || row.payment_status || "").toLowerCase();
         const isPaid =
-          normalized.includes("paid") || normalized.includes("succeeded");
+          normalized === "paid" ||
+          normalized === "succeeded" ||
+          normalized === "completed";
+        const isFailed =
+          normalized === "failed" ||
+          normalized === "expired" ||
+          normalized === "unpaid";
 
         return (
-          <div className="flex items-center justify-center py-4 px-2">
+          <div className="flex items-center justify-center py-3 px-3">
             {isPaid ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-lightGreenColor bg-lightGreenColor/40 text-lightGreenColor2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-lightGreenColor2" />
+              <span className="inline-flex items-center gap-1 rounded-full border border-lightGreenColor bg-lightGreenColor/40 px-2.5 py-0.5 text-xs font-semibold text-lightGreenColor2">
+                <CheckCircle2 className="h-3.5 w-3.5" />
                 Paid
               </span>
+            ) : isFailed ? (
+              <span className="inline-flex items-center justify-center rounded-full border border-redColor/30 bg-redColor/10 px-2.5 py-0.5 text-xs font-semibold text-redColor capitalize">
+                {row.status || row.payment_status || "Failed"}
+              </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border border-orengeColor/30 bg-orengeColor/10 text-orengeColor capitalize">
+              <span className="inline-flex items-center justify-center rounded-full border border-orengeColor/30 bg-orengeColor/10 px-2.5 py-0.5 text-xs font-semibold text-orengeColor capitalize">
                 {row.status || "Pending"}
               </span>
             )}
@@ -368,7 +379,7 @@ export default function BillingHistoryPage() {
       width: "120px",
       formatter: (_: any, row: BillingHistoryItem) => (
         <div className="py-3 px-3 text-left w-30">
-          <div className="inline-block px-2.5 py-0.5 text-xs font-bold text-whiteColor bg-blackColor rounded-md uppercase tracking-wider">
+          <div className="inline-block rounded-md border border-primaryColor/20 bg-primaryColor/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-primaryColor">
             {row.product?.product_id || `#${row.id}`}
           </div>
           <p
@@ -386,8 +397,8 @@ export default function BillingHistoryPage() {
       position: "justify-center",
       width: "140px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center justify-center py-4 px-2">
-          <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-sectionColor border border-borderColor text-descriptionColor whitespace-nowrap">
+        <div className="flex items-center justify-center py-3 px-3">
+          <span className="inline-flex items-center rounded-full border border-borderColor bg-sectionColor px-3 py-1 text-xs font-medium text-descriptionColor whitespace-nowrap">
             {row.package?.name || "Standard Boost"}
           </span>
         </div>
@@ -418,7 +429,7 @@ export default function BillingHistoryPage() {
       position: "justify-start",
       width: "160px",
       formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center gap-2.5 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
+        <div className="flex items-center gap-2.5 py-3 px-3 text-sm text-descriptionColor whitespace-nowrap">
           <CardBrandIcon brand={row.card_brand} rawMethod={row.payment_method} />
           <span className="font-normal text-descriptionColor tracking-wider text-xs sm:text-sm">
             {getMaskedCardNumber(row)}
@@ -439,7 +450,7 @@ export default function BillingHistoryPage() {
             : `${row.amount_formatted || `$${Number(row.amount || 0).toFixed(2)}`}`);
 
         return (
-          <div className="py-4 px-3 text-sm text-left whitespace-nowrap font-medium text-headerColor">
+          <div className="py-3 px-3 text-sm text-left whitespace-nowrap font-medium text-headerColor">
             {displayVal}
           </div>
         );

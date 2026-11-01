@@ -245,7 +245,7 @@ export default function LoginActivityTable() {
       header: "Activity",
       cell: (row) => (
         <span
-          className={`rounded-sm border font-['Segoe_UI'] px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
+          className={`rounded-sm border px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
             row.activity_status === "Trusted Device"
               ? "text-[#22CAAD] border-[#72DED1] bg-[#F0FFFD]"
               : row.activity_status === "Suspicious"
@@ -345,7 +345,7 @@ export default function LoginActivityTable() {
         <div className="flex justify-center items-center">
           <button
             onClick={handelDeleteAll}
-            className="cursor-pointer border border-[#FBD8DB] rounded-sm py-1 px-3 font-segoe text-[14px] font-normal leading-[140%] tracking-[0.07px] text-redColor"
+            className="cursor-pointer border border-[#FBD8DB] rounded-sm py-1 px-3 text-[14px] font-normal leading-[140%] tracking-[0.07px] text-redColor"
           >
             <p>Clear all Session</p>
           </button>

@@ -15,11 +15,11 @@ export default function SecuritySettings() {
       {/* Header */}
       <div className="mb-5 flex items-start justify-between">
         <div>
-          <h1 className="text-headerColor font-['Segoe_UI'] text-2xl font-semibold leading-[130%] tracking-[0.12px]">
+          <h1 className="text-headerColor text-2xl font-semibold leading-[130%] tracking-[0.12px]">
             Security Settings
           </h1>
 
-          <p className="mt-1 text-[#4A4C56] font-['Segoe_UI'] text-base font-normal leading-[150%] tracking-[0.08px]">
+          <p className="mt-1 text-[#4A4C56] text-base font-normal leading-[150%] tracking-[0.08px]">
             Manage your account security, access, and authentication settings.
           </p>
         </div>

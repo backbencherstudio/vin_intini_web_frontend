@@ -84,11 +84,11 @@ export default function SecurityOverview({
   return (
     <section className="rounded-md  ">
       <div className=" border-[#EEEEEE] py-6">
-        <h2 className="text-headerColor font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px]">
+        <h2 className="text-headerColor text-xl font-semibold leading-[130%] tracking-[0.1px]">
           Account Security Overview
         </h2>
 
-        <p className="mt-1 text-[#4A4C56] font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px]">
+        <p className="mt-1 text-[#4A4C56] text-sm font-normal leading-[140%] tracking-[0.07px]">
           Review your account security status and take action to keep your
           account safe.
         </p>
