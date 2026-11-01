@@ -139,7 +139,7 @@ export default function Partner() {
             accessor: "industry",
             cell: (row) => {
                 return (
-                    <div className="text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    <div className="text-[#0A0A0A] text-ellipsis text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                         {row.industry}
                     </div>
                 )
@@ -150,7 +150,7 @@ export default function Partner() {
             header: "Partner Name",
             accessor: "partnerName",
             cell: (row) => (
-                <span className="flex items-center gap-2 text-[#0A0A0A] text-ellipsis font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 text-[#0A0A0A] text-ellipsis text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.img && (
                         <Image
                             src={row.img}
@@ -177,7 +177,7 @@ export default function Partner() {
             header: "Descriptions",
             accessor: "description",
             cell: (row) => (
-                <span className="text-[#4A4C56]  max-w-[400px] line-clamp-2 whitespace-pre-line text-ellipsis font-['Segoe_UI'] text-[14px] leading-[140%] tracking-[0.07px]">
+                <span className="text-[#4A4C56]  max-w-[400px] line-clamp-2 whitespace-pre-line text-ellipsis text-[14px] leading-[140%] tracking-[0.07px]">
                     {
                         row.description
                     }

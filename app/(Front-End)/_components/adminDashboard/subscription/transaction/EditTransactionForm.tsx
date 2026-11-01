@@ -134,7 +134,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
 
         {/* Subscriber */}
         <div>
-          <label className="mb-1.5 block font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] text-grayColor1">
+          <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-grayColor1">
             Subscriber
           </label>
 
@@ -208,7 +208,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
 
         {/* Payment Method */}
         <div>
-          <label className="mb-1.5 block font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
+          <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
             Payment Method
           </label>
 
@@ -229,7 +229,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
 
         {/* Transaction Date & Time */}
         <div>
-          <label className="mb-1.5 block font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
+          <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
             Transaction Date & Time
           </label>
 
@@ -240,7 +240,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label className="mb-1.5 block font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
+          <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
             Notes
           </label>
 
@@ -258,7 +258,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
         <button
           type="button"
           onClick={onClose}
-          className="h-[42px] rounded-lg border border-[#D5DCE8] bg-white px-5 text-center text-[#0F172A] font-['Inter'] text-[16px] font-medium leading-[22.4px] transition hover:bg-gray-50"
+          className="h-[42px] rounded-lg border border-[#D5DCE8] bg-white px-5 text-center text-[16px] font-medium leading-[22.4px] text-[#0F172A] transition hover:bg-gray-50"
         >
           Cancel
         </button>
@@ -266,7 +266,7 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
         <button
           type="button"
           onClick={handleUpdate}
-          className="h-[42px] rounded-lg border border-primaryColor bg-[#E9FBFD] px-5 ttext-center text-primaryColor font-['Inter'] text-[16px] font-medium leading-[22.4px] transition hover:bg-[#DDF8FA]"
+          className="h-[42px] rounded-lg border border-primaryColor bg-[#E9FBFD] px-5 text-center text-[16px] font-medium leading-[22.4px] text-primaryColor transition hover:bg-[#DDF8FA]"
         >
           Update
         </button>

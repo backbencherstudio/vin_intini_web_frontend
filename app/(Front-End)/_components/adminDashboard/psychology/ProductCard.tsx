@@ -64,15 +64,15 @@ export default function ProductCard({
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col px-4">
-                <h3 className="truncate font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#101828]">
+                <h3 className="truncate text-base font-semibold leading-[150%] tracking-[0.08px] text-[#101828]">
                     {title}
                 </h3>
 
-                <span className="mt-0.5 font-['Segoe_UI'] text-xs font-normal leading-[132%] tracking-[0.06px] text-[#667085]">
+                <span className="mt-0.5 text-xs font-normal leading-[132%] tracking-[0.06px] text-[#667085]">
                     {category}
                 </span>
 
-                <p className="mt-2 line-clamp-2 font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#475467]">
+                <p className="mt-2 line-clamp-2 text-sm font-normal leading-[140%] tracking-[0.07px] text-[#475467]">
                     {description}
                 </p>
 

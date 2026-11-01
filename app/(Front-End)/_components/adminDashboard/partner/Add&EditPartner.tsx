@@ -159,7 +159,7 @@ export default function PartnerForm({
 
                 {/* Description */}
                 <div className="space-y-2">
-                    <label className="text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px] ">
+                    <label className="text-[#4A4C56] text-base font-semibold leading-6 tracking-[0.08px] ">
                         Description
                     </label>
 

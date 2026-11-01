@@ -184,7 +184,7 @@ export default function TransactionTable() {
       header: "Transaction ID",
       cell: (row) => (
         <div className="flex items-center gap-2">
-          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
             {row.transactionId}
           </span>
           <button className="text-gray-400 hover:text-gray-600">
@@ -206,7 +206,7 @@ export default function TransactionTable() {
               className="rounded-full object-cover"
             />
           )}
-          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
             {row.subscriber}
           </span>
         </div>
@@ -232,7 +232,7 @@ export default function TransactionTable() {
     {
       header: "Amount",
       cell: (row) => (
-        <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+        <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
           {row.amount}
           <span className="text-[14px] text-[#777980]">/ year</span>
         </span>
@@ -294,7 +294,7 @@ export default function TransactionTable() {
               </span>
             </span>
           )}
-          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+          <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
             {row.cardNumber}
           </span>
         </div>
@@ -303,7 +303,7 @@ export default function TransactionTable() {
     {
       header: "Date & Time",
       cell: (row) => (
-        <div className="overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI'] flex flex-col gap-0.5">
+        <div className="overflow-hidden text-ellipsis text-[#0A0A0A]  text-[14px] leading-[140%] tracking-[0.07px] flex flex-col gap-0.5">
           <div>{row.date}</div>
           <div className="text-[#A5A5AB]">{row.time}</div>
         </div>

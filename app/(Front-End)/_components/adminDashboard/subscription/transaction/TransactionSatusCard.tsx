@@ -34,14 +34,14 @@ export default function TransactionStatusCard() {
                                 className="rounded-lg bg-white p-4 border"
                             >
                                 <div className=" flex items-center justify-between">
-                                    <h3 className="text-[#777980] font-['Segoe_UI'] text-[14px] font-normal leading-[19.6px] tracking-[0.07px]">
+                                    <h3 className="text-[#777980] text-[14px] font-normal leading-[19.6px] tracking-[0.07px]">
                                         {item.label}
                                     </h3>
                                     <div>
                                         <IoArrowForward className="text-[#777980]" />
                                     </div>
                                 </div>
-                                <p className="text-headerColor font-['Segoe_UI'] text-[32px] font-semibold leading-[130%] py-3">
+                                <p className="text-headerColor text-[32px] font-semibold leading-[130%] py-3">
                                     {formatNumber(item.value)}
                                 </p>
 
@@ -61,17 +61,17 @@ export default function TransactionStatusCard() {
                                         <span
                                             className={
                                                 isDown
-                                                    ? "text-[#EB3D4D] font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
+                                                    ? "text-[#EB3D4D] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
                                                     : isFlat
-                                                        ? "text-[#777980] font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
-                                                        : "text-primaryColor font-['Segoe_UI'] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
+                                                        ? "text-[#777980] text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
+                                                        : "text-primaryColor text-[12px] font-semibold leading-[132%] tracking-[0.06px]"
                                             }
                                         >
                                             {item.change_percent !== null ? `${item.change_percent}%` : "-"}
                                         </span>
                                     </div>
 
-                                    <p className="text-[#777980] font-['Segoe_UI'] text-[12px] font-normal leading-[132%] tracking-[0.06px] flex justify-center items-center">
+                                    <p className="text-[#777980] text-[12px] font-normal leading-[132%] tracking-[0.06px] flex justify-center items-center">
                                         VS previous month
                                     </p>
                                 </div>

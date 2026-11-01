@@ -34,7 +34,7 @@ const CustomRadioButton = React.forwardRef<
     return (
       <div ref={ref} className={`w-full ${containerClassName}`}>
         {label && (
-          <label className="mb-1.5 block text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">
+          <label className="mb-1.5 block text-[#4A4C56] text-base font-semibold leading-6 tracking-[0.08px]">
             {label}
             {required && <span className="ml-0.5">*</span>}
           </label>

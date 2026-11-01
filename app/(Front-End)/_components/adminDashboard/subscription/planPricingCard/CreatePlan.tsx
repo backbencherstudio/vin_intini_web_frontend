@@ -317,7 +317,7 @@ export default function CreatePlan({
             {/* Status Toggle */}
             <div className="flex items-center justify-between rounded-lg  px-4 py-3">
               <div>
-                <p className=" text-[#4A4C56] font-['Segoe_UI'] text-base font-semibold leading-6 tracking-[0.08px]">
+                <p className=" text-[#4A4C56] text-base font-semibold leading-6 tracking-[0.08px]">
                   Plan Status
                 </p>
                 <p className=" text-sm font-normal leading-[140%] tracking-[0.07px] text-[#A5A5AB] mt-1">

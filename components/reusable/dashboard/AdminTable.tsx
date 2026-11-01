@@ -35,7 +35,7 @@ export default function DataTable<T extends { id: string | number }>({
               {columns.map((col, i) => (
                 <th
                   key={i}
-                  className="px-4 py-3 text-[#777980] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] whitespace-nowrap"
+                  className="px-4 py-3 text-[#777980] text-[14px] font-semibold leading-[140%] tracking-[0.07px] whitespace-nowrap"
                 >
                   {col.header}
                 </th>

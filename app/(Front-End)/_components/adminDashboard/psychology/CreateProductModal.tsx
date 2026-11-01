@@ -165,7 +165,7 @@ export default function CreateProductModal({
         >
             <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
                 <div className="w-full">
-                    <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56] font-['Segoe_UI']">
+                    <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
                         Placement (Section &gt; Category Tab)
                         <span className="ml-0.5">*</span>
                     </label>
@@ -262,7 +262,7 @@ export default function CreateProductModal({
                 </div>
 
                 <div className="w-full">
-                    <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56] font-['Segoe_UI']">
+                    <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
                         Upload Product Image
                         <span className="ml-0.5">*</span>
                     </label>
@@ -325,7 +325,7 @@ export default function CreateProductModal({
                 <div className="w-full">
                     <label
                         htmlFor="description"
-                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56] font-['Segoe_UI']"
+                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]"
                     >
                         Description
                     </label>

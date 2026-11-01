@@ -39,7 +39,7 @@ export default function AdvertisementViewDetails({ job }: { job: any }) {
             </p>
             <p className="text-grayColor1  text-[14px] font-normal leading-[140%] tracking-[0.07px]">
               CTR:{" "}
-              <span className="font-semibold text-sm font-Inter">
+              <span className="text-sm font-semibold">
                 {job.ctr}
               </span>
             </p>

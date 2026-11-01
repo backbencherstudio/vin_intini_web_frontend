@@ -199,14 +199,14 @@ export default function EditOverModal({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="h-10 cursor-pointer rounded-lg border border-[#D9DDE5] text-center text-[#0F172A] font-['Inter'] text-[16px] font-medium leading-[22.4px] px-6"
+                            className="h-10 cursor-pointer rounded-lg border border-[#D9DDE5] px-6 text-center text-[16px] font-medium leading-[22.4px] text-[#0F172A]"
                         >
                             Cancel
                         </button>
 
                         <button
                             type="submit"
-                            className="h-10 cursor-pointer rounded-lg border border-primaryColor bg-[#E9FAF7] px-5 text-center text-primaryColor font-['Inter'] text-base font-medium leading-[140%] hover:bg-[#DDF7FA]"
+                            className="h-10 cursor-pointer rounded-lg border border-primaryColor bg-[#E9FAF7] px-5 text-center text-base font-medium leading-[140%] text-primaryColor hover:bg-[#DDF7FA]"
                         >
                             Save Now
                         </button>

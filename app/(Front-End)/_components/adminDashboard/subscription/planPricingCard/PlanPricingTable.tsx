@@ -106,7 +106,7 @@ export default function PlanPricingTable() {
             header: "Description",
             cell: (row) => (
                 <div className="flex items-center gap-2">
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-normal text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-normal text-[14px] leading-[140%] tracking-[0.07px]">
                         {row.short_description}
                     </span>
                 </div>
@@ -132,7 +132,7 @@ export default function PlanPricingTable() {
         {
             header: "Amount",
             cell: (row) => (
-                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
                     {formatRate(row.billing_rate)}
                     <span className="text-[14px] text-[#777980]">
                         / {row.billing_cycle === "yearly" ? "year" : "month"}
@@ -144,7 +144,7 @@ export default function PlanPricingTable() {
             header: "Subscribers",
             cell: (row) => (
                 <div className="flex items-center gap-2">
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
                         {row.subscribers ?? "-"}
                     </span>
                 </div>

@@ -151,7 +151,7 @@ export default function CreatePublicationModal({
                 <div className="w-full">
                     <label
                         htmlFor="summary"
-                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56] font-['Segoe_UI']"
+                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]"
                     >
                         Brief Summary / Abstract
                     </label>

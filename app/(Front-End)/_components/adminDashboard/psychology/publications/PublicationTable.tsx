@@ -123,7 +123,7 @@ export default function PublicationTable({
             header: "No.",
             className: "align-top w-14",
             cell: (row) => (
-                <span className="text-[#777980] font-['Segoe_UI'] text-sm">{row.id}</span>
+                <span className="text-[#777980] text-sm">{row.id}</span>
             ),
         },
         {
@@ -131,10 +131,10 @@ export default function PublicationTable({
             className: "align-top min-w-70 max-w-100",
             cell: (row) => (
                 <div className="flex max-w-100 flex-col gap-1">
-                    <p className="font-['Segoe_UI'] text-sm font-semibold leading-[140%] text-[#1D1F2C]">
+                    <p className="text-sm font-semibold leading-[140%] text-[#1D1F2C]">
                         {row.title}
                     </p>
-                    <p className="line-clamp-1 font-['Segoe_UI'] text-xs leading-[140%] text-[#777980]">
+                    <p className="line-clamp-1 text-xs leading-[140%] text-[#777980]">
                         {row.summary}
                     </p>
                 </div>
@@ -154,14 +154,14 @@ export default function PublicationTable({
             className: "align-top min-w-52",
             cell: (row) => (
                 <div className="flex flex-col gap-1">
-                    <span className="inline-flex items-center gap-1.5 font-['Segoe_UI'] text-sm font-semibold text-[#1D1F2C]">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1D1F2C]">
                         <Calendar className="h-3.5 w-3.5 text-[#777980]" />
                         {row.date}
                     </span>
-                    <p className="font-['Segoe_UI'] text-xs leading-[140%] text-[#777980]">
+                    <p className="text-xs leading-[140%] text-[#777980]">
                         {row.journal}
                     </p>
-                    <p className="font-['Segoe_UI'] text-xs leading-[140%] text-[#777980]">
+                    <p className="text-xs leading-[140%] text-[#777980]">
                         {row.footerNote || row.volume}
                     </p>
                 </div>
@@ -176,15 +176,15 @@ export default function PublicationTable({
                         href={row.doiUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 font-['Segoe_UI'] text-sm font-medium text-[#006EFF] hover:underline"
+                        className="inline-flex items-center gap-1 text-sm font-medium text-[#006EFF] hover:underline"
                     >
                         View DOI
                         <SquareArrowOutUpRight className="h-3.5 w-3.5" />
                     </a>
-                    <p className="font-['Segoe_UI'] text-xs leading-[140%] text-[#777980]">
+                    <p className="text-xs leading-[140%] text-[#777980]">
                         PMID - {row.pmid}
                     </p>
-                    <p className="font-['Segoe_UI'] text-xs leading-[140%] text-[#777980]">
+                    <p className="text-xs leading-[140%] text-[#777980]">
                         PMCID: {row.pmcid}
                     </p>
                 </div>

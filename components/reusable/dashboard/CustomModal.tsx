@@ -70,7 +70,7 @@ export default function CustomModal(props: CustomModalProps) {
         <div className="flex justify-between items-center w-full px-3">
           {title && (
             <div className="flex justify-between items-center w-full -mt-3">
-              <h3 className="text-[#0B0B0B] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+              <h3 className="text-[#0B0B0B] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
                 {title}
               </h3>
             </div>
@@ -184,7 +184,7 @@ export default function CustomModal(props: CustomModalProps) {
 //         <div className="flex justify-between items-center w-full px-3">
 //           {title && (
 //             <div className="flex justify-between items-center w-full -mt-3">
-//               <h3 className="text-[#0B0B0B] font-['Segoe_UI'] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+//               <h3 className="text-[#0B0B0B] text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
 //                 {title}
 //               </h3>
 //             </div>

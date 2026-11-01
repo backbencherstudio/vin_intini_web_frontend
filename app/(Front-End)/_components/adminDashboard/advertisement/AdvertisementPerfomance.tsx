@@ -127,7 +127,6 @@ export default function AdvertisementPerformance() {
                             tick={{
                                 fontSize: 12,
                                 fill: "#ACB5BB",
-                                fontFamily: "Segoe UI",
                                 fontWeight: 400,
                                 textAnchor: "middle",
                             }}

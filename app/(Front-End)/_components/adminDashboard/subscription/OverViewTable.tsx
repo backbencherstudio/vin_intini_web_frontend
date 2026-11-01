@@ -107,7 +107,7 @@ export default function OverViewTable() {
             header: "Subscribers",
             accessor: "Subscribers",
             cell: (row) => (
-                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="flex items-center gap-2 overflow-hidden text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.img && (
                         <Image
                             src={row.img}
@@ -143,7 +143,7 @@ export default function OverViewTable() {
         {
             header: "Billing Cycle",
             cell: (row) => (
-                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className=" overflow-hidden text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.billingCycle}
                 </span>
             ),
@@ -153,10 +153,10 @@ export default function OverViewTable() {
             header: "Next Billing",
             cell: (row) => (
                 <div className="flex flex-col gap-2">
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                         {formatDate(new Date(row.nextBilling), "dd MMM yyyy")}
                     </span>
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                         {row.stayday}
                     </span>
                 </div>
@@ -165,7 +165,7 @@ export default function OverViewTable() {
         {
             header: "Amount",
             cell: (row) => (
-                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {row.amount} <span className="text-[#0A0A0A80]"> /year</span>
                 </span>
             ),
@@ -175,7 +175,7 @@ export default function OverViewTable() {
         {
             header: "Joined",
             cell: (row) => (
-                <span className="text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="text-ellipsis text-[#0A0A0A] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                     {formatDate(new Date(row.joined), "dd MMM yyyy")    }
                 </span>
             ),
@@ -184,7 +184,7 @@ export default function OverViewTable() {
         {
             header: "Action",
             cell: (row) => (
-                <span className="text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-sm font-semibold leading-[140%] tracking-[0.07px]">
+                <span className="text-ellipsis text-[#0A0A0A] text-sm font-semibold leading-[140%] tracking-[0.07px]">
                     <button onClick={() => openDelete(row)} className="flex items-center justify-center gap-2 rounded-md bg-red-500/80 hover:bg-red-500/90 cursor-pointer px-3 py-1.5 text-white ">
                         Cancel
                     </button>
