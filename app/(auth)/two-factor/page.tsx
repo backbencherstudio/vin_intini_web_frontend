@@ -13,7 +13,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 
-export default function page() {
+export default function Page() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [errorRecovery, setErrorRecovery] = useState("");
@@ -47,7 +47,7 @@ export default function page() {
         email: email,
       };
       const response = await twoFactorRecoveryEmail(payload).unwrap();
-      console.log(response);
+     
       route.push(
         `/recovery-email?email=${email}&recovery=${response?.masked_email}`,
       );

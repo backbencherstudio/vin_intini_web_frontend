@@ -123,6 +123,7 @@ export type PlanStatus = "active" | "inactive";
 export interface Plan {
   id: number;
   name: string;
+  plan_type: "premium" | "industry";
   short_description: string;
   billing_rate: string;
   billing_cycle: PlanBillingCycle;
@@ -131,6 +132,9 @@ export interface Plan {
   badge_color: string;
   status: PlanStatus;
   features: string[];
+  revenuecat_store_identifier_ios?: string | null;
+  revenuecat_store_identifier_android?: string | null;
+  revenuecat_entitlement_identifier?: string | null;
   subscribers?: number;
   created_at: string;
   updated_at: string;
@@ -143,6 +147,7 @@ export interface GetPlansResponse {
 
 export interface PlanPayload {
   name: string;
+  plan_type: "premium" | "industry";
   short_description: string;
   billing_rate: number;
   billing_cycle: PlanBillingCycle;
@@ -151,6 +156,9 @@ export interface PlanPayload {
   badge_color: string;
   status: PlanStatus;
   features: PlanFeatureValue[];
+  revenuecat_store_identifier_ios?: string | null;
+  revenuecat_store_identifier_android?: string | null;
+  revenuecat_entitlement_identifier?: string | null;
 }
 
 export interface CreatePlanResponse {
@@ -188,6 +196,7 @@ export type PlanFeatureValue =
 export interface PlanFeatureOption {
   value: PlanFeatureValue;
   label: string;
+  plan_types?: Array<"premium" | "industry">;
 }
 
 export interface GetPlanFeaturesResponse {

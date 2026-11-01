@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function page() {
+export default function Page() {
   const otpLength = 4;
   const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);

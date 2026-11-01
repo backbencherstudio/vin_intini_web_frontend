@@ -14,7 +14,7 @@ interface StepOneData {
   first_name: string;
   last_name: string;
 }
-function page() {
+function Page() {
   const onboardingData = useSelector(
     (state: any) => state.onboarding?.formData,
   );
@@ -89,4 +89,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

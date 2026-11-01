@@ -18,7 +18,7 @@ interface StepOneData {
   country: string;
   postal_code: string;
 }
-function page() {
+function Page() {
   const onboardingData = useSelector(
     (state: any) => state.onboarding?.formData,
   );
@@ -113,4 +113,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

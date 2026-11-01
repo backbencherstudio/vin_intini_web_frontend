@@ -1,6 +1,6 @@
-import ProUser from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/ProUser/ProUser";
+import ProUser from "@/app/(Front-End)/_components/adminDashboard/usermanagement/ProUser/ProUser";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <div>

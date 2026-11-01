@@ -1,7 +1,7 @@
 import RegistrationForm from "../../_components/RegistrationForm";
 
 
-function page() {
+function Page() {
   return (
     <div>
       <h4 className="text-lg md:text-xl lg:text-2xl font-semibold text-headerColor text-center max-w-[375px] mx-auto">
@@ -12,5 +12,5 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
 

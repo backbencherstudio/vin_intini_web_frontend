@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-function page() {
+function Page() {
   const [recoverYourAccount, { isLoading }] = useRecoverYourAccountMutation();
   const {
     register,
@@ -112,4 +112,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

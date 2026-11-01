@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FiEyeOff } from "react-icons/fi";
 
-export default function page() {
+export default function Page() {
   const router = useRouter();
   const {
     register,

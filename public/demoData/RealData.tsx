@@ -38,21 +38,79 @@ export const yearOptions = Array.from(
 );
 
 export const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
+  { value: "full_time", label: "Full-time" },
+  { value: "part_time", label: "Part-time" },
+  { value: "short_term", label: "Short Term" },
+  { value: "contract", label: "Contract" },
+  { value: "internship", label: "Internship" },
+  
 ];
 
 export const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
+  { value: "on_site", label: "On-site" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "remote", label: "Remote" },
 ];
+
+ // Status badge styling helper
+  export const getBadgeConfig = (status: string) => {
+    const s = status?.toLowerCase() || "";
+    switch (s) {
+      case "accepted":
+      case "hired":
+        return {
+          label: "Hired",
+          colorClass:
+            "bg-checkBoxColor/10 text-checkBoxColor border-checkBoxColor/30 hover:bg-checkBoxColor/12 [&_svg]:text-checkBoxColor",
+        };
+      case "pending":
+        return {
+          label: "Pending",
+          colorClass:
+            "bg-[#FFFAE7] text-[#BB960B] border-[#FDE99F] hover:bg-[#fef9c3] [&_svg]:text-[#BB960B]",
+        };
+      case "reviewing":
+      case "in progress":
+        return {
+          label: "Reviewed",
+          colorClass:
+            "bg-ratingColor/10 text-ratingColor border-ratingColor/30 hover:bg-ratingColor/12 [&_svg]:text-ratingColor",
+        };
+      case "interview":
+      case "interviewed":
+        return {
+          label: "Interview",
+          colorClass:
+            "bg-blueColor/10 text-blueColor border-blueColor/30 hover:bg-blueColor/12 [&_svg]:text-blueColor",
+        };
+      case "shortlisted":
+        return {
+          label: "Shortlisted",
+          colorClass:
+            "bg-buttonColor/10 text-buttonColor border-buttonColor/30 hover:bg-buttonColor/12 [&_svg]:text-buttonColor",
+        };
+      case "offered":
+        return {
+          label: "Offered",
+          colorClass:
+            "bg-LiteBlueColor/10 text-LiteBlueColor border-LiteBlueColor/30 hover:bg-LiteBlueColor/12 [&_svg]:text-LiteBlueColor",
+        };
+      case "rejected":
+        return {
+          label: "Rejected",
+          colorClass:
+            "bg-redColor/10 text-redColor border-redColor/30 hover:bg-redColor/12 [&_svg]:text-redColor",
+        };
+      default:
+        return {
+          label: status
+            ? status.charAt(0).toUpperCase() + status.slice(1)
+            : "Pending",
+          colorClass:
+            "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 [&_svg]:text-gray-700",
+        };
+    }
+  };
 
 export const monthAliasMap: Record<string, string> = {
   jan: "January",
@@ -320,4 +378,80 @@ export const countries = [
   { iso_code: "WF", country: "Wallis and Futuna" },
   { iso_code: "ZM", country: "Zambia" },
   { iso_code: "ZW", country: "Zimbabwe" },
+];
+
+export const networkOptions = [
+  { value: "psychology", label: "Psychology" },
+  { value: "neuroscience", label: "Neuroscience" },
+];
+
+export const categoryOptions = [
+  {
+    group: "Research / Lab",
+    options: [
+      {
+        value: "Clinical Research Director",
+        label: "Clinical Research Director",
+      },
+      { value: "Lab Manager", label: "Lab Manager" },
+      { value: "Research Scientist", label: "Research Scientist" },
+      { value: "Research Coordinator", label: "Research Coordinator" },
+      { value: "Lab Technician", label: "Lab Technician" },
+      { value: "Research Assistant", label: "Research Assistant" },
+      { value: "Postdoctoral Fellow", label: "Postdoctoral Fellow" },
+      { value: "Postbaccalaureate", label: "Postbaccalaureate" },
+    ],
+  },
+  {
+    group: "Academia",
+    options: [
+      { value: "Professor", label: "Professor" },
+      { value: "Adjunct Professor", label: "Adjunct Professor" },
+      { value: "Lecturer", label: "Lecturer" },
+    ],
+  },
+  {
+    group: "Private Practice",
+    options: [
+      { value: "Psychologist", label: "Psychologist" },
+      { value: "Neurologist", label: "Neurologist" },
+      { value: "Psychiatrist", label: "Psychiatrist" },
+      { value: "Therapist", label: "Therapist" },
+      { value: "Counselor", label: "Counselor" },
+    ],
+  },
+  {
+    group: "Industry Professional",
+    options: [
+      {
+        value: "Brain Health Professional Within a Corporate Organization",
+        label: "Brain Health Professional Within a Corporate Organization",
+      },
+      { value: "Biotech Representative", label: "Biotech Representative" },
+      {
+        value: "Psychotropic Representative",
+        label: "Psychotropic Representative",
+      },
+      { value: "Scientific Consultant", label: "Scientific Consultant" },
+      { value: "Science Writer", label: "Science Writer" },
+    ],
+  },
+];
+
+export const employmentOfferingOptions = [
+  { value: "state_institutions", label: "State Institutions" },
+  { value: "academic_institutions", label: "Academic Institutions" },
+  { value: "private_practice", label: "Private Practice" },
+  { value: "biotech_industry", label: "Biotech Industry" },
+  { value: "psychotropics_industry", label: "Psychotropics Industry" },
+  { value: "publications_industry", label: "Publications Industry" },
+];
+
+export const levelOptions = [
+  { value: "Entry-Level", label: "Entry-Level" },
+  { value: "Mid-Level", label: "Mid-Level" },
+  { value: "Senior-Level", label: "Senior-Level" },
+  { value: "Lead / Manager", label: "Lead / Manager" },
+  { value: "Director", label: "Director" },
+  { value: "Executive", label: "Executive" },
 ];

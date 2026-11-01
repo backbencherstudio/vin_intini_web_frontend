@@ -55,7 +55,7 @@ const interestOptions: InterestOption[] = [
   { id: 40, title: "Psychopharmacology" },
 ];
 
-function page() {
+function Page() {
   const stepFiveData = useSelector((state: any) => state.onboarding.formData);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -150,4 +150,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

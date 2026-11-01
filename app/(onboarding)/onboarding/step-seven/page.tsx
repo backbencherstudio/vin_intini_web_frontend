@@ -94,7 +94,7 @@ const resolveProfileImageFile = async (
   return null;
 };
 
-function page() {
+function Page() {
   const router = useRouter();
 
   const stepSixData = useSelector((state: any) => state.onboarding.formData);
@@ -307,4 +307,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

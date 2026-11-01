@@ -43,7 +43,7 @@ const readFileAsDataUrl = (file: File) =>
     reader.readAsDataURL(file);
   });
 
-function page() {
+function Page() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const stepSixData = useSelector((state: any) => state.onboarding.formData);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
@@ -261,4 +261,4 @@ profile summary."
   );
 }
 
-export default page;
+export default Page;

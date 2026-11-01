@@ -1,7 +1,7 @@
 import { VerifyIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 
-export default function page() {
+export default function Page() {
   return (
     <div className=" flex flex-col w-full py-12 justify-center ">
       <div className="flex justify-center w-full">

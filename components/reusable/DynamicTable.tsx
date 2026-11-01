@@ -2,18 +2,13 @@
 
 import Image from "next/image";
 import React from "react";
-import {
-  HiOutlineChevronDown,
-  HiOutlineChevronUp,
-  HiOutlineSelector,
-} from "react-icons/hi";
-import { BsSortUpAlt } from "react-icons/bs";
-import { BsSortUp } from "react-icons/bs";
+import { BsSortUp, BsSortUpAlt } from "react-icons/bs";
+import { HiOutlineSelector } from "react-icons/hi";
 
 interface ColumnConfig {
   label: React.ReactNode;
   position?: "justify-center" | "justify-start" | "justify-end" | string;
-  width: any;
+  width?: any;
   accessor: string;
   sortable?: boolean;
   sortFunction?: () => void;
@@ -45,8 +40,10 @@ interface DynamicTableProps {
     fontSize?: string;
     position?: "justify-center" | "justify-start" | "justify-end";
   };
-  tableMinWidth?: string;
-  tableMaxWidth?: string;
+  tableMinWidth?: string | number;
+  tableMaxWidth?: string | number;
+  minWidth?: string | number;
+  className?: string;
   rowStyle?: {
     hover?: boolean;
     hoverbg?: string;
@@ -74,6 +71,10 @@ export default function DynamicTable({
   header = {
     position: "justify-start",
   },
+  tableMinWidth,
+  tableMaxWidth,
+  minWidth,
+  className,
   rowStyle,
 }: DynamicTableProps) {
   // const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -81,6 +82,24 @@ export default function DynamicTable({
   //   (currentPage - 1) * itemsPerPage,
   //   currentPage * itemsPerPage
   // );
+
+  const resolvedMinWidth =
+    tableMinWidth !== undefined
+      ? typeof tableMinWidth === "number"
+        ? `${tableMinWidth}px`
+        : tableMinWidth
+      : minWidth !== undefined
+        ? typeof minWidth === "number"
+          ? `${minWidth}px`
+          : minWidth
+        : undefined;
+
+  const resolvedMaxWidth =
+    tableMaxWidth !== undefined
+      ? typeof tableMaxWidth === "number"
+        ? `${tableMaxWidth}px`
+        : tableMaxWidth
+      : undefined;
 
   const renderSortIcon = (columnKey: string) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
@@ -96,8 +115,14 @@ export default function DynamicTable({
     <div className="w-full h-full grid">
       {/* Table Wrapper with Border & Radius */}
       <div className="overflow-hidden h-full">
-        <div className="overflow-x-auto">
-          <table className={`w-full text-left ${rowStyle?.spaceing || ""}`}>
+        <div className="overflow-x-auto ">
+          <table
+            style={{
+              ...(resolvedMinWidth ? { minWidth: resolvedMinWidth } : {}),
+              ...(resolvedMaxWidth ? { maxWidth: resolvedMaxWidth } : {}),
+            }}
+            className={`w-full text-left ${rowStyle?.spaceing || ""} ${className || ""}`}
+          >
             <thead className="sticky top-0">
               <tr style={{ borderRadius: "100%" }} className="text-center">
                 {columns.map((col, index) => (
@@ -120,7 +145,10 @@ export default function DynamicTable({
                       }}
                     >
                       {col?.sortable && (
-                        <button onClick={col.sortFunction} className="cursor-pointer p-px rounded hover:bg-gray-300 transition-colors duration-300">
+                        <button
+                          onClick={col.sortFunction}
+                          className="cursor-pointer p-px rounded hover:bg-gray-300 transition-colors duration-300"
+                        >
                           {renderSortIcon(col.accessor)}
                         </button>
                       )}
