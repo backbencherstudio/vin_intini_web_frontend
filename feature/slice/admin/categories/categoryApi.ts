@@ -47,14 +47,14 @@ const categorySlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["category", "psychology"],
     }),
 
-    // Endpoint: POST {{ _.base_url }}/admin/categories/psychology/update/:id
+    // Endpoint: PUT /admin/categories/psychology/update/:id
     updatePsychologySection: builder.mutation<
       UpdateSectionResponse,
       { id: number | string; body: UpdateSectionPayload }
     >({
       query: ({ id, body }) => ({
         url: `/admin/categories/psychology/update/${id}`,
-        method: "POST",
+        method: "PUT",
         body,
       }),
       invalidatesTags: ["category", "psychology"],
@@ -118,7 +118,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
     }),
 
     // ============ Subcategory Tab CRUD ============
-    // Endpoint: POST {{ _.base_url }}/admin/categories/sub-cateroy/create
+    // Endpoint: POST /admin/categories/sub-category/create
     createCategoryTab: builder.mutation<
       CreateCategoryTabResponse,
       CreateCategoryTabPayload | CreateCategoryTabArgs
@@ -129,7 +129,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
             ? { section_id: arg.section_id, ...arg.body }
             : arg;
         return {
-          url: "/admin/categories/sub-cateroy/create",
+          url: "/admin/categories/sub-category/create",
           method: "POST",
           body,
         };
@@ -137,7 +137,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["category", "psychology", "neuroscience"],
     }),
 
-    // Endpoint: POST {{ _.base_url }}/admin/categories/sub-cateroy/update/:id
+    // Endpoint: PUT /admin/categories/sub-category/update/:id
     updateCategoryTab: builder.mutation<
       UpdateCategoryTabResponse,
       UpdateCategoryTabArgs
@@ -149,7 +149,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
             ? arg.body
             : { category_name: arg.category_name };
         return {
-          url: `/admin/categories/sub-cateroy/update/${id}`,
+          url: `/admin/categories/sub-category/update/${id}`,
           method: "PUT",
           body,
         };
@@ -157,7 +157,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["category", "psychology", "neuroscience"],
     }),
 
-    // Endpoint: DELETE {{ _.base_url }}/admin/categories/sub-cateroy/delete/:id
+    // Endpoint: DELETE /admin/categories/sub-category/delete/:id
     deleteCategoryTab: builder.mutation<
       DeleteCategoryTabResponse,
       number | string | { id: number | string }
@@ -165,7 +165,7 @@ const categorySlice = baseApiSlice.injectEndpoints({
       query: (arg) => {
         const id = typeof arg === "object" ? arg.id : arg;
         return {
-          url: `/admin/categories/sub-cateroy/delete/${id}`,
+          url: `/admin/categories/sub-category/delete/${id}`,
           method: "DELETE",
         };
       },

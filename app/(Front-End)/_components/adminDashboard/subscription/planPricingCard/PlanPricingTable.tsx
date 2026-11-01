@@ -4,7 +4,7 @@ import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import { useMemo, useState } from "react";
-import { ArrowDownToLine, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
@@ -13,6 +13,7 @@ import { useDeactivePlanMutation, useGetPlansQuery } from "@/feature/slice/admin
 import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";
 import CreatePlan from "./CreatePlan";
 import toast from "react-hot-toast";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 
 const getPlanBadgeColor = (name: string) => {
     const n = name.toLowerCase();
@@ -47,7 +48,7 @@ export default function PlanPricingTable() {
             const matchesSearch =
                 !q ||
                 plan.name.toLowerCase().includes(q) ||
-                plan.short_description.toLowerCase().includes(q);
+                (plan.short_description ?? "").toLowerCase().includes(q);
 
             const matchesPlan = !planFilter || plan.name === planFilter;
             const matchesStatus = !statusFilter || plan.status === statusFilter;
@@ -145,7 +146,7 @@ export default function PlanPricingTable() {
             cell: (row) => (
                 <div className="flex items-center gap-2">
                     <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
-                        {row.subscribers ?? "-"}
+                        {row.total_subscribers ?? row.subscribers ?? "-"}
                     </span>
                 </div>
             ),
@@ -157,56 +158,35 @@ export default function PlanPricingTable() {
 
             <h2 className="text-2xl font-bold">Plan Pricing</h2>
             <p className="text-sm text-gray-500 mb-4">Manage your subscription plans and pricing.</p>
-            {/* Filters */}
-            {/* <div className="flex w-full justify-start lg:justify-end">
-                <div className="mb-6 flex flex-col w-full lg:w-full xl:w-2/3 lg:flex-row items-center justify-start gap-4 ">
-                    <div className="relative w-full  xl:w-[300px]">
-                        <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
-
-                        <input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="h-10 w-full xl:w-[300px] rounded-md border border-gray-200 bg-white p-2 pl-9 text-sm focus:outline-none focus:ring-1 focus:ring-primaryColor"
-                            type="text"
-                            placeholder="Search by plan name or description..."
-                        />
-                    </div>
-
-                    <CustomSelect
-                        className="h-[38px]"
-                        value={planFilter || "default"}
-                        onChange={(value: string | number) =>
-                            setPlanFilter(value === "default" ? "" : String(value))
-                        }
-                        options={planOptions}
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                <div className="relative w-full sm:max-w-xs">
+                    <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
+                    <CustomInput
+                        aria-label="Search plans"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        className="pl-9"
+                        placeholder="Search by plan name or description..."
                     />
-
-                    <CustomSelect
-                        className="h-[38px] "
-                        value={statusFilter || "default"}
-                        onChange={(value: string | number) =>
-                            setStatusFilter(value === "default" ? "" : String(value))
-                        }
-                        options={[
-                            { label: "All Status", value: "default" },
-                            { label: "Active", value: "active" },
-                            { label: "Inactive", value: "inactive" },
-                        ]}
-                    />
-
-                    <DateRangePicker
-                        className="h-[38px] "
-                        date={date}
-                        setDate={setDate}
-                        placeholder="Select Date Range"
-                    />
-
-                    <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 text-white transition hover:bg-[#038a9c]">
-                        <ArrowDownToLine className="h-4 w-4" />
-                        Export
-                    </button>
                 </div>
-            </div> */}
+                <CustomSelect
+                    className="sm:w-40"
+                    value={planFilter || "default"}
+                    onChange={(value) => setPlanFilter(value === "default" ? "" : String(value))}
+                    options={planOptions}
+                />
+                <CustomSelect
+                    className="sm:w-40"
+                    value={statusFilter || "default"}
+                    onChange={(value) => setStatusFilter(value === "default" ? "" : String(value))}
+                    options={[
+                        { label: "All Status", value: "default" },
+                        { label: "Active", value: "active" },
+                        { label: "Inactive", value: "inactive" },
+                    ]}
+                />
+                <DateRangePicker date={date} setDate={setDate} placeholder="Select Date Range" className="w-full sm:w-56" />
+            </div>
 
             {isLoading ? (
                 <p className="py-12 text-center text-sm text-gray-400">Loading plans...</p>

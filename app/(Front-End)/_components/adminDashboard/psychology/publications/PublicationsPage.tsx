@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import PublicationTable, {
     Publication,
@@ -72,7 +73,7 @@ export default function PublicationsPage() {
                     description="Manage and organize research articles and journals in table view."
                     action={
                         <div className="flex gap-2">
-                            <input type="text" placeholder="Search" className="w-full" />
+                            <CustomInput aria-label="Search publications" placeholder="Search" className="h-10" />
                             <CreateNewPublication onClick={openAddModal} />
                         </div>
                     }

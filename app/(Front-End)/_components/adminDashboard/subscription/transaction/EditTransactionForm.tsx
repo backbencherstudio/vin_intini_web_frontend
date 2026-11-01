@@ -6,6 +6,7 @@ import { CalendarDays } from "lucide-react";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 
 import visaIcon from "@/public/images/admin/visa.png";
 import mastercardIcon from "@/public/images/admin/paypal.png";
@@ -240,15 +241,12 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]">
-            Notes
-          </label>
-
-          <textarea
+          <CustomTextArea
+            label="Notes"
             value={formData.notes}
             onChange={(e) => handleChange("notes", e.target.value)}
             placeholder="Add a note (optional)"
-            className="h-[144px] w-full resize-none rounded-lg border border-[#D5DCE8] bg-white px-4 py-3 text-sm text-[#4A4C56] outline-none placeholder:text-[#777980] focus:border-primaryColor"
+            className="h-36 resize-none"
           />
         </div>
       </div>

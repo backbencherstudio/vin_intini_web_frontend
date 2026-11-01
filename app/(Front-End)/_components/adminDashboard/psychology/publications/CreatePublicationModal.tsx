@@ -5,6 +5,7 @@ import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import { Publication, PublicationNetwork } from "./PublicationTable";
 
 export type PublicationFormValues = {
@@ -149,19 +150,14 @@ export default function CreatePublicationModal({
                 </div>
 
                 <div className="w-full">
-                    <label
-                        htmlFor="summary"
-                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]"
-                    >
-                        Brief Summary / Abstract
-                    </label>
-                    <textarea
+                    <CustomTextArea
+                        label="Brief Summary / Abstract"
                         id="summary"
                         rows={5}
                         placeholder="Key summary of the research findings..."
                         value={form.summary}
                         onChange={(event) => updateField("summary", event.target.value)}
-                        className="w-full resize-none rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-500"
+                        className="resize-none"
                     />
                 </div>
 

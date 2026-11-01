@@ -28,11 +28,12 @@ const universitySlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["university"],
     }),
 
     editUniversity: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `admin/academia/university/update/${id}`,
+        url: `/admin/academia/university/update/${id}`,
         method: "PUT",
         body: data,
       }),

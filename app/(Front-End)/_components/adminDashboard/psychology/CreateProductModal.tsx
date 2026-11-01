@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CloudUpload } from "lucide-react";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import {
     Select,
@@ -266,11 +267,11 @@ export default function CreateProductModal({
                         Upload Product Image
                         <span className="ml-0.5">*</span>
                     </label>
-                    <input
+                    <CustomInput
                         ref={fileInputRef}
                         type="file"
                         accept=".jpg,.jpeg,.png,.webp"
-                        className="hidden"
+                        containerClassName="hidden"
                         onChange={(event) => {
                             const file = event.target.files?.[0];
                             if (file) applyImageFile(file);
@@ -323,19 +324,14 @@ export default function CreateProductModal({
                 </div>
 
                 <div className="w-full">
-                    <label
-                        htmlFor="description"
-                        className="mb-1.5 block text-base font-semibold leading-6 tracking-[0.08px] text-[#4A4C56]"
-                    >
-                        Description
-                    </label>
-                    <textarea
+                    <CustomTextArea
+                        label="Description"
                         id="description"
                         rows={5}
                         placeholder="Brief company legacy..."
                         value={form.description}
                         onChange={(event) => updateField("description", event.target.value)}
-                        className="w-full resize-none rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-500"
+                        className="resize-none"
                     />
                 </div>
 

@@ -7,7 +7,7 @@ export default function Page() {
       <div>
         <OverViewStatusCard />
       </div>
-      <div className="mt-6">
+      <div className="mt-15">
         <OverViewTable />
       </div>
     </div>

@@ -13,10 +13,10 @@ export interface Subscription {
   id: number;
   subscriber: Subscriber;
   plan: SubscriptionPlan;
-  status: "active" | "cancelled" | "expired" | "past_due";
-  billing_cycle: "monthly" | "yearly";
-  next_billing_date: string;
-  days_left: number;
+  status: "active" | "canceled" | "cancelled" | "expired" | "past_due" | "trialing" | string;
+  billing_cycle: "monthly" | "yearly" | null;
+  next_billing_date: string | null;
+  days_left: number | null;
   cancel_at_period_end: boolean;
   joined_at: string;
 }
@@ -124,11 +124,11 @@ export interface Plan {
   id: number;
   name: string;
   plan_type: "premium" | "industry";
-  short_description: string;
+  short_description: string | null;
   billing_rate: string;
   billing_cycle: PlanBillingCycle;
   discount_percent: string;
-  discount_duration: string; // ISO datetime
+  discount_duration: string | null;
   badge_color: string;
   status: PlanStatus;
   features: string[];
@@ -136,6 +136,7 @@ export interface Plan {
   revenuecat_store_identifier_android?: string | null;
   revenuecat_entitlement_identifier?: string | null;
   subscribers?: number;
+  total_subscribers?: number;
   created_at: string;
   updated_at: string;
 }
@@ -152,7 +153,7 @@ export interface PlanPayload {
   billing_rate: number;
   billing_cycle: PlanBillingCycle;
   discount_percent: number;
-  discount_duration: string; // "YYYY-MM-DD"
+  discount_duration: string | null; // "YYYY-MM-DD"
   badge_color: string;
   status: PlanStatus;
   features: PlanFeatureValue[];

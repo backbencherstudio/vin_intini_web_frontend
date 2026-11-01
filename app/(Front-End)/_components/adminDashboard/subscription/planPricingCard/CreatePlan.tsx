@@ -5,6 +5,7 @@ import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomRadioButton from "@/components/reusable/dashboard/CustomRadioButton";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
+import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
 import {
@@ -268,11 +269,12 @@ export default function CreatePlan({
               />
               <div>
                 <div className="flex items-center gap-2 relative mt-">
-                  <input
+                  <CustomInput
                     type="color"
                     value={formData.badgeColor}
                     onChange={(e) => handleChange("badgeColor", e.target.value)}
-                    className="h-10 w-12 cursor-pointer rounded mt-7  absolute left-2"
+                    aria-label="Choose badge color"
+                    className="absolute left-2 mt-7 h-10 w-12 cursor-pointer rounded p-1"
                   />
                   <CustomInput
                     label="Badge Color"
@@ -324,8 +326,11 @@ export default function CreatePlan({
                   You can activate or deactivate this plan.
                 </p>
               </div>
-              <CustomSwitch
+              <StatusToggle
                 checked={formData.status}
+                activeLabel="Active"
+                inactiveLabel="Inactive"
+                ariaLabel="Plan status"
                 onChange={(checked) => handleChange("status", checked)}
               />
             </div>

@@ -2,19 +2,18 @@
 
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
-import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 import visaIcon from "@/public/images/admin/visa.png";
 import mastercardIcon from "@/public/images/admin/paypal.png";
 import americanExpressIcon from "@/public/images/admin/american.png";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowDownToLine, Copy, SearchIcon } from "lucide-react";
-import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+import { useMemo, useState } from "react";
+import { Copy, SearchIcon } from "lucide-react";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
-import EditTransactionForm from "./EditTransactionForm";
 import Pagination from "@/components/reusable/Pagination";
 import {
   useGetPlansQuery,
@@ -33,6 +32,7 @@ type Transaction = {
   plan: string;
   amount: string;
   status: "Completed" | "Failed" | "Refunded" | "Pending";
+  billingCycle: string | null;
   paymentMethod: string;
   cardNumber: string;
   date: string;
@@ -80,11 +80,6 @@ export default function TransactionTable() {
   const [planFilter, setPlanFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [date, setDate] = useState<DateRange | undefined>(undefined);
-  const [viewOpen, setViewOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
 
   const queryParams: Record<string, unknown> = { page, per_page: perPage };
   if (planFilter) queryParams.plan_id = planFilter;
@@ -97,12 +92,12 @@ export default function TransactionTable() {
     data: apiResponse,
     isLoading,
     isError,
+    isFetching,
+    refetch,
   } = useGetTransactionListQuery({ query: queryParams });
 
   const {
     data: planData,
-    isLoading: isPlanLoading,
-    isError: isPlanError,
   } = useGetPlansQuery();
 
   const planOptions =
@@ -111,7 +106,18 @@ export default function TransactionTable() {
       value: plan.id,
     })) || [];
 
-  // console.log("planData", planOptions);
+  const formatAmount = (amount: string, currency: string) => {
+    const value = Number(amount);
+    if (!Number.isFinite(value)) return `${currency} ${amount}`;
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: currency.toUpperCase(),
+      }).format(value);
+    } catch {
+      return `${currency} ${value.toFixed(2)}`;
+    }
+  };
 
   const apiTransactions: Transaction[] = useMemo(() => {
     return (apiResponse?.data ?? []).map((t: ApiTransaction) => ({
@@ -120,63 +126,33 @@ export default function TransactionTable() {
       img: t.subscriber?.image || userIcon.src,
       subscriber: t.subscriber?.name || "Unknown",
       plan: t.plan?.name || "-",
-      amount: `${t.currency || "$"}${t.amount || "0.00"}`,
+      amount: formatAmount(t.amount, t.currency || "USD"),
       status: mapStatus(t.status),
       paymentMethod: mapCardBrand(t.card_brand),
       cardNumber: t.card_last4 ? `****${t.card_last4}` : "-",
-      date: new Date(t.purchased_at).toLocaleDateString("en-GB", {
+      billingCycle: t.plan?.billing_cycle ?? null,
+      date: t.purchased_at ? new Date(t.purchased_at).toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
-      }),
-      time: new Date(t.purchased_at).toLocaleTimeString("en-US", {
+      }) : "—",
+      time: t.purchased_at ? new Date(t.purchased_at).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
-      }),
+      }) : "",
     }));
   }, [apiResponse]);
-
-  const [transactions, setTransactions] =
-    useState<Transaction[]>(apiTransactions);
-
-  useEffect(() => {
-    setTransactions(apiTransactions);
-  }, [apiTransactions]);
+  const transactions = apiTransactions;
 
   const { current_page, last_page, total } = apiResponse?.pagination || {};
-
-  const openView = (row: Transaction) => {
-    setSelectedTransaction(row);
-    setViewOpen(true);
-  };
-
-  const openEdit = (row: Transaction) => {
-    setSelectedTransaction(row);
-    setEditOpen(true);
-  };
-
-  const openDelete = (row: Transaction) => {
-    setSelectedTransaction(row);
-    setDeleteOpen(true);
-  };
-
-  const handleDelete = () => {
-    if (selectedTransaction) {
-      setTransactions((prev) =>
-        prev.filter((item) => item.id !== selectedTransaction.id),
-      );
-      setDeleteOpen(false);
-      setSelectedTransaction(null);
-    }
-  };
 
   const columns: Column<Transaction>[] = [
     {
       header: "No.",
       cell: (row) => (
         <span className="text-gray-500">
-          {((current_page || 1) - 1) * perPage + transactions.indexOf(row) + 1}
+          {((current_page || 1) - 1) * perPage + transactions.findIndex((item) => item.id === row.id) + 1}
         </span>
       ),
     },
@@ -187,7 +163,7 @@ export default function TransactionTable() {
           <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
             {row.transactionId}
           </span>
-          <button className="text-gray-400 hover:text-gray-600">
+            <button type="button" aria-label="Copy transaction ID" onClick={() => navigator.clipboard.writeText(row.transactionId)} className="text-gray-400 hover:text-gray-600">
             <Copy className="text-primary" size={14} />
           </button>
         </div>
@@ -234,7 +210,7 @@ export default function TransactionTable() {
       cell: (row) => (
         <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
           {row.amount}
-          <span className="text-[14px] text-[#777980]">/ year</span>
+          <span className="text-[14px] text-[#777980]">{row.billingCycle ? ` / ${row.billingCycle === "yearly" ? "year" : "month"}` : ""}</span>
         </span>
       ),
     },
@@ -312,40 +288,45 @@ export default function TransactionTable() {
   ];
 
   return (
-    <div>
+    <div className="mt-10">
       {/* Filters */}
-      <div className="flex w-full justify-start lg:justify-end">
-        <div className="mb-6 flex flex-col w-full lg:w-full xl:w-2/3 lg:flex-row items-center justify-start gap-4 ">
+      <div className="mb-6 flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <CustomTitleDescription
+          title="All Transactions"
+          description={`${(total ?? 0).toLocaleString()} transactions`}
+          className="ml-2 shrink-0"
+        />
+        <div className="flex w-full flex-col items-center justify-start gap-4 lg:w-auto lg:flex-row lg:justify-end">
           {/* Search */}
-          <div className="relative w-full  xl:w-[300px]">
+          <div className="relative w-full lg:w-[260px] lg:shrink-0">
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
 
-            <input
+            <CustomInput
+              aria-label="Search transactions"
+              className="pl-9"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="h-10 w-full xl:w-[300px] rounded-md border border-gray-200 bg-white p-2 pl-9 text-sm focus:outline-none focus:ring-1 focus:ring-primaryColor"
-              type="text"
-              placeholder="Search by user name, email or plan..."
+              placeholder="Search by user name or email..."
             />
           </div>
 
           {/* All Plans */}
           <CustomSelect
-            className="h-[38px]"
+            className="h-[38px] lg:w-[150px] lg:shrink-0"
             value={planFilter || "default"}
             onChange={(value: string) => {
               setPlanFilter(value === "default" ? "" : value);
               setPage(1);
             }}
-            options={planOptions}
+            options={[{ label: "All Plans", value: "default" }, ...planOptions]}
           />
 
           {/* All Status */}
           <CustomSelect
-            className="h-[38px] "
+            className="h-[38px] lg:w-[150px] lg:shrink-0"
             value={statusFilter || "default"}
             onChange={(value: string) => {
               setStatusFilter(value === "default" ? "" : value);
@@ -362,7 +343,7 @@ export default function TransactionTable() {
 
           {/* Date Range */}
           <DateRangePicker
-            className="h-[38px] "
+            className="h-[38px] lg:w-[210px] lg:shrink-0"
             date={date}
             setDate={setDate}
             placeholder="Select Date Range"
@@ -375,17 +356,14 @@ export default function TransactionTable() {
           Loading transactions...
         </p>
       ) : isError ? (
-        <p className="py-12 text-center text-sm text-red-500">
-          Failed to load transactions.
-        </p>
+        <div role="alert" className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <span>Failed to load transactions.</span>
+          <button type="button" onClick={() => refetch()} className="font-semibold underline">Retry</button>
+        </div>
       ) : (
-        <DataTable
-          columns={columns}
-          data={transactions}
-          // onEdit={openEdit}
-          // onView={openView}
-          // onDelete={openDelete}
-        />
+        <div className={isFetching ? "opacity-60 transition-opacity" : ""}>
+          <DataTable columns={columns} data={transactions} />
+        </div>
       )}
 
       {/* Pagination */}
@@ -397,27 +375,6 @@ export default function TransactionTable() {
         onPageChange={setPage}
       />
 
-      {/* Edit Modal */}
-      <CustomModal
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        title="Edit Transaction"
-        size="lg"
-      >
-        <EditTransactionForm
-          data={selectedTransaction}
-          onClose={() => setEditOpen(false)}
-        />
-      </CustomModal>
-
-      {/* Delete Modal */}
-      <CustomDeletModal
-        isOpen={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        onConfirm={handleDelete}
-        title="Do you want to delete this transaction?"
-        description="Click “Delete Now” if you want to delete otherwise press cancel."
-      />
     </div>
   );
 }

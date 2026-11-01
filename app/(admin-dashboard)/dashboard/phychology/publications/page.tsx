@@ -1,5 +1,5 @@
-import PublicationsPage from "@/app/(Front-End)/_components/adminDashboard/psychology/publications/PublicationsPage";
+import PublicationsManagement from "@/app/(Frond-End)/_components/adminDashboard/publications/PublicationsManagement";
 
 export default function Page() {
-  return <PublicationsPage />;
+  return <PublicationsManagement initialNetwork="psychology" />;
 }

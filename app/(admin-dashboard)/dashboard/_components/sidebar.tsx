@@ -27,6 +27,9 @@ import logo from "@/public/images/admin/Vector (1).png";
 
 import { SidebarData } from "./Dashboard-sidebar";
 
+const matchesRoute = (pathname: string, href?: string) =>
+  Boolean(href && (pathname === href || pathname.startsWith(`${href}/`)));
+
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { state, isMobile, setOpenMobile } = useSidebar();
@@ -36,7 +39,7 @@ export default function DashboardSidebar() {
   // Open submenu when current page belongs to it
   useEffect(() => {
     SidebarData.forEach((item) => {
-      if (item.children?.some((child) => child.href === pathname)) {
+      if (item.children?.some((child) => matchesRoute(pathname, child.href))) {
         setOpenMenus((prev) =>
           prev.includes(item.id) ? prev : [...prev, item.id]
         );
@@ -86,9 +89,9 @@ export default function DashboardSidebar() {
                 const isOpen = openMenus.includes(item.id);
 
                 const active =
-                  pathname === item.href ||
-                  item.children?.some(
-                    (child) => child.href === pathname
+                  matchesRoute(pathname, item.href) ||
+                  item.children?.some((child) =>
+                    matchesRoute(pathname, child.href)
                   );
 
                 return (
@@ -134,7 +137,7 @@ export default function DashboardSidebar() {
                       <div className="ml-5 space-y-1">
                         {item.children?.map((child) => {
                           const ChildIcon = child.icon;
-                          const active = pathname === child.href;
+                          const active = matchesRoute(pathname, child.href);
 
                           return (
                             <SidebarMenuItem key={child.id}>
@@ -175,30 +178,6 @@ export default function DashboardSidebar() {
       {/* ================= FOOTER ================= */}
       <SidebarFooter className="bg-white px-3 pb-4">
         <SidebarMenu className="space-y-1">
-
-          {/* Analytics */}
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className={`h-9 rounded-lg ${pathname === "/dashboard/analytics"
-                ? "bg-[#D3F4EF] text-[#111827] border border-primaryColor"
-                : "text-[#374151] hover:bg-gray-50"
-                }`}
-            >
-              <Link
-                href="/dashboard/analytics"
-                onClick={() => {
-                  if (isMobile) setOpenMobile(false);
-                }}
-              >
-                <BarChart3 className="h-4 w-4" />
-                <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">
-                  Analytics
-                </span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
           {/* Logout */}
           <SidebarMenuItem>
             <SidebarMenuButton

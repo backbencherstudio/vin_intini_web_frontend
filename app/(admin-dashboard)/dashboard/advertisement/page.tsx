@@ -1,31 +1,26 @@
+"use client";
+
+import { useState } from "react";
 import AdvertisementTable from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementDataTable";
-import AdPerformanceOverview from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementOverViewChat";
-import AdvertisementPerformance from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementPerfomance";
 import AdvertisementStatusCard from "@/app/(Front-End)/_components/adminDashboard/advertisement/AdvertisementStatusCard";
+import BoostSettingsPanel from "@/app/(Front-End)/_components/adminDashboard/advertisement/BoostSettingsPanel";
+import CustomModal from "@/components/reusable/dashboard/CustomModal";
 
 export default function Page() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   return (
-    <div>
-      <div></div>
-
-      <div className="mb-4">
-        <AdvertisementStatusCard />
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 pb-4">
-        {/* First component - 8 columns */}
-        <div className="xl:col-span-8">
-          <AdvertisementPerformance />
-        </div>
-
-        {/* Second component - 4 columns */}
-        <div className="xl:col-span-4">
-          <AdPerformanceOverview />
-        </div>
-      </div>
-      <div>
-        <AdvertisementTable />
-      </div>
+    <div className="space-y-6">
+      <AdvertisementStatusCard />
+      <AdvertisementTable onOpenSettings={() => setSettingsOpen(true)} />
+      <CustomModal
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        title="Boost settings"
+        size="xl"
+      >
+        <BoostSettingsPanel embedded />
+      </CustomModal>
     </div>
   );
 }

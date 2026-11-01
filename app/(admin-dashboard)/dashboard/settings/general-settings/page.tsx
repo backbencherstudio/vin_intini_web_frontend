@@ -207,11 +207,11 @@ export default function GeneralSettings() {
             </div>
 
             <div>
-              <input
+              <CustomInput
                 ref={logoInputRef}
                 type="file"
                 accept="image/png,image/jpeg,image/svg+xml"
-                className="hidden"
+                containerClassName="hidden"
                 onChange={(e) => handleImageChange(e, "logo")}
               />
 
@@ -260,11 +260,11 @@ export default function GeneralSettings() {
             </div>
 
             <div>
-              <input
+              <CustomInput
                 ref={faviconInputRef}
                 type="file"
                 accept="image/png,image/jpeg,image/svg+xml,image/x-icon"
-                className="hidden"
+                containerClassName="hidden"
                 onChange={(e) => handleImageChange(e, "favicon")}
               />
 

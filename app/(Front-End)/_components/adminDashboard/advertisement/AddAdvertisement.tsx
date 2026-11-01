@@ -6,6 +6,7 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import { UploadImageIcon } from "@/public/svgIcons/AdminIcon";
 
 type Job = {
@@ -195,12 +196,12 @@ export default function AdvertisementEditForm({
           </p>
 
           {/* Hidden file input */}
-          <input
+          <CustomInput
             ref={fileInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             onChange={handleFileChange}
-            className="hidden"
+            containerClassName="hidden"
           />
         </div>
       </div>
@@ -230,14 +231,12 @@ export default function AdvertisementEditForm({
 
       {/* Description */}
       <div>
-        <label className="mb-1.5 block text-grayColor1  text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
-          Description
-        </label>
-        <textarea
+        <CustomTextArea
+          label="Description"
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm outline-none transition-colors focus:border-gray-500 focus:ring-0 resize-none"
+          className="resize-none"
           placeholder="Enter description..."
         />
       </div>

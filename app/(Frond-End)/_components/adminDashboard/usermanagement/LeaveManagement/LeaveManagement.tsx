@@ -1,6 +1,7 @@
 "use client";
 
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import Pagination from "@/components/reusable/Pagination";
 import {
@@ -219,8 +220,8 @@ export default function LeaveManagement() {
           {/* Search */}
           <div className="relative w-full md:w-[240px]">
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
-            <input
-              className="h-10 w-full rounded-md border border-gray-300 pl-9 pr-3 text-sm focus:border-primaryColor focus:outline-none"
+            <CustomInput
+              className="rounded-md pl-9 pr-3"
               type="text"
               placeholder="Search user or email..."
               value={search}

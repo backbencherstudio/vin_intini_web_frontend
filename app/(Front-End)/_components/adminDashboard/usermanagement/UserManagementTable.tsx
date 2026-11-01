@@ -2,9 +2,8 @@
 
 import AdminUserDetailsPanel from "@/app/(Front-End)/_components/adminDashboard/usermanagement/AdminUserDetailsPanel";
 import DataTable, { type Column } from "@/components/reusable/dashboard/AdminTable";
-import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
-import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
+import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import Pagination from "@/components/reusable/Pagination";
 import {
@@ -14,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import {
   useGetUsersQuery,
   useToggleUserSuspendMutation,
@@ -83,7 +83,7 @@ export default function UserManagementTable({
       per_page: PAGE_SIZE,
     },
   });
-  const [toggleUserSuspend, { isLoading: isSuspending }] =
+  const [toggleUserSuspend, { isLoading: isSuspending, originalArgs }] =
     useToggleUserSuspendMutation();
 
   const users = useMemo(() => {
@@ -160,28 +160,21 @@ export default function UserManagementTable({
     },
     {
       header: "Status",
-      cell: (user) =>
-        user.is_suspended ? (
-          <CustomBadge color="suspended">Suspended</CustomBadge>
-        ) : (
-          <CustomBadge color="active">Active</CustomBadge>
-        ),
+      cell: (user) => (
+        <StatusToggle
+          checked={!user.is_suspended}
+          activeLabel="Active"
+          inactiveLabel="Suspended"
+          disabled={isSuspending && originalArgs?.userId === user.id}
+          ariaLabel={`${user.is_suspended ? "Unsuspend" : "Suspend"} ${user.full_name}`}
+          onChange={(isActive) => handleSuspendChange(user, isActive)}
+        />
+      ),
     },
     {
       header: "Joined",
       accessor: "joined_at",
       cell: (user) => <span className="whitespace-nowrap">{user.joined_at || "—"}</span>,
-    },
-    {
-      header: "Account",
-      cell: (user) => (
-        <CustomSwitch
-          checked={!user.is_suspended}
-          disabled={isSuspending}
-          aria-label={`${user.is_suspended ? "Unsuspend" : "Suspend"} ${user.full_name}`}
-          onChange={(isActive) => handleSuspendChange(user, isActive)}
-        />
-      ),
     },
   ];
 
@@ -205,15 +198,15 @@ export default function UserManagementTable({
           <label className="relative w-full sm:w-60">
             <span className="sr-only">Search users</span>
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-grayColor1" />
-            <input
-              type="search"
+            <CustomInput
+              aria-label="Search users"
+              className="pl-9"
               value={search}
               onChange={(event) => {
                 setSearch(event.target.value);
                 setPage(1);
               }}
               placeholder="Search users"
-              className="h-10 w-full rounded-md border border-borderColor bg-white pl-9 pr-3 text-sm outline-none focus:border-primaryColor"
             />
           </label>
           <Select

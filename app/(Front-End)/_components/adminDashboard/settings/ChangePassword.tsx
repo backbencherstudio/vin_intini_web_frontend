@@ -3,6 +3,7 @@
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import {
   useGetSecurityOverviewQuery,
+  usePostAdminChangePasswordMutation,
   usePostChangePasswordMutation,
 } from "@/feature/slice/admin/securitySettings";
 import { Eye, EyeOff } from "lucide-react";
@@ -71,6 +72,8 @@ export default function ChangePassword() {
   console.log(OverviewData, "fingd");
 
   const [postChangePassword, { isLoading }] = usePostChangePasswordMutation();
+  const [postAdminChangePassword, { isLoading: isAdminPasswordLoading }] = usePostAdminChangePasswordMutation();
+  const isPasswordLoading = isLoading || isAdminPasswordLoading;
 
   const updatePassword = async () => {
     setErrors({
@@ -112,11 +115,16 @@ export default function ChangePassword() {
     }
 
     try {
-      await postChangePassword({
+      const payload = {
         current_password: currentPassword,
         new_password: newPassword,
         new_password_confirmation: confirmPassword,
-      }).unwrap();
+      };
+      if (OverviewData?.has_password === false) {
+        await postChangePassword(payload).unwrap();
+      } else {
+        await postAdminChangePassword(payload).unwrap();
+      }
 
       setMessage("Password updated successfully.");
       setMessageType("success");
@@ -247,10 +255,10 @@ export default function ChangePassword() {
         <button
           type="button"
           onClick={updatePassword}
-          disabled={isLoading}
+          disabled={isPasswordLoading}
           className="py-2 w-full rounded-md border border-buttonColor bg-[#D3F4EF] text-center  text-[14px] font-semibold leading-[140%] tracking-[0.07px]  text-primaryColor transition cursor-pointer mt-4"
         >
-          {isLoading ? "Updating..." : "Update Password"}
+          {isPasswordLoading ? "Updating..." : "Update Password"}
         </button>
       </div>
     </section>

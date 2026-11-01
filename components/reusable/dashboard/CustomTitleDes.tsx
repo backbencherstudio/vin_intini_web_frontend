@@ -19,7 +19,7 @@ export default function CustomTitleDescription({
     return (
 
         <div className="flex justify-between items-center " >
-            <div className={clsx("flex flex-col gap-2", className)}>
+            <div className={clsx("flex flex-col gap-1", className)}>
                 <h2 className="text-[24px] font-semibold leading-[130%] tracking-[0.12px] text-[#1D1F2C]">
                     {title}
                 </h2>

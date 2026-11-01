@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -26,8 +26,9 @@ import {
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
-import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
+import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import Pagination from "@/components/reusable/Pagination";
 import {
@@ -39,6 +40,7 @@ import {
 } from "@/components/ui/select";
 import {
   useDeletePublicationMutation,
+  useGetPublicationByIdQuery,
   useGetPublicationsQuery,
   useTogglePublicationStatusMutation,
 } from "@/feature/slice/admin/publication";
@@ -47,11 +49,51 @@ import userIcon from "@/public/images/admin/parterner.png";
 
 const PAGE_SIZE = 15;
 
-export default function PublicationsManagement() {
+function htmlToText(value?: string | null) {
+  if (!value) return "";
+
+  const decoded = value.replace(
+    /&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi,
+    (entity, code: string) => {
+      if (code[0] === "#") {
+        const point = code[1]?.toLowerCase() === "x"
+          ? Number.parseInt(code.slice(2), 16)
+          : Number.parseInt(code.slice(1), 10);
+        return Number.isFinite(point) ? String.fromCodePoint(point) : entity;
+      }
+      const namedEntities: Record<string, string> = {
+        amp: "&",
+        lt: "<",
+        gt: ">",
+        quot: '"',
+        apos: "'",
+        nbsp: " ",
+      };
+      return namedEntities[code.toLowerCase()] ?? entity;
+    },
+  );
+
+  return decoded
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<br\s*\/?\s*>/gi, "\n")
+    .replace(/<li\b[^>]*>/gi, "• ")
+    .replace(/<\/(p|div|li|h[1-6]|blockquote|tr)>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+export default function PublicationsManagement({
+  initialNetwork = "all",
+}: {
+  initialNetwork?: "all" | "psychology" | "neuroscience";
+}) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [networkFilter, setNetworkFilter] = useState<string>("all");
+  const [networkFilter, setNetworkFilter] = useState<string>(initialNetwork);
+  const [publicationTypeFilter, setPublicationTypeFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState<string>("default");
 
   // Selected publication for viewing details or deleting
@@ -63,7 +105,7 @@ export default function PublicationsManagement() {
     useState<PublicationItem | null>(null);
 
   // RTK Query endpoints
-  const { data: response, isLoading, isError, refetch } =
+  const { data: response, isLoading, isFetching, isError, refetch } =
     useGetPublicationsQuery({
       query: {
         page,
@@ -71,10 +113,16 @@ export default function PublicationsManagement() {
         search: search.trim() || undefined,
         status: statusFilter !== "all" ? statusFilter : undefined,
         network_type: networkFilter !== "all" ? networkFilter : undefined,
+        publication_type:
+          publicationTypeFilter !== "all" ? publicationTypeFilter : undefined,
       },
     });
+  const { currentData: publicationDetails } = useGetPublicationByIdQuery(
+    selectedPublication?.id ?? 0,
+    { skip: selectedPublication === null },
+  );
 
-  const [toggleStatus, { isLoading: isToggling }] =
+  const [toggleStatus, { isLoading: isToggling, originalArgs }] =
     useTogglePublicationStatusMutation();
   const [deletePublication, { isLoading: isDeleting }] =
     useDeletePublicationMutation();
@@ -87,34 +135,13 @@ export default function PublicationsManagement() {
     pagination?.total ?? statistics?.total_publications ?? publications.length;
   const totalPages = pagination?.last_page ?? 1;
 
-  // Client-side filtering/sorting refinement
+  useEffect(() => {
+    if (publicationDetails?.data) setSelectedPublication(publicationDetails.data);
+  }, [publicationDetails]);
+
+  // Search and filters are applied by the API. Sorting applies to the current page.
   const filteredPublications = useMemo(() => {
     let list = [...publications];
-
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (item) =>
-          item.title?.toLowerCase().includes(q) ||
-          item.publication_id?.toLowerCase().includes(q) ||
-          item.authors?.some((a) => a.toLowerCase().includes(q)) ||
-          item.creator?.name?.toLowerCase().includes(q) ||
-          item.creator?.email?.toLowerCase().includes(q)
-      );
-    }
-
-    if (statusFilter !== "all") {
-      list = list.filter(
-        (item) => item.status?.toLowerCase() === statusFilter.toLowerCase()
-      );
-    }
-
-    if (networkFilter !== "all") {
-      list = list.filter(
-        (item) =>
-          item.network_type?.toLowerCase() === networkFilter.toLowerCase()
-      );
-    }
 
     if (sortOrder === "title-asc") {
       list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
@@ -125,7 +152,7 @@ export default function PublicationsManagement() {
     }
 
     return list;
-  }, [publications, search, statusFilter, networkFilter, sortOrder]);
+  }, [publications, sortOrder]);
 
   // Handle status toggle
   const handleToggleStatus = async (pub: PublicationItem) => {
@@ -230,9 +257,6 @@ export default function PublicationsManagement() {
             {row.title}
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="inline-block bg-gray-100 text-gray-700 text-[11px] font-mono px-2 py-0.5 rounded border border-gray-200">
-              {row.publication_id}
-            </span>
             <span
               className={`text-[11px] font-medium px-2 py-0.5 rounded capitalize ${
                 row.network_type === "neuroscience"
@@ -345,21 +369,14 @@ export default function PublicationsManagement() {
       cell: (row) => {
         const isActive = row.status === "active";
         return (
-          <div className="flex items-center gap-2">
-            <CustomSwitch
-              checked={isActive}
-              disabled={isToggling}
-              aria-label={`Toggle status for ${row.title}`}
-              onChange={() => handleToggleStatus(row)}
-            />
-            <span
-              className={`text-xs font-medium capitalize ${
-                isActive ? "text-[#22CAAD]" : "text-[#EB3D4D]"
-              }`}
-            >
-              {row.status}
-            </span>
-          </div>
+          <StatusToggle
+            checked={isActive}
+            activeLabel="Active"
+            inactiveLabel={row.status === "draft" ? "Draft" : "Inactive"}
+            disabled={isToggling && originalArgs === row.id}
+            ariaLabel={`Toggle status for ${row.title}`}
+            onChange={() => handleToggleStatus(row)}
+          />
         );
       },
     },
@@ -379,32 +396,6 @@ export default function PublicationsManagement() {
           >
             <Eye className="h-4 w-4" />
           </button>
-
-          {/* Attachment Download */}
-          {row.attachment_url && (
-            <a
-              href={row.attachment_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Download Attachment PDF"
-              className="p-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-            >
-              <FileDown className="h-4 w-4" />
-            </a>
-          )}
-
-          {/* Website Link */}
-          {row.website_url && (
-            <a
-              href={row.website_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Open Website"
-              className="p-1.5 rounded-md text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          )}
 
           {/* Delete */}
           <button
@@ -516,7 +507,7 @@ export default function PublicationsManagement() {
         {/* Search */}
         <div className="relative w-full md:w-80">
           <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <input
+          <CustomInput
             type="text"
             placeholder="Search by title, author, ID..."
             value={search}
@@ -524,7 +515,7 @@ export default function PublicationsManagement() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="h-10 w-full rounded-lg border border-gray-300 pl-9 pr-3 text-sm focus:border-primaryColor focus:outline-none"
+            className="pl-9 pr-3"
           />
         </div>
 
@@ -567,6 +558,26 @@ export default function PublicationsManagement() {
             </SelectContent>
           </Select>
 
+          {/* Publication Type Filter */}
+          <Select
+            value={publicationTypeFilter}
+            onValueChange={(val) => {
+              setPublicationTypeFilter(val);
+              setPage(1);
+            }}
+          >
+            <SelectTrigger className="h-10 w-[160px] cursor-pointer">
+              <SelectValue placeholder="Publication Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="professional">Professional</SelectItem>
+              <SelectItem value="university">University</SelectItem>
+              <SelectItem value="freelance">Freelance</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+
           {/* Sort */}
           <Select value={sortOrder} onValueChange={setSortOrder}>
             <SelectTrigger className="h-10 w-[160px] cursor-pointer">
@@ -587,10 +598,12 @@ export default function PublicationsManagement() {
       {isError && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+          className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
         >
-          Failed to load publications. Please verify your connection and try
-          again.
+          <span>Failed to load publications.</span>
+          <button type="button" onClick={() => refetch()} className="font-semibold underline">
+            Retry
+          </button>
         </div>
       )}
 
@@ -607,13 +620,13 @@ export default function PublicationsManagement() {
             No publications found
           </h3>
           <p className="mt-1 text-xs text-gray-500">
-            {search || statusFilter !== "all" || networkFilter !== "all"
+            {search || statusFilter !== "all" || networkFilter !== "all" || publicationTypeFilter !== "all"
               ? "No results match your search and filter criteria."
               : "No publications have been uploaded yet."}
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className={`space-y-4 ${isFetching ? "opacity-60 transition-opacity" : ""}`}>
           <DataTable columns={columns} data={filteredPublications} />
           <Pagination
             page={page}
@@ -666,8 +679,7 @@ export default function PublicationsManagement() {
                 Short Abstract
               </h4>
               <p className="text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200 leading-relaxed text-xs sm:text-sm">
-                {selectedPublication.short_abstract ||
-                  selectedPublication.abstract ||
+                {htmlToText(selectedPublication.short_abstract || selectedPublication.abstract) ||
                   "No abstract provided."}
               </p>
             </div>

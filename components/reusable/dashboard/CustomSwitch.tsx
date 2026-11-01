@@ -5,6 +5,8 @@ interface CustomSwitchProps {
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;
+  label?: React.ReactNode;
+  labelClassName?: string;
   "aria-label"?: string;
 }
 
@@ -15,23 +17,25 @@ const CustomSwitch = React.forwardRef<HTMLButtonElement, CustomSwitchProps>(
       onChange,
       disabled = false,
       className = "",
+      label,
+      labelClassName = "",
       "aria-label": ariaLabel,
     },
     ref,
   ) => {
-    return (
+    const switchControl = (
       <button
         ref={ref}
         type="button"
         role="switch"
-      disabled={disabled}
-        aria-label={ariaLabel}
+        disabled={disabled}
+        aria-label={ariaLabel ?? (typeof label === "string" ? label : undefined)}
         aria-checked={checked}
         aria-disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
         className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
           disabled
-            ? "cursor-not-allowed opacity-50 bg-gray-300"
+            ? `cursor-not-allowed opacity-50 ${checked ? "bg-primaryColor" : "bg-gray-300"}`
             : `cursor-pointer ${checked ? "bg-primaryColor" : "bg-gray-300"}`
         } ${className}`}
       >
@@ -42,6 +46,13 @@ const CustomSwitch = React.forwardRef<HTMLButtonElement, CustomSwitchProps>(
         />
       </button>
     );
+
+    return label ? (
+      <label className={`inline-flex items-center gap-2 ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"} ${labelClassName}`}>
+        {switchControl}
+        <span className="text-sm text-gray-700">{label}</span>
+      </label>
+    ) : switchControl;
   }
 );
 

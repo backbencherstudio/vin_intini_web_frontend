@@ -6,6 +6,7 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 
 type Job = {
     id: number;
@@ -146,19 +147,12 @@ label="Ending Date"
             {/* Description */}
             {/* Description */}
             <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                    Description
-                </label>
-                <textarea
+                <CustomTextArea
+                    label="Description"
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full rounded-md border border-gray-200 px-3 py-2.5 text-sm 
-             outline-none 
-            focus:border-gray-500
-             focus:ring-0 
-             resize-none 
-             transition-colors"
+                    className="resize-none"
                     placeholder="Enter description..."
                 />
             </div>

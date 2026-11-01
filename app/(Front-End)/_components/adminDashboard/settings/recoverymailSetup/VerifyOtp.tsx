@@ -4,6 +4,7 @@ import { useRecoveryEmailOtpVerifyMutation } from "@/feature/slice/admin/securit
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 
 interface FormData {
   otp: string;
@@ -97,7 +98,7 @@ export default function VerifyOtp({ onSuccess }: Props) {
       <div>
         <div className="flex justify-center">
           {otp.map((digit, index) => (
-            <input
+            <CustomInput
               key={index}
               id={`otp-${index}`}
               value={digit}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 
 type PartnerData = {
     id?: number;
@@ -159,11 +160,8 @@ export default function PartnerForm({
 
                 {/* Description */}
                 <div className="space-y-2">
-                    <label className="text-[#4A4C56] text-base font-semibold leading-6 tracking-[0.08px] ">
-                        Description
-                    </label>
-
-                    <textarea
+                    <CustomTextArea
+                        label="Description"
                         value={formData.description}
                         onChange={(e) =>
                             handleChange(

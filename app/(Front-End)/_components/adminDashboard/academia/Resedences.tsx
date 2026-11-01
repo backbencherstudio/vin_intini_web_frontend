@@ -21,6 +21,7 @@ import {
 } from "@/feature/slice/admin/academia/ResedencesSlice";
 import Pagination from "@/components/reusable/Pagination";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import { useGetAllStateQuery } from "@/feature/slice/admin/academia/UniversitySlice";
 
 type Job = {
@@ -180,9 +181,9 @@ export default function Resedences() {
             {/* Search */}
             <div className="relative w-full lg:w-[220px]">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
-              <input
-                className="h-10 w-full rounded-md border p-2 pl-7"
-                type="text"
+              <CustomInput
+                aria-label="Search university name"
+                className="pl-7"
                 placeholder="Search University Name"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

@@ -7,6 +7,7 @@ import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import Pagination from "@/components/reusable/Pagination";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import {
   useDeleteUniversityMutation,
@@ -245,9 +246,9 @@ export default function Universites() {
             <div className="relative w-full md:w-[220px]">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
-              <input
-                className="h-10 w-full rounded-md border p-2 pl-7"
-                type="text"
+              <CustomInput
+                aria-label="Search university name"
+                className="pl-7"
                 placeholder="Search University Name"
                 value={search}
                 onChange={(e) => {

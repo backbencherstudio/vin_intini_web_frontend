@@ -18,6 +18,13 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    postAdminChangePassword: builder.mutation({
+      query: (payload) => ({
+        url: "/admin/update-password",
+        method: "POST",
+        body: payload,
+      }),
+    }),
 
     //activity-session
     getActiveSessions: builder.query({
@@ -210,6 +217,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetSecurityOverviewQuery,
   usePostChangePasswordMutation,
+  usePostAdminChangePasswordMutation,
   useGetActiveSessionsQuery,
   useDeleteActiveSessionsMutation,
   useDeletAllSessionsMutation,

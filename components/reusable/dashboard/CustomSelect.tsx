@@ -1,140 +1,58 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useId } from "react";
 import { ChevronDown } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
-interface SelectOption {
+export interface SelectOption {
   label: string;
   value: string | number;
 }
 
-interface CustomSelectProps {
+export interface CustomSelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "value" | "onChange"> {
   label?: string;
   options: SelectOption[];
   value?: string | number;
   onChange?: (value: string | number) => void;
   placeholder?: string;
   error?: string;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
+  helperText?: string;
+  containerClassName?: string;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({
-  label,
-  options,
-  value,
-  onChange,
-  placeholder = "Select State",
-  error,
-  required,
-  disabled = false,
-  className = "",
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showAll, setShowAll] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const selectedOption = options.find((opt) => opt.value === value);
-  const visibleCount = 4;
-  const visibleOptions = showAll ? options : options.slice(0, visibleCount);
-
-  // Outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-        setShowAll(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleSelect = (optionValue: string | number) => {
-    onChange?.(optionValue);
-    setIsOpen(false);
-    setShowAll(false);
-  };
-
-  return (
-    <div className="relative w-full" ref={containerRef}>
-      {label && (
-        <label className="mb-1.5 block text-[#4A4C56] text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
-          {label}
-          {required && <span className="ml-0.5">*</span>}
-        </label>
-      )}
-
-      {/* Trigger */}
-      <div
-        onClick={() => !disabled && setIsOpen((prev) => !prev)}
-        className={twMerge(
-          `
-                flex w-full h-[48px]
-                items-center justify-between
-                rounded-lg border bg-white
-                px-3.5 text-sm cursor-pointer
-                transition-all select-none
-                `,
-          className,
-          disabled
-            ? "bg-gray-50 text-gray-400 cursor-not-allowed"
-            : "border-gray-300 hover:border-gray-400",
-          error ? "border-red-500" : "",
-          isOpen ? "border-gray-400 ring-1 ring-gray-400/20" : "",
-        )}
-      >
-        <span className={!selectedOption ? "text-gray-400" : "text-gray-900"}>
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
-        <ChevronDown
-          className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180 text-gray-600" : ""
-          }`}
-        />
+const CustomSelect = React.forwardRef<HTMLSelectElement, CustomSelectProps>(
+  ({ label, options, value, onChange, placeholder = "Select an option", error, helperText, required, disabled, className = "", containerClassName = "", id, name, ...props }, ref) => {
+    const generatedId = useId();
+    const selectId = id || name || generatedId;
+    return <div className={`w-full ${containerClassName}`}>
+      {label && <label htmlFor={selectId} className="mb-1.5 block text-sm font-medium text-[#4A4C56]">{label}{required && <span className="ml-0.5">*</span>}</label>}
+      <div className="relative">
+        <select
+          ref={ref}
+          id={selectId}
+          name={name}
+          required={required}
+          disabled={disabled}
+          aria-label={!label ? (props["aria-label"] ?? placeholder) : props["aria-label"]}
+          value={value === undefined ? "" : String(value)}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${selectId}-error` : undefined}
+          onChange={(event) => {
+            const option = options.find((item) => String(item.value) === event.target.value);
+            onChange?.(option ? option.value : event.target.value);
+          }}
+          className={twMerge("h-10 w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 pr-10 text-sm text-gray-900 outline-none focus:border-primaryColor focus:ring-2 focus:ring-primaryColor/15 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500", error && "border-red-500 focus:border-red-500 focus:ring-red-500/15", className)}
+          {...props}
+        >
+          <option value="" disabled>{placeholder}</option>
+          {options.map((option) => <option key={String(option.value)} value={String(option.value)}>{option.label}</option>)}
+        </select>
+        <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
       </div>
+      {error ? <p id={`${selectId}-error`} role="alert" className="mt-1.5 text-xs text-red-600">{error}</p> : helperText ? <p className="mt-1.5 text-xs text-gray-500">{helperText}</p> : null}
+    </div>;
+  },
+);
 
-      {/* Dropdown - inline absolute */}
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 z-[9999] -mt-12 max-h-[220px] overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-          <div className="py-1">
-            {visibleOptions.map((option) => (
-              <div
-                key={option.value}
-                onClick={() => handleSelect(option.value)}
-                className={`
-            px-3.5 py-2.5 text-sm cursor-pointer transition-colors
-            ${
-              option.value === value
-                ? "bg-gray-50 font-medium text-gray-900"
-                : "text-gray-700 hover:bg-gray-50"
-            }
-          `}
-              >
-                {option.label}
-              </div>
-            ))}
-
-            {!showAll && options.length > visibleCount && (
-              <div
-                onClick={() => setShowAll(true)}
-                className="border-t border-gray-100 px-3.5 py-2.5 text-sm text-gray-400 cursor-pointer hover:bg-gray-50"
-              >
-                Show more...
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
-    </div>
-  );
-};
-
+CustomSelect.displayName = "CustomSelect";
 export default CustomSelect;

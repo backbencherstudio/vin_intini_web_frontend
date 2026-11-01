@@ -52,7 +52,10 @@ export const baseApiSlice = createApi({
     "Analytic",
     "Advertisement",
     "publications",
+    "partner",
     "boosting",
+    "integrationSettings",
+    "adminPage",
   ],
 });
 

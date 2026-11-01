@@ -1,25 +1,14 @@
-import { AcademicIcon, AdvertizementIcon, BasicUserIcon, CategoryIcon, EmploymentIcon, FacilitesIcon, NeuroscienceIcon, PartnerIcon, PaymentManagementIcon, PlatFromIcon, PremiumUserIcon, ProUserIcon, PsychologyIcon, ResendenceIcon, SubPlanIcon, SubscriptIcon, SubTranscIcon, UniversitiseIcon, UserManagementIcon } from "@/public/svgIcons/AdminIcon";
+import { AcademicIcon, AdvertizementIcon, BasicUserIcon, CategoryIcon, FacilitesIcon, NeuroscienceIcon, PartnerIcon, PremiumUserIcon, ProUserIcon, ResendenceIcon, SubPlanIcon, SubscriptIcon, SubTranscIcon, UniversitiseIcon, UserManagementIcon } from "@/public/svgIcons/AdminIcon";
 import {
-  LayoutDashboard,
-  UsersRound,
-  Tag,
-  DollarSign,
-  Megaphone,
   List,
   Brain,
-  BrainCircuit,
   Shapes,
   Settings,
-  BarChart3,
-  LogOut,
-  GraduationCap,
-  UserRound,
-  Crown,
-  BriefcaseBusiness,
-  Bell,
   Shield,
+  Mail,
+  ClipboardList,
 } from "lucide-react";
-import { LuChartNoAxesColumn, LuUsers } from "react-icons/lu";
+import { LuChartNoAxesColumn } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 export interface SidebarChild {
@@ -161,12 +150,6 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/academia/facilities",
         icon: FacilitesIcon,
       },
-      {
-        id: "employment",
-        name: "Employment",
-        href: "/dashboard/academia/employment",
-        icon: EmploymentIcon,
-      },
     ],
   },
 
@@ -202,32 +185,6 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/phychology/biotechnology",
         icon: Brain,
       },
-      {
-        id: "psychotropics",
-        name: "Psychotropics",
-        href: "/dashboard/phychology/psychotropics",
-        icon: Brain,
-      },
-      {
-        id: "publications",
-        name: "Publications",
-        href: "/dashboard/phychology/publications",
-        icon: Brain,
-      },
-    ],
-  },
-
-  {
-    id: "neuroscience",
-    name: "Neuroscience",
-    icon: NeuroscienceIcon,
-    children: [
-      {
-        id: "neuroscience-content",
-        name: "Neuroscience Content",
-        href: "/dashboard/neuroscience",
-        icon: BrainCircuit,
-      },
     ],
   },
 
@@ -244,21 +201,33 @@ export const SidebarData: SidebarItem[] = [
     icon: List,
   },
   {
+    id: "institution-reports",
+    name: "Institution Reports",
+    href: "/dashboard/institution-reports",
+    icon: ClipboardList,
+  },
+  {
+    id: "contact-messages",
+    name: "Contact Messages",
+    href: "/dashboard/contact-messages",
+    icon: Mail,
+  },
+  {
     id: "settings",
     name: "Settings",
     icon: Settings,
     children: [
       {
-        id: "general-settings",
-        name: "General Settings",
-        href: "/dashboard/settings/general-settings",
-        icon: Settings,
+        id: "integration-settings",
+        name: "Integrations",
+        href: "/dashboard/settings/integrations",
+        icon: Shapes,
       },
       {
-        id: "notification-settings",
-        name: "Notification Settings",
-        href: "/dashboard/settings/notification-settings",
-        icon: Bell,
+        id: "content-pages",
+        name: "Content Pages",
+        href: "/dashboard/settings/content-pages",
+        icon: List,
       },
       {
         id: "security-settings",

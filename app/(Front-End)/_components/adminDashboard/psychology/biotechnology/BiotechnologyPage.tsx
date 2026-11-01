@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import CustomInput from "@/components/reusable/dashboard/CustomInput"
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes"
 import CreateNewProductAction from "./CreateNewProductAction"
 import ProductCatalogSection from "../ProductCatalogSection"
@@ -95,7 +96,7 @@ export default function BiotechnologyPage() {
           description="Manage your industry sections and tabs."
           action={
             <div className="flex gap-2">
-              <input type="text" placeholder="Search" className="w-full" />
+              <CustomInput aria-label="Search products" placeholder="Search" className="h-10" />
               <CreateNewProductAction onClick={openAddModal} />
             </div>
           }

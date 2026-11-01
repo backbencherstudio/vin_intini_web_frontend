@@ -1,6 +1,6 @@
 export type PublicationStatus = "active" | "inactive" | "draft" | string;
 export type NetworkType = "neuroscience" | "psychology" | string;
-export type PublicationType = "professional" | "university" | string;
+export type PublicationType = "professional" | "university" | "freelance" | "other" | string;
 
 export interface PublicationCreator {
   id: number;
@@ -90,6 +90,7 @@ export interface GetPublicationsParams {
     search?: string;
     status?: PublicationStatus;
     network_type?: string;
+    publication_type?: PublicationType;
     [key: string]: unknown;
   };
 }

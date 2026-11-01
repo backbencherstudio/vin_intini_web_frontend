@@ -24,6 +24,7 @@ import { useGetAllStateQuery } from "@/feature/slice/admin/academia/UniversitySl
 import Pagination from "@/components/reusable/Pagination";
 import toast from "react-hot-toast";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomInput from "@/components/reusable/dashboard/CustomInput";
 
 type Job = {
   id: number;
@@ -223,9 +224,9 @@ export default function Employment() {
             <div className="relative w-full md:w-[220px]">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
-              <input
-                className="h-10 w-full rounded-md border p-2 pl-7"
-                type="text"
+              <CustomInput
+                aria-label="Search job title"
+                className="pl-7"
                 placeholder="Search Job Title"
                 value={search}
                 onChange={(e) => {
