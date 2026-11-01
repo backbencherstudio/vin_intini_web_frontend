@@ -1,7 +1,6 @@
 "use client";
 
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
-import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import Pagination from "@/components/reusable/Pagination";
 import {
@@ -36,6 +35,7 @@ export default function LeaveManagement() {
     data: leaveResponse,
     isLoading,
     isError,
+    refetch,
   } = useGetLeaveRequestsQuery({
     query: {
       page,
@@ -50,19 +50,9 @@ export default function LeaveManagement() {
   const totalPages =
     leaveResponse?.pagination?.last_page ?? Math.max(1, Math.ceil(totalRequests / PAGE_SIZE));
 
-  // Client-side search and sort refinement if needed
+  // Search is handled by the backend; sort the current response page locally.
   const displayData = useMemo(() => {
     let list = [...rawData];
-
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (item) =>
-          item.full_name?.toLowerCase().includes(q) ||
-          item.email?.toLowerCase().includes(q) ||
-          item.reason?.toLowerCase().includes(q)
-      );
-    }
 
     if (sort === "a-z") {
       list.sort((a, b) => (a.full_name || "").localeCompare(b.full_name || ""));
@@ -71,7 +61,7 @@ export default function LeaveManagement() {
     }
 
     return list;
-  }, [rawData, search, sort]);
+  }, [rawData, sort]);
 
   // CSV Export helper
   const handleExport = () => {
@@ -177,7 +167,7 @@ export default function LeaveManagement() {
       cell: (row) => (
         <div className="flex items-center gap-1.5 text-red-600 text-sm font-medium">
           <Calendar className="h-3.5 w-3.5 text-red-400" />
-          <span>{row.permanently_delete}</span>
+      <span>{row.permanently_delete || "Not scheduled"}</span>
         </div>
       ),
     },
@@ -197,7 +187,7 @@ export default function LeaveManagement() {
             }`}
           >
             <Clock className="h-3 w-3" />
-            {row.remaining_days}
+            {row.remaining_days || "—"}
           </span>
         );
       },
@@ -232,7 +222,7 @@ export default function LeaveManagement() {
             <input
               className="h-10 w-full rounded-md border border-gray-300 pl-9 pr-3 text-sm focus:border-primaryColor focus:outline-none"
               type="text"
-              placeholder="Search user, email, reason..."
+              placeholder="Search user or email..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -260,9 +250,12 @@ export default function LeaveManagement() {
       {isError && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+          className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
         >
           Failed to load leave requests. Please try again.
+          <button type="button" onClick={() => refetch()} className="font-semibold underline">
+            Retry
+          </button>
         </div>
       )}
 

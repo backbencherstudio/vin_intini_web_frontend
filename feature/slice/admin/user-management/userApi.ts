@@ -1,9 +1,11 @@
 import baseApiSlice from "../../baseApi";
 import {
+  AdminUserDetailsResponse,
   GetLeaveRequestsParams,
   GetLeaveRequestsResponse,
   GetUsersParams,
   GetUsersResponse,
+  ToggleUserSuspendResponse,
 } from "./userTypes";
 
 const userApi = baseApiSlice.injectEndpoints({
@@ -17,10 +19,23 @@ const userApi = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
-    toggleUserSuspend: builder.mutation<unknown, number>({
+    getAdminUserDetails: builder.query<AdminUserDetailsResponse, number | string>({
       query: (userId) => ({
+        url: `/admin/user-manage/users/${userId}`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, userId) => [
+        { type: "User", id: userId },
+      ],
+    }),
+    toggleUserSuspend: builder.mutation<
+      ToggleUserSuspendResponse,
+      { userId: number; is_suspended: boolean }
+    >({
+      query: ({ userId, is_suspended }) => ({
         url: `/admin/user-manage/users/${userId}/toggle-suspend`,
         method: "POST",
+        body: { is_suspended },
       }),
       invalidatesTags: ["User"],
     }),
@@ -40,6 +55,7 @@ const userApi = baseApiSlice.injectEndpoints({
 
 export const {
   useGetUsersQuery,
+  useGetAdminUserDetailsQuery,
   useToggleUserSuspendMutation,
   useGetLeaveRequestsQuery,
 } = userApi;
