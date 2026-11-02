@@ -121,7 +121,7 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
           sizes="(max-width: 768px) 100vw, 600px"
           className={`w-full ${
             isSingle
-              ? "max-h-150 object-cover bg-black/5"
+              ? "h-auto max-h-150 object-cover bg-black/5"
               : "h-full object-cover"
           }`}
         />

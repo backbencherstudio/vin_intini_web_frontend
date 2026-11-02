@@ -14,7 +14,7 @@ export default function Navbar() {
             alt="Logo"
             width={156}
             height={50}
-            className="w-50 sm:w-72.5"
+            className="h-auto w-50 sm:w-72.5"
           />
         </Link>
         <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-base py-4!">

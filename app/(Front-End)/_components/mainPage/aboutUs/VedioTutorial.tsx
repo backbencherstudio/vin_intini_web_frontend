@@ -165,7 +165,7 @@ export default function VideoTutorial() {
                                         alt={video.title}
                                         width={260}
                                         height={146}
-                                        className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="h-auto w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-110"
                                         unoptimized
                                         onError={(e) => {
                                             const target = e.target as HTMLImageElement;

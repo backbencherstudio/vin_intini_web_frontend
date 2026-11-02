@@ -286,7 +286,7 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
           alt={ad.product_name || ad.title || "Sponsored product"}
           width={1200}
           height={628}
-          className="aspect-[1.91/1] w-full object-cover"
+          className="h-auto aspect-[1.91/1] w-full object-cover"
           unoptimized
           onError={() => setProductImage(fallbackProductImage)}
         />

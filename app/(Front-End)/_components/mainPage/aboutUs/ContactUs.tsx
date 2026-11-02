@@ -45,7 +45,7 @@ export default function ContactUs() {
                     alt={`Coin ${index + 1}`}
                     width={60}
                     height={60}
-                    className="object-contain"
+                    className="h-12 w-12 object-contain"
                   />
                   <div className="absolute bottom-13 left-1/2 -translate-x-1/4 opacity-0 group-hover:opacity-100 transition-opacity bg-primaryColor text-white text-xs px-2 py-1 rounded">
                     {coin.name}

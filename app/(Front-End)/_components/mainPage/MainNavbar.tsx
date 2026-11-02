@@ -128,7 +128,7 @@ export default function MainNavbar() {
             src={mainLogo}
             alt="Logo"
             width={250}
-            height={150}
+            height={84}
             className="md:max-w-59.5 max-w-40 w-full h-auto"
             priority
           />
@@ -239,7 +239,13 @@ export default function MainNavbar() {
       >
         <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain scrollbar-hide bg-primaryColor p-4 pb-8">
           <div className="mb-2 flex w-full items-center justify-between">
-            <Image src={mainLogo} alt="Logo" width={150} height={150} />
+            <Image
+              src={mainLogo}
+              alt="Logo"
+              width={1801}
+              height={606}
+              className="h-auto w-[150px]"
+            />
             <button
               aria-label="close-menu"
               className="absolute top-4  right-4 z-10 text-white"

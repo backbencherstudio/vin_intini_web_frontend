@@ -51,7 +51,7 @@ export default function Page() {
                   src="/images/aboutUs/SVG.svg"
                   alt="About Group"
                   width={500}
-                  height={500}
+                  height={474}
                 />
               </div>
               {/* <div className='absolute top-[-12px] right-0 z-1'>
