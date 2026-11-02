@@ -52,7 +52,7 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
           <Link
             href={`/mu/post-job-position`}
             onClick={onItemClick}
-            className={`flex items-center gap-2 whitespace-nowrap rounded-lg bg-primaryColor px-3 py-2 text-sm font-medium text-whiteColor transition hover:bg-primaryColor/90 ${
+            className={`flex w-fit items-center gap-2 whitespace-nowrap rounded-lg bg-primaryColor px-3 py-2 text-sm font-medium text-whiteColor transition hover:bg-primaryColor/90 ${
               isActive(`/mu/post-job-position`) ? "ring-2 ring-primaryColor/20" : ""
             }`}
           >

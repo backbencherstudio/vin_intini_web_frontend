@@ -25,7 +25,7 @@ function ChatHeader({
           src={otherUser?.profile_image_url || emptyImage}
           width={40}
           height={40}
-          className="rounded-sm"
+          className="h-10 w-10 rounded-sm object-cover"
           alt=""
         />
         <div className="space-y-1">

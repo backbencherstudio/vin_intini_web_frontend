@@ -184,8 +184,9 @@ function ApplicantUserDetails({
                         <Image
                           src={pdfImg}
                           alt="PDF Icon"
-                          width={50}
-                          height={50}
+                          width={40}
+                          height={40}
+                          className="h-10 w-10 object-contain"
                         />
                       </div>
                       <div className="min-w-0 flex-1">

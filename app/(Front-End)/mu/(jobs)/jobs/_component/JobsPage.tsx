@@ -73,13 +73,13 @@ export default function JobsPage() {
           No jobs found matching your criteria.
         </div>
       ) : (
-        <div className="space-y-5 rounded-2xl border border-borderColor/70 bg-white p-3 sm:p-4">
+        <div className="space-y-4">
           <JobCardSection
             title={`${jobsType} Time Jobs`}
             subtitle="Because you expressed interest in remote work"
           />
 
-          <div className="divide-y space-y-4 divide-gray-100">
+          <div className="space-y-3">
             {jobs?.map((job, index) => (
               <div
                 key={job.id}
@@ -92,7 +92,7 @@ export default function JobsPage() {
 
           {/* Bottom loader while fetching more pages */}
           {isFetchingMore && (
-            <div className="divide-y space-y-4 divide-gray-100 pt-2">
+            <div className="space-y-3 pt-1">
               <JobCardSkeleton />
             </div>
           )}
