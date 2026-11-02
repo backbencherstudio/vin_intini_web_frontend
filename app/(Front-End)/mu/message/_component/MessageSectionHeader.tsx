@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
+function MessageSectionHeader({ conversationList, isOtherUserTyping, connectionState }: any) {
 
 
   return (
@@ -40,6 +40,14 @@ function MessageSectionHeader({ conversationList, isOtherUserTyping }: any) {
               ) : (
                 <span className="text-descriptionColor!">
                   {conversationList?.other_user?.title || "No title"}
+                </span>
+              )}
+              {connectionState !== "connected" && (
+                <span className="ml-2 inline-flex items-center gap-1.5 text-[11px] text-amber-700" role="status" aria-live="polite">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  {connectionState === "subscription_error" || connectionState === "unavailable"
+                    ? "Live updates unavailable"
+                    : "Reconnecting…"}
                 </span>
               )}
             </p>

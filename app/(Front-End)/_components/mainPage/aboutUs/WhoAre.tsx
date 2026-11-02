@@ -48,12 +48,20 @@ export default function WhoAre() {
 
                     <div className='flex w-full col-span-12 md:col-span-4'>
                         <div className="relative w-full h-120 rounded-lg overflow-hidden">
-                            <Image
-                                src={aboutUs.photo_url}
-                                alt="Founder"
-                                fill
-                                className="object-center"
-                            />
+                            {typeof aboutUs.photo_url === "string" && aboutUs.photo_url.trim() ? (
+                                <Image
+                                    src={aboutUs.photo_url}
+                                    alt="Founder"
+                                    fill
+                                    className="object-cover object-center"
+                                />
+                            ) : (
+                                <div
+                                    role="img"
+                                    aria-label="Founder photo unavailable"
+                                    className="h-full w-full bg-bgLightColor"
+                                />
+                            )}
                         </div>
                     </div>
 

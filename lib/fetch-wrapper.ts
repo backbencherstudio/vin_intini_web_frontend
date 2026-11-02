@@ -75,16 +75,22 @@ export const fetchWrapper = async (
   }
 
   if (!response.ok) {
-    const errorData: unknown = await response.json().catch(() => undefined);
+    const responseText = await response.text().catch(() => "");
+    let errorData: unknown;
+    try {
+      errorData = responseText ? JSON.parse(responseText) : undefined;
+    } catch {
+      errorData = undefined;
+    }
     const message =
       typeof errorData === "object" &&
       errorData !== null &&
       "message" in errorData &&
       typeof errorData.message === "string"
         ? errorData.message
-        : "Request failed";
+        : responseText || response.statusText || "Request failed";
 
-    throw new Error(message);
+    throw new Error(`${message} (HTTP ${response.status} ${endpoint})`);
   }
 
   return response.json();

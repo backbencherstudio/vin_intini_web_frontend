@@ -143,6 +143,32 @@ export function useConversationMessages(
     [conversationId, fetchMessages],
   );
 
+  const syncMessagesAfter = useCallback(
+    async (messageId: number) => {
+      let cursor: string | null = null;
+
+      try {
+        do {
+          const response: any = await fetchMessages({
+            id: conversationId,
+            afterId: messageId,
+            cursor,
+          }).unwrap();
+
+          for (const message of response?.data ?? []) {
+            appendMessage(message);
+          }
+
+          setConversation(response);
+          cursor = response?.has_more ? response?.next_cursor ?? null : null;
+        } while (cursor);
+      } catch (error) {
+        console.error("Failed to sync messages after reconnect", error);
+      }
+    },
+    [appendMessage, conversationId, fetchMessages],
+  );
+
   return {
     conversation,
     chatMessages,
@@ -156,5 +182,6 @@ export function useConversationMessages(
     updateMessageReactions,
     markConversationRead,
     loadOlderPage,
+    syncMessagesAfter,
   };
 }

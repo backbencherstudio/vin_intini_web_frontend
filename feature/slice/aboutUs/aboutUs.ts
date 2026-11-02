@@ -8,13 +8,6 @@ const AboutUsSlice = baseApiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    getAcademiaByState: builder.query({
-      query: (id) => ({
-        url: `/states/${id}`,
-        method: "GET",
-      }),
-    }),
-
     //privecy-policy
     getPrivecyPolicy: builder.query({
       query: () => ({
@@ -36,8 +29,6 @@ const AboutUsSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetAboutUsQuery,
-
-  useGetAcademiaByStateQuery,
 
   useGetPrivecyPolicyQuery,
 

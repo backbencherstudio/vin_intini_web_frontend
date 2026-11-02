@@ -14,7 +14,7 @@ interface MessageInputBarProps {
   replyTo: any;
   onTyping: () => void;
   onCancelReply: () => void;
-  onSendText: (content: string, file: File | null) => void;
+  onSendText: (content: string, file: File | null) => Promise<boolean>;
   onSendVoice: (blob: Blob) => void;
 }
 
@@ -64,7 +64,9 @@ export default function MessageInputBar({
     const content = inputValue.trim();
     if (!content && !attachments) return;
 
-    onSendText(content, attachments);
+    const sent = await onSendText(content, attachments);
+    if (!sent) return;
+
     setInputValue("");
     setAttachments(null);
   };

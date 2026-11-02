@@ -18,12 +18,13 @@ const messageSlice = baseApiSlice.injectEndpoints({
     }),
     getConversationMessages: builder.query({
       query: (arg: any) => {
-        const { id, cursor } =
+        const { id, cursor, afterId } =
           typeof arg === "string" || typeof arg === "number"
             ? { id: arg, cursor: null }
             : (arg ?? {});
         const search = new URLSearchParams();
         if (cursor) search.set("cursor", String(cursor));
+        if (afterId != null) search.set("after_id", String(afterId));
         const qs = search.toString();
         return {
           url: `/conversations/${id}/messages${qs ? `?${qs}` : ""}`,

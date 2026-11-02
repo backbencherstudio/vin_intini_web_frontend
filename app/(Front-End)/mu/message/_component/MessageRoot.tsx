@@ -8,6 +8,7 @@ import {
 } from "@/feature/slice/message/messageSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { useParams } from "next/navigation";
+import toast from "react-hot-toast";
 import {
   useCallback,
   useEffect,
@@ -31,6 +32,13 @@ function getFileCategory(file: File | null) {
   if (file.type.startsWith("image/")) return "image";
   if (file.type.startsWith("video/")) return "video";
   if (file.type.includes("pdf")) return "pdf";
+  return "file";
+}
+
+function getMessageType(file: File | null) {
+  if (!file) return "text";
+  if (file.type.startsWith("image/")) return "image";
+  if (file.type.startsWith("video/")) return "video";
   return "file";
 }
 
@@ -78,6 +86,7 @@ function MessageRoot() {
     updateMessageReactions,
     markConversationRead,
     loadOlderPage,
+    syncMessagesAfter,
   } = useConversationMessages(conversationId, handleInitialLoad);
 
   useEffect(() => {
@@ -135,8 +144,9 @@ function MessageRoot() {
       removeMessage(id);
     } catch (error) {
       console.error("Failed to delete message", error);
+      toast.error("Could not delete the message. Please try again.");
     }
-  }, [contextMenu, deleteMessage, removeMessage, replyTo]);
+  }, [contextMenu, conversationId, deleteMessage, removeMessage, replyTo]);
 
   const jumpToMessage = useCallback((targetId: any) => {
     const el = document.getElementById(`message-${targetId}`);
@@ -182,10 +192,33 @@ function MessageRoot() {
     [updateMessageReactions],
   );
 
-  const { isOtherUserTyping, whisperTyping } = useConversationEcho({
+  const handleMessageDeleted = useCallback(
+    (data: any) => {
+      if (Number(data?.conversation_id) !== Number(conversationId)) return;
+      if (data?.message_id) removeMessage(Number(data.message_id));
+    },
+    [conversationId, removeMessage],
+  );
+
+  const latestMessageIdRef = useRef(0);
+  useEffect(() => {
+    latestMessageIdRef.current = chatMessages.reduce(
+      (latestId, message) => Math.max(latestId, Number(message.id) || 0),
+      0,
+    );
+  }, [chatMessages]);
+  const handleConnectionRestored = useCallback(() => {
+    if (latestMessageIdRef.current > 0) {
+      return syncMessagesAfter(latestMessageIdRef.current);
+    }
+  }, [syncMessagesAfter]);
+
+  const { isOtherUserTyping, whisperTyping, connectionState } = useConversationEcho({
     conversationId,
     onMessageSent: handleIncomingMessage,
+    onMessageDeleted: handleMessageDeleted,
     onReactionChanged: handleReactionChanged,
+    onConnectionRestored: handleConnectionRestored,
   });
 
   useEffect(() => {
@@ -226,18 +259,20 @@ function MessageRoot() {
   };
 
   const handleSendText = useCallback(
-    (content: string, file: File | null) => {
-      if (!conversationId) return;
+    async (content: string, file: File | null): Promise<boolean> => {
+      if (!conversationId) return false;
 
       const tempId = Date.now();
+      const messageType = getMessageType(file);
+      const objectUrl = file ? URL.createObjectURL(file) : null;
       appendMessage({
         id: tempId,
         conversation_id: Number(conversationId),
         sender_id: currentUserId,
         is_mine: true,
-        type: file ? "file" : "text",
+        type: messageType,
         message: content || null,
-        file_url: file ? URL.createObjectURL(file) : null,
+        file_url: objectUrl,
         file_name: file?.name ?? null,
         file_size: file?.size ?? null,
         file_extension: file ? file.name.split(".").pop() : null,
@@ -259,26 +294,28 @@ function MessageRoot() {
       requestAnimationFrame(() => scrollToBottom());
 
       const formData = new FormData();
-      formData.append("type", file ? "file" : "text");
+      formData.append("type", messageType);
       formData.append("message", content);
       if (file) formData.append("file", file);
       if (replyTo?.id != null) {
         formData.append("reply_to_id", String(replyTo.id));
       }
-      setReplyTo(null);
+      try {
+        const response: any = await sendMessage({ conversationId, data: formData }).unwrap();
+        const serverMsg = response?.data || response?.message;
+        if (!serverMsg?.id) throw new Error("Message response did not include an id.");
 
-      sendMessage({ conversationId, data: formData })
-        .unwrap()
-        .then((response: any) => {
-          const serverMsg = response?.data || response?.message;
-          if (serverMsg?.id) {
-            replaceMessage(tempId, { ...serverMsg, is_mine: true });
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to send message", error);
-          removeMessage(tempId);
-        });
+        replaceMessage(tempId, { ...serverMsg, is_mine: true });
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        setReplyTo(null);
+        return true;
+      } catch (error) {
+        console.error("Failed to send message", error);
+        removeMessage(tempId);
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        toast.error("Message not sent. Your draft is still here; please try again.");
+        return false;
+      }
     },
     [
       appendMessage,
@@ -331,12 +368,15 @@ function MessageRoot() {
         }).unwrap();
 
         const serverMsg = response?.data || response?.message;
-        if (serverMsg?.id) {
-          replaceMessage(tempId, { ...serverMsg, is_mine: true });
-        }
+        if (!serverMsg?.id) throw new Error("Message response did not include an id.");
+
+        replaceMessage(tempId, { ...serverMsg, is_mine: true });
+        URL.revokeObjectURL(objectUrl);
       } catch (error) {
         console.error("Failed to send voice message", error);
         removeMessage(tempId);
+        URL.revokeObjectURL(objectUrl);
+        toast.error("Voice message not sent. Please try again.");
       }
     },
     [
@@ -360,9 +400,10 @@ function MessageRoot() {
         }).unwrap();
       } catch (error) {
         console.error("Failed to react to message", error);
+        toast.error("Could not add the reaction. Please try again.");
       }
     },
-    [reactForeMessage],
+    [conversationId, reactForeMessage],
   );
 
   const handleViewFile = useCallback((url: string) => {
@@ -386,6 +427,7 @@ function MessageRoot() {
             <MessageSectionHeader
               conversationList={conversation}
               isOtherUserTyping={isOtherUserTyping}
+              connectionState={connectionState}
             />
           )}
 

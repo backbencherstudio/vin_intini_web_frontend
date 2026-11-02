@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${segoeUi.className}`}>
+      <body className={`${segoeUi.className}`} suppressHydrationWarning>
         <NextTopLoader
           color="#04a1b7"
           initialPosition={0.08}

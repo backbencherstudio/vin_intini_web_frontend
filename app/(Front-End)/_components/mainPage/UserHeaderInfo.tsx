@@ -77,13 +77,14 @@ function UserHeaderInfo() {
 
     const handleMessageSent = async (data: any) => {
       setUnreadCount(data?.total_unread_messages);
+      dispatch(baseApiSlice.util.invalidateTags(["conversationList"]));
       if (data?.user && data?.last_message) {
         const lastMessage = data?.last_message;
         const text = lastMessage?.message
           ? lastMessage.message
           : lastMessage?.type === "audio"
             ? "Send a voice message"
-            : lastMessage?.type === "file" || lastMessage?.type === "vedio"
+            : lastMessage?.type === "file" || lastMessage?.type === "video"
               ? "Send a file"
               : "You have a new message";
         setNewMessagePopup({
@@ -97,7 +98,6 @@ function UserHeaderInfo() {
           setNewMessagePopup(null);
           popupTimerRef.current = null;
         }, 4000);
-        dispatch(baseApiSlice.util.invalidateTags(["conversationList"]));
       }
     };
 
