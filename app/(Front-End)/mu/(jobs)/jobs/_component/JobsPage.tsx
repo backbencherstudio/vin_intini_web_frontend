@@ -1,11 +1,8 @@
 "use client";
 
 import { useGetUserAllJobsQuery } from "@/feature/slice/jobs/userJobSlice";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
-import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
@@ -16,7 +13,6 @@ export default function JobsPage() {
   const { params, updateParam } = useUrlQueryParams();
   const activeFilter = params?.employment_type || "all";
   const searchParam = params?.search || "";
-  const { data: userData } = useGetUserProfileQuery("userProfile");
   const queryLimit = params?.limit ? Number(params.limit) : limit;
 
   const {
@@ -57,16 +53,6 @@ export default function JobsPage() {
             {jobsType} jobs that will perfectly match your profile.
           </p>
         </div>
-        {userData?.subscription?.plan_type == "industry" && (
-          <div className="">
-            <Link
-              className="flex items-center gap-1 whitespace-nowrap rounded-lg bg-primaryColor px-3 py-2 font-medium text-whiteColor transition hover:bg-primaryColor/90 md:px-4"
-              href={`/mu/post-job-position`}
-            >
-              <PlusIcon size={16} /> Post A New Job
-            </Link>
-          </div>
-        )}
       </header>
 
       <JobSearchBar

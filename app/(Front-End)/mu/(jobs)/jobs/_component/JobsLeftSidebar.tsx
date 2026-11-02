@@ -6,12 +6,10 @@ import { LineChartIcon } from "@/public/svgIcons/Icons";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import SubscriptionCard from "../../../(subscription)/_component/SubscriptionCard";
 
 function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
-  const [isMobile, setOpenMobile] = useState(false);
   const { data: userProfileData } = useGetUserProfileQuery("");
 
   const isActive = (href: string): boolean => {
@@ -54,10 +52,8 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
           <Link
             href={`/mu/post-job-position`}
             onClick={onItemClick}
-            className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
-              isActive(`/mu/post-job-position`)
-                ? "text-headerColor bg-lightGreenColor font-medium"
-                : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
+            className={`flex items-center gap-2 whitespace-nowrap rounded-lg bg-primaryColor px-3 py-2 text-sm font-medium text-whiteColor transition hover:bg-primaryColor/90 ${
+              isActive(`/mu/post-job-position`) ? "ring-2 ring-primaryColor/20" : ""
             }`}
           >
             <PlusIcon className="w-4.5 h-4.5" />
