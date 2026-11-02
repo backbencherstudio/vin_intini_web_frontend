@@ -6,6 +6,7 @@ import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import { DateRangePicker } from "@/components/reusable/dashboard/DateRangePicker";
 import Pagination from "@/components/reusable/Pagination";
 import {
@@ -214,13 +215,11 @@ export default function OverViewTable() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+      <div className="mb-6">
         <CustomTitleDescription
           title="Overview"
           description={`${total.toLocaleString()} Subscriptions`}
-          className="ml-2 shrink-0"
-        />
-        <div className="flex w-full flex-col items-start gap-4 lg:w-auto lg:flex-row lg:items-center">
+          action={<div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:justify-end lg:w-auto lg:items-center">
           <div className="relative w-full lg:w-[260px] lg:shrink-0">
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
             <CustomInput
@@ -234,42 +233,40 @@ export default function OverViewTable() {
               }}
             />
           </div>
-          <CustomSelect
-            className="h-[38px] text-nowrap lg:w-[150px] lg:shrink-0"
-            value={planFilter || "default"}
-            onChange={(value) => {
-              setPlanFilter(value === "default" ? "" : String(value));
-              setPage(1);
-            }}
-            options={planOptions}
-            placeholder="All Plans"
-          />
-          <CustomSelect
-            className="h-[38px] text-nowrap lg:w-[150px] lg:shrink-0"
-            value={statusFilter || "default"}
-            onChange={(value) => {
-              setStatusFilter(value === "default" ? "" : String(value));
-              setPage(1);
-            }}
-            options={[
-              { label: "All Status", value: "default" },
-              { label: "Active", value: "active" },
-              { label: "Canceled", value: "canceled" },
-              { label: "Past due", value: "past_due" },
-              { label: "Expired", value: "expired" },
-              { label: "Trialing", value: "trialing" },
-            ]}
-          />
-          <DateRangePicker
-            className="h-[38px] lg:w-[210px] lg:shrink-0"
-            date={date}
-            setDate={(range) => {
-              setDate(range);
-              setPage(1);
-            }}
-            placeholder="Select date range"
-          />
-        </div>
+          <AdminFilterPopover
+            title="Filter subscriptions"
+            activeCount={Number(Boolean(planFilter)) + Number(Boolean(statusFilter)) + Number(Boolean(date?.from))}
+            onReset={() => { setPlanFilter(""); setStatusFilter(""); setDate(undefined); setPage(1); }}
+          >
+            <CustomSelect
+              label="Plan"
+              value={planFilter || "default"}
+              onChange={(value) => { setPlanFilter(value === "default" ? "" : String(value)); setPage(1); }}
+              options={planOptions}
+              placeholder="All Plans"
+            />
+            <CustomSelect
+              label="Status"
+              value={statusFilter || "default"}
+              onChange={(value) => { setStatusFilter(value === "default" ? "" : String(value)); setPage(1); }}
+              options={[
+                { label: "All Status", value: "default" },
+                { label: "Active", value: "active" },
+                { label: "Canceled", value: "canceled" },
+                { label: "Past due", value: "past_due" },
+                { label: "Expired", value: "expired" },
+                { label: "Trialing", value: "trialing" },
+              ]}
+            />
+            <DateRangePicker
+              label="Date range"
+              date={date}
+              setDate={(range) => { setDate(range); setPage(1); }}
+              placeholder="Select date range"
+            />
+          </AdminFilterPopover>
+          </div>}
+        />
       </div>
 
       {isLoading ? (

@@ -3,6 +3,7 @@
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 import visaIcon from "@/public/images/admin/visa.png";
@@ -179,7 +180,7 @@ export default function TransactionTable() {
               alt={row.subscriber}
               width={28}
               height={28}
-              className="rounded-full object-cover"
+              className="h-7 w-7 shrink-0 rounded-full object-cover"
             />
           )}
           <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px]">
@@ -240,7 +241,7 @@ export default function TransactionTable() {
                 alt="visa"
                 width={28}
                 height={28}
-                className="rounded-full"
+                className="h-7 w-7 rounded-full object-contain"
               />
             </span>
           )}
@@ -252,7 +253,7 @@ export default function TransactionTable() {
                   alt="mastercard"
                   width={28}
                   height={28}
-                  className="rounded-full"
+                  className="h-7 w-7 rounded-full object-contain"
                 />
               </span>
             </div>
@@ -265,7 +266,7 @@ export default function TransactionTable() {
                   alt="americanExpress"
                   width={28}
                   height={28}
-                  className="rounded-full"
+                  className="h-7 w-7 rounded-full object-contain"
                 />
               </span>
             </span>
@@ -288,15 +289,13 @@ export default function TransactionTable() {
   ];
 
   return (
-    <div className="mt-10">
+    <div className="mt-8">
       {/* Filters */}
-      <div className="mb-6 flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-6">
         <CustomTitleDescription
           title="All Transactions"
           description={`${(total ?? 0).toLocaleString()} transactions`}
-          className="ml-2 shrink-0"
-        />
-        <div className="flex w-full flex-col items-center justify-start gap-4 lg:w-auto lg:flex-row lg:justify-end">
+          action={<div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:justify-end lg:w-auto lg:items-center">
           {/* Search */}
           <div className="relative w-full lg:w-[260px] lg:shrink-0">
             <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
@@ -313,42 +312,33 @@ export default function TransactionTable() {
             />
           </div>
 
-          {/* All Plans */}
-          <CustomSelect
-            className="h-[38px] lg:w-[150px] lg:shrink-0"
-            value={planFilter || "default"}
-            onChange={(value: string) => {
-              setPlanFilter(value === "default" ? "" : value);
-              setPage(1);
-            }}
-            options={[{ label: "All Plans", value: "default" }, ...planOptions]}
-          />
-
-          {/* All Status */}
-          <CustomSelect
-            className="h-[38px] lg:w-[150px] lg:shrink-0"
-            value={statusFilter || "default"}
-            onChange={(value: string) => {
-              setStatusFilter(value === "default" ? "" : value);
-              setPage(1);
-            }}
-            options={[
-              { label: "All Status", value: "default" },
-              { label: "Pending", value: "pending" },
-              { label: "Completed", value: "succeeded" },
-              { label: "Failed", value: "failed" },
-              { label: "Refunded", value: "refunded" },
-            ]}
-          />
-
-          {/* Date Range */}
-          <DateRangePicker
-            className="h-[38px] lg:w-[210px] lg:shrink-0"
-            date={date}
-            setDate={setDate}
-            placeholder="Select Date Range"
-          />
-        </div>
+          <AdminFilterPopover
+            title="Filter transactions"
+            activeCount={Number(Boolean(planFilter)) + Number(Boolean(statusFilter)) + Number(Boolean(date?.from))}
+            onReset={() => { setPlanFilter(""); setStatusFilter(""); setDate(undefined); setPage(1); }}
+          >
+            <CustomSelect
+              label="Plan"
+              value={planFilter || "default"}
+              onChange={(value: string) => { setPlanFilter(value === "default" ? "" : value); setPage(1); }}
+              options={[{ label: "All Plans", value: "default" }, ...planOptions]}
+            />
+            <CustomSelect
+              label="Status"
+              value={statusFilter || "default"}
+              onChange={(value: string) => { setStatusFilter(value === "default" ? "" : value); setPage(1); }}
+              options={[
+                { label: "All Status", value: "default" },
+                { label: "Pending", value: "pending" },
+                { label: "Completed", value: "succeeded" },
+                { label: "Failed", value: "failed" },
+                { label: "Refunded", value: "refunded" },
+              ]}
+            />
+            <DateRangePicker label="Date range" date={date} setDate={(range) => { setDate(range); setPage(1); }} placeholder="Select Date Range" />
+          </AdminFilterPopover>
+          </div>}
+        />
       </div>
 
       {isLoading ? (

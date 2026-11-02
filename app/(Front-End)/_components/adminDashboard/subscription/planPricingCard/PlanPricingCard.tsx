@@ -9,6 +9,7 @@ import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";
 import { CorrectIcon } from "@/public/svgIcons/AdminIcon";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -95,20 +96,19 @@ export default function PlanPricingCard() {
 
   return (
     <div className="">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#0F172A]">Plan & Pricing</h1>
-          <p className="mt-1 text-sm text-[#64748B]">
-            Create and manage subscription plans, pricing, and features.
-          </p>
-        </div>
-
-        <Link
-          href="/dashboard/subscription/plan-pricing/create-new-plan"
-          className="flex items-center gap-2 rounded-lg bg-primaryColor px-5 py-2.5 text-sm font-medium text-white hover:bg-[#038a9c]"
-        >
-          + Add new plan
-        </Link>
+      <div className="mb-8">
+        <CustomTitleDescription
+          title="Plan & Pricing"
+          description="Create and manage subscription plans, pricing, and features."
+          action={
+            <Link
+              href="/dashboard/subscription/plan-pricing/create-new-plan"
+              className="flex items-center gap-2 rounded-lg bg-primaryColor px-5 py-2.5 text-sm font-medium text-white hover:bg-[#038a9c]"
+            >
+              + Add new plan
+            </Link>
+          }
+        />
       </div>
 
       <div className="mb-4 flex justify-center">

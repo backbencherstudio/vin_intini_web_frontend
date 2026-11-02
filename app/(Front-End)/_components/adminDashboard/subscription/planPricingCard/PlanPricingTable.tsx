@@ -14,6 +14,8 @@ import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";
 import CreatePlan from "./CreatePlan";
 import toast from "react-hot-toast";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 
 const getPlanBadgeColor = (name: string) => {
     const n = name.toLowerCase();
@@ -155,37 +157,46 @@ export default function PlanPricingTable() {
 
     return (
         <div>
-
-            <h2 className="text-2xl font-bold">Plan Pricing</h2>
-            <p className="text-sm text-gray-500 mb-4">Manage your subscription plans and pricing.</p>
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                <div className="relative w-full sm:max-w-xs">
-                    <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
-                    <CustomInput
-                        aria-label="Search plans"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                        className="pl-9"
-                        placeholder="Search by plan name or description..."
-                    />
-                </div>
-                <CustomSelect
-                    className="sm:w-40"
-                    value={planFilter || "default"}
-                    onChange={(value) => setPlanFilter(value === "default" ? "" : String(value))}
-                    options={planOptions}
+            <div className="mb-6">
+                <CustomTitleDescription
+                    title="Plan Pricing"
+                    description="Manage your subscription plans and pricing."
+                    action={<div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+                    <div className="relative w-full sm:w-80">
+                        <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
+                        <CustomInput
+                            aria-label="Search plans"
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
+                            className="pl-9"
+                            placeholder="Search by plan name or description..."
+                        />
+                    </div>
+                    <AdminFilterPopover
+                        title="Filter plans"
+                        activeCount={Number(Boolean(planFilter)) + Number(Boolean(statusFilter)) + Number(Boolean(date?.from))}
+                        onReset={() => { setPlanFilter(""); setStatusFilter(""); setDate(undefined); }}
+                    >
+                        <CustomSelect
+                            label="Plan"
+                            value={planFilter || "default"}
+                            onChange={(value) => setPlanFilter(value === "default" ? "" : String(value))}
+                            options={planOptions}
+                        />
+                        <CustomSelect
+                            label="Status"
+                            value={statusFilter || "default"}
+                            onChange={(value) => setStatusFilter(value === "default" ? "" : String(value))}
+                            options={[
+                                { label: "All Status", value: "default" },
+                                { label: "Active", value: "active" },
+                                { label: "Inactive", value: "inactive" },
+                            ]}
+                        />
+                        <DateRangePicker label="Date range" date={date} setDate={setDate} placeholder="Select date range" />
+                    </AdminFilterPopover>
+                    </div>}
                 />
-                <CustomSelect
-                    className="sm:w-40"
-                    value={statusFilter || "default"}
-                    onChange={(value) => setStatusFilter(value === "default" ? "" : String(value))}
-                    options={[
-                        { label: "All Status", value: "default" },
-                        { label: "Active", value: "active" },
-                        { label: "Inactive", value: "inactive" },
-                    ]}
-                />
-                <DateRangePicker date={date} setDate={setDate} placeholder="Select Date Range" className="w-full sm:w-56" />
             </div>
 
             {isLoading ? (

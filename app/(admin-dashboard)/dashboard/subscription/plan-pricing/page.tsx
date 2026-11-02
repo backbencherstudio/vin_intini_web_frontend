@@ -7,7 +7,7 @@ export default function Page() {
       <div>
         <PlanPricingCard />
       </div>
-      <div className="mt-4">
+      <div className="mt-8">
         <PlanPricingTable />
       </div>
     </div>

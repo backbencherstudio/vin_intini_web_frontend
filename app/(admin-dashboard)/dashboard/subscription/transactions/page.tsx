@@ -4,7 +4,7 @@ import TransactionTable from "@/app/(Front-End)/_components/adminDashboard/subsc
 export default function Page() {
   return (
     <div>
-      <div className="pb-5">
+      <div>
         <TransactionStatusCard />
       </div>
       <TransactionTable />
