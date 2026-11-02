@@ -172,7 +172,7 @@ export default function AdvertisementEditForm({
               alt="Current advertisement"
               width={180}
               height={180}
-              className="rounded-lg border border-gray-200 object-cover"
+              className="h-45 w-45 rounded-lg border border-gray-200 object-cover"
             />
           </div>
         )}

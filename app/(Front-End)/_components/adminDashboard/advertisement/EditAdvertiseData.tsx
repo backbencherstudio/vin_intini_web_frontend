@@ -56,7 +56,7 @@ export default function EditvertisementEditForm({
                         alt="Advertisement"
                         width={180}
                         height={180}
-                        className="rounded-lg object-center"
+                        className="h-45 w-45 rounded-lg object-cover object-center"
                     />
                 </div>
 

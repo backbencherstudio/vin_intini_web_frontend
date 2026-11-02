@@ -90,7 +90,7 @@ export default function BiotechnologyPage() {
 
   return (
     <>
-      <div className="pb-4 border-b border-[#E0E0E0]">
+      <div className="pb-5 border-b border-[#E0E0E0]">
         <CustomTitleDescription
           title="Psychology Structure"
           description="Manage your industry sections and tabs."
@@ -103,7 +103,7 @@ export default function BiotechnologyPage() {
         />
       </div>
 
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="mt-6 flex flex-col gap-6">
         {catalogs.map((catalog) => (
           <ProductCatalogSection
             key={catalog.id}

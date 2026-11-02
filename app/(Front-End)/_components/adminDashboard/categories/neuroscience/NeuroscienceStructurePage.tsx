@@ -91,7 +91,7 @@ export default function NeuroscienceStructurePage({
 
     return (
         <>
-            <div className="pb-4 border-b border-[#E0E0E0]">
+            <div className="pb-5 border-b border-[#E0E0E0]">
                 <CustomTitleDescription
                     title="Neuroscience Structure"
                     description="Manage your industry sections and tabs."
@@ -104,7 +104,7 @@ export default function NeuroscienceStructurePage({
                 />
             </div>
 
-            <FilterTabs tabs={tabs} paramKey="tab" className="my-4" />
+            <FilterTabs tabs={tabs} paramKey="tab" className="my-6" />
 
             {isLoading ? (
                 <div className="py-12">

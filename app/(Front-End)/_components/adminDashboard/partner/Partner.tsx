@@ -3,6 +3,7 @@
 import DataTable, { type Column } from "@/components/reusable/dashboard/AdminTable";
 import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import Pagination from "@/components/reusable/Pagination";
 import {
   Select,
@@ -146,12 +147,7 @@ export default function Partner() {
   ];
 
   return (
-    <div className="space-y-5">
-      <CustomTitleDescription
-        title="Partners Management"
-        description={`${(response?.pagination?.total ?? 0).toLocaleString()} partners`}
-      />
-
+    <div className="space-y-6">
       {summary && (
         <div className="grid gap-3 sm:grid-cols-3">
           {[
@@ -172,38 +168,47 @@ export default function Partner() {
         </div>
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <label className="relative w-full sm:max-w-80">
-          <span className="sr-only">Search partners</span>
-          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-grayColor1" />
-          <CustomInput
-            aria-label="Search partners"
-            className="pl-9"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setPage(1);
-            }}
-            placeholder="Search partners or owners..."
-          />
-        </label>
-        <Select
-          value={status}
-          onValueChange={(value) => {
-            setStatus(value);
-            setPage(1);
-          }}
-        >
-          <SelectTrigger className="h-10 w-full sm:w-40">
-            <SelectValue placeholder="Filter status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="paused">Paused</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <CustomTitleDescription
+        title="Partners Management"
+        description={`${(response?.pagination?.total ?? 0).toLocaleString()} partners`}
+        action={
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <label className="relative w-full sm:w-80">
+              <span className="sr-only">Search partners</span>
+              <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-grayColor1" />
+              <CustomInput
+                aria-label="Search partners"
+                className="pl-9"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                }}
+                placeholder="Search partners or owners..."
+              />
+            </label>
+            <AdminFilterPopover
+              title="Filter partners"
+              activeCount={Number(status !== "all")}
+              onReset={() => { setStatus("all"); setPage(1); }}
+            >
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-xs font-medium text-gray-600">Status</span>
+                <Select value={status} onValueChange={(value) => { setStatus(value); setPage(1); }}>
+                  <SelectTrigger className="h-10 w-full rounded-lg border-gray-200 bg-white">
+                    <SelectValue placeholder="All statuses" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100100]">
+                    <SelectItem value="all">All statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="paused">Paused</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </AdminFilterPopover>
+          </div>
+        }
+      />
 
       {isLoading ? (
         <p className="rounded-lg border border-borderColor bg-white py-12 text-center text-sm text-grayColor1">

@@ -55,7 +55,7 @@ export default function ProductCatalogSection({
                 value={activeTab}
                 onValueChange={handleTabChange}
             />
-            <div className="mt-4">
+            <div className="mt-6">
                 <ProductGrid
                     products={displayedProducts}
                     onEdit={(productId) => {

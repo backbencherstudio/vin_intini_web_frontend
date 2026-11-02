@@ -6,6 +6,7 @@ import { Pencil, Plus, Search, Settings, Trash2 } from "lucide-react";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import AdminSelect from "@/components/reusable/dashboard/AdminSelect";
 import {
   BoostPackage,
@@ -101,12 +102,11 @@ export default function AdvertisementTable({ onOpenSettings }: { onOpenSettings:
 
   return (
     <section className="rounded-xl border border-[#E5E7EB] bg-white">
-      <div className="flex flex-col gap-3 border-b border-[#E5E7EB] p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-headerColor">Boost packages</h2>
-          <p className="mt-1 text-sm text-gray-500">Manage the packages available for promoted content.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
+      <div className="border-b border-[#E5E7EB] p-5">
+        <CustomTitleDescription
+          title="Boost packages"
+          description="Manage the packages available for promoted content."
+          action={<div className="flex w-full flex-wrap items-center justify-end gap-2">
           <button onClick={onOpenSettings} className="inline-flex h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 hover:bg-gray-50">
             <Settings className="h-4 w-4" /> Settings
           </button>
@@ -117,7 +117,8 @@ export default function AdvertisementTable({ onOpenSettings }: { onOpenSettings:
           <button onClick={openCreate} className="inline-flex h-10 items-center gap-2 rounded-lg bg-primaryColor px-4 text-sm font-medium text-white">
             <Plus className="h-4 w-4" /> Add package
           </button>
-        </div>
+          </div>}
+        />
       </div>
 
       {isLoading ? <p className="p-6 text-sm text-gray-500">Loading boost packages…</p> : null}
@@ -125,19 +126,19 @@ export default function AdvertisementTable({ onOpenSettings }: { onOpenSettings:
       {!isLoading && !isError && packages.length === 0 ? <p className="p-6 text-sm text-gray-500">No boost packages found.</p> : null}
 
       {packages.length > 0 && <div className="overflow-x-auto">
-        <table className="w-full min-w-[850px] text-left text-sm">
-          <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
-            <tr>{["Package", "Target", "Duration", "Price", "Campaigns", "Status", "Actions"].map((heading) => <th key={heading} className="px-4 py-3 font-medium">{heading}</th>)}</tr>
+        <table className="w-full min-w-[850px] text-left text-sm leading-5 text-gray-700">
+          <thead className="border-b border-gray-200 bg-gray-50 text-sm font-medium leading-5 text-gray-600">
+            <tr>{["Package", "Target", "Duration", "Price", "Campaigns", "Status", "Actions"].map((heading) => <th key={heading} className="whitespace-nowrap px-4 py-3 text-left font-medium">{heading}</th>)}</tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {packages.map((item) => <tr key={item.id}>
-              <td className="px-4 py-4"><p className="font-medium text-gray-900">{item.name}</p><p className="mt-1 text-xs text-gray-500">{item.promotion_highlight || item.description || "—"}</p></td>
-              <td className="px-4 py-4 capitalize text-gray-600">{item.target_entity}</td>
-              <td className="px-4 py-4 text-gray-600">{item.duration_days} days</td>
-              <td className="px-4 py-4 font-medium text-gray-800">${Number(item.price).toFixed(2)}</td>
-              <td className="px-4 py-4 text-gray-600">{item.active_campaigns_count ?? 0} active / {item.total_campaigns_count ?? 0} total</td>
-              <td className="px-4 py-4"><button onClick={() => void runAction(() => toggleStatus(item.id).unwrap(), "Package status updated")} className={`rounded-full px-3 py-1 text-xs font-medium ${item.is_active ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>{item.is_active ? "Active" : "Inactive"}</button></td>
-              <td className="px-4 py-4"><div className="flex items-center gap-2">
+            {packages.map((item) => <tr key={item.id} className="transition-colors hover:bg-gray-50">
+              <td className="px-4 py-3 align-middle"><p className="font-medium text-gray-900">{item.name}</p><p className="mt-1 text-xs text-gray-500">{item.promotion_highlight || item.description || "—"}</p></td>
+              <td className="px-4 py-3 align-middle capitalize text-gray-600">{item.target_entity}</td>
+              <td className="px-4 py-3 align-middle text-gray-600">{item.duration_days} days</td>
+              <td className="px-4 py-3 align-middle font-medium text-gray-800">${Number(item.price).toFixed(2)}</td>
+              <td className="px-4 py-3 align-middle text-gray-600">{item.active_campaigns_count ?? 0} active / {item.total_campaigns_count ?? 0} total</td>
+              <td className="px-4 py-3 align-middle"><button onClick={() => void runAction(() => toggleStatus(item.id).unwrap(), "Package status updated")} className={`rounded-full px-3 py-1 text-xs font-medium ${item.is_active ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"}`}>{item.is_active ? "Active" : "Inactive"}</button></td>
+              <td className="px-4 py-3 align-middle"><div className="flex items-center gap-2">
                 <button aria-label={`Edit ${item.name}`} onClick={() => openEdit(item)} className="rounded-md p-2 text-gray-500 hover:bg-gray-100"><Pencil className="h-4 w-4" /></button>
                 <button aria-label={`Delete ${item.name}`} onClick={() => { if (window.confirm(`Delete “${item.name}”?`)) void runAction(() => deletePackage(item.id).unwrap(), "Package deleted"); }} className="rounded-md p-2 text-red-500 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
               </div></td>
