@@ -29,20 +29,20 @@ export default function DataTable<T extends { id: string | number }>({
     <div className="w-full">
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-[#F8F8F8] border-b border-gray-200">
+        <table className="admin-data-table w-full text-left text-sm text-gray-700">
+          <thead className="bg-gray-50">
+            <tr className="border-b border-gray-200">
               {columns.map((col, i) => (
                 <th
                   key={i}
-                  className="px-4 py-3 text-[#777980] text-[14px] font-semibold leading-[140%] tracking-[0.07px] whitespace-nowrap"
+                  className="whitespace-nowrap px-4 py-3 text-left text-sm font-medium leading-5 text-gray-600"
                 >
                   {col.header}
                 </th>
               ))}
 
               {(onEdit || onDelete || onView) && (
-                <th className="px-4 py-3 text-sm font-medium text-gray-600 text-center">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-medium leading-5 text-gray-600">
                   Action
                 </th>
               )}
@@ -52,11 +52,11 @@ export default function DataTable<T extends { id: string | number }>({
           <tbody className="divide-y divide-gray-100">
             {data.length > 0 ? (
               data.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={row.id} className="transition-colors hover:bg-gray-50">
                   {columns.map((col, j) => (
                     <td
                       key={j}
-                      className={`px-4 py-3 text-sm text-gray-700 ${
+                      className={`px-4 py-3 align-middle text-sm leading-5 text-gray-700 ${
                         col.className || ""
                       }`}
                     >
@@ -69,7 +69,7 @@ export default function DataTable<T extends { id: string | number }>({
                   ))}
 
                   {(onEdit || onDelete || onView) && (
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 align-middle">
                       <div className="flex items-center justify-center gap-3">
                         {onView && (
                           <button

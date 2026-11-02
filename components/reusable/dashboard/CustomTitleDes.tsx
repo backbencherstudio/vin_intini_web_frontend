@@ -8,6 +8,7 @@ interface CustomTitleDescriptionProps {
     description?: string;
     className?: string;
     action?: React.ReactNode;
+    headerClassName?: string;
 }
 
 export default function CustomTitleDescription({
@@ -15,17 +16,18 @@ export default function CustomTitleDescription({
     description,
     className,
     action,
+    headerClassName,
 }: CustomTitleDescriptionProps) {
     return (
 
-        <div className="flex justify-between items-center " >
-            <div className={clsx("flex flex-col gap-1", className)}>
-                <h2 className="text-[24px] font-semibold leading-[130%] tracking-[0.12px] text-[#1D1F2C]">
+        <header className={clsx("admin-page-header flex flex-col items-start justify-between gap-4 xl:flex-row xl:items-center", headerClassName)}>
+            <div className={clsx("flex min-w-0 flex-col gap-1", className)}>
+                <h2 className="admin-page-title text-[24px] font-semibold leading-[130%] tracking-[0.12px] text-[#1D1F2C]">
                     {title}
                 </h2>
 
                 {description && (
-                    <p className="text-[16px] font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
+                    <p className="text-sm font-normal leading-[150%] tracking-[0.01em] text-gray-500">
                         {description}
                     </p>
                 )}
@@ -34,11 +36,11 @@ export default function CustomTitleDescription({
             </div>
 
             {action && (
-                <div className="flex justify-end">
+                <div className="flex min-w-0 w-full justify-start xl:w-auto xl:justify-end">
                     {action}
                 </div>
             )}
-        </div>
+        </header>
 
     );
 }

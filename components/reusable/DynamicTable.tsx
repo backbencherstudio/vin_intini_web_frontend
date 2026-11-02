@@ -203,7 +203,7 @@ export default function DynamicTable({
                             alt="delete"
                             width={16}
                             height={16}
-                            className="cursor-pointer"
+                            className="h-4 w-4 cursor-pointer"
                           />
                         )}
                       </td>
