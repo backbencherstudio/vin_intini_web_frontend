@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import FacilityForm from "./FacilitiesModal";
 import {
   useDeleteFacilitiesMutation,
@@ -220,21 +221,14 @@ export default function Facilites() {
   ];
 
   return (
-    <div>
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-col lg:flex-row md:items-center">
-        {/* Title */}
-        <div className="mb-0 lg:mb-6  w-full">
-          <CustomTitleDescription
-            title="Hospitals & Facilities"
-            // description={`Showing 1-${facilitiesData.length} of ${facilitiesResponse?.pagination?.total ?? facilitiesData.length} Programs`}
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="mb-6 flex w-full justify-end">
-          <div className="flex w-full flex-col items-start gap-4 sm:w-full lg:w-auto lg:flex-row lg:items-center">
+    <div className="space-y-6">
+      <CustomTitleDescription
+        title="Hospitals & Facilities"
+        description={`${(facilitiesResponse?.pagination?.total ?? facilitiesData.length).toLocaleString()} facilities`}
+        action={
+          <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
             {/* Search */}
-            <div className="relative w-full lg:w-[220px]">
+            <div className="relative w-full sm:w-60">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
               <CustomInput
@@ -249,9 +243,13 @@ export default function Facilites() {
               />
             </div>
 
-            {/* Filter by state */}
-            <div className="w-full lg:w-[170px]">
+            <AdminFilterPopover
+              title="Filter facilities"
+              activeCount={Number(Boolean(stateId))}
+              onReset={() => { setStateId(""); setPage(1); }}
+            >
               <CustomSelect
+                label="State"
                 value={stateId || "default"}
                 onChange={(value) => {
                   setStateId(value === "default" ? "" : String(value));
@@ -259,7 +257,7 @@ export default function Facilites() {
                 }}
                 options={[
                   {
-                    label: "Filter by state",
+                    label: "All states",
                     value: "default",
                   },
                   ...states.map((st: any) => ({
@@ -267,21 +265,20 @@ export default function Facilites() {
                     value: String(st.id),
                   })),
                 ]}
-                placeholder="Filter by state"
-                className="h-10 w-full lg:w-[170px]"
+                placeholder="All states"
               />
-            </div>
+            </AdminFilterPopover>
 
             <button
               onClick={openAdd}
-              className="flex lg:w-auto w-full  cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white text-nowrap"
+              className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white sm:w-auto"
             >
               <Plus className="h-4 w-4" />
               Add New Facilities
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
       <div>
         <DataTable
           columns={columns}

@@ -14,6 +14,7 @@ import {
 import { FilterIcon, MoveUpRight, Plus, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import MedicalResidencyForm from "./Edit&PostResencesModal";
 import {
   useDeleteResedencyMutation,
@@ -167,32 +168,31 @@ export default function Resedences() {
   ];
 
   return (
-    <div>
-      <div className="flex flex-col items-start justify-between gap-4 lg:flex-row xl:items-center">
-        <div className=" mb-0 lg:mb-6 w-full">
-          <CustomTitleDescription
-            title="Manage Universities"
-            description="Showing 1-20 of 1697 Records"
-          />
-        </div>
-
-        <div className="mb-6 flex w-full justify-start lg:justify-end">
-          <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
+    <div className="space-y-6">
+      <CustomTitleDescription
+        title="Manage Residencies"
+        description={`${(residency?.pagination?.total ?? residencyData.length).toLocaleString()} residencies`}
+        action={
+          <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
             {/* Search */}
-            <div className="relative w-full lg:w-[220px]">
+            <div className="relative w-full sm:w-60">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
               <CustomInput
                 aria-label="Search university name"
                 className="pl-7"
                 placeholder="Search University Name"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               />
             </div>
 
-            {/* Filter */}
-            <div className="w-full lg:w-auto">
+            <AdminFilterPopover
+              title="Filter residencies"
+              activeCount={Number(Boolean(stateId))}
+              onReset={() => { setStateId(""); setPage(1); }}
+            >
               <CustomSelect
+                label="State"
                 value={stateId || "default"}
                 onChange={(value) => {
                   setStateId(value === "default" ? "" : String(value));
@@ -200,7 +200,7 @@ export default function Resedences() {
                 }}
                 options={[
                   {
-                    label: "Filter by state",
+                    label: "All states",
                     value: "default",
                   },
                   ...states.map((st: any) => ({
@@ -208,21 +208,20 @@ export default function Resedences() {
                     value: String(st.id),
                   })),
                 ]}
-                placeholder="Filter by state"
-                className="h-10 w-full lg:w-[170px]"
+                placeholder="All states"
               />
-            </div>
+            </AdminFilterPopover>
 
             <button
               onClick={openAdd}
-              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto whitespace-nowrap"
+              className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white sm:w-auto"
             >
               <Plus className="h-4 w-4" />
               Add New Residency
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       <DataTable
         columns={columns}

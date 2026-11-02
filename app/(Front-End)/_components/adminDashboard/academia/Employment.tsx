@@ -14,6 +14,7 @@ import {
 import { FilterIcon, Plus, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import AddEmployment from "./EmploymentAddModal";
 import UpdateEmployment from "./EmploymentUpdate";
 import {
@@ -207,21 +208,14 @@ export default function Employment() {
   ];
 
   return (
-    <div>
-      <div className="flex flex-col items-start justify-between gap-4 lg:flex-row md:items-center">
-        {/* Title */}
-        <div className="mb-0 lg:mb-6  w-full">
-          <CustomTitleDescription
-            title="Manage Job Openings"
-            description={`Showing 1-${jobs.length} of ${employmentResponse?.pagination?.total ?? jobs.length} Programs`}
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="mb-6 flex w-full justify-start xl:justify-end">
-          <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
+    <div className="space-y-6">
+      <CustomTitleDescription
+        title="Manage Job Openings"
+        description={`${(employmentResponse?.pagination?.total ?? jobs.length).toLocaleString()} job openings`}
+        action={
+          <div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
             {/* Search */}
-            <div className="relative w-full md:w-[220px]">
+            <div className="relative w-full sm:w-60">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
               <CustomInput
@@ -236,9 +230,13 @@ export default function Employment() {
               />
             </div>
 
-            {/* Filter by state */}
-            <div className=" w-full lg:w-[170px]">
+            <AdminFilterPopover
+              title="Filter job openings"
+              activeCount={Number(Boolean(stateId))}
+              onReset={() => { setStateId(""); setPage(1); }}
+            >
               <CustomSelect
+                label="State"
                 value={stateId || "default"}
                 onChange={(value) => {
                   setStateId(value === "default" ? "" : String(value));
@@ -246,7 +244,7 @@ export default function Employment() {
                 }}
                 options={[
                   {
-                    label: "Filter by state",
+                    label: "All states",
                     value: "default",
                   },
                   ...states.map((st: any) => ({
@@ -254,21 +252,20 @@ export default function Employment() {
                     value: String(st.id),
                   })),
                 ]}
-                placeholder="Filter by state"
-                className="h-10 w-full lg:w-[170px]"
+                placeholder="All states"
               />
-            </div>
+            </AdminFilterPopover>
 
             <button
               onClick={openAdd}
-              className="flex w-full cursor-pointer text-nowrap items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto"
+              className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white sm:w-auto"
             >
               <Plus className="h-4 w-4" />
               Add New Job
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
       <div>
         <DataTable
           columns={columns}
