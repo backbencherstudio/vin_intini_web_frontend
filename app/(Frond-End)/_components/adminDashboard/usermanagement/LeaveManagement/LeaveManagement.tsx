@@ -3,6 +3,7 @@
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import Pagination from "@/components/reusable/Pagination";
 import {
   Select,
@@ -197,16 +198,10 @@ export default function LeaveManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header & Actions */}
-      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-        <div>
-          <CustomTitleDescription
-            title="Leave Management"
-            description={`${totalRequests.toLocaleString()} Leave Requests`}
-          />
-        </div>
-
-        <div className="flex w-full flex-col items-start gap-4 md:w-auto md:flex-row md:items-center">
+      <CustomTitleDescription
+        title="Leave Management"
+        description={`${totalRequests.toLocaleString()} Leave Requests`}
+        action={<div className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end sm:items-center">
           {/* Export */}
           <button
             type="button"
@@ -232,20 +227,28 @@ export default function LeaveManagement() {
             />
           </div>
 
-          {/* Sort */}
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="h-10 w-full cursor-pointer gap-2 py-5 md:w-[170px]">
-              <ArrowUpDown className="h-4 w-4" />
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Default</SelectItem>
-              <SelectItem value="a-z">Alphabet A-Z</SelectItem>
-              <SelectItem value="z-a">Alphabet Z-A</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+          <AdminFilterPopover
+            title="Sort leave requests"
+            activeCount={Number(sort !== "default")}
+            onReset={() => setSort("default")}
+          >
+            <div className="min-w-0 space-y-1.5">
+              <span className="block text-xs font-medium text-gray-600">Sort by name</span>
+              <Select value={sort} onValueChange={setSort}>
+                <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-gray-200 bg-white">
+                  <ArrowUpDown className="h-4 w-4" />
+                  <SelectValue placeholder="Default" />
+                </SelectTrigger>
+                <SelectContent className="z-[100100]">
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="a-z">Alphabet A-Z</SelectItem>
+                  <SelectItem value="z-a">Alphabet Z-A</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </AdminFilterPopover>
+        </div>}
+      />
 
       {/* Main Content */}
       {isError && (
@@ -278,7 +281,7 @@ export default function LeaveManagement() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <DataTable columns={columns} data={displayData} />
           <Pagination
             page={page}

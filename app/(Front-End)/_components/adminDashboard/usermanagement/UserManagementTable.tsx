@@ -5,6 +5,7 @@ import DataTable, { type Column } from "@/components/reusable/dashboard/AdminTab
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import Pagination from "@/components/reusable/Pagination";
 import {
   Select,
@@ -179,13 +180,11 @@ export default function UserManagementTable({
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <CustomTitleDescription
-          title={title}
-          description={`${totalUsers.toLocaleString()} ${title}`}
-        />
-        <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
+    <div className="space-y-6">
+      <CustomTitleDescription
+        title={title}
+        description={`${totalUsers.toLocaleString()} ${title}`}
+        action={<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
           <button
             type="button"
             onClick={() => downloadCsv(users, tier)}
@@ -209,35 +208,41 @@ export default function UserManagementTable({
               placeholder="Search users"
             />
           </label>
-          <Select
-            value={status}
-            onValueChange={(value: UserStatus) => {
-              setStatus(value);
-              setPage(1);
-            }}
+          <AdminFilterPopover
+            title="Filter users"
+            activeCount={Number(status !== "all") + Number(sort !== "default")}
+            onReset={() => { setStatus("all"); setSort("default"); setPage(1); }}
           >
-            <SelectTrigger className="h-10 w-full sm:w-40">
-              <SelectValue placeholder="Filter status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="suspended">Suspended</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="h-10 w-full sm:w-40">
-              <ArrowUpDown className="h-4 w-4" />
-              <SelectValue placeholder="Sort name" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Newest</SelectItem>
-              <SelectItem value="a-z">Name A–Z</SelectItem>
-              <SelectItem value="z-a">Name Z–A</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+            <div className="min-w-0 space-y-1.5">
+              <span className="block text-xs font-medium text-gray-600">Status</span>
+              <Select value={status} onValueChange={(value: UserStatus) => { setStatus(value); setPage(1); }}>
+                <SelectTrigger className="h-10 w-full rounded-lg border-gray-200 bg-white">
+                  <SelectValue placeholder="All statuses" />
+                </SelectTrigger>
+                <SelectContent className="z-[100100]">
+                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="suspended">Suspended</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="min-w-0 space-y-1.5">
+              <span className="block text-xs font-medium text-gray-600">Sort by</span>
+              <Select value={sort} onValueChange={(value) => { setSort(value); setPage(1); }}>
+                <SelectTrigger className="h-10 w-full rounded-lg border-gray-200 bg-white">
+                  <ArrowUpDown className="h-4 w-4" />
+                  <SelectValue placeholder="Newest" />
+                </SelectTrigger>
+                <SelectContent className="z-[100100]">
+                  <SelectItem value="default">Newest</SelectItem>
+                  <SelectItem value="a-z">Name A–Z</SelectItem>
+                  <SelectItem value="z-a">Name Z–A</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </AdminFilterPopover>
+        </div>}
+      />
 
       {isError && (
         <div role="alert" className="flex items-center justify-between rounded-md border border-redColor/20 bg-redColor/5 p-3 text-sm text-redColor">

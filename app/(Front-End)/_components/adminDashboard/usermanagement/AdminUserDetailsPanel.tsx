@@ -59,7 +59,7 @@ export default function AdminUserDetailsPanel({
     : profile?.profession;
 
   return (
-    <div className="space-y-4 pb-2">
+    <div className="space-y-6 pb-2">
       <header className="overflow-hidden rounded-lg border border-borderColor bg-white">
         <div
           className="h-32 bg-sectionColor bg-cover bg-center"
