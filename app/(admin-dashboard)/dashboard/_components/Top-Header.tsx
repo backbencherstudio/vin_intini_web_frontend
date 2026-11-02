@@ -128,7 +128,7 @@ export default function TopHeader() {
               onSelect={handleLogout}
               className="text-red-600 focus:text-red-600"
             >
-              <LogOut />
+              <LogOut className="text-red-600 opacity-100" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -40,9 +40,9 @@ export default function DashboardLayout({
 
         <div className="flex flex-1 flex-col min-w-0">
           {/* Page Content */}
-          <main className="flex-1 w-full  p-4 md:p-6 overflow-auto">
+          <main className="flex-1 w-full overflow-auto px-4 py-6 md:px-6 md:py-8">
            
-            <div className="w-full">{children}</div>
+            <div className="admin-dashboard-content w-full">{children}</div>
           </main>
         </div>
       </div>

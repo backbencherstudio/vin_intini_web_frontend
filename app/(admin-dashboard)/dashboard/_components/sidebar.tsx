@@ -36,23 +36,17 @@ export default function DashboardSidebar() {
 
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
-  // Open submenu when current page belongs to it
+  // Keep only the submenu containing the current route open.
   useEffect(() => {
-    SidebarData.forEach((item) => {
-      if (item.children?.some((child) => matchesRoute(pathname, child.href))) {
-        setOpenMenus((prev) =>
-          prev.includes(item.id) ? prev : [...prev, item.id]
-        );
-      }
-    });
+    const activeGroup = SidebarData.find((item) =>
+      item.children?.some((child) => matchesRoute(pathname, child.href))
+    );
+
+    setOpenMenus(activeGroup ? [activeGroup.id] : []);
   }, [pathname]);
 
   const toggleMenu = (id: string) => {
-    setOpenMenus((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
-    );
+    setOpenMenus((prev) => (prev.includes(id) ? [] : [id]));
   };
 
   const logout = () => {
@@ -74,7 +68,7 @@ export default function DashboardSidebar() {
               src={logo}
               alt="Logo"
               width={250}
-              height={30}
+              height={84}
               className="md:max-w-59.5 max-w-40 w-full h-auto"
               priority
             />
@@ -89,7 +83,9 @@ export default function DashboardSidebar() {
                 const isOpen = openMenus.includes(item.id);
 
                 const active =
-                  matchesRoute(pathname, item.href) ||
+                  (item.id === "dashboard"
+                    ? pathname === item.href
+                    : matchesRoute(pathname, item.href)) ||
                   item.children?.some((child) =>
                     matchesRoute(pathname, child.href)
                   );
@@ -102,67 +98,77 @@ export default function DashboardSidebar() {
                       {hasChildren ? (
                         <SidebarMenuButton
                           onClick={() => toggleMenu(item.id)}
-                          className={`h-9 rounded-lg ${active
-                            ? " text-[#111827]  border "
+                          aria-expanded={isOpen}
+                          className={`h-11 rounded-lg transition-colors duration-200 ${active
+                            ? "text-[#111827]"
                             : "text-[#374151] hover:bg-gray-50"
-                            }`}
+                            } ${isOpen ? "focus-visible:ring-0" : ""}`}
                         >
                           <Icon className="h-4 w-4" />
 
-                          <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
+                          <span className="text-headerColor text-[17px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
 
                           <ChevronDown
-                            className={`ml-auto h-4 w-4 ${isOpen ? "rotate-180" : ""
+                            className={`ml-auto h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
                               }`}
                           />
                         </SidebarMenuButton>
                       ) : (
                         <SidebarMenuButton
                           asChild
-                          className={`h-9 rounded-lg ${active
-                            ? "bg-[#D3F4EF] text-[#111827] border border-primaryColor"
+                          className={`h-11 rounded-lg transition-colors duration-200 ${active
+                            ? "bg-[#D3F4EF] text-[#111827]"
                             : "text-[#374151] hover:bg-gray-50"
                             }`}
                         >
                           <Link href={item.href!} onClick={() => { if (isMobile) setOpenMobile(false); }}>
                             <Icon className="h-4 w-4" />
-                            <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
+                            <span className="text-headerColor text-[17px] font-normal leading-[24px] tracking-[0.08px]">{item.name}</span>
                           </Link>
                         </SidebarMenuButton>
                       )}
                     </SidebarMenuItem>
 
                     {/* Submenu */}
-                    {hasChildren && isOpen && state === "expanded" && (
-                      <div className="ml-5 space-y-1">
-                        {item.children?.map((child) => {
-                          const ChildIcon = child.icon;
-                          const active = matchesRoute(pathname, child.href);
+                    {hasChildren && state === "expanded" && (
+                      <div
+                        aria-hidden={!isOpen}
+                        inert={!isOpen}
+                        className={`ml-5 grid transition-[grid-template-rows,opacity] duration-200 ease-in-out motion-reduce:transition-none ${isOpen ? "grid-rows-[1fr] opacity-100" : "pointer-events-none grid-rows-[0fr] opacity-0"}`}
+                      >
+                        <div className="relative min-h-0 space-y-1 overflow-hidden pl-4 before:absolute before:bottom-5 before:left-1 before:top-0 before:w-px before:bg-gray-200 before:content-['']">
+                          {item.children?.map((child) => {
+                            const ChildIcon = child.icon;
+                            const active = matchesRoute(pathname, child.href);
 
-                          return (
-                            <SidebarMenuItem key={child.id}>
-                              <SidebarMenuButton
-                                asChild
-                                className={`h-8 rounded-md ${active
-                                  ? "bg-[#D3F4EF] text-headerColor  text-base font-semibold leading-6 tracking-[0.08px] border border-primaryColor"
-                                  : "text-[#6B7280] hover:bg-gray-50"
-                                  }`}
+                            return (
+                              <SidebarMenuItem
+                                key={child.id}
+                                className={`before:absolute before:-left-3 before:top-1/2 before:w-3 before:border-t before:content-[''] ${active ? "before:border-primaryColor" : "before:border-gray-300"}`}
                               >
-                                <Link
-                                  href={child.href}
-                                  onClick={() => {
-                                    if (isMobile) {
-                                      setOpenMobile(false);
-                                    }
-                                  }}
+                                <SidebarMenuButton
+                                  asChild
+                                  className={`h-10 rounded-md transition-colors duration-200 ${active
+                                    ? "bg-[#D3F4EF] text-headerColor text-base font-semibold leading-6 tracking-[0.08px]"
+                                    : "text-[#6B7280] hover:bg-gray-50"
+                                    }`}
                                 >
-                                  <ChildIcon className="h-3.5 w-3.5" />
-                                  <span className="text-headerColor  text-[16px] font-normal leading-[24px] tracking-[0.08px]">{child.name}</span>
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          );
-                        })}
+                                  <Link
+                                    href={child.href}
+                                    onClick={() => {
+                                      if (isMobile) {
+                                        setOpenMobile(false);
+                                      }
+                                    }}
+                                  >
+                                    <ChildIcon className="h-3.5 w-3.5" />
+                                    <span className="text-headerColor text-[17px] font-normal leading-[24px] tracking-[0.08px]">{child.name}</span>
+                                  </Link>
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
 
@@ -182,10 +188,10 @@ export default function DashboardSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={logout}
-              className="h-9 rounded-lg text-red-500 hover:bg-red-50"
+              className="h-11 rounded-lg text-red-500 hover:bg-red-50"
             >
               <LogOut className="h-4 w-4" />
-              <span>Logout</span>
+              <span className="text-[17px] leading-[24px] tracking-[0.08px]">Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

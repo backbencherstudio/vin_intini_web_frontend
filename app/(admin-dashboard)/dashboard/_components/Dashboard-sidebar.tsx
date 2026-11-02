@@ -6,6 +6,7 @@ import {
   Settings,
   Shield,
   Mail,
+  ClipboardCheck,
   ClipboardList,
 } from "lucide-react";
 import { LuChartNoAxesColumn } from "react-icons/lu";
@@ -61,7 +62,7 @@ export const SidebarData: SidebarItem[] = [
         id: "leave-management",
         name: "Leave Request",
         href: "/dashboard/user-management/leave-management",
-        icon: ProUserIcon,
+        icon: ClipboardCheck,
       },
     ],
   },
