@@ -30,6 +30,7 @@ import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
 import StatusToggle from "@/components/reusable/dashboard/StatusToggle";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
+import AdminFilterPopover from "@/components/reusable/dashboard/AdminFilterPopover";
 import Pagination from "@/components/reusable/Pagination";
 import {
   Select,
@@ -95,6 +96,18 @@ export default function PublicationsManagement({
   const [networkFilter, setNetworkFilter] = useState<string>(initialNetwork);
   const [publicationTypeFilter, setPublicationTypeFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState<string>("default");
+  const activeFilterCount =
+    Number(statusFilter !== "all") +
+    Number(networkFilter !== initialNetwork) +
+    Number(publicationTypeFilter !== "all");
+
+  const clearFilters = () => {
+    setStatusFilter("all");
+    setNetworkFilter(initialNetwork);
+    setPublicationTypeFilter("all");
+    setSortOrder("default");
+    setPage(1);
+  };
 
   // Selected publication for viewing details or deleting
   const [selectedPublication, setSelectedPublication] =
@@ -271,29 +284,10 @@ export default function PublicationsManagement({
       ),
     },
     {
-      header: "Authors",
-      cell: (row) => (
-        <div className="flex flex-wrap gap-1 max-w-[170px]">
-          {row.authors && row.authors.length > 0 ? (
-            row.authors.map((author, i) => (
-              <span
-                key={i}
-                className="inline-block bg-slate-50 border border-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-md"
-              >
-                {author}
-              </span>
-            ))
-          ) : (
-            <span className="text-gray-400 text-xs">-</span>
-          )}
-        </div>
-      ),
-    },
-    {
       header: "Creator",
       cell: (row) => {
         const creator = row.creator;
-        if (!creator) return <span className="text-gray-400 text-xs">-</span>;
+        if (!creator) return <span className="text-sm text-gray-400">-</span>;
         return (
           <div className="flex items-center gap-2 max-w-[200px]">
             <Image
@@ -304,10 +298,10 @@ export default function PublicationsManagement({
               className="h-7 w-7 shrink-0 rounded-full object-cover border border-gray-200"
             />
             <div className="flex flex-col min-w-0">
-              <span className="font-medium text-gray-900 text-xs truncate">
+              <span className="truncate text-sm font-medium text-gray-900">
                 {creator.name || creator.full_name}
               </span>
-              <span className="text-[11px] text-gray-500 truncate">
+              <span className="truncate text-xs text-gray-500">
                 {creator.email}
               </span>
             </div>
@@ -320,7 +314,7 @@ export default function PublicationsManagement({
       cell: (row) => {
         const ind = row.industry;
         if (!ind)
-          return <span className="text-gray-400 text-xs italic">None</span>;
+          return <span className="text-sm italic text-gray-400">None</span>;
         return (
           <div className="flex items-center gap-1.5 max-w-[150px]">
             {ind.logo_url && (
@@ -332,7 +326,7 @@ export default function PublicationsManagement({
                 className="h-5 w-5 shrink-0 rounded object-cover"
               />
             )}
-            <span className="text-xs font-medium text-gray-800 truncate">
+            <span className="truncate text-sm font-medium text-gray-800">
               {ind.name}
             </span>
           </div>
@@ -342,7 +336,7 @@ export default function PublicationsManagement({
     {
       header: "Engagement",
       cell: (row) => (
-        <div className="flex items-center gap-3 text-xs text-gray-600">
+        <div className="flex items-center gap-3 text-sm text-gray-600">
           <span className="inline-flex items-center gap-1" title="Views">
             <Eye className="h-3.5 w-3.5 text-blue-500" />
             {row.views_count ?? 0}
@@ -358,7 +352,7 @@ export default function PublicationsManagement({
       header: "Created Date",
       accessor: "created_at",
       cell: (row) => (
-        <div className="flex items-center gap-1 text-xs text-gray-600 whitespace-nowrap">
+        <div className="flex items-center gap-1 whitespace-nowrap text-sm text-gray-600">
           <Calendar className="h-3.5 w-3.5 text-gray-400" />
           <span>{row.created_at}</span>
         </div>
@@ -416,27 +410,6 @@ export default function PublicationsManagement({
 
   return (
     <div className="space-y-6">
-      {/* Header & Export */}
-      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
-        <div>
-          <CustomTitleDescription
-            title="Publications Management"
-            description="Manage research publications, articles, peer reviews, and creator submissions."
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={handleExportCSV}
-            className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-          >
-            <ArrowDownToLine className="h-4 w-4" />
-            Export CSV
-          </button>
-        </div>
-      </div>
-
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Publications */}
@@ -502,97 +475,100 @@ export default function PublicationsManagement({
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
-        {/* Search */}
-        <div className="relative w-full md:w-80">
-          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <CustomInput
-            type="text"
-            placeholder="Search by title, author, ID..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="pl-9 pr-3"
-          />
-        </div>
+      {/* Table title and controls */}
+      <CustomTitleDescription
+        title="Publications Management"
+        description="Manage research publications, articles, peer reviews, and creator submissions."
+        action={
+          <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-nowrap">
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            >
+              <ArrowDownToLine className="h-4 w-4" />
+              Export CSV
+            </button>
+            <div className="relative min-w-0 flex-1 sm:w-72 sm:flex-none">
+              <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <CustomInput
+                type="text"
+                placeholder="Search by title, author, ID..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="pl-9 pr-3"
+              />
+            </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Status Filter */}
-          <Select
-            value={statusFilter}
-            onValueChange={(val) => {
-              setStatusFilter(val);
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className="h-10 w-[140px] cursor-pointer">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Network Filter */}
-          <Select
-            value={networkFilter}
-            onValueChange={(val) => {
-              setNetworkFilter(val);
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className="h-10 w-[160px] cursor-pointer">
-              <SelectValue placeholder="Network" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Networks</SelectItem>
-              <SelectItem value="neuroscience">Neuroscience</SelectItem>
-              <SelectItem value="psychology">Psychology</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Publication Type Filter */}
-          <Select
-            value={publicationTypeFilter}
-            onValueChange={(val) => {
-              setPublicationTypeFilter(val);
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className="h-10 w-[160px] cursor-pointer">
-              <SelectValue placeholder="Publication Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="professional">Professional</SelectItem>
-              <SelectItem value="university">University</SelectItem>
-              <SelectItem value="freelance">Freelance</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Sort */}
-          <Select value={sortOrder} onValueChange={setSortOrder}>
-            <SelectTrigger className="h-10 w-[160px] cursor-pointer">
-              <ArrowUpDown className="h-3.5 w-3.5 mr-1" />
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Default</SelectItem>
-              <SelectItem value="title-asc">Title: A to Z</SelectItem>
-              <SelectItem value="title-desc">Title: Z to A</SelectItem>
-              <SelectItem value="views-desc">Most Viewed</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+            <AdminFilterPopover
+              title="Filter publications"
+              activeCount={activeFilterCount + Number(sortOrder !== "default")}
+              onReset={clearFilters}
+            >
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-xs font-medium text-gray-600">Status</span>
+                <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); setPage(1); }}>
+                  <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-gray-200 bg-white">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100100]">
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-xs font-medium text-gray-600">Network</span>
+                <Select value={networkFilter} onValueChange={(val) => { setNetworkFilter(val); setPage(1); }}>
+                  <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-gray-200 bg-white">
+                    <SelectValue placeholder="Network" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100100]">
+                    <SelectItem value="all">All Networks</SelectItem>
+                    <SelectItem value="neuroscience">Neuroscience</SelectItem>
+                    <SelectItem value="psychology">Psychology</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-xs font-medium text-gray-600">Publication type</span>
+                <Select value={publicationTypeFilter} onValueChange={(val) => { setPublicationTypeFilter(val); setPage(1); }}>
+                  <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-gray-200 bg-white">
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100100]">
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="professional">Professional</SelectItem>
+                    <SelectItem value="university">University</SelectItem>
+                    <SelectItem value="freelance">Freelance</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-xs font-medium text-gray-600">Sort by</span>
+                <Select value={sortOrder} onValueChange={(value) => { setSortOrder(value); setPage(1); }}>
+                  <SelectTrigger className="h-10 w-full cursor-pointer rounded-lg border-gray-200 bg-white">
+                    <ArrowUpDown className="mr-1 h-3.5 w-3.5" />
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100100]">
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="title-asc">Title: A to Z</SelectItem>
+                    <SelectItem value="title-desc">Title: Z to A</SelectItem>
+                    <SelectItem value="views-desc">Most Viewed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </AdminFilterPopover>
+          </div>
+        }
+      />
 
       {/* Error state */}
       {isError && (
@@ -626,7 +602,7 @@ export default function PublicationsManagement({
           </p>
         </div>
       ) : (
-        <div className={`space-y-4 ${isFetching ? "opacity-60 transition-opacity" : ""}`}>
+        <div className={`space-y-6 ${isFetching ? "opacity-60 transition-opacity" : ""}`}>
           <DataTable columns={columns} data={filteredPublications} />
           <Pagination
             page={page}
