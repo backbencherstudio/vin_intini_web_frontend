@@ -169,6 +169,75 @@ html {
   }
 }
 
+/* Shared visual rules for every admin page and every native/admin table. */
+.admin-dashboard-content {
+  color: #344054;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-dashboard-content h1 {
+  color: #1d1f2c;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.admin-dashboard-content h1 + p {
+  margin-top: 4px;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-dashboard-content h2 {
+  color: #1d1f2c;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.admin-dashboard-content .admin-page-title {
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.admin-dashboard-content table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #344054;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.admin-dashboard-content table thead {
+  background-color: #f8fafc;
+}
+
+.admin-dashboard-content table th {
+  padding: 13px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #596579;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-dashboard-content table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #edf0f3;
+  color: #344054;
+  font-size: 14px;
+  line-height: 1.45;
+  vertical-align: middle;
+}
+
+.admin-dashboard-content table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
 input:checked ~ .checkmark {
   background-color: var(--color-green-600);
 }
