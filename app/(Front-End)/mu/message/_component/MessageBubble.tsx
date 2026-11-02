@@ -26,7 +26,7 @@ export function getMessagePreview(msg: any) {
 
 const TIME_FORMAT = "hh:mm A";
 const HOVER_ACTIONS_CLASS =
-  "opacity-100 md:opacity-0 md:group-hover/message:opacity-100 transition-opacity duration-200";
+  "opacity-100 md:opacity-0 md:group-hover/message:opacity-100 md:group-focus-within/message:opacity-100 transition-opacity duration-200";
 
 function ReplyReference({
   msg,
@@ -92,7 +92,7 @@ function BubbleContent({
   getReplyText?: (replyId: any) => string;
 }) {
   return (
-    <div className=" relative">
+    <div className="relative break-words whitespace-pre-wrap">
       <div>
         <ReplyReference
           msg={msg}
@@ -134,11 +134,11 @@ export default function MessageBubble({
       <div
         id={`message-${msg.id}`}
         onContextMenu={onContextMenu}
-        className={`flex group/message items-center gap-2 rounded-lg transition-colors ${
+        className={`relative w-fit max-w-full group/message rounded-lg transition-colors ${
           highlighted ? "bg-amber-50" : ""
         }`}
       >
-        <div className="max-w-xs bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
+        <div className="relative w-fit max-w-xs bg-[#F3F4F6] border border-[#F3F4F6]! p-2 rounded-t-xl rounded-r-xl text-sm">
           <BubbleContent
             msg={msg}
             variant="receiver"
@@ -151,15 +151,12 @@ export default function MessageBubble({
             {dayjs(msg?.created_at).format(TIME_FORMAT)}
           </span>
         </div>
-        <div>
-          
-          <div className={HOVER_ACTIONS_CLASS}>
-            <MessageReactEmojiAction
-              onReact={onReact}
-              type="receiver"
-              id={msg.id}
-            />
-          </div>
+        <div className={`absolute left-full top-1/2 z-10 ml-2 -translate-y-1/2 ${HOVER_ACTIONS_CLASS}`}>
+          <MessageReactEmojiAction
+            onReact={onReact}
+            type="receiver"
+            id={msg.id}
+          />
         </div>
       </div>
     );
@@ -169,35 +166,33 @@ export default function MessageBubble({
     <div
       id={`message-${msg.id}`}
       onContextMenu={onContextMenu}
-      className={`max-w-xs group/message ml-auto rounded-lg transition-colors ${
+      className={`relative w-fit max-w-xs group/message ml-auto rounded-lg transition-colors ${
         highlighted ? "bg-amber-50" : ""
       }`}
     >
-      <div className="flex items-center justify-end w-full gap-2">
-        <div className="flex flex-col items-end">
-         
-          <div className={HOVER_ACTIONS_CLASS}>
-            <MessageReactEmojiAction
-              onReact={onReact}
-              type="sender"
-              id={msg.id}
-            />
-          </div>
-        </div>
-
-        <div className="border border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm">
-          <BubbleContent
-            msg={msg}
-            variant="sender"
-            otherUserName={otherUserName}
-            onViewFile={onViewFile}
-            onJumpToReply={onJumpToReply}
-            getReplyText={getReplyText}
-          />
-          <span className="block text-[11px] text-right text-gray-200 mt-0.5 leading-none">
-            {dayjs(msg?.created_at).format(TIME_FORMAT)}
-          </span>
-        </div>
+      <div className="relative w-fit max-w-xs border border-primaryColor bg-primaryColor text-whiteColor p-2 rounded-t-xl rounded-l-xl text-sm break-words whitespace-pre-wrap">
+        <BubbleContent
+          msg={msg}
+          variant="sender"
+          otherUserName={otherUserName}
+          onViewFile={onViewFile}
+          onJumpToReply={onJumpToReply}
+          getReplyText={getReplyText}
+        />
+        <span className="block text-[11px] text-right text-gray-200 mt-0.5 leading-none">
+          {msg.send_status === "sending"
+            ? "Sending…"
+            : msg.send_status === "failed"
+              ? "Failed to send"
+              : dayjs(msg?.created_at).format(TIME_FORMAT)}
+        </span>
+      </div>
+      <div className={`absolute right-full top-1/2 z-10 mr-2 -translate-y-1/2 ${HOVER_ACTIONS_CLASS}`}>
+        <MessageReactEmojiAction
+          onReact={onReact}
+          type="sender"
+          id={msg.id}
+        />
       </div>
     </div>
   );

@@ -61,6 +61,7 @@ function MessageFileRenderer({
           width={600}
           height={600}
           loading="lazy"
+          unoptimized={fileUrl.startsWith("blob:")}
           onClick={() => onViewFile?.(fileUrl)}
           className="max-h-60 w-full h-full rounded-lg object-cover cursor-pointer"
         />

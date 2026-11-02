@@ -9,8 +9,9 @@ import { useVoiceRecorder } from "./useVoiceRecorder";
 
 interface MessageInputBarProps {
   isConnected: any;
-  sending: boolean;
-  isFetchingMore: boolean;
+  isConversationLoading: boolean;
+  isConversationError: boolean;
+  onRetryLoadConversation: () => void;
   replyTo: any;
   onTyping: () => void;
   onCancelReply: () => void;
@@ -20,11 +21,12 @@ interface MessageInputBarProps {
 
 export default function MessageInputBar({
   isConnected,
-  sending,
+  isConversationLoading,
+  isConversationError,
+  onRetryLoadConversation,
   replyTo,
   onTyping,
   onCancelReply,
-  isFetchingMore,
   onSendText,
   onSendVoice,
 }: MessageInputBarProps) {
@@ -135,7 +137,21 @@ export default function MessageInputBar({
         </div>
       )}
 
-      {isConnectedUser || isFetchingMore ? (
+      {isConversationLoading ? (
+        <div className="text-center text-sm text-gray-500 py-3" role="status">
+          Loading conversation…
+        </div>
+      ) : isConversationError ? (
+        <div className="text-center text-sm text-gray-500 py-3" role="alert">
+          Couldn’t load this conversation.{" "}
+          <button
+            onClick={onRetryLoadConversation}
+            className="text-primaryColor underline underline-offset-2 cursor-pointer"
+          >
+            Try again
+          </button>
+        </div>
+      ) : isConnectedUser ? (
         <div className="flex items-start gap-1 md:gap-3">
           <button
             onClick={() => fileInputRef.current?.click()}
@@ -198,8 +214,7 @@ export default function MessageInputBar({
 
           <button
             onClick={handleSend}
-            disabled={sending}
-            className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer disabled:opacity-50"
+            className="bg-primaryColor text-white px-3 py-3 rounded-sm cursor-pointer"
           >
             <SendIcon />
           </button>

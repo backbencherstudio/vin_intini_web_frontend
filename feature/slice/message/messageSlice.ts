@@ -51,10 +51,8 @@ const messageSlice = baseApiSlice.injectEndpoints({
         url: `/conversations/${conversationId}/mark-read`,
         method: "POST",
       }),
-      invalidatesTags: (_result, _error, conversationId) => [
-        "conversationList",
-        { type: "message", id: String(conversationId) },
-      ],
+      // Reading affects unread counts/list badges, not the message history.
+      invalidatesTags: ["conversationList"],
     }),
     sendMessage: builder.mutation({
       query: ({ conversationId, data }) => ({
@@ -63,10 +61,9 @@ const messageSlice = baseApiSlice.injectEndpoints({
         body: data,
         formData: true,
       }),
-      invalidatesTags: (_result, _error, { conversationId }) => [
-        "conversationList",
-        { type: "message", id: String(conversationId) },
-      ],
+      // The message is inserted optimistically and reconciled from the response.
+      // Refetching the whole history here causes a visible loading flash.
+      invalidatesTags: ["conversationList"],
     }),
     markUnReadMessage: builder.mutation({
       query: (messageId) => ({

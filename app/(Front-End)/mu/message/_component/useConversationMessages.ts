@@ -15,15 +15,16 @@ export function useConversationMessages(
 ) {
   const dispatch = useDispatch();
 
-  const [fetchMessages, { isFetching: isFetchingMore }] =
-    useLazyGetConversationMessagesQuery();
+  const [fetchMessages] = useLazyGetConversationMessagesQuery();
   const [markReadMessage] = useMarkReadMessageMutation();
 
   const [conversation, setConversation] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(false);
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
   const isLoadingOlderRef = useRef(false);
+  const loadedConversationIdRef = useRef<string | null>(null);
 
   // Read RTK Query cache directly — if cached, skip refetch
   const cachedResult = useGetConversationMessagesQuery(conversationId, {
@@ -33,44 +34,32 @@ export function useConversationMessages(
   useEffect(() => {
     if (!conversationId) return;
 
-    // Cache hit within 10 min → populate from cache, no flash, no API call
-    if (cachedResult?.data && !cachedResult.isLoading) {
-      const res = cachedResult.data as any;
+    // The subscribed query owns the initial request. Populate from its cache
+    // without issuing a second request through the lazy query.
+    if (cachedResult?.currentData) {
+      const res = cachedResult.currentData as any;
       setConversation(res);
       setChatMessages(res?.data || []);
       setNextCursor(res?.next_cursor || null);
       setHasMore(Boolean(res?.has_more || res?.next_cursor));
-      onLoaded?.(res);
+      if (loadedConversationIdRef.current !== conversationId) {
+        loadedConversationIdRef.current = conversationId;
+        onLoaded?.(res);
+      }
       return;
     }
 
-    // Cache miss → clear state and fetch from network
+    // Avoid showing messages from the previous conversation while this one loads.
     setChatMessages([]);
+    setConversation(null);
     setNextCursor(null);
     setHasMore(false);
-
-    let cancelled = false;
-    fetchMessages(conversationId)
-      .unwrap()
-      .then((res: any) => {
-        if (cancelled) return;
-        setConversation(res);
-        setChatMessages(res?.data || []);
-        setNextCursor(res?.next_cursor || null);
-        setHasMore(Boolean(res?.has_more || res?.next_cursor));
-        onLoaded?.(res);
-      })
-      .catch((err) => console.error("Error fetching messages:", err));
-
-    return () => {
-      cancelled = true;
-    };
-  }, [conversationId, cachedResult?.data, cachedResult.isLoading, fetchMessages, onLoaded]);
+  }, [conversationId, cachedResult?.currentData, onLoaded]);
 
   const appendMessage = useCallback((msg: any) => {
     if (!msg?.id) return;
     setChatMessages((prev) =>
-      prev.some((m) => m.id === msg.id) ? prev : [...prev, msg],
+      prev.some((m) => Number(m.id) === Number(msg.id)) ? prev : [...prev, msg],
     );
   }, []);
 
@@ -85,11 +74,15 @@ export function useConversationMessages(
   }, []);
 
   const replaceMessage = useCallback((tempId: number, msg: any) => {
-    setChatMessages((prev) => prev.map((m) => (m.id === tempId ? msg : m)));
+    setChatMessages((prev) =>
+      prev.map((m) => (Number(m.id) === Number(tempId) ? msg : m)),
+    );
   }, []);
 
   const removeMessage = useCallback((tempId: number) => {
-    setChatMessages((prev) => prev.filter((m) => m.id !== tempId));
+    setChatMessages((prev) =>
+      prev.filter((m) => Number(m.id) !== Number(tempId)),
+    );
   }, []);
 
   const updateMessageReactions = useCallback(
@@ -119,6 +112,7 @@ export function useConversationMessages(
       if (isLoadingOlderRef.current) return null;
 
       isLoadingOlderRef.current = true;
+      setIsLoadingOlder(true);
       try {
         const res: any = await fetchMessages({
           id: conversationId,
@@ -138,6 +132,7 @@ export function useConversationMessages(
         return null;
       } finally {
         isLoadingOlderRef.current = false;
+        setIsLoadingOlder(false);
       }
     },
     [conversationId, fetchMessages],
@@ -172,7 +167,10 @@ export function useConversationMessages(
   return {
     conversation,
     chatMessages,
-    isFetchingMore,
+    isInitialLoading: cachedResult.isLoading && !cachedResult.currentData,
+    isConversationError: cachedResult.isError && !cachedResult.currentData,
+    retryLoadConversation: cachedResult.refetch,
+    isLoadingOlder,
     nextCursor,
     hasMore,
     appendMessage,

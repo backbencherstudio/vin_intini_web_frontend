@@ -48,10 +48,11 @@ function MessageRoot() {
   const { data: profileData } = useGetUserProfileQuery("profile");
   const currentUserId = profileData?.user?.id;
 
-  const [sendMessage, { isLoading: sendingMessage }] = useSendMessageMutation();
+  const [sendMessage] = useSendMessageMutation();
   const [reactForeMessage] = useReactForeMessageMutation();
   const [deleteMessage] = useDeleteMessageMutation();
   const canLoadMoreRef = useRef(true);
+  const optimisticIdRef = useRef(0);
 
   const [replyTo, setReplyTo] = useState<any>(null);
   const [contextMenu, setContextMenu] = useState<{
@@ -76,7 +77,10 @@ function MessageRoot() {
   const {
     conversation,
     chatMessages,
-    isFetchingMore,
+    isInitialLoading,
+    isConversationError,
+    retryLoadConversation,
+    isLoadingOlder,
     nextCursor,
     hasMore,
     appendMessage,
@@ -164,7 +168,11 @@ function MessageRoot() {
     async (data: any) => {
       const newMsg = data?.message?.id ? data.message : data;
 
-      if (!newMsg?.id || newMsg.is_mine || newMsg.sender_id === currentUserId) {
+      if (
+        !newMsg?.id ||
+        newMsg.is_mine ||
+        Number(newMsg.sender_id) === Number(currentUserId)
+      ) {
         return;
       }
 
@@ -259,14 +267,15 @@ function MessageRoot() {
   };
 
   const handleSendText = useCallback(
-    async (content: string, file: File | null): Promise<boolean> => {
-      if (!conversationId) return false;
+    (content: string, file: File | null): Promise<boolean> => {
+      if (!conversationId) return Promise.resolve(false);
 
-      const tempId = Date.now();
+      const tempId = --optimisticIdRef.current;
       const messageType = getMessageType(file);
       const objectUrl = file ? URL.createObjectURL(file) : null;
-      appendMessage({
+      const optimisticMessage = {
         id: tempId,
+        send_status: "sending",
         conversation_id: Number(conversationId),
         sender_id: currentUserId,
         is_mine: true,
@@ -290,7 +299,8 @@ function MessageRoot() {
           : null,
         reactions: [],
         created_at: new Date().toISOString(),
-      });
+      };
+      appendMessage(optimisticMessage);
       requestAnimationFrame(() => scrollToBottom());
 
       const formData = new FormData();
@@ -300,22 +310,26 @@ function MessageRoot() {
       if (replyTo?.id != null) {
         formData.append("reply_to_id", String(replyTo.id));
       }
-      try {
-        const response: any = await sendMessage({ conversationId, data: formData }).unwrap();
-        const serverMsg = response?.data || response?.message;
-        if (!serverMsg?.id) throw new Error("Message response did not include an id.");
-
-        replaceMessage(tempId, { ...serverMsg, is_mine: true });
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-        setReplyTo(null);
-        return true;
-      } catch (error) {
-        console.error("Failed to send message", error);
-        removeMessage(tempId);
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-        toast.error("Message not sent. Your draft is still here; please try again.");
-        return false;
-      }
+      setReplyTo(null);
+      void sendMessage({ conversationId, data: formData })
+        .unwrap()
+        .then((response: any) => {
+          const serverMsg = response?.data || response?.message;
+          if (!serverMsg?.id) throw new Error("Message response did not include an id.");
+          replaceMessage(tempId, { ...serverMsg, is_mine: true });
+          if (objectUrl) URL.revokeObjectURL(objectUrl);
+        })
+        .catch((error) => {
+          console.error("Failed to send message", error);
+          replaceMessage(tempId, {
+            ...optimisticMessage,
+            file_url: null,
+            send_status: "failed",
+          });
+          if (objectUrl) URL.revokeObjectURL(objectUrl);
+          toast.error("Message failed to send. Please try again.");
+        });
+      return Promise.resolve(true);
     },
     [
       appendMessage,
@@ -330,14 +344,15 @@ function MessageRoot() {
   );
 
   const handleSendVoice = useCallback(
-    async (blob: Blob) => {
+    (blob: Blob) => {
       if (!conversationId) return;
 
-      const tempId = Date.now();
+      const tempId = --optimisticIdRef.current;
       const objectUrl = URL.createObjectURL(blob);
 
-      appendMessage({
+      const optimisticMessage = {
         id: tempId,
+        send_status: "sending",
         conversation_id: Number(conversationId),
         sender_id: currentUserId,
         is_mine: true,
@@ -353,7 +368,8 @@ function MessageRoot() {
         reply_to: null,
         reactions: [],
         created_at: new Date().toISOString(),
-      });
+      };
+      appendMessage(optimisticMessage);
       requestAnimationFrame(() => scrollToBottom());
 
       const formData = new FormData();
@@ -361,23 +377,27 @@ function MessageRoot() {
       formData.append("message", "");
       formData.append("file", blob, "voice-message.mp3");
 
-      try {
-        const response: any = await sendMessage({
+      void sendMessage({
           conversationId,
           data: formData,
-        }).unwrap();
-
-        const serverMsg = response?.data || response?.message;
-        if (!serverMsg?.id) throw new Error("Message response did not include an id.");
-
-        replaceMessage(tempId, { ...serverMsg, is_mine: true });
-        URL.revokeObjectURL(objectUrl);
-      } catch (error) {
-        console.error("Failed to send voice message", error);
-        removeMessage(tempId);
-        URL.revokeObjectURL(objectUrl);
-        toast.error("Voice message not sent. Please try again.");
-      }
+        })
+        .unwrap()
+        .then((response: any) => {
+          const serverMsg = response?.data || response?.message;
+          if (!serverMsg?.id) throw new Error("Message response did not include an id.");
+          replaceMessage(tempId, { ...serverMsg, is_mine: true });
+          URL.revokeObjectURL(objectUrl);
+        })
+        .catch((error) => {
+          console.error("Failed to send voice message", error);
+          replaceMessage(tempId, {
+            ...optimisticMessage,
+            file_url: null,
+            send_status: "failed",
+          });
+          URL.revokeObjectURL(objectUrl);
+          toast.error("Voice message failed to send. Please try again.");
+        });
     },
     [
       appendMessage,
@@ -415,7 +435,7 @@ function MessageRoot() {
     <div>
       <div className="h-full md:pl-4 bg-white">
         <div className="border rounded-2xl w-full flex flex-col">
-          {isFetchingMore ? (
+          {isInitialLoading ? (
             <div className="flex items-center p-3 gap-3 rounded-xl">
               <Skeleton className="h-10 w-10" />
               <div>
@@ -436,9 +456,9 @@ function MessageRoot() {
             onScroll={handleScroll}
             className="lg:h-135 md:h-115 h-105 border-t overflow-y-auto px-3! py-6! md:p-6! space-y-5.5 overscroll-contain"
           >
-            {isFetchingMore && (
+            {isInitialLoading && (
               <div className="space-y-3.5 py-2">
-                {/* 1. Incoming message skeleton (Left) */}
+                {/* Initial conversation loading placeholder. */}
                 <div className="flex items-end gap-2.5 justify-start">
                   <Skeleton className="w-8 h-8 rounded-full shrink-0 bg-gray-200" />
                   <div className="space-y-1.5">
@@ -446,21 +466,13 @@ function MessageRoot() {
                     <Skeleton className="h-2.5 w-12 ml-1 bg-gray-200" />
                   </div>
                 </div>
-                {/* 2. Outgoing message skeleton (Right) */}
-                <div className="flex items-end gap-2.5 justify-end">
-                  <div className="space-y-1.5 flex flex-col items-end">
-                    <Skeleton className="h-11 w-40 sm:w-56 rounded-2xl rounded-br-xs bg-gray-200" />
-                    <Skeleton className="h-2.5 w-12 mr-1 bg-gray-200" />
-                  </div>
-                </div>
-                {/* 3. Another Incoming message skeleton (Left) */}
-                <div className="flex items-end gap-2.5 justify-start">
-                  <Skeleton className="w-8 h-8 rounded-full shrink-0 bg-gray-200" />
-                  <div className="space-y-1.5">
-                    <Skeleton className="h-8 w-32 sm:w-44 rounded-2xl rounded-bl-xs bg-gray-200" />
-                  </div>
-                </div>
               </div>
+            )}
+
+            {isLoadingOlder && (
+              <p className="text-center text-xs text-gray-400" role="status">
+                Loading older messages…
+              </p>
             )}
 
             {chatMessages.map((msg: any) => (
@@ -481,8 +493,9 @@ function MessageRoot() {
           </div>
           <MessageInputBar
             isConnected={conversation?.other_user}
-            sending={sendingMessage}
-            isFetchingMore={isFetchingMore}
+            isConversationLoading={isInitialLoading}
+            isConversationError={isConversationError}
+            onRetryLoadConversation={() => void retryLoadConversation()}
             replyTo={replyTo}
             onTyping={whisperTyping}
             onCancelReply={() => setReplyTo(null)}
