@@ -2,6 +2,7 @@
 
 import AdminPagination from "@/components/reusable/dashboard/AdminPagination";
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
@@ -332,24 +333,19 @@ export default function LoginActivityTable() {
 
   return (
     <div className="w-full">
-      <div className="py-6 flex justify-between">
-        <div>
-          <h2 className="text-headerColor text-[20px] font-semibold">
-            Login Activity
-          </h2>
-
-          <p className="mt-1 text-[#4A4C56] text-[14px]">
-            Review your recent account login activity.
-          </p>
-        </div>
-        <div className="flex justify-center items-center">
+      <div className="py-6">
+        <CustomTitleDescription
+          title="Login Activity"
+          description="Review your recent account login activity."
+          action={<div className="flex w-full justify-start sm:w-auto sm:justify-end">
           <button
             onClick={handelDeleteAll}
             className="cursor-pointer border border-[#FBD8DB] rounded-sm py-1 px-3 text-[14px] font-normal leading-[140%] tracking-[0.07px] text-redColor"
           >
             <p>Clear all Session</p>
           </button>
-        </div>
+          </div>}
+        />
       </div>
 
       <DataTable columns={columns} data={loginActivities} />

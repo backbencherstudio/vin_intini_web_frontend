@@ -3,6 +3,7 @@
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import TopHeader from "../_components/Top-Header";
 import { useState } from "react";
 
@@ -225,7 +226,11 @@ export default function JobsPage() {
     ];
 
     return (
-        <div>
+        <div className="space-y-6">
+            <CustomTitleDescription
+                title="Jobs"
+                description="Review and manage available job listings."
+            />
             <DataTable
                 columns={columns}
                 data={jobs}

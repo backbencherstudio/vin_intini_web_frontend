@@ -3,11 +3,9 @@ import SecuritySettings from "@/app/(Front-End)/_components/adminDashboard/setti
 
 export default function Page() {
   return (
-    <div>
+    <div className="space-y-8">
       <SecuritySettings />
-      <div>
-        <LoginActivityTable />
-      </div>
+      <LoginActivityTable />
     </div>
   );
 }

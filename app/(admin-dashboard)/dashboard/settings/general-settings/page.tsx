@@ -57,26 +57,23 @@ export default function GeneralSettings() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-start justify-between border-b border-[#EEEEEE] pb-4">
-        <div>
-          <CustomTitleDescription
-            title="Settings"
-            description="Manage your platform settings and preferences."
-          />
-        </div>
-
-        <button
-          type="button"
-          onClick={handleSave}
-          className="cursor-pointer rounded-lg bg-primaryColor px-4 py-2.5 text-sm font-semibold text-white"
-        >
-          Save Changes
-        </button>
-      </div>
+      <CustomTitleDescription
+        title="Settings"
+        description="Manage your platform settings and preferences."
+        action={
+          <button
+            type="button"
+            onClick={handleSave}
+            className="cursor-pointer rounded-lg bg-primaryColor px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            Save Changes
+          </button>
+        }
+      />
 
       {/* General Settings */}
-      <div className="mt-4 rounded-xl border border-[#E1E1E1] p-3.5">
-        <h2 className="text-headerColor  text-[24px] font-semibold leading-[130%] tracking-[0.12px] mb-4">
+      <div className="mt-6 rounded-xl border border-[#E1E1E1] p-4 sm:p-6">
+        <h2 className="mb-6 text-headerColor text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
           General Settings
         </h2>
 
@@ -96,7 +93,7 @@ export default function GeneralSettings() {
         </div>
 
         {/* Row 2 */}
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2">
           <CustomInput
             label="Platform Tagline"
             value={formData.platformTagline}
@@ -131,7 +128,7 @@ export default function GeneralSettings() {
         </div>
 
         {/* Row 3 */}
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2">
           <CustomSelect
             label="Default Timezone"
             value={formData.timezone}
@@ -182,7 +179,7 @@ export default function GeneralSettings() {
         </div>
 
         {/* Site Logo */}
-        <div className="mt-4 border-b border-[#E5E5E5] pb-4">
+        <div className="mt-6 border-b border-[#E5E5E5] pb-6">
           <p className="text-grayColor1  text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
             Site logo
           </p>
@@ -235,7 +232,7 @@ export default function GeneralSettings() {
         </div>
 
         {/* Fav Icon */}
-        <div className="border-b border-[#E5E5E5] py-4">
+        <div className="border-b border-[#E5E5E5] py-6">
           <p className="text-grayColor1  text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
             Fav Icon
           </p>
@@ -288,7 +285,7 @@ export default function GeneralSettings() {
         </div>
 
         {/* Footer Text */}
-        <div className="pt-4">
+        <div className="pt-6">
           <CustomInput
             label="Footer Text"
             value={formData.footerText}

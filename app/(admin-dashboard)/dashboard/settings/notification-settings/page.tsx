@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import { CircleAlert } from "lucide-react";
 
 type NotificationPreference = {
@@ -190,29 +191,22 @@ export default function NotificationSettings() {
         <div className="w-full">
 
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-[#EEEEEE] pb-3">
-                <div>
-                    <h1 className="text-headerColor  text-[24px] font-semibold leading-[130%] tracking-[0.12px]">
-                        Notification Settings
-                    </h1>
-
-                    <p className="text-grayColor1  text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-2">
-                        Manage how you and your users receive notifications
-                        across the platform.
-                    </p>
-                </div>
-
-                <button
-                    type="button"
-                    onClick={handleSave}
-                    className="cursor-pointer rounded-md bg-primaryColor px-3 py-2 text-[14px] font-semibold text-[#FFF]"
-                >
-                    Save Changes
-                </button>
-            </div>
+            <CustomTitleDescription
+                title="Notification Settings"
+                description="Manage how you and your users receive notifications across the platform."
+                action={
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        className="cursor-pointer rounded-lg bg-primaryColor px-4 py-2.5 text-sm font-semibold text-white"
+                    >
+                        Save Changes
+                    </button>
+                }
+            />
 
             {/* Notification Preferences */}
-            <div className="mt-3">
+            <div className="mt-6">
 
                 <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-4">
 
