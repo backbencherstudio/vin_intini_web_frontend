@@ -41,12 +41,14 @@ export const IndustryNavItem = ({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 transition ${
-        isActive ? "bg-lightGreenColor" : "bg-white hover:bg-sectionColor"
+      className={`flex w-full items-center gap-3 rounded-md p-2 text-sm transition ${
+        isActive
+          ? "bg-lightGreenColor text-headerColor font-medium"
+          : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
       }`}
     >
       <span className="flex h-5 w-5 items-center justify-center">{icon}</span>
-      <span className="font-['Segoe_UI'] text-base font-normal text-[#4A4C56]">
+      <span className="text-sm font-normal">
         {label}
       </span>
     </Link>

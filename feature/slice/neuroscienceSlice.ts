@@ -2,6 +2,13 @@ import baseApiSlice from "./baseApi";
 
 const neuroscienceSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getAllNeurosciencePartners: builder.query<any, void>({
+      query: () => ({
+        url: "/partners",
+        method: "GET",
+      }),
+      providesTags: ["neuroscience"],
+    }),
     getNeuroscienceBiotechnology: builder.query({
       query: ({ query }) => ({
         url: `/neuroscience-network/industry/biotech`,
@@ -63,6 +70,7 @@ const neuroscienceSlice = baseApiSlice.injectEndpoints({
 });
 
 export const {
+  useGetAllNeurosciencePartnersQuery,
   useGetNeuroscienceBiotechnologyQuery,
   useGetNeuroscienceBiotechnologyPartnersQuery,
   useGetNeurosciencePublicationsOneQuery,

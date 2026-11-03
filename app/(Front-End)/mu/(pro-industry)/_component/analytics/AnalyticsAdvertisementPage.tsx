@@ -1,5 +1,6 @@
 "use client";
 
+import AnalyticsRangeToggle from "@/components/reusable/AnalyticsRangeToggle";
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonAnalyticsGraph, {
@@ -192,46 +193,24 @@ export default function AnalyticsAdvertisementPage() {
                 <h3 className="text-lg font-bold text-headerColor">
                   {graph?.title || "Advertisement Performance"}
                 </h3>
-                <p className="text-xs sm:text-sm font-medium text-grayColor1 mt-1">
-                  {graph?.subtitle || "Impressions vs Clicks"}
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:items-end gap-3">
-                {/* Range Toggle: Weekly | Monthly */}
-                <div className="inline-flex items-center bg-bgLightColor p-1 rounded-sm">
-                  {(["weekly", "monthly"] as const).map((rangeKey) => {
-                    const isSelected = activeRange === rangeKey;
-                    return (
-                      <button
-                        key={rangeKey}
-                        type="button"
-                        onClick={() => setActiveRange(rangeKey)}
-                        className={`px-3.5 py-1 text-xs font-semibold rounded-sm transition-all capitalize cursor-pointer ${
-                          isSelected
-                            ? "bg-white text-headerColor shadow-xs"
-                            : "text-grayColor1 hover:text-headerColor"
-                        }`}
-                      >
-                        {rangeKey}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Legend matching Impressions vs Clicks */}
-                <div className="flex items-center gap-4 text-xs font-medium text-grayColor1">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-2 text-xs font-medium text-grayColor1">
                   {GRAPH_SERIES.map((s) => (
-                    <div key={s.dataKey} className="flex items-center gap-1.5">
+                    <div key={s.dataKey} className="flex items-center gap-2">
                       <span
                         className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: s.color }}
                       />
-                      <span className="text-headerColor font-medium">{s.name}</span>
+                      <span className="text-gray-600 font-medium">{s.name}</span>
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* Range Toggle: Weekly | Monthly */}
+              <AnalyticsRangeToggle
+                value={activeRange}
+                onChange={setActiveRange}
+              />
             </div>
 
             {/* Reusable Common Analytics Graph */}

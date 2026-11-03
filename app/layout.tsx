@@ -9,6 +9,7 @@ import "./globals.css";
 // If loading a variable font, you don't need to specify the font weight
 const segoeUi = localFont({
   src: "../public/font/Segoe UI.ttf",
+  variable: "--font-segoe-ui",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${segoeUi.className}`} suppressHydrationWarning>
+      <body className={`${segoeUi.className} ${segoeUi.variable}`} suppressHydrationWarning>
         <NextTopLoader
           color="#04a1b7"
           initialPosition={0.08}

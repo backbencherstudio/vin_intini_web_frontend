@@ -13,11 +13,11 @@ function Layout({ children }: { children: React.ReactNode }) {
       <div className="h-full md:bg-white md:p-4 rounded-xl flex">
         {/* Sidebar */}
         <div
-          className={`md:max-w-80 lg:max-w-90 md:border-r ${params?.id ? "hidden" : "block"} md:pr-4 w-full md:flex flex-col`}
+          className={`w-full md:w-[370px] md:min-w-[370px] lg:w-[410px] lg:min-w-[410px] xl:w-[430px] xl:min-w-[430px] shrink-0 md:border-r border-gray-200 ${params?.id ? "hidden" : "block"} md:pr-4 md:flex flex-col`}
         >
           <MessageUserSection />
         </div>
-        <div className={`w-full ${params?.id ? "block" : "hidden"} md:block`}>
+        <div className={`w-full flex-1 min-w-0 ${params?.id ? "block" : "hidden"} md:block`}>
           {children}
         </div>
       </div>

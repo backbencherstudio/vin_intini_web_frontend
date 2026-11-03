@@ -262,7 +262,7 @@ function MessageUserSection() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 overflow-x-auto mb-3 text-base font-medium text-blackColor">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-3 text-base font-medium text-blackColor">
         {messageType.map((item) => (
           <button
             key={item.id}
@@ -306,11 +306,11 @@ function MessageUserSection() {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center gap-2">
                     <p className="font-semibold text-sm text-headerColor truncate">
                       {item.industry?.name}
                     </p>
-                    <span className="text-[11px] text-gray-400 shrink-0">
+                    <span className="text-[11px] text-gray-400 shrink-0 whitespace-nowrap">
                       {item.last_message?.created_at
                         ? dayjs(item.last_message.created_at).fromNow()
                         : ""}
@@ -350,7 +350,7 @@ function MessageUserSection() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center gap-2">
                         <div className="flex gap-1.5 items-center min-w-0">
                           <p className="font-medium text-sm truncate">
                             {msg?.user?.name}{" "}
@@ -359,7 +359,7 @@ function MessageUserSection() {
                             <VerifyBadgeIcon className="w-3.5 h-3.5 text-primaryColor shrink-0" />
                           )}
                         </div>
-                        <span className="text-xs text-gray-400 shrink-0">
+                        <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">
                           {dayjs(msg?.last_message?.created_at).fromNow()}
                         </span>
                       </div>

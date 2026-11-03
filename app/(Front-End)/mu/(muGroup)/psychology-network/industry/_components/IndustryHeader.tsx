@@ -17,21 +17,29 @@ export const IndustryHeader = ({
   description,
 }: IndustryHeaderProps) => {
   return (
-    <div className="flex w-full flex-col items-start gap-4 md:gap-10">
+    <div className="flex w-full flex-col items-start">
       {/* Desktop Layout */}
       <div className="hidden w-full flex-col items-start justify-between md:flex">
-        <h1 className="flex-1 text-[#1D1F2C] font-['Segoe_UI'] text-[32px] font-semibold leading-[130%]">
+        <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
           {title}
         </h1>
-        {description && <h4 className="text-[#A5A5AB] pt-2">{description}</h4>}
+        {description && (
+          <p className="text-sm text-descriptionColor mt-1 font-normal">
+            {description}
+          </p>
+        )}
       </div>
 
       {/* Mobile Layout */}
-      <div className="flex w-full flex-col gap-4 md:hidden ">
-        <h1 className="text-[#1D1F2C] font-['Segoe_UI'] text-2xl font-semibold leading-[130%]">
+      <div className="flex w-full flex-col gap-1 md:hidden">
+        <h1 className="text-xl font-bold text-headerColor leading-tight">
           {title}
         </h1>
-        {description && <p className="text-[#A5A5AB] text-sm">{description}</p>}
+        {description && (
+          <p className="text-sm text-descriptionColor font-normal">
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
@@ -58,11 +59,14 @@ export default function Search({
         name="search"
         value={search}
         onChange={handleChange}
-        className={`w-full text-sm bg-whiteColor border border-gray2Color rounded-full py-2 px-4 pl-8 focus:outline-none focus:border-dark-500 ${className}`}
-        placeholder={placeHolder || "Search Network"}
+        className={cn(
+          "w-full text-sm bg-white border border-borderColor rounded-lg py-2.5 px-4 pl-9 text-headerColor placeholder:text-placeholderColor focus:outline-none focus:border-primaryColor transition-all",
+          className,
+        )}
+        placeholder={placeHolder || "Search..."}
       />
-      <div className="absolute left-2 text-grayColor1 top-1/2 -translate-y-1/2 text-2xl">
-        <LuSearch className="w-4.5 h-4.5" />
+      <div className="absolute left-3 text-grayColor1 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+        <LuSearch className="w-4 h-4" />
       </div>
     </div>
   );

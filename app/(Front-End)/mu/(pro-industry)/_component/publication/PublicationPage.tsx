@@ -5,7 +5,9 @@ import CommonStateCard, {
   CommonStateCardProps,
 } from "@/components/reusable/CommonStateCard";
 import DynamicTable from "@/components/reusable/DynamicTable";
+import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import Pagination from "@/components/reusable/Pagination";
+import Search from "@/components/reusable/Search";
 import { useGetMyPublicationsQuery } from "@/feature/slice/jobs/publicationSlice";
 import {
   ApplicantIcon,
@@ -15,16 +17,25 @@ import {
 import dayjs from "dayjs";
 import { ArrowUpRight, Calendar1, Plus } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import PublicationAction from "./PublicationAction";
 import PublicationStatusUpdate from "./PublicationStatusUpdate";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 export default function PublicationPage() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams?.get("search") || "";
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-   const { data: userProfileData } = useGetUserProfileQuery("user");
-   const isPremium = userProfileData?.subscription?.plan_type === "premium";
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const { data: userProfileData } = useGetUserProfileQuery("user");
+  const isPremium = userProfileData?.subscription?.plan_type === "premium";
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
   // API Queries
   const {
     data: myPublicationsResponse,
@@ -33,6 +44,8 @@ export default function PublicationPage() {
   } = useGetMyPublicationsQuery({
     page: currentPage,
     per_page: perPage,
+    ...(searchQuery.trim() ? { search: searchQuery.trim() } : {}),
+    ...(statusFilter !== "all" ? { status: statusFilter } : {}),
   });
 
   const publicationsList: any[] = myPublicationsResponse?.data || [];
@@ -204,7 +217,7 @@ export default function PublicationPage() {
         <div className="shrink-0 self-start sm:self-auto">
           <Link
             href={isPremium ? `/mu/premium/publications/create` : `/mu/publications/create`}
-            className="inline-flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs"
+            className="h-10 inline-flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-98"
           >
             <Plus className="w-4 h-4" />
             <span>Add New Publications</span>
@@ -225,9 +238,31 @@ export default function PublicationPage() {
 
       {/* Publication Listings Table Section */}
       <div className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold text-headerColor">
-          Your Publication Listings
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h2 className="text-lg sm:text-xl font-bold text-headerColor">
+            Your Publication Listings
+          </h2>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+            <div className="w-full sm:w-64">
+              <Search placeHolder="Search publications..." className="w-full h-10" />
+            </div>
+
+            <div className="w-full sm:w-36">
+              <SelecteInputField
+                value={statusFilter}
+                onChange={(val) => setStatusFilter(val)}
+                options={[
+                  { value: "all", label: "All Status" },
+                  { value: "active", label: "Active" },
+                  { value: "inactive", label: "Inactive" },
+                  { value: "draft", label: "Draft" },
+                ]}
+                className="h-10! text-sm font-medium rounded-lg shadow-none border border-borderColor bg-white"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Dynamic Table */}
         <div className="bg-white rounded-2xl border border-borderColor/80 overflow-hidden ">

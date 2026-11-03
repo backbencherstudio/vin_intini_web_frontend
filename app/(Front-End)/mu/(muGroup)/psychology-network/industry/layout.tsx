@@ -27,7 +27,7 @@ export default function IndustryLayout({
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="col-span-3">
+        <div className="col-span-3 lg:border-l lg:pl-6 border-borderColor">
           <PsychologyPartnersSlider />
           {children}
         </div>

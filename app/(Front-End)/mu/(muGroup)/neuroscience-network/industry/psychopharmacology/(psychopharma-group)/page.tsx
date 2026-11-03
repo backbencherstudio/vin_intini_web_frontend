@@ -58,7 +58,7 @@ export default function NeurosciencePsychopharmacologyPage() {
             </>
           ) : (
             <div className="flex w-full justify-center py-16">
-              <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
+              <p className="text-liteDescriptionColor text-base">
                 {search
                   ? `No medications found matching "${search}".`
                   : "No medications found."}

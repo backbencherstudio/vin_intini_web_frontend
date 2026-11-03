@@ -67,7 +67,7 @@ export const EquipmentGrid = ({
 
       {allItems.length === 0 && (
         <div className="flex w-full justify-center py-12">
-          <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
+          <p className="text-liteDescriptionColor text-base">
             {emptyMessage}
           </p>
         </div>

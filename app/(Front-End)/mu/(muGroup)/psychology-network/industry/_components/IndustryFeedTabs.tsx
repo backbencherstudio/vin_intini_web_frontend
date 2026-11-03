@@ -38,23 +38,23 @@ export const IndustryFeedTabs = ({
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 mb-2">
       {/* Left Tabs */}
-      <div className="flex items-center p-1 bg-sectionColor rounded-lg gap-1 self-start sm:self-auto flex-wrap">
+      <div className="inline-flex items-center p-1 rounded-xl bg-sectionColor border border-borderColor self-start sm:self-auto flex-wrap gap-1">
         {tabs?.map((tab) => {
           const active = isActive(tab.href);
           return (
             <Link
               key={tab.href || String(tab.id)}
               href={tab.href}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all cursor-pointer ${
                 active
-                  ? "bg-white text-primaryColor shadow-xs"
-                  : "text-slate-500 hover:text-slate-800 font-medium"
+                  ? "bg-primaryColor text-white shadow-xs"
+                  : "text-descriptionColor hover:text-headerColor bg-transparent"
               }`}
             >
               {tab.icon && (
                 <span
                   className={`flex items-center justify-center ${
-                    active ? "text-primaryColor" : "text-slate-500"
+                    active ? "text-white" : "text-descriptionColor"
                   }`}
                 >
                   {tab.icon}
@@ -65,8 +65,8 @@ export const IndustryFeedTabs = ({
                 <span
                   className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                     active
-                      ? "bg-[#E0F2FE] text-primaryColor"
-                      : "bg-[#E2E8F0] text-slate-500"
+                      ? "bg-white/20 text-white"
+                      : "bg-black/5 text-descriptionColor"
                   }`}
                 >
                   {tab.count}

@@ -215,23 +215,23 @@ export const EquipmentCard = ({
         </div>
 
         <div className="flex w-full items-center justify-between gap-2 px-3">
-          <h4 className="flex-1 font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] line-clamp-1">
+          <h4 className="flex-1 text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] line-clamp-1">
             {title}
           </h4>
           {primaryTag && (
-            <span className="shrink-0 rounded-full bg-[#E9E9EA] px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-[#4A4C56]">
+            <span className="shrink-0 rounded-full bg-[#E9E9EA] px-2.5 py-1 text-xs font-normal text-[#4A4C56]">
               {primaryTag}
             </span>
           )}
         </div>
 
         {subTitle && (
-          <p className="self-stretch px-3 font-['Segoe_UI'] text-xs font-normal leading-[132%] tracking-[0.06px] text-grayColor1">
+          <p className="self-stretch px-3 text-xs font-normal leading-[132%] tracking-[0.06px] text-grayColor1">
             {subTitle}
           </p>
         )}
 
-        <p className="self-stretch px-3 font-['Segoe_UI'] text-sm line-clamp-2 font-normal leading-[140%] text-grayColor1">
+        <p className="self-stretch px-3 text-sm line-clamp-2 font-normal leading-[140%] text-grayColor1">
           {description}
         </p>
 
@@ -239,7 +239,7 @@ export const EquipmentCard = ({
           onClick={() => setViewModalOpen(true)}
           className="flex cursor-pointer items-center gap-1 px-3 text-black hover:underline"
         >
-          <span className="font-['Segoe_UI'] text-sm font-medium">
+          <span className="text-sm font-medium">
             Learn more
           </span>
           <ChevronRight className="h-4 w-4" />

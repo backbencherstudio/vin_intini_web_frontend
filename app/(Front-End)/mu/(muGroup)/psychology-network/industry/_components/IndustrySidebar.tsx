@@ -52,21 +52,22 @@ export const IndustrySidebar = () => {
   return (
     <>
       {/* Desktop View - Shows from lg (1024px) and above */}
-      <div className="hidden h-full min-h-screen w-full  flex-col items-center gap-5 border-r border-borderColor bg-white lg:flex ">
-        <div className="flex w-full items-center gap-2.5 border-b border-borderColor px-5 py-5">
-          <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
+      <div className="hidden h-full min-h-[calc(100vh-170px)] w-full flex-col justify-between lg:flex">
+        <div>
+          <h3 className="text-lg border-b border-borderColor h-[66px] pb-3 flex items-center font-semibold text-headerColor">
             Industries
-          </h2>
-        </div>
-        <div className="flex w-full max-w-56 flex-col items-start gap-1">
-          {navItems.map((item) => (
-            <IndustryNavItem
-              key={item.href}
-              href={item.href}
-              icon={item.icon}
-              label={item.label}
-            />
-          ))}
+          </h3>
+
+          <div className="mt-4 space-y-1">
+            {navItems.map((item) => (
+              <IndustryNavItem
+                key={item.href}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -84,7 +85,7 @@ export const IndustrySidebar = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="mt-4 flex w-full items-center justify-between rounded-lg border border-borderColor bg-white px-4 py-3"
         >
-          <span className="font-['Segoe_UI'] text-base font-semibold text-[#1D1F2C]">
+          <span className="text-base font-semibold text-[#1D1F2C]">
             <div className="flex items-center gap-2">
               {currentIcon} {currentPage}
             </div>

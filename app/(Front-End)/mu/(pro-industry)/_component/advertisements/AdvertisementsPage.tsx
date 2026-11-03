@@ -6,7 +6,9 @@ import CommonStateCard, {
   CommonStateCardProps,
 } from "@/components/reusable/CommonStateCard";
 import DynamicTable from "@/components/reusable/DynamicTable";
+import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import Pagination from "@/components/reusable/Pagination";
+import Search from "@/components/reusable/Search";
 import {
   useGetAdvertisementDashboardQuery,
   useGetAdvertisementDataQuery,
@@ -18,13 +20,21 @@ import {
 } from "@/public/svgIcons/Icons";
 import { FileText, Zap } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
 import ProductAction from "./ProductAction";
 
 export default function AdvertisementsPage() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams?.get("search") || "";
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, statusFilter]);
 
   const { data: dashboardResponse, isLoading: isDashboardLoading } =
     useGetAdvertisementDashboardQuery({});
@@ -37,6 +47,8 @@ export default function AdvertisementsPage() {
   } = useGetAdvertisementDataQuery({
     page,
     per_page: pageSize,
+    ...(searchQuery.trim() ? { search: searchQuery.trim() } : {}),
+    ...(statusFilter !== "all" ? { status: statusFilter } : {}),
   });
 
   const dashboardData = dashboardResponse?.data;
@@ -245,9 +257,31 @@ export default function AdvertisementsPage() {
 
       {/* Product Advertisements Listings Section */}
       <div className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-bold text-headerColor">
-          Your Product Listings
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h2 className="text-lg sm:text-xl font-bold text-headerColor">
+            Your Product Listings
+          </h2>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+            <div className="w-full sm:w-64">
+              <Search placeHolder="Search products..." className="w-full h-10" />
+            </div>
+
+            <div className="w-full sm:w-36">
+              <SelecteInputField
+                value={statusFilter}
+                onChange={(val) => setStatusFilter(val)}
+                options={[
+                  { value: "all", label: "All Status" },
+                  { value: "active", label: "Active" },
+                  { value: "inactive", label: "Inactive" },
+                  { value: "draft", label: "Draft" },
+                ]}
+                className="h-10! text-sm font-medium rounded-lg shadow-none border border-borderColor bg-white"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="overflow-hidden">
           <DynamicTable

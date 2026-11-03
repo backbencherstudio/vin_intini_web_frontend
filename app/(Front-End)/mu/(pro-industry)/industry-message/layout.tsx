@@ -11,7 +11,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <div className="h-full bg-white p-3 md:p-4 rounded-xl border border-gray-200/80 shadow-xs flex">
         {/* Conversations Sidebar */}
         <div
-          className={`md:max-w-80 lg:max-w-90 md:border-r border-gray-200 md:pr-4 w-full ${
+          className={`w-full md:w-[370px] md:min-w-[370px] lg:w-[410px] lg:min-w-[410px] xl:w-[430px] xl:min-w-[430px] shrink-0 md:border-r border-gray-200 md:pr-4 ${
             params?.id ? "hidden" : "block"
           } md:flex flex-col`}
         >

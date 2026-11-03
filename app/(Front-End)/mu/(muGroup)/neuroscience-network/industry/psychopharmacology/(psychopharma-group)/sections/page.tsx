@@ -46,7 +46,7 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
                   className="flex w-full flex-col gap-6 min-w-0"
                   key={sectionId}
                 >
-                  <h3 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
+                  <h3 className="text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
                     {sectionName}
                   </h3>
                   <EquipmentGrid
@@ -68,7 +68,7 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
             })
           ) : (
             <div className="flex w-full justify-center py-16">
-              <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
+              <p className="text-liteDescriptionColor text-base">
                 {search
                   ? `No sections found matching "${search}".`
                   : "No sections available."}

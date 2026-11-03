@@ -1,5 +1,6 @@
 "use client";
 
+import CommonStatusDropdown from "@/components/reusable/CommonStatusDropdown";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonStateCard, {
   CommonStateCardProps,
@@ -289,34 +290,15 @@ function AddCampaignContent() {
       formatter: (_: any, item: BoostCampaignItem) => {
         const isItemActive = item.is_active || item.status === "active";
         const isItemPaused = item.is_paused || item.status === "paused";
-        const isItemExpired =
-          item.is_completed ||
-          item.status === "completed" ||
-          item.status === "expired";
+        const statusVal = isItemActive
+          ? "active"
+          : isItemPaused
+            ? "paused"
+            : item.status || "draft";
 
         return (
           <div className="py-3.5 px-2 text-center whitespace-nowrap flex justify-center">
-            {isItemActive ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#F0FDFA] border border-lightGreenColor2/60 text-lightGreenColor2">
-                <span className="w-1.5 h-1.5 rounded-full bg-lightGreenColor2" />
-                Active
-              </span>
-            ) : isItemPaused ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FFFBEB] border border-ratingColor/60 text-ratingColor">
-                <span className="w-1.5 h-1.5 rounded-full bg-ratingColor" />
-                Paused
-              </span>
-            ) : isItemExpired ? (
-              <span className="inline-flex capitalize items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FAF5FF] border border-[#E9D5FF] text-LiteBlueColor">
-                <span className="w-1.5 h-1.5 rounded-full bg-LiteBlueColor" />
-                {item.status}
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FEF2F2] border border-redColor/60 text-redColor">
-                <span className="w-1.5 h-1.5 rounded-full bg-redColor" />
-                Cancel
-              </span>
-            )}
+            <CommonStatusDropdown value={statusVal} readOnly />
           </div>
         );
       },

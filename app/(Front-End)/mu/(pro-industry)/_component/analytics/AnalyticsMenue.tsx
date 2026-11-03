@@ -1,6 +1,6 @@
 "use client";
 
-import { scrollToTop } from "@/lib/utils";
+import { cn, scrollToTop } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,14 +19,19 @@ function AnalyticsMenue({
     return pathName.startsWith(href);
   };
   return (
-    <div className="overflow-x-auto scrollbar-hide">
-      <div className=" my-2 max-w-full md:max-w-auto w-full flex gap-3  items-center  ">
+    <div className="overflow-x-auto scrollbar-hide py-1">
+      <div className="my-2 max-w-full md:max-w-auto w-full flex gap-2.5 items-center">
         {menuData.map((menu) => (
           <Link
             key={menu.id}
             href={menu.href}
             onClick={scrollToTop}
-            className={`text-sm  border text-nowrap font-semibold hover:shadow-md rounded-full text-grayColor1  py-2 px-3 ${isActive(menu.href) ? "text-whiteColor bg-primaryColor border-primaryColor transition-all duration-200" : ""}`}
+            className={cn(
+              "text-sm border text-nowrap font-medium rounded-full py-2 px-4 transition-all duration-200 cursor-pointer select-none",
+              isActive(menu.href)
+                ? "text-white bg-primaryColor border-primaryColor shadow-xs font-semibold"
+                : "border-borderColor text-grayColor1 bg-white hover:text-headerColor hover:bg-gray-50",
+            )}
           >
             {menu.title}
           </Link>

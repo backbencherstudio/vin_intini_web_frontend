@@ -20,7 +20,7 @@ function Page() {
         <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
           <Link
             href="/mu/products/create-products"
-            className="flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 py-2 lg:py-3 rounded-sm text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs"
+            className="h-10 flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-98"
           >
             <Plus className="w-4 h-4" />
             <span>Add Product</span>

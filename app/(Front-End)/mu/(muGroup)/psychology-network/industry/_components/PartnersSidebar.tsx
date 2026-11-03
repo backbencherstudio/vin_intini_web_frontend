@@ -65,10 +65,10 @@ export const PartnersSidebar = () => {
     <div className="flex h-auto w-full flex-col items-start gap-6 lg:bg-bgLightColor p-4  rounded-lg border border-[#ECEFF3]">
       {/* Header */}
       <div className="flex w-full flex-col items-start gap-2 ">
-        <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
+        <h3 className="text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
           Mind Unite Partners
         </h3>
-        <p className="font-['Segoe_UI'] text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
+        <p className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
           Leading {currentPage?.label} companies advancing brain health research
           and treatment.
         </p>

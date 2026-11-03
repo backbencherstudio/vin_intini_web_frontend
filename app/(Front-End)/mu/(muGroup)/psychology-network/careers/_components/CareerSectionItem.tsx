@@ -18,7 +18,7 @@ export const CareerSectionItem = ({ section }: CareerSectionItemProps) => {
     <>
       {/* Desktop Layout - Always expanded */}
       <div className="hidden w-full flex-col items-start gap-6 self-stretch border-b border-[#DFE1E7] pb-5 md:flex">
-        <h3 className="self-stretch font-['Segoe_UI'] text-2xl leading-[130%] tracking-[0.12px]">
+        <h3 className="self-stretch text-2xl leading-[130%] tracking-[0.12px]">
           {section.titleParts.map((part, index) => (
             <span
               key={index}
@@ -46,7 +46,7 @@ export const CareerSectionItem = ({ section }: CareerSectionItemProps) => {
           onClick={() => setIsOpen(!isOpen)}
           className="flex w-full items-center justify-between py-3 hover:bg-[#F6F8FA]"
         >
-          <h3 className="flex-1 text-left font-['Segoe_UI'] text-lg leading-[130%] tracking-[0.12px]">
+          <h3 className="flex-1 text-left text-lg leading-[130%] tracking-[0.12px]">
             {section.titleParts.map((part, index) => (
               <span
                 key={index}
@@ -80,7 +80,7 @@ export const CareerSectionItem = ({ section }: CareerSectionItemProps) => {
 
             {/* View Button with Right Arrow */}
             <div className="justify-end flex w-full">
-              <button className="mt-4 flex w-fit items-center gap-2 rounded-full border border-[#04A1B7] px-4 py-2 text-[#04A1B7] font-['Segoe_UI'] text-sm font-medium transition hover:bg-[#04A1B7] hover:text-white">
+              <button className="mt-4 flex w-fit items-center gap-2 rounded-full border border-[#04A1B7] px-4 py-2 text-[#04A1B7] text-sm font-medium transition hover:bg-[#04A1B7] hover:text-white">
                 View
                 <ChevronRight className="h-4 w-4" />
               </button>

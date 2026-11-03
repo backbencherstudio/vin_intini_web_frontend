@@ -61,6 +61,13 @@ const psychologySlice = baseApiSlice.injectEndpoints({
       },
       providesTags: ["psychology"],
     }),
+    getAllPartners: builder.query<any, void>({
+      query: () => ({
+        url: "/partners",
+        method: "GET",
+      }),
+      providesTags: ["psychology"],
+    }),
     getBiotechnologyPartners: builder.query({
       query: ({ query }) => ({
         url: `psychology-network/industry/biotech-partners`,
@@ -116,6 +123,7 @@ const psychologySlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetProductFeedQuery,
+  useGetAllPartnersQuery,
   useGetBiotechnologyQuery,
   useGetBiotechnologyPartnersQuery,
   useGetPublicationsOneQuery,

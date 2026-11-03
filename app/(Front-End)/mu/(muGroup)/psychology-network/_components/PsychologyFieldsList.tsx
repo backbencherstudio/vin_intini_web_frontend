@@ -56,7 +56,7 @@ export const PsychologyFieldsList = ({
   if (searchQuery.trim() && filteredFields.length === 0) {
     return (
       <div className="flex w-full flex-col items-center justify-center py-12">
-        <p className="text-[#A5A5AB] font-['Segoe_UI'] text-lg">
+        <p className="text-[#A5A5AB] text-lg">
           No psychology fields found matching &quot;{searchQuery}&quot;
         </p>
       </div>
@@ -73,7 +73,7 @@ export const PsychologyFieldsList = ({
           ))
         ) : (
           <div className="flex w-full flex-col items-center justify-center border-b border-[#DFE1E7] bg-[#F6F8FA] p-12">
-            <p className="text-[#A5A5AB] font-['Segoe_UI'] text-base">
+            <p className="text-[#A5A5AB] text-base">
               No more fields to display on this page
             </p>
           </div>

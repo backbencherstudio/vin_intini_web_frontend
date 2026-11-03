@@ -1,85 +1,58 @@
 "use client";
 
-import {
-  useGetNeuroscienceBiotechnologyPartnersQuery,
-  useGetNeuroscienceOnePartnersQuery,
-  useGetNeurosciencePublicationsOnePartnersQuery,
-} from "@/feature/slice/neuroscienceSlice";
+import { useGetAllPartnersQuery } from "@/feature/slice/biotechnologySlice";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import Marquee from "react-fast-marquee";
 
 interface Partner {
   id: string | number;
   name?: string;
+  partner_name?: string;
   title?: string;
+  slug?: string;
+  logo?: string;
   partner_logo?: string;
   image?: string;
+  website?: string;
+  website_url?: string;
+  tagline?: string;
 }
 
 export default function PartnersSlider() {
-  const pathname = usePathname();
-
-  const isBiotechnology = pathname.includes("/neuroscience-network/industry/biotechnology");
-  const isPsychopharmacology = pathname.includes("/neuroscience-network/industry/psychopharmacology");
-  const isPublications = pathname.includes("/neuroscience-network/industry/publications");
-  const biotechnologyQuery = useGetNeuroscienceBiotechnologyPartnersQuery(
-    "biotechnology",
-    { skip: !isBiotechnology },
-  );
-  const psychopharmacologyQuery = useGetNeuroscienceOnePartnersQuery(
-    "psychopharmacology",
-    { skip: !isPsychopharmacology },
-  );
-  const publicationsQuery = useGetNeurosciencePublicationsOnePartnersQuery(
-    "publications",
-    { skip: !isPublications },
-  );
-  const activeQuery = isPsychopharmacology
-    ? psychopharmacologyQuery
-    : isPublications
-      ? publicationsQuery
-      : biotechnologyQuery;
-  const { data, isLoading } = activeQuery;
-
-  const navItems = [
-    {
-      href: `/mu/neuroscience-network/industry/biotechnology`,
-      label: "Biotechnology",
-    },
-    {
-      href: `/mu/neuroscience-network/industry/psychopharmacology`,
-      label: "Psychopharmacology",
-    },
-    {
-      href: `/mu/neuroscience-network/industry/publications`,
-      label: "Publications",
-    },
-  ];
-
-  const currentPage = navItems.find((item) => pathname?.includes(item.href));
+  const { data, isLoading } = useGetAllPartnersQuery();
   const partners: Partner[] = data?.partners || [];
 
   if (isLoading) {
     return (
-      <div className="p-6 text-center text-sm text-gray-500">
-        Loading partners...
+      <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-3 flex items-center">
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 w-full">
+          <div className="w-full text-center md:col-span-5 md:text-left lg:col-span-4">
+            <h3 className="text-lg sm:text-xl font-semibold leading-tight text-headerColor">
+              Mind Unite Partners
+            </h3>
+          </div>
+          <div className="w-full md:col-span-7 lg:col-span-8 flex items-center gap-2">
+            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
+            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
+            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full mb-6">
-      <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-12">
+    <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-3 flex items-center">
+      <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 w-full">
         {/* Left Side: Header & Text */}
         <div className="w-full text-center md:col-span-5 md:text-left lg:col-span-4">
-          <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-headerColor xl:text-2xl">
+          <h3 className="text-lg sm:text-xl font-semibold leading-tight text-headerColor">
             Mind Unite Partners
           </h3>
         </div>
 
         {/* Right Side: Marquee Slider */}
-        <div className="w-full overflow-hidden md:col-span-7  lg:col-span-8">
+        <div className="w-full overflow-hidden md:col-span-7 lg:col-span-8 flex items-center">
           {partners.length > 0 ? (
             <Marquee
               gradient={true}
@@ -87,28 +60,41 @@ export default function PartnersSlider() {
               gradientColor="#fff"
               speed={45}
               pauseOnHover={true}
-              className="flex items-center py-2"
+              className="flex items-center"
             >
               {partners.map((partner, index) => {
                 const imageUrl =
-                  partner?.partner_logo || partner?.image || "/placeholder.png";
+                  partner?.logo ||
+                  partner?.partner_logo ||
+                  partner?.image ||
+                  "/placeholder.png";
                 const partnerName =
-                  partner?.name || partner?.title || `Partner ${index + 1}`;
+                  partner?.name ||
+                  partner?.partner_name ||
+                  partner?.title ||
+                  `Partner ${index + 1}`;
+                const websiteUrl = partner?.website_url || partner?.website;
+                const targetUrl = websiteUrl || `/mu/industry/${partner?.id}`;
+                const isExternal = Boolean(websiteUrl);
 
                 return (
-                  <div
+                  <a
                     key={partner.id || index}
-                    title={partnerName}
-                    className="relative mx-2 flex h-12 w-12 items-center justify-center rounded-lg   transition-transform duration-200 hover:scale-105"
+                    href={targetUrl}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    title={`${partnerName}${websiteUrl ? ` • ${websiteUrl}` : ""}`}
+                    className="relative mx-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white p-1 overflow-hidden transition-transform duration-200 hover:scale-105 cursor-pointer"
                   >
                     <Image
                       src={imageUrl}
                       alt={partnerName}
-                      width={100}
-                      height={50}
-                      className="h-full w-full object-contain"
+                      width={80}
+                      height={80}
+                      className="h-full w-full object-contain rounded-md"
+                      unoptimized
                     />
-                  </div>
+                  </a>
                 );
               })}
             </Marquee>

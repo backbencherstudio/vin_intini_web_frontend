@@ -20,7 +20,7 @@ export const CareerSubSectionItem = ({ subSection }: CareerSubSectionProps) => {
       }`}
     >
       <h4
-        className={`self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] underline decoration-solid md:text-lg ${
+        className={`self-stretch text-base font-semibold leading-[150%] underline decoration-solid md:text-lg ${
           isHovered ? "text-[#04A1B7]" : "text-[#1D1F2C]"
         }`}
       >
@@ -30,7 +30,7 @@ export const CareerSubSectionItem = ({ subSection }: CareerSubSectionProps) => {
         {subSection.bulletPoints.map((point, index) => (
           <li
             key={index}
-            className="text-[#1D1F2C] font-['Segoe_UI'] text-sm leading-[150%] md:text-base"
+            className="text-[#1D1F2C] text-sm leading-[150%] md:text-base"
           >
             {point}
           </li>

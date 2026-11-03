@@ -34,7 +34,7 @@ export default function Loading({
             <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2">
               <div className="absolute inset-0 rounded-full border-2 border-emerald-300 bg-white/70" />
               <div className="absolute inset-2 rounded-full border border-emerald-200" />
-              <Image src={muImage} alt="Loading logo" fill />
+              <Image src={muImage} alt="Loading logo" fill sizes="32px" />
             </div>
           </div>
         </div>

@@ -83,20 +83,36 @@ export const formatNumberIntoK = ({
   value,
 }: {
   type?: string;
-  value: string;
+  value: string | number;
 }) => {
-  const num = Number(value);
-  if (num >= 1000) {
-    return (
-      new Intl.NumberFormat(type || "en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(Math.floor(num / 1000)) + "K"
-    );
+  if (value === null || value === undefined || value === "") return "";
+  const num =
+    typeof value === "string"
+      ? Number(value.replace(/[^0-9.-]+/g, ""))
+      : Number(value);
+  if (isNaN(num)) return String(value);
+
+  const absNum = Math.abs(num);
+
+  if (absNum >= 1_000_000) {
+    const formatted = new Intl.NumberFormat(type || "en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    }).format(num / 1_000_000);
+    return `${formatted}m`;
   }
+
+  if (absNum >= 1_000) {
+    const formatted = new Intl.NumberFormat(type || "en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    }).format(num / 1_000);
+    return `${formatted}k`;
+  }
+
   return new Intl.NumberFormat(type || "en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 1,
   }).format(num);
 };
 
@@ -227,4 +243,4 @@ export function formatContentForDisplay(content?: string): string {
     return content;
   }
   return textToHtml(content);
-}
+}

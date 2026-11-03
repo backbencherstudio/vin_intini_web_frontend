@@ -1,14 +1,12 @@
 "use client";
 
+import AnalyticsRangeToggle from "@/components/reusable/AnalyticsRangeToggle";
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonAnalyticsGraph, {
   GraphSeriesItem,
 } from "@/components/reusable/CommonAnalyticsGraph";
 import CommonStateCard from "@/components/reusable/CommonStateCard";
-import SelecteInputField, {
-  Option,
-} from "@/components/reusable/InputFiled/SelecteInputField";
 import { useGetPublicationsInsightQuery } from "@/feature/slice/jobs/analyticSlice";
 import {
   ActiveIcon,
@@ -23,10 +21,7 @@ const GRAPH_SERIES: GraphSeriesItem[] = [
   { dataKey: "publications_likes", name: "Publication Like", color: "#FFC837" },
 ];
 
-const RANGE_OPTIONS: Option[] = [
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
-];
+
 
 export default function AnalyticsPublicationPage() {
   const {
@@ -171,15 +166,11 @@ export default function AnalyticsPublicationPage() {
             </div>
           </div>
 
-          {/* Range Dropdown using SelecteInputField */}
-          <div className="w-32 self-start sm:self-auto">
-            <SelecteInputField
-              value={activeRange}
-              onChange={(val) => setActiveRange(val as "weekly" | "monthly")}
-              options={RANGE_OPTIONS}
-              className="h-9 text-xs font-medium rounded-lg border-borderColor bg-white"
-            />
-          </div>
+          {/* Segmented Range Toggle */}
+          <AnalyticsRangeToggle
+            value={activeRange}
+            onChange={(val) => setActiveRange(val)}
+          />
         </div>
 
         {/* Lightweight, 60fps smooth animated Graph Component */}
