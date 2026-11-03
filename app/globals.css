@@ -436,3 +436,23 @@ body {
   cursor: pointer;
   display: none !important;
 }
+
+/* Jodit Editor harmonization */
+.jodit-container {
+  border-color: var(--borderColor) !important;
+  border-radius: 0.5rem !important;
+  font-family: inherit !important;
+}
+
+.jodit-container .jodit-placeholder {
+  color: var(--muted-foreground) !important;
+  font-size: 0.875rem !important;
+  font-family: inherit !important;
+  font-weight: 400 !important;
+}
+
+.jodit-container .jodit-wysiwyg {
+  font-size: 0.875rem !important;
+  font-family: inherit !important;
+  color: var(--headerColor) !important;
+}
