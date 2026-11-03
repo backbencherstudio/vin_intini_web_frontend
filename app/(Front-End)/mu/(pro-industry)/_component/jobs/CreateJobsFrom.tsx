@@ -696,23 +696,23 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                       id="start_date"
                       type="button"
                       className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-center gap-2.5 text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
                         field.value
                           ? "text-headerColor font-normal"
                           : "text-muted-foreground font-normal",
                       )}
                     >
+                      <span className="truncate">
+                        {field.value
+                          ? format(field.value, "MMM dd, yyyy")
+                          : "Start Date"}
+                      </span>
                       <CalendarIcon
                         className={cn(
                           "w-4 h-4 shrink-0",
                           field.value ? "text-headerColor" : "text-muted-foreground",
                         )}
                       />
-                      <span className="truncate">
-                        {field.value
-                          ? format(field.value, "MMM dd, yyyy")
-                          : "Start Date"}
-                      </span>
                     </button>
                   </PopoverTrigger>
                   <PopoverContent
@@ -757,23 +757,23 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                       id="end_date"
                       type="button"
                       className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-center gap-2.5 text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
                         field.value
                           ? "text-headerColor font-normal"
                           : "text-muted-foreground font-normal",
                       )}
                     >
+                      <span className="truncate">
+                        {field.value
+                          ? format(field.value, "MMM dd, yyyy")
+                          : "End Date"}
+                      </span>
                       <CalendarIcon
                         className={cn(
                           "w-4 h-4 shrink-0",
                           field.value ? "text-headerColor" : "text-muted-foreground",
                         )}
                       />
-                      <span className="truncate">
-                        {field.value
-                          ? format(field.value, "MMM dd, yyyy")
-                          : "End Date"}
-                      </span>
                     </button>
                   </PopoverTrigger>
                   <PopoverContent

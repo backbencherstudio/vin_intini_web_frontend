@@ -438,21 +438,50 @@ body {
 }
 
 /* Jodit Editor harmonization */
-.jodit-container {
-  border-color: var(--borderColor) !important;
+.jodit-container:not(.jodit_inline) {
+  border: 1px solid #dfe1e7 !important;
   border-radius: 0.5rem !important;
-  font-family: inherit !important;
+  background-color: #ffffff !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.jodit-toolbar__box:not(:empty) {
+  background-color: #fafbfd !important;
+  border-bottom: 1px solid #dfe1e7 !important;
+  border-top-left-radius: 0.5rem !important;
+  border-top-right-radius: 0.5rem !important;
+  padding: 4px 8px !important;
+}
+
+.jodit-toolbar-button__button {
+  border-radius: 6px !important;
+  padding: 4px 6px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+}
+
+.jodit-toolbar-button__button:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.jodit-status-bar {
+  display: none !important;
 }
 
 .jodit-container .jodit-placeholder {
-  color: var(--muted-foreground) !important;
+  color: #9ca3af !important;
   font-size: 0.875rem !important;
   font-family: inherit !important;
   font-weight: 400 !important;
+  padding: 12px 14px !important;
 }
 
 .jodit-container .jodit-wysiwyg {
   font-size: 0.875rem !important;
   font-family: inherit !important;
-  color: var(--headerColor) !important;
+  color: #1e293b !important;
+  padding: 12px 14px !important;
+  min-height: 160px !important;
+  line-height: 1.6 !important;
 }

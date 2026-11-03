@@ -12,6 +12,8 @@ interface JoditEditorProps {
   onBlur?: () => void;
   showToolbar?: boolean;
   height?: number;
+  buttons?: (string | { name: string })[];
+  className?: string;
 }
 
 function JoditEditor({
@@ -20,12 +22,15 @@ function JoditEditor({
   onChange,
   onBlur,
   showToolbar = true,
-  height = 100,
+  height = 180,
+  buttons,
+  className,
 }: JoditEditorProps) {
   const config = useMemo(
     () => ({
       readonly: false,
       height,
+      minHeight: height,
       placeholder,
       toolbar: showToolbar,
       toolbarAdaptive: false,
@@ -36,6 +41,8 @@ function JoditEditor({
       showCharsCounter: false,
       showWordsCounter: false,
       statusbar: false,
+      allowResizeX: false,
+      allowResizeY: false,
       cleanHTML: {
         fillEmptyParagraph: true,
       },
@@ -48,22 +55,16 @@ function JoditEditor({
         maximumImageFileSize: 1000000,
       },
       buttons: showToolbar
-        ? [
-            "source",
-            "|",
+        ? buttons || [
             "bold",
             "italic",
             "underline",
-            "strikethrough",
             "|",
             "ul",
             "ol",
             "|",
             "paragraph",
-            "fontsize",
-            "brush",
             "|",
-            "image",
             "link",
             "|",
             "align",
@@ -73,16 +74,18 @@ function JoditEditor({
           ]
         : [],
     }),
-    [height, placeholder, showToolbar],
+    [buttons, height, placeholder, showToolbar],
   );
 
   return (
-    <JoditEditors
-      value={value}
-      config={config}
-      onChange={(content: string) => onChange?.(content || "")}
-      onBlur={() => onBlur?.()}
-    />
+    <div className={className}>
+      <JoditEditors
+        value={value}
+        config={config}
+        onChange={(content: string) => onChange?.(content || "")}
+        onBlur={() => onBlur?.()}
+      />
+    </div>
   );
 }
 
