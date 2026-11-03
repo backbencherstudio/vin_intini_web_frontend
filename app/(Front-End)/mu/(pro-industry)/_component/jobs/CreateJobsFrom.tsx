@@ -260,19 +260,20 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4">
-      {/* Header */}
-      <div className="mb-6 md:mb-8">
-        <h1 className="text-xl md:text-2xl font-bold text-headerColor">
-          {id ? "Update position" : "Create new position"}
-        </h1>
-        <p className="text-sm text-descriptionColor mt-1">
-          Complete the information below to publish a professional job
-          opportunity and connect with qualified candidates.
-        </p>
-      </div>
+      <div className="bg-white rounded-2xl border border-borderColor p-6 sm:p-8 md:p-10 shadow-xs">
+        {/* Header */}
+        <div className="mb-6 md:mb-8 border-b border-borderColor/60 pb-5">
+          <h1 className="text-xl md:text-2xl font-bold text-headerColor">
+            {id ? "Update position" : "Create new position"}
+          </h1>
+          <p className="text-sm text-descriptionColor mt-1">
+            Complete the information below to publish a professional job
+            opportunity and connect with qualified candidates.
+          </p>
+        </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="md:grid space-y-4 grid-cols-1 md:grid-cols-2 md:space-y-0 md:gap-6">
           {/* Row 1: Job Title & Position */}
           <ReusableInput
@@ -845,6 +846,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
           </div>
         </div>
       </form>
+      </div>
       {isCreated && (
         <JobPostConfirmation
           open={isCreated}
