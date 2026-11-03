@@ -17,6 +17,8 @@ import {
   useStartConversationMutation,
   useUnarchiveMessageMutation,
 } from "@/feature/slice/message/messageSlice";
+import { useGetIndustryConversationListQuery } from "@/feature/slice/message/industryMessageSlice";
+import IndustryMessageModal from "../../(pro-industry)/industry-profile/_component/IndustryMessageModal";
 import type { AppDispatch } from "@/feature/store";
 import { truncateText } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
@@ -43,14 +45,22 @@ function MessageUserSection() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "all";
   const searchQuery = searchParams.get("search") ?? "";
+  const isCompaniesTab = activeTab === "companies";
+  const [selectedCompanyModal, setSelectedCompanyModal] = useState<any>(null);
 
   // Popup open/close state & ref for click-outside handling
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const { data } = useGetConversationListQuery(activeTab, {
-    skip: activeTab === null,
+    skip: isCompaniesTab || activeTab === null,
   });
+
+  const { data: industryConversationsData, isLoading: isIndustryListLoading } =
+    useGetIndustryConversationListQuery(
+      { mode: "user", status: "all", search: searchQuery },
+      { skip: !isCompaniesTab },
+    );
 
   // Fetch connections based on search query
   const { data: searchResults, isFetching: isSearchFetching } =
@@ -100,6 +110,7 @@ function MessageUserSection() {
 
   const messageType = [
     { id: 1, name: "all" },
+    { id: 2, name: "companies" },
     { id: 3, name: "unread" },
     { id: 4, name: "archived" },
   ];
@@ -272,7 +283,53 @@ function MessageUserSection() {
 
       {/* Main Conversation List */}
       <div className="md:h-135 h-120 border-t overflow-y-auto">
-        {data?.data?.length > 0 ? (
+        {isCompaniesTab ? (
+          isIndustryListLoading ? (
+            <div className="p-6 text-center text-gray-400 text-sm flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-primaryColor" />
+              Loading company chats…
+            </div>
+          ) : industryConversationsData?.data?.length > 0 ? (
+            industryConversationsData.data.map((item: any) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedCompanyModal(item.industry)}
+                className="p-2.5 flex items-center cursor-pointer gap-3 text-left hover:bg-gray-50 transition-colors border-b border-gray-50"
+              >
+                <div className="w-10 h-10 overflow-hidden rounded-sm shrink-0 border border-gray-100">
+                  <Image
+                    src={item.industry?.logo || emptyImage}
+                    width={40}
+                    height={40}
+                    className="rounded-sm w-full h-full object-cover"
+                    alt={item.industry?.name || "Company"}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <p className="font-semibold text-sm text-headerColor truncate">
+                      {item.industry?.name}
+                    </p>
+                    <span className="text-[11px] text-gray-400 shrink-0">
+                      {item.last_message?.created_at
+                        ? dayjs(item.last_message.created_at).fromNow()
+                        : ""}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 truncate mt-0.5">
+                    {item.last_message?.message
+                      ? truncateText(item.last_message.message, 32)
+                      : item.industry?.tagline || item.industry?.industry || "Company conversation"}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-6 text-center text-gray-400 text-sm">
+              No company conversations yet. Visit an industry page to send an inquiry!
+            </div>
+          )
+        ) : data?.data?.length > 0 ? (
           data?.data?.map((msg: any) => {
             return (
               <ContextMenu key={msg.id}>
@@ -390,6 +447,15 @@ function MessageUserSection() {
           </div>
         )}
       </div>
+
+      {selectedCompanyModal && (
+        <IndustryMessageModal
+          isOpen={Boolean(selectedCompanyModal)}
+          onClose={() => setSelectedCompanyModal(null)}
+          industryId={selectedCompanyModal.id}
+          industryData={selectedCompanyModal}
+        />
+      )}
     </div>
   );
 }
