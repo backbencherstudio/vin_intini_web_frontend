@@ -1,4 +1,5 @@
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 type ReusableInputProps = {
   id: string;
@@ -19,7 +20,7 @@ const ReusableInput = ({
   ...props
 }: ReusableInputProps) => {
   return (
-    <div className={`space-y-1.5 ${containerClassName || ""}`}>
+    <div className={cn("space-y-1.5", containerClassName)}>
       {label && (
         <Label
           htmlFor={id}
@@ -31,7 +32,12 @@ const ReusableInput = ({
 
       <input
         type={type}
-        className={`h-12! md:h-13! w-full px-3 border placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primaryColor/20! ${className || ""} ${error ? "border-red-500" : "border-borderColor"}`}
+        className={cn(
+          "h-12! md:h-13! w-full px-3 border rounded-lg placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all",
+          error ? "border-red-500! focus:ring-red-500/20!" : "border-borderColor",
+          className,
+          error && "border-red-500!",
+        )}
         {...props}
       />
 

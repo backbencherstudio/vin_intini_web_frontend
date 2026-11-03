@@ -30,6 +30,7 @@ interface SelecteInputFieldProps {
   className?: string;
   id?: string;
   disabled?: boolean;
+  error?: string | boolean;
 }
 
 export default function SelecteInputField({
@@ -42,6 +43,7 @@ export default function SelecteInputField({
   className = "",
   id,
   disabled = false,
+  error,
 }: SelecteInputFieldProps) {
   const handleChange = onChange ?? onValueChange;
 
@@ -107,12 +109,15 @@ export default function SelecteInputField({
           id={id}
           onClick={() => !disabled && setIsOpen((prev) => !prev)}
           className={cn(
-            "flex w-full items-center justify-between rounded-lg border border-borderColor bg-white px-3.5 text-sm cursor-pointer select-none transition-all",
+            "flex w-full items-center justify-between rounded-lg border bg-white px-3.5 text-sm cursor-pointer select-none transition-all",
             className,
+            Boolean(error)
+              ? "border-red-500! ring-1 ring-red-500/20!"
+              : "border-borderColor hover:border-borderColor",
             disabled
               ? "bg-bgColor text-descriptionColor cursor-not-allowed"
-              : "hover:border-borderColor",
-            isOpen && "border-gray-400 ring-1 ring-gray-400/20",
+              : "",
+            isOpen && (Boolean(error) ? "ring-2 ring-red-500/30" : "border-gray-400 ring-1 ring-gray-400/20"),
           )}
         >
           <span
@@ -193,7 +198,11 @@ export default function SelecteInputField({
     <Select value={value} onValueChange={handleChange}>
       <SelectTrigger
         id={id}
-        className={`cursor-pointer w-full ${className}`}
+        className={cn(
+          "cursor-pointer w-full border-borderColor",
+          className,
+          Boolean(error) && "border-red-500! focus-visible:ring-red-500/20!",
+        )}
         disabled={disabled}
       >
         <SelectValue placeholder={placeholder} />

@@ -26,6 +26,7 @@ type CreatableSelectFieldProps = {
   allowCustomInput?: boolean;
   type?: "text" | "number";
   isDisabled?: boolean;
+  error?: string | boolean;
 };
 
 function isGroupedOption(option: any): option is GroupedOption {
@@ -113,11 +114,44 @@ function CreatableSelectField({
   allowCustomInput = false,
   type = "text",
   isDisabled = false,
+  error,
 }: CreatableSelectFieldProps) {
   const flatOptions = useMemo(() => {
     if (!options) return [];
     return flattenAllOptions(options);
   }, [options]);
+
+  const mergedStyles = useMemo<
+    StylesConfig<FlatOption, boolean, GroupBase<FlatOption>>
+  >(
+    () => ({
+      ...selectStyles,
+      control: (base, state) => ({
+        ...base,
+        minHeight: "50px",
+        borderRadius: "0.5rem",
+        borderColor: Boolean(error)
+          ? "#ef4444 !important"
+          : state.isFocused
+            ? "#e5e5e5"
+            : "#dfe1e7",
+        boxShadow: state.isFocused
+          ? Boolean(error)
+            ? "0 0 0 2px rgba(239, 68, 68, 0.2)"
+            : "0 0 0 2px #D9F4F7"
+          : "none",
+        fontSize: "0.875rem",
+        "&:hover": {
+          borderColor: Boolean(error)
+            ? "#ef4444 !important"
+            : state.isFocused
+              ? "#e5e5e5"
+              : "#dfe1e7",
+        },
+      }),
+    }),
+    [error],
+  );
 
   const handleInputChange = (inputValue: string) => {
     if (type !== "number") {
@@ -200,7 +234,7 @@ function CreatableSelectField({
       onKeyDown={handleKeyDown}
       className={className}
       classNamePrefix="common-select"
-      styles={selectStyles}
+      styles={mergedStyles}
       formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
       noOptionsMessage={() => "No options"}
     />

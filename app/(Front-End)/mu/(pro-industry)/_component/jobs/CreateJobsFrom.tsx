@@ -321,7 +321,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select Network"
                   options={networkOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.network_type?.message}
                 />
               )}
             />
@@ -350,7 +351,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select Category"
                   options={categoryOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.category?.message}
                 />
               )}
             />
@@ -378,7 +380,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select Employment"
                   options={employmentOfferingOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.employment_offering?.message}
                 />
               )}
             />
@@ -409,7 +412,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select work mode"
                   options={locationTypeOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.work_mode?.message}
                 />
               )}
             />
@@ -439,7 +443,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select Type"
                   options={employmentTypeOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.employment_type?.message}
                 />
               )}
             />
@@ -470,7 +475,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="e.g., Mid-Level"
                   options={levelOptions}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.level?.message}
                 />
               )}
             />
@@ -512,7 +518,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     { value: "Monthly", label: "Monthly" },
                     { value: "Yearly", label: "Yearly" },
                   ]}
-                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                  className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
+                  error={errors.salary_type?.message}
                 />
               )}
             />
@@ -572,6 +579,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   }
                   isDisabled={isStateLoading}
                   className="w-full text-sm"
+                  error={errors.state_id?.message}
                 />
               )}
             />
@@ -606,6 +614,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   }
                   isDisabled={!selectedStateId || isCitiesLoading}
                   className="w-full text-sm"
+                  error={errors.city_id?.message}
                 />
               )}
             />
@@ -673,9 +682,18 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   placeholder="Describe the role, responsibilities, and requirements..."
                   onChange={(content) => field.onChange(content)}
                   onBlur={() => field.onBlur()}
+                  className={cn(
+                    Boolean(errors.job_description) &&
+                      "[&_.jodit-container]:border-red-500!",
+                  )}
                 />
               )}
             />
+            {errors.job_description && (
+              <p className="text-redColor text-xs">
+                {errors.job_description.message}
+              </p>
+            )}
           </div>
 
           {/* Row 10: Start Date & End Date */}
@@ -696,7 +714,10 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                       id="start_date"
                       type="button"
                       className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        errors.start_date
+                          ? "border-red-500! ring-1 ring-red-500/20!"
+                          : "border-borderColor",
                         field.value
                           ? "text-headerColor font-normal"
                           : "text-muted-foreground font-normal",
@@ -738,6 +759,11 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                 </Popover>
               )}
             />
+            {errors.start_date && (
+              <p className="text-redColor text-xs">
+                {errors.start_date.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -757,7 +783,10 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                       id="end_date"
                       type="button"
                       className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border border-borderColor rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                        errors.end_date
+                          ? "border-red-500! ring-1 ring-red-500/20!"
+                          : "border-borderColor",
                         field.value
                           ? "text-headerColor font-normal"
                           : "text-muted-foreground font-normal",
@@ -797,6 +826,9 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                 </Popover>
               )}
             />
+            {errors.end_date && (
+              <p className="text-redColor text-xs">{errors.end_date.message}</p>
+            )}
           </div>
 
           {/* Row 11: Add Tags (Full width) */}
@@ -829,7 +861,12 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     id="information_confirmed"
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    className="mt-0.5 border border-primaryColor  data-[state=checked]:bg-primaryColor  data-[state=checked]:text-white data-[state=checked]:border-primaryColor rounded"
+                    className={cn(
+                      "mt-0.5 border data-[state=checked]:bg-primaryColor data-[state=checked]:text-white data-[state=checked]:border-primaryColor rounded",
+                      errors.information_confirmed
+                        ? "border-red-500! ring-1 ring-red-500/20!"
+                        : "border-primaryColor",
+                    )}
                   />
                 )}
               />
