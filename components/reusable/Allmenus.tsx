@@ -24,7 +24,6 @@ import {
   SettingIcon,
   SingleUserIcon,
 } from "@/public/svgIcons/Icons";
-import { Plus } from "lucide-react";
 import type { ComponentType } from "react";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { LuShoppingBag } from "react-icons/lu";
@@ -109,11 +108,6 @@ export const jobsMenuItems: MenuItem[] = [
     slug: "/mu/jobs/recommended-jobs",
     icon: RecommendedJobIcon,
   },
-  {
-    label: "Recently added jobs",
-    slug: "/mu/jobs/recent-jobs",
-    icon: Plus,
-  },
   { label: "Saved job", slug: "/mu/jobs/saved-jobs", icon: SaveJobIcon },
 ];
 
@@ -145,7 +139,7 @@ export function getProIndustryMenuItems(
     },
 
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
-    { label: "Message", slug: "/mu/message", icon: MessageIcon },
+    { label: "Message", slug: "/mu/industry-message", icon: MessageIcon },
     {
       label: "Post a job position",
       slug: "/mu/post-job-position",
