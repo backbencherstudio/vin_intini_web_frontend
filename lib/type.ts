@@ -450,5 +450,7 @@ export interface userJobType {
   salary_max: string;
   state_id: number;
   city_id: number;
+  match_score?: number;
+  matched_criteria?: string[];
   industry: CompanyType;
 }

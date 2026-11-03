@@ -11,6 +11,7 @@ interface JobSearchBarProps {
   searchParam: string;
   onFilterChange: (filter: string) => void;
   onSearchChange: (search: string) => void;
+  onPreferencesClick?: () => void;
 }
 
 export const JobSearchBar: React.FC<JobSearchBarProps> = ({
@@ -18,6 +19,7 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
   searchParam,
   onFilterChange,
   onSearchChange,
+  onPreferencesClick,
 }) => {
   const [query, setQuery] = useState(searchParam);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -54,6 +56,16 @@ export const JobSearchBar: React.FC<JobSearchBarProps> = ({
           <span>Filter</span>
           <FiSliders className="text-sm" />
         </button>
+        {onPreferencesClick && (
+          <button
+            type="button"
+            onClick={onPreferencesClick}
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-borderColor bg-white px-5 py-2.5 text-sm text-descriptionColor transition hover:border-primaryColor/30 hover:bg-primaryColor/5 hover:text-primaryColor sm:w-auto"
+          >
+            <span>Preferences</span>
+            <FiSliders className="text-sm text-primaryColor" />
+          </button>
+        )}
       </div>
 
       <JobFilterModal

@@ -64,6 +64,36 @@ const userJobSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["UserJob"],
     }),
+    getRecommendedJobs: builder.query<any, any | void>({
+      query: (params) => ({
+        url: `/industry/jobsfeed/recommended`,
+        method: "GET",
+        params,
+      }),
+      providesTags: ["UserJob", "JobPreference"],
+    }),
+    getUserJobPreference: builder.query<any, void>({
+      query: () => ({
+        url: `/user/job-preference`,
+        method: "GET",
+      }),
+      providesTags: ["JobPreference"],
+    }),
+    saveUserJobPreference: builder.mutation<any, any>({
+      query: (data) => ({
+        url: `/user/job-preference`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["JobPreference", "UserJob"],
+    }),
+    clearUserJobPreference: builder.mutation<any, void>({
+      query: () => ({
+        url: `/user/job-preference`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["JobPreference", "UserJob"],
+    }),
   }),
 });
 
@@ -76,4 +106,8 @@ export const {
   useApplyUserJobMutation,
   useLikeByUserJobPostMutation,
   useSaveUserJobMutation,
+  useGetRecommendedJobsQuery,
+  useGetUserJobPreferenceQuery,
+  useSaveUserJobPreferenceMutation,
+  useClearUserJobPreferenceMutation,
 } = userJobSlice;
