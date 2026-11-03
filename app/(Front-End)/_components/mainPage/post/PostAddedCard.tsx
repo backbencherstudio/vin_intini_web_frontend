@@ -46,7 +46,13 @@ type SponsoredAd = {
   is_new_release?: boolean;
 };
 
-function PostAddedCard({ ad }: { ad: SponsoredAd }) {
+function PostAddedCard({
+  ad,
+  priority = false,
+}: {
+  ad: SponsoredAd;
+  priority?: boolean;
+}) {
   const cardRef = useRef<HTMLElement | null>(null);
   const impressionSentRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -286,6 +292,9 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
           alt={ad.product_name || ad.title || "Sponsored product"}
           width={1200}
           height={628}
+          priority={priority}
+          loading={priority ? "eager" : "lazy"}
+          sizes="(max-width: 768px) 100vw, 600px"
           className="h-auto aspect-[1.91/1] w-full object-cover"
           unoptimized
           onError={() => setProductImage(fallbackProductImage)}

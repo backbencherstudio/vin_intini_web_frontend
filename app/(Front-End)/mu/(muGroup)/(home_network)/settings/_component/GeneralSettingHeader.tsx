@@ -12,6 +12,7 @@ function GeneralSettingHeader({ data }: { data: UserProfileType }) {
             src={data?.user?.profile_image_url || emptyUser}
             alt="User profile"
             fill
+            sizes="64px"
             className="object-cover"
           />
         </div>

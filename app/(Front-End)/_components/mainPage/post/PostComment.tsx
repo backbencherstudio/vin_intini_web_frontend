@@ -139,7 +139,7 @@ function PostComment({ post }: { post?: PostFeedType }) {
   };
 
   return (
-    <section className=" border-t border-borderColor comment-section py-4 md:py-4">
+    <section className="border-t border-borderColor comment-section py-4 px-2.5 md:px-3">
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image

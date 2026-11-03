@@ -18,17 +18,17 @@ async function GroupSidbar() {
   }
 
   return (
-    <aside className="rounded-md ">
-      <h3 className="text-base lg:text-lg py-3 font-semibold text-headerColor">
+    <aside className="rounded-md">
+      <h3 className="text-lg font-semibold text-headerColor border-b border-borderColor pb-3 min-h-[66px] flex items-center">
         Groups you might be Interested
       </h3>
 
-      <div className=" space-y-0">
+      <div className="space-y-0">
         {groups.length > 0 &&
           groups.map((group: GroupDetailType) => (
             <div
               key={group.id}
-              className="border-t border-borderColor py-4 first:pt-5"
+              className="border-b border-borderColor py-4 last:border-b-0"
             >
               <div className="flex items-start gap-3">
                 <div className="flex xl:h-14 xl:w-14 w-11 h-11 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">

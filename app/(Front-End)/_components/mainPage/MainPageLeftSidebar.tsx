@@ -27,7 +27,7 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
     <div className="flex flex-col justify-between min-h-[calc(100vh-170px)] h-full">
       {/* Top Navigation */}
       <div>
-        <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold text-headerColor">
+        <h3 className="text-lg border-b border-borderColor min-h-[66px] pb-3 flex items-center font-semibold text-headerColor">
           Manage Network
         </h3>
 

@@ -46,7 +46,7 @@ function ProfileAllPost() {
           key={post.id}
           ref={combinedData.length === index + 1 ? lastElementRef : null}
         >
-          <PostCard post={post} meta={timeline?.meta} />
+          <PostCard post={post} meta={timeline?.meta} priority={index === 0} />
         </div>
       ))}
 

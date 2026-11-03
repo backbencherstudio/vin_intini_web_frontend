@@ -106,6 +106,7 @@ export default function VideoTutorial() {
                                     alt={selectedVideo.title}
                                     fill
                                     unoptimized
+                                    sizes="(max-width: 1024px) 100vw, 66vw"
                                     className="w-full h-full object-cover"
                                 />
                             )}

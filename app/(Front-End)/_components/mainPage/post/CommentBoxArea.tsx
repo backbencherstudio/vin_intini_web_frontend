@@ -234,7 +234,8 @@ function CommentBoxArea({
                 src={previewUrl}
                 alt="Preview"
                 fill
-                className="object-cover w-full h-fullf"
+                sizes="96px"
+                className="object-cover w-full h-full"
               />
               <button
                 type="button"

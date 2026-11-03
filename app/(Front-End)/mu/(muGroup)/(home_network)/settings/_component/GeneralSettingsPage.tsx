@@ -161,14 +161,14 @@ export default function GeneralSettingsPage() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 pb-12">
+    <div className="w-full space-y-6 pb-12">
       {/* ----------------- Top Header Section ----------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center border-b border-border/60 pb-4 justify-between gap-4">
-        <div className=" ">
-          <h1 className="text-xl md:text-2xl font-semibold text-headerColor">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-borderColor min-h-[66px] pb-3 mb-6">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
             Settings
           </h1>
-          <p className="text-base text-grayColor1 mt-0.5">
+          <p className="text-sm text-descriptionColor mt-1">
             Manage your account, privacy, and preferences.
           </p>
         </div>
@@ -352,7 +352,7 @@ export default function GeneralSettingsPage() {
                 control={control}
                 render={({ field }) => (
                   <SelecteInputField
-                    value={field.value || undefined}
+                    value={field.value ?? ""}
                     onChange={(val) => {
                       field.onChange(val);
                       handlePrivacyChange("privacy_profile_activity", val);
@@ -388,7 +388,7 @@ export default function GeneralSettingsPage() {
                 control={control}
                 render={({ field }) => (
                   <SelecteInputField
-                    value={field.value || undefined}
+                    value={field.value ?? ""}
                     onChange={(val) => {
                       field.onChange(val);
                       handlePrivacyChange("privacy_profile_visibility", val);

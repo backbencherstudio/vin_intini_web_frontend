@@ -42,7 +42,7 @@ function GroupPostList({ groupId }: { groupId?: string }) {
       ) : combinedData.length > 0 ? (
         combinedData.map((post, index) => (
           <div key={post.id}>
-            <PostCard post={post} meta={data?.meta} />
+            <PostCard post={post} meta={data?.meta} priority={index === 0} />
           </div>
         ))
       ) : (

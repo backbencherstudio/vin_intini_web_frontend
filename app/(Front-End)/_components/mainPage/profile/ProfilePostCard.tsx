@@ -57,7 +57,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
     setIsExpanded((prev) => !prev);
   };
   return (
-    <article className="rounded-xl  h-full flex flex-col justify-between border border-borderColor  p-2.5 md:p-3">
+    <article className="rounded-xl h-full flex flex-col justify-between border border-borderColor p-2.5 md:p-3 overflow-hidden">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-2.5">
@@ -118,7 +118,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
           <p>{`${post?.total_like} likes`}</p>
           <p>{`${post?.total_comment} comments`}</p>
         </div>
-        <div className="mt-2  border-t text-center text-primaryColor underline text-base font-semibold border-borderColor pt-2">
+        <div className="mt-2 -mx-2.5 md:-mx-3 border-t text-center text-primaryColor underline text-base font-semibold border-borderColor pt-2 px-2.5 md:px-3">
           <Link href={`/mu/profile/${userId}/posts`}>View Details</Link>
         </div>
       </div>

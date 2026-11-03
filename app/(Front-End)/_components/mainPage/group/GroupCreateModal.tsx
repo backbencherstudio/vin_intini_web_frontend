@@ -194,6 +194,7 @@ export default function CreateGroupForm({
                 className="w-full h-full object-cover"
                 alt="Cover"
                 fill
+                sizes="(max-width: 768px) 100vw, 672px"
               />
             )}
             <label className="absolute right-4 top-4 bg-white p-2 rounded-full cursor-pointer hover:bg-white shadow-sm transition-all">
@@ -228,6 +229,7 @@ export default function CreateGroupForm({
                     className="w-full h-full object-cover border border-bgColor rounded-sm "
                     alt="Logo"
                     fill
+                    sizes="80px"
                   />
                   <button
                     onClick={() => setLogoPreview(null)}

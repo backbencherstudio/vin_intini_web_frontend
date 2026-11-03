@@ -13,7 +13,7 @@ export default function FrontEndLayout({
           <div className="hidden lg:block col-span-2 lg:sticky lg:top-25 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto self-start">
             <MainPageLeftSidebar />
           </div>
-          <div className="xl:col-span-8 lg:border-l lg:pl-6 border-[#D2D2D5] lg:col-span-6 col-span-12">
+          <div className="xl:col-span-8 lg:border-l lg:pl-6 border-borderColor lg:col-span-6 col-span-12">
             <NetworkSidebarLayout>{children}</NetworkSidebarLayout>
           </div>
         </div>

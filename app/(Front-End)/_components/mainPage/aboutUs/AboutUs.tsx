@@ -18,7 +18,7 @@ export default function Page() {
               <div className="flex justify-center md:justify-start">
                 <div className="inline-flex  items-center gap-2 rounded-full bg-[#D6F1F8] px-4 py-1.5 uppercase text-base font-semibold leading-[150%] tracking-[0.08px] text-primaryColor">
                   <AboutStar className="h-[18px] w-[18px]" />
-                  <span className='uppercase text-base font-semibold leading-[150%] font-["Segoe UI"]'>
+                  <span className='uppercase text-base font-semibold leading-[150%]'>
                     About Us
                   </span>
                 </div>

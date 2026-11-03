@@ -109,12 +109,12 @@ export default function PostListClient({
 
   return (
     <section className="space-y-4">
-      {combinedData.map((post: any) => (
+      {combinedData.map((post: any, index: number) => (
         <div key={post.id || `ad-${post.ad_campaign_id}`}>
           {post.is_sponsored === true ? (
-            <PostAddedCard ad={post} />
+            <PostAddedCard ad={post} priority={index === 0} />
           ) : (
-            <PostCard post={post} />
+            <PostCard post={post} priority={index === 0} />
           )}
         </div>
       ))}

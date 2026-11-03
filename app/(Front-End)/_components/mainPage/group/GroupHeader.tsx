@@ -7,26 +7,26 @@ function GroupHeader() {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderColor pb-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderColor pb-3 min-h-[66px]">
         <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
-          Groups{" "}
+          Groups
         </h2>
-        <div className="flex  items-center gap-3">
-          <div className="relative w-75 hidden md:block  max-w-full">
+        <div className="flex items-center gap-3">
+          <div className="relative w-64 lg:w-72 hidden md:block max-w-full">
             <Search placeHolder="Search Group" />
           </div>
           <button
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="Create Group"
-            className="rounded-full border border-primaryColor px-4 py-1.5 font-semibold text-base leading-[140%]  text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
+            className="rounded-full border border-primaryColor px-4 py-1.5 font-semibold text-sm leading-[140%] text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
           >
             Create Group
           </button>
         </div>
 
-        <div className="relative w-75 mx-auto md:hidden  max-w-full">
-          <Search />
+        <div className="relative w-full md:hidden max-w-full">
+          <Search placeHolder="Search Group" />
         </div>
       </div>
       {isOpen && <CreateGroupForm open={isOpen} setOpen={setIsOpen} />}

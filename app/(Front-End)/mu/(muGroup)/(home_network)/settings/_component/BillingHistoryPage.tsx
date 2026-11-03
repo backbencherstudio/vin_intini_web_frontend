@@ -463,9 +463,9 @@ export default function BillingHistoryPage() {
   return (
     <div className="w-full space-y-6 pb-12">
       {/* ----------------- Top Header Section ----------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-borderColor min-h-[66px] pb-3 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-[28px] font-bold text-headerColor tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
             Billing History
           </h1>
           <p className="text-sm text-descriptionColor mt-1 font-normal">
@@ -476,14 +476,9 @@ export default function BillingHistoryPage() {
 
       {/* ----------------- Transactions Section ----------------- */}
       <div className="space-y-5">
-        {/* Card Header: Title + Pill Tabs */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-borderColor">
-          <h2 className="text-xl font-bold text-headerColor tracking-tight">
-            Transactions
-          </h2>
-
-          {/* Pill Tabs: Subscription & Boosting */}
-          <div className="inline-flex  items-center p-1 rounded-xl bg-sectionColor border border-borderColor self-start sm:self-auto">
+        {/* Pill Tabs: Subscription & Boosting */}
+        <div className="flex justify-end">
+          <div className="inline-flex items-center p-1 rounded-xl bg-sectionColor border border-borderColor">
             <button
               type="button"
               onClick={() => handleTabChange("subscription")}

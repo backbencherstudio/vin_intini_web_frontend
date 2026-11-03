@@ -53,6 +53,7 @@ export default function WhoAre() {
                                     src={aboutUs.photo_url}
                                     alt="Founder"
                                     fill
+                                    sizes="(max-width: 768px) 100vw, 33vw"
                                     className="object-cover object-center"
                                 />
                             ) : (

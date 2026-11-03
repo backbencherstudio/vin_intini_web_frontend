@@ -663,6 +663,7 @@ export default function ContentPages() {
                               alt={`${item.fields.name || label} image`}
                               fill
                               unoptimized
+                              sizes="64px"
                               className="object-cover"
                             />
                           ) : (
@@ -857,7 +858,7 @@ export default function ContentPages() {
                         <div className="flex items-center gap-3 md:flex-col">
                           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-white shadow-sm">
                             {photoUrl ? (
-                              <Image src={photoUrl} alt="" fill unoptimized className="object-cover" />
+                              <Image src={photoUrl} alt="" fill unoptimized sizes="64px" className="object-cover" />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xl text-gray-500">
                                 {(item.fields.name || "?").slice(0, 1).toUpperCase()}
@@ -1053,6 +1054,7 @@ export default function ContentPages() {
                         alt="Founder portrait preview"
                         fill
                         unoptimized
+                        sizes="176px"
                         className="object-cover"
                       />
                     </div>

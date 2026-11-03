@@ -151,13 +151,15 @@ export default function NotificationSettingsPage() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6 pb-12">
+    <div className="w-full space-y-6 pb-12">
       {/* ----------------- Top Header Section ----------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-borderColor min-h-[66px] pb-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Manage your account, privacy, and preferences.
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
+            Notification Settings
+          </h1>
+          <p className="text-sm text-descriptionColor mt-1 font-normal">
+            Manage your account notification preferences.
           </p>
         </div>
 

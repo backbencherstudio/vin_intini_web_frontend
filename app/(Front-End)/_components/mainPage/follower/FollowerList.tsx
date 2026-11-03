@@ -6,21 +6,25 @@ import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetMyFollowingsQuery } from "@/feature/slice/connect/followSlice";
 import { useLoadMore } from "@/hooks/useLoadMore";
 import { ConnectionRequestType } from "@/lib/type";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ConnectionNotFound from "../network/connectionRequests/ConnectionNotFound";
 import ConnectionRequestCard from "../network/connectionRequests/ConnectionRequestCard";
 
 function FollowerList({ isNetwork }: { isNetwork?: boolean }) {
+  const searchParams = useSearchParams();
+  const searchQuery = (searchParams.get("search") ?? "").trim().toLowerCase();
   const limit = 10;
   const [tempPage, setTempPage] = useState(1);
   const { data, isLoading, isFetching, isError } = useGetMyFollowingsQuery({
-    query: `?page=${tempPage}&limit=${limit}`,
+    query: `?page=${tempPage}&limit=${limit}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`,
   });
 
   const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
     limit,
+    searchQuery,
   );
 
   useEffect(() => {

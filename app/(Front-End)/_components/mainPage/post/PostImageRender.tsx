@@ -8,6 +8,7 @@ type PostMediaItem = NonNullable<PostFeedType["media"]>[number];
 
 interface PostImageRenderProps {
   mediaItems: PostMediaItem[];
+  priority?: boolean;
 }
 
 // Optimized Inline Video Component with auto-pause on scroll-out
@@ -64,7 +65,10 @@ function FeedVideoPlayer({
   );
 }
 
-function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
+function PostImageRender({
+  mediaItems = [],
+  priority = false,
+}: PostImageRenderProps) {
   const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
@@ -103,7 +107,11 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
     setIsMediaViewerOpen(true);
   };
 
-  const renderImage = (item: PostMediaItem, isSingle: boolean = false) => {
+  const renderImage = (
+    item: PostMediaItem,
+    isSingle: boolean = false,
+    isPriority: boolean = false
+  ) => {
     const mediaUrl = item.url || item.file_path || "/post_placeholder.png";
 
     return (
@@ -118,6 +126,8 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
           width={1200}
           height={800}
           unoptimized
+          priority={isPriority}
+          loading={isPriority ? "eager" : "lazy"}
           sizes="(max-width: 768px) 100vw, 600px"
           className={`w-full ${
             isSingle
@@ -211,7 +221,7 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
               onClick={() => openMediaViewer(0)}
               className="relative w-full overflow-hidden block bg-black/5 cursor-pointer rounded-lg"
             >
-              {renderImage(mediaItems[0], true)}
+              {renderImage(mediaItems[0], true, priority)}
             </button>
           )
         ) : /* 2 Media Items */
@@ -235,7 +245,7 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
                   onClick={() => openMediaViewer(index)}
                   className="relative h-full w-full overflow-hidden rounded-md bg-[#eff1f4] cursor-pointer"
                 >
-                  {renderImage(item, false)}
+                  {renderImage(item, false, priority && index === 0)}
                 </button>
               )
             )}
@@ -256,7 +266,7 @@ function PostImageRender({ mediaItems = [] }: PostImageRenderProps) {
                 onClick={() => openMediaViewer(0)}
                 className="relative h-full w-full overflow-hidden rounded-md bg-[#eff1f4] cursor-pointer"
               >
-                {renderImage(mediaItems[0], false)}
+                {renderImage(mediaItems[0], false, priority)}
               </button>
             )}
 

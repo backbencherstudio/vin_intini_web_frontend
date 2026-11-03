@@ -42,25 +42,20 @@ function ConnectionListHeader({ data }: any) {
 
   return (
     <div>
-      <div className="flex flex-col gap-3 md:flex-row w-full justify-between items-center">
-        <h1 className="text-base text-nowrap lg:text-xl md:block hidden font-semibold text-headerColor">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-borderColor pb-3 min-h-[66px]">
+        <h2 className="text-xl font-semibold leading-[120%] text-headerColor">
           Total Connections{" "}
-          <span className="font-normal text-grayColor1">
+          <span className="text-base font-normal text-grayColor1">
             ({data?.total || 0})
           </span>
-        </h1>
-        <div className="flex gap-4 justify-between w-full items-center">
-          <h1 className="text-base md:hidden font-semibold text-headerColor">
-            Total Connections{" "}
-            <span className="font-normal text-grayColor1">
-              ({data?.total || 0})
-            </span>
-          </h1>
-          <div className="relative w-55 lg:w-75 mx-auto hidden md:block  max-w-full">
+        </h2>
+
+        <div className="flex items-center gap-3">
+          <div className="relative w-64 lg:w-72 hidden md:block max-w-full">
             <Search placeHolder="Search connection..." />
           </div>
-          <div className="flex items-center ">
-            <span className="text-grayColor1 hidden lg:block text-nowrap">
+          <div className="flex items-center gap-1">
+            <span className="text-grayColor1 hidden lg:block text-nowrap text-sm">
               Sort by:
             </span>
             <SelecteInputField
@@ -68,12 +63,13 @@ function ConnectionListHeader({ data }: any) {
               onValueChange={setSelectedSort}
               options={sortOptions}
               placeholder="Sort by"
-              className="h-12! md:h-13! border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
+              className="h-10! border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
             />
           </div>
         </div>
-        <div className="relative w-full  mx-auto md:hidden  max-w-full">
-          <Search />
+
+        <div className="relative w-full md:hidden max-w-full">
+          <Search placeHolder="Search connection..." />
         </div>
       </div>
     </div>

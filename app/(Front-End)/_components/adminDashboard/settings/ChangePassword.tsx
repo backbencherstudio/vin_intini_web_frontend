@@ -1,6 +1,5 @@
 "use client";
 
-import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import {
   useGetSecurityOverviewQuery,
   usePostAdminChangePasswordMutation,
@@ -16,6 +15,7 @@ interface PasswordInputProps {
   onChange: (value: string) => void;
   placeholder: string;
   disabled?: boolean;
+  error?: string;
 }
 
 function PasswordInput({
@@ -24,31 +24,42 @@ function PasswordInput({
   onChange,
   placeholder,
   disabled = false,
+  error,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="relative">
-      <CustomInput
-        label={label}
-        type={showPassword ? "text" : "password"}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="pr-10"
-      />
-
-      {!disabled && (
-        <button
-          type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-[45px] cursor-pointer text-[#8C8C8C] transition-colors hover:text-[#4A4C56]"
-          aria-label={showPassword ? "Hide password" : "Show password"}
-        >
-          {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-        </button>
+    <div className="w-full">
+      {label && (
+        <label className="mb-1.5 block text-sm font-medium text-[#4A4C56]">
+          {label}
+        </label>
       )}
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          disabled={disabled}
+          className={`h-10 w-full rounded-lg border bg-white px-3 pr-10 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 ${
+            error
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500/15"
+              : "border-gray-300 focus:border-primaryColor focus:ring-primaryColor/15"
+          }`}
+        />
+
+        {!disabled && (
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#8C8C8C] transition-colors hover:text-[#4A4C56] flex items-center justify-center"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -213,6 +224,7 @@ export default function ChangePassword() {
           onChange={setCurrentPassword}
           placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
           disabled={OverviewData?.has_password === false}
+          error={errors.currentPassword}
         />
 
         {errors.currentPassword && (
@@ -224,6 +236,7 @@ export default function ChangePassword() {
           value={newPassword}
           onChange={setNewPassword}
           placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
+          error={errors.newPassword}
         />
 
         {errors.newPassword && (
@@ -235,6 +248,7 @@ export default function ChangePassword() {
           value={confirmPassword}
           onChange={setConfirmPassword}
           placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
+          error={errors.confirmPassword}
         />
 
         {/* <div className="flex items-center gap-1">

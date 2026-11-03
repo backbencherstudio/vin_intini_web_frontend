@@ -15,9 +15,10 @@ import PostLikeList from "./PostLikeList";
 type PostCardProps = {
   post?: PostFeedType;
   meta?: any; // Adjust the type as needed
+  priority?: boolean;
 };
 
-function PostCard({ post, meta }: PostCardProps) {
+function PostCard({ post, meta, priority = false }: PostCardProps) {
   const { user, media, group, industry } = post || {};
 
   const mediaItems = media ?? [];
@@ -85,7 +86,7 @@ function PostCard({ post, meta }: PostCardProps) {
   };
 
   return (
-    <article className="rounded-xl border border-borderColor p-2.5 md:p-3">
+    <article className="rounded-xl border border-borderColor p-2.5 md:p-3 overflow-hidden">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           {industry ? (
@@ -214,7 +215,7 @@ function PostCard({ post, meta }: PostCardProps) {
         </div>
       )}
       <div>
-        <PostImageRender mediaItems={mediaItems} />
+        <PostImageRender mediaItems={mediaItems} priority={priority} />
       </div>
 
       <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">
@@ -227,7 +228,7 @@ function PostCard({ post, meta }: PostCardProps) {
         >{`${post?.total_comment} comments`}</button>
       </div>
 
-      <div className="mt-2 grid grid-cols-2 border-t border-borderColor pt-2">
+      <div className="mt-2 -mx-2.5 md:-mx-3 border-t border-borderColor pt-2 px-2.5 md:px-3 grid grid-cols-2">
         <button
           type="button"
           onClick={handleLikeClick}
@@ -248,7 +249,7 @@ function PostCard({ post, meta }: PostCardProps) {
         </button>
       </div>
       {isCommented && (
-        <div className="mt-2">
+        <div className="mt-2 -mx-2.5 md:-mx-3">
           {" "}
           <PostComment post={post} />
         </div>
