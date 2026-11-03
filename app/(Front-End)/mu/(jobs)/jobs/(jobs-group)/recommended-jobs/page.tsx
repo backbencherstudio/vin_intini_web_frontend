@@ -1,9 +1,9 @@
-function Page() {
+import RecommendedJobsPage from "../../_component/RecommendedJobsPage";
+
+export default function Page() {
   return (
     <div>
-      <div>recommended jobs</div>
+      <RecommendedJobsPage />
     </div>
   );
 }
-
-export default Page;
