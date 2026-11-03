@@ -58,8 +58,30 @@ const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
     borderRadius: "0.5rem",
     borderColor: state.isFocused ? "#e5e5e5" : base.borderColor,
     boxShadow: state.isFocused ? "0 0 0 2px #D9F4F7" : "none",
+    fontSize: "0.875rem",
     "&:hover": {
       borderColor: state.isFocused ? "#e5e5e5" : base.borderColor,
+    },
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "var(--muted-foreground, #71717a)",
+    fontSize: "0.875rem",
+    fontWeight: "400",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    fontSize: "0.875rem",
+    color: "var(--headerColor, #1f2937)",
+  }),
+  indicatorSeparator: () => ({
+    display: "none",
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: "var(--muted-foreground, #71717a)",
+    "&:hover": {
+      color: "var(--headerColor, #1f2937)",
     },
   }),
   valueContainer: (base) => ({
@@ -70,6 +92,7 @@ const selectStyles: StylesConfig<FlatOption, boolean, GroupBase<FlatOption>> = {
   menu: (base) => ({
     ...base,
     zIndex: 30,
+    fontSize: "0.875rem",
   }),
   multiValue: (base) => ({
     ...base,

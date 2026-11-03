@@ -571,7 +571,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     isStateLoading ? "Loading states..." : "Select State"
                   }
                   isDisabled={isStateLoading}
-                  className=" w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
+                  className="w-full text-sm"
                 />
               )}
             />
@@ -605,7 +605,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                         : "Select City"
                   }
                   isDisabled={!selectedStateId || isCitiesLoading}
-                  className="w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
+                  className="w-full text-sm"
                 />
               )}
             />
