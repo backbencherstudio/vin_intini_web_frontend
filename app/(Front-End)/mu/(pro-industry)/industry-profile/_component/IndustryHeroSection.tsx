@@ -14,9 +14,13 @@ import Link from "next/link";
 import { GrLocation } from "react-icons/gr";
 import { IoPricetagsOutline } from "react-icons/io5";
 import { HiOutlineUsers } from "react-icons/hi2";
+import { MessageIcon } from "@/public/svgIcons/Icons";
+import { useState } from "react";
 import RelatedIndustryFollowButton from "../../_component/RelatedIndustryFollowButton";
+import IndustryMessageModal from "./IndustryMessageModal";
 function IndustryHeroSection({ userId }: { userId?: string }) {
   const UId = userId;
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const { data, isLoading } = useGetCompanyQuery(UId, {
     skip: !UId,
   });
@@ -64,15 +68,31 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 </Link>
               </div>
             ) : (
-              <div className="h-10">
+              <div className="h-10 flex items-center gap-2.5 mt-2">
                 <RelatedIndustryFollowButton
                   industryId={UId}
                   initialFollowing={Boolean(industryData?.is_following)}
                 />
+                {Boolean(industryData?.has_conversation) && (
+                  <button
+                    type="button"
+                    onClick={() => setIsMessageModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-primaryColor hover:bg-primaryColor/90 text-white text-xs md:text-sm font-medium transition cursor-pointer shadow-xs"
+                  >
+                    <MessageIcon className="w-4 h-4 fill-white" />
+                    <span>Message</span>
+                  </button>
+                )}
               </div>
             )}
           </div>
         </div>
+        <IndustryMessageModal
+          isOpen={isMessageModalOpen}
+          onClose={() => setIsMessageModalOpen(false)}
+          industryId={UId!}
+          industryData={industryData}
+        />
         <div className="mt-12 ">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <div className="col-span-2">

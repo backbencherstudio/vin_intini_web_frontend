@@ -1,8 +1,13 @@
+"use client";
+
+import { useStartIndustryConversationWithUserMutation } from "@/feature/slice/message/industryMessageSlice";
 import { JobApplicationDetailsType } from "@/lib/type";
 import { LocationIcon, PhoneIcon } from "@/public/svgIcons/Icons";
-import { Mail, MessageSquare } from "lucide-react";
+import { Loader2, Mail, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import ApplicantStatusUpdate from "./ApplicantStatusUpdate";
 
 function ApplicantsUserHeader({
@@ -10,6 +15,33 @@ function ApplicantsUserHeader({
 }: {
   applicant: JobApplicationDetailsType;
 }) {
+  const router = useRouter();
+  const [startConversation, { isLoading: isStarting }] =
+    useStartIndustryConversationWithUserMutation();
+
+  const handleMessageApplicant = async () => {
+    const targetUserId =
+      applicant.applicant?.id || (applicant as any).user_id;
+
+    if (!targetUserId) {
+      if (applicant.email) {
+        window.location.href = `mailto:${applicant.email}`;
+      } else {
+        toast.error("Applicant details not available for messaging.");
+      }
+      return;
+    }
+
+    try {
+      const res = await startConversation(targetUserId).unwrap();
+      if (res?.data?.id) {
+        router.push(`/mu/industry-message/${res.data.id}`);
+      }
+    } catch (err: any) {
+      console.error("Failed to start conversation with applicant", err);
+      toast.error(err?.data?.message || "Failed to start conversation.");
+    }
+  };
   // Derive display data
   const candidateName =
     applicant.full_name || applicant.applicant?.name || "Candidate";
@@ -102,13 +134,19 @@ function ApplicantsUserHeader({
             <span className="text-xs md:text-sm px-3 py-1.5 rounded-full border border-grayColor2/60 text-descriptionColor bg-bgLightColor">
               Application ID: #{applicant.application_id || applicant.id}
             </span>
-            <Link
-              href={applicant.email ? `mailto:${applicant.email}` : "#"}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primaryColor hover:bg-primaryColor text-white text-xs md:text-sm font-medium transition cursor-pointer shadow-xs"
+            <button
+              type="button"
+              onClick={handleMessageApplicant}
+              disabled={isStarting}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primaryColor hover:bg-primaryColor/90 text-white text-xs md:text-sm font-medium transition cursor-pointer shadow-xs disabled:opacity-70"
             >
-              <MessageSquare className="w-4 h-4 fill-white" />
-              <span>Sent Message</span>
-            </Link>
+              {isStarting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+              ) : (
+                <MessageSquare className="w-4 h-4 fill-white" />
+              )}
+              <span>{isStarting ? "Opening Chat…" : "Send Message"}</span>
+            </button>
           </div>
         </div>
       </div>

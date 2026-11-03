@@ -11,6 +11,7 @@ import {
   useUnfollowUserMutation,
 } from "@/feature/slice/connect/followSlice";
 import { useStartConversationMutation } from "@/feature/slice/message/messageSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { CrossUserIcon, FollowUserIcon, MessageIcon, PlusUserIcon, UnfollowUserIcon } from "@/public/svgIcons/Icons";
 import { icon } from "leaflet";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,10 @@ import { MdDone } from "react-icons/md";
 
 function ProfileConnectionAction({ profileData, userId }) {
   const [selectedAction, setSelectedAction] = useState("");
+  const { data: myProfile } = useGetUserProfileQuery("profile");
+  const isProIndustry =
+    myProfile?.user?.tier === "pro_industry" || Boolean(myProfile?.industry);
+
   const [startConversation, { isLoading: isStartingConversation }] =
     useStartConversationMutation();
 
@@ -135,6 +140,16 @@ function ProfileConnectionAction({ profileData, userId }) {
                 onClick={() => handleConnectionAction("remove")}
                 className=" bg-whiteColor!   text-blackColor! border py-2!"
               />
+              {isProIndustry && (
+                <ButtonReuseable
+                  onClick={handleMessageCreate}
+                  icon={
+                    <MessageIcon className="w-4.5 h-4.5 mt-1 text-whiteColor" />
+                  }
+                  title="Direct Message"
+                  className="cursor-pointer py-2! text-whiteColor rounded-md bg-primaryColor hover:bg-primaryColor/90 transition-all duration-200 shadow-xs"
+                />
+              )}
             </div>
           )}
           {profileData?.connection_status?.state === "pending_received" && (
@@ -150,15 +165,37 @@ function ProfileConnectionAction({ profileData, userId }) {
                 onClick={() => handleConnectionAction("remove")}
                 className="bg-bgColor! text-descriptionColor! py-2!"
               />
+              {isProIndustry && (
+                <ButtonReuseable
+                  onClick={handleMessageCreate}
+                  icon={
+                    <MessageIcon className="w-4.5 h-4.5 mt-1 text-whiteColor" />
+                  }
+                  title="Direct Message"
+                  className="cursor-pointer py-2! text-whiteColor rounded-md bg-primaryColor hover:bg-primaryColor/90 transition-all duration-200 shadow-xs"
+                />
+              )}
             </div>
           )}
           {profileData?.connection_status?.state === "not_connected" && (
-            <ButtonReuseable
-              title={profileData?.connection_status?.action_label || "Connect"}
-              icon={<PlusUserIcon />}
-              onClick={() => handleConnect(userId)}
-              className="bg-primaryColor! py-2!"
-            />
+            <div className="flex items-center gap-2">
+              <ButtonReuseable
+                title={profileData?.connection_status?.action_label || "Connect"}
+                icon={<PlusUserIcon />}
+                onClick={() => handleConnect(userId)}
+                className="bg-primaryColor! py-2!"
+              />
+              {isProIndustry && (
+                <ButtonReuseable
+                  onClick={handleMessageCreate}
+                  icon={
+                    <MessageIcon className="w-4.5 h-4.5 mt-1 text-whiteColor" />
+                  }
+                  title="Direct Message"
+                  className="cursor-pointer py-2! text-whiteColor rounded-md bg-primaryColor hover:bg-primaryColor/90 transition-all duration-200 shadow-xs"
+                />
+              )}
+            </div>
           )}
         </div>
       )}
