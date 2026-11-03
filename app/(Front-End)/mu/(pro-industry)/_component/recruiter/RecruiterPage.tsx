@@ -41,7 +41,7 @@ export default function RecruiterPage() {
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/mu/post-job-position"
-            className="flex items-center gap-2 bg-primaryColor hover:bg-primaryColor/90 text-white px-5 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer shadow-xs"
+            className="h-10 flex items-center gap-2 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-98"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Post a job position</span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumberIntoK } from "@/lib/utils";
 import { useGetJobDetailsQuery } from "@/feature/slice/jobs/jobSlice";
 import { JobDetails } from "@/lib/type";
 import {
@@ -25,28 +26,33 @@ function JobDetailsHeader() {
   if (isLoading) return <DetailsSkeleton />;
   const job = (data?.data ?? data) as JobDetails | undefined;
   const location = [job.city?.name, job.state?.name].filter(Boolean).join(", ");
-  const salary = `$${Number(job.salary_min).toLocaleString()} - $${Number(job.salary_max).toLocaleString()}`;
+  const salary =
+    job.salary_min && job.salary_max
+      ? `$${formatNumberIntoK({ value: job.salary_min })} - $${formatNumberIntoK({ value: job.salary_max })}`
+      : job.salary_min
+        ? `$${formatNumberIntoK({ value: job.salary_min })}`
+        : "";
   return (
     <div>
-      <section className="rounded-xl border border-grayColor2 bg-white p-4  md:p-5">
+      <section className="rounded-2xl border border-borderColor bg-white p-5 md:p-6 shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-start md:items-center gap-2">
-            <div className="relative  w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
+          <div className="flex items-start md:items-center gap-3">
+            <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-borderColor bg-white">
               <Image
-                src={job?.industry?.logo}
-                alt={job?.industry?.name}
+                src={job?.industry?.logo || "/logo.png"}
+                alt={job?.industry?.name || "Company"}
                 fill
-                sizes="48px"
-                className="object-cover"
+                sizes="56px"
+                className="object-contain p-1.5"
               />
             </div>
             <div className="xl:max-w-145 md:max-w-90 lg:max-w-85">
-              <h1 className="text-base font-semibold text-headerColor md:text-lg xl:text-xl ">
+              <h1 className="text-xl md:text-2xl font-bold text-headerColor leading-tight">
                 {job.job_title}
               </h1>
               <p className="mt-1 text-sm md:text-base text-descriptionColor">
                 Position -{" "}
-                <span className="font-semibold text-descriptionColor">
+                <span className="font-semibold text-headerColor">
                   {job.position}
                 </span>
               </p>
@@ -54,12 +60,12 @@ function JobDetailsHeader() {
           </div>
 
           <div className="flex justify-end w-full md:w-auto items-center gap-2">
-            <p className="text-descriptionColor  flex justify-center items-center capitalize bg-bgLightColor text-sm px-5 py-1.5 rounded-full">
+            <p className="rounded-full border border-primaryColor/15 bg-primaryColor/10 px-4 py-1 text-xs font-semibold capitalize text-primaryColor">
               {job.network_type}
             </p>
             {pathName.includes("mu/jobs-details") ? (
               <div>
-                <button>
+                <button aria-label="More options" className="cursor-pointer p-1 rounded-full hover:bg-gray-100 transition">
                   <DotIcon />
                 </button>
               </div>
@@ -68,7 +74,7 @@ function JobDetailsHeader() {
                 <JobStatusChange value={job.status} row={{ id: id }} />
                 <Link
                   href={`/mu/job-listing/${id}/edite`}
-                  className="cursor-pointer px-4 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center"
+                  className="cursor-pointer px-4 py-1.5 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center text-sm font-medium hover:bg-primaryColor/90 transition shadow-xs"
                 >
                   <EditeIcon className="w-4 h-4" /> Edit
                 </Link>
@@ -76,29 +82,30 @@ function JobDetailsHeader() {
             )}
           </div>
         </div>
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-descriptionColor">
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-descriptionColor pt-2 border-t border-gray-100">
           <span className="flex items-center gap-1.5">
             <LocationIcon className="h-3.5 w-3.5" />
             {location || "Location unavailable"}
           </span>
           <span className="flex items-center gap-1.5">
             <JobsIcon className="h-3.5 w-3.5" />
-            <span className=" capitalize  ">
+            <span className="capitalize">
               {job.work_mode.split("_").join(" ")}
             </span>
           </span>
           <span className="flex items-center gap-1.5">
             <Clock3 className="h-3.5 w-3.5" />
-
-            <span className="capitalize  ">
+            <span className="capitalize">
               {job.employment_type.split("_").join(" ")}
             </span>
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 font-medium text-headerColor">
             {salary}/{job?.salary_type}
           </span>
         </div>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
+
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
           {pathName.includes("mu/jobs-details") ? (
             <div>
               <JobApplyAaction
@@ -115,21 +122,21 @@ function JobDetailsHeader() {
           ) : pathName.includes("applicants") ? (
             <Link
               href={`/mu/job-listing/${id}/job-details`}
-              className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
+              className="rounded-full bg-primaryColor px-5 py-2 text-sm font-medium text-white transition hover:bg-primaryColor/90 shadow-xs"
             >
               View Details
             </Link>
           ) : (
             <Link
               href={`/mu/job-listing/${id}/applicants`}
-              className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
+              className="rounded-full bg-primaryColor px-5 py-2 text-sm font-medium text-white transition hover:bg-primaryColor/90 shadow-xs"
             >
               View Applicants ({job.applications_count ?? 0})
             </Link>
           )}
 
-          <span className="text-sm md:text-base text-descriptionColor">
-            JOB ID #{job.job_id}
+          <span className="text-xs sm:text-sm font-medium text-grayColor1 bg-gray-50 border border-borderColor px-3 py-1 rounded-lg">
+            JOB ID <span className="font-semibold text-headerColor">#{job.job_id}</span>
           </span>
         </div>
       </section>

@@ -8,7 +8,7 @@ function JobsGroupLayout({ children }: { children: React.ReactNode }) {
         <div className="xl:col-span-8 lg:border-r lg:pr-4 xl:pr-6 border-borderColor lg:col-span-8 col-span-12">
           {children}
         </div>
-        <div className="hidden lg:block col-span-4   lg:sticky lg:top-24  lg:overflow-y-auto self-start">
+        <div className="hidden lg:block col-span-4 lg:sticky lg:top-24 self-start">
           <TopJobsRightbar />
         </div>
       </div>

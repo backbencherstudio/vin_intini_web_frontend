@@ -26,6 +26,7 @@ const LABEL_MAP: Record<string, string> = {
   settings: "Settings",
   profile: "Profile",
   chat: "Chat",
+  "jobs-details": "Job Details",
 };
 
 function toLabel(slug: string): string {
@@ -37,9 +38,13 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
   const router = useRouter();
-  // Filter out dynamic numeric IDs (e.g., /mu/message/28 -> hide "28")
+  // Filter out dynamic numeric IDs (e.g., /mu/message/28 -> hide "28", /mu/jobs-details/45 -> hide "45")
   const filteredSegments = segments.filter((seg, i) => {
-    if (/^\d+$/.test(seg) && segments[i - 1] === "message") return false;
+    if (
+      /^\d+$/.test(seg) &&
+      (segments[i - 1] === "message" || segments[i - 1] === "jobs-details")
+    )
+      return false;
     return true;
   });
 

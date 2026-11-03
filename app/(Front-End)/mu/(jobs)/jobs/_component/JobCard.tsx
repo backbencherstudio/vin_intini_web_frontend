@@ -85,21 +85,30 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
           </p>
         )}
 
-        {Array.isArray(job?.matched_criteria) && job.matched_criteria.length > 0 && (
-          <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-            <span className="inline-flex items-center rounded-md bg-lightGreenColor/70 px-2 py-0.5 text-[11px] font-semibold text-primaryColor">
-              Recommended for you
-            </span>
-            {job.matched_criteria.slice(0, 4).map((criterion, idx) => (
-              <span
-                key={`${criterion}-${idx}`}
-                className="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-normal text-headerColor"
-              >
-                {criterion}
-              </span>
-            ))}
-          </div>
-        )}
+        {(() => {
+          const displayCriteria = Array.isArray(job?.matched_criteria)
+            ? job.matched_criteria.filter(
+                (criterion) =>
+                  !criterion.toLowerCase().startsWith("title") &&
+                  !criterion.toLowerCase().startsWith("position"),
+              )
+            : [];
+
+          if (displayCriteria.length === 0) return null;
+
+          return (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+              {displayCriteria.slice(0, 4).map((criterion, idx) => (
+                <span
+                  key={`${criterion}-${idx}`}
+                  className="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-normal text-headerColor"
+                >
+                  {criterion}
+                </span>
+              ))}
+            </div>
+          );
+        })()}
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-gray-100 pt-3">
           <JobApplyAaction

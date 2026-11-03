@@ -42,9 +42,9 @@ export default function JobsPage() {
 
   return (
     <main className="w-full">
-      <header className="mb-6 flex items-start md:items-center justify-between">
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl  font-bold text-headerColor">
+      <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-borderColor pb-3 min-h-[66px]">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
             {jobsResponse?.state?.name
               ? `${jobsResponse.state.name} - ${jobsType}`
               : `${jobsType}`}

@@ -1,5 +1,6 @@
 "use client";
 
+import AnalyticsRangeToggle from "@/components/reusable/AnalyticsRangeToggle";
 import { MultiUserIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -87,25 +88,10 @@ function RecruiterApplicantOverview({
           </div>
 
           {/* Range Toggle Tabs */}
-          <div className="bg-bgLightColor border border-bgColor rounded-md p-0.75 flex items-center gap-1 self-start sm:self-auto">
-            {(["weekly", "monthly"] as const).map((range) => {
-              const isActive = chartRange === range;
-              return (
-                <button
-                  key={range}
-                  type="button"
-                  onClick={() => setChartRange(range)}
-                  className={`px-3.5 py-1 rounded-md text-sm font-semibold capitalize transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-white text-headerColor shadow-xs "
-                      : "text-grayColor1 hover:text-headerColor"
-                  }`}
-                >
-                  {range}
-                </button>
-              );
-            })}
-          </div>
+          <AnalyticsRangeToggle
+            value={chartRange}
+            onChange={(val) => setChartRange(val)}
+          />
         </div>
 
         {/* Line Chart */}

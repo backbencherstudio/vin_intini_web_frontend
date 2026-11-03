@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumberIntoK } from "@/lib/utils";
 import {
   useGetRecommendedJobsQuery,
   useGetUserJobPreferenceQuery,
@@ -11,6 +12,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import React, { useState } from "react";
+import { FiSliders } from "react-icons/fi";
 import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
@@ -115,10 +117,10 @@ export default function RecommendedJobsPage() {
     }
     if (preference.salary_min || preference.salary_max) {
       const min = preference.salary_min
-        ? `$${Number(preference.salary_min).toLocaleString()}`
+        ? `$${formatNumberIntoK({ value: preference.salary_min })}`
         : "";
       const max = preference.salary_max
-        ? `$${Number(preference.salary_max).toLocaleString()}`
+        ? `$${formatNumberIntoK({ value: preference.salary_max })}`
         : "";
       const salaryText =
         min && max ? `${min} - ${max}` : min ? `From ${min}` : `Up to ${max}`;
@@ -157,15 +159,24 @@ export default function RecommendedJobsPage() {
   return (
     <main className="w-full">
       {/* Top Header */}
-      <header className="mb-6 flex items-start md:items-center justify-between">
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl font-bold text-headerColor">
+      <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-borderColor pb-3 min-h-[66px]">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-headerColor leading-tight">
             Recommended Jobs
           </h1>
           <p className="text-sm text-descriptionColor mt-1">
             Jobs recommended based on your preferences and profile.
           </p>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setIsPreferenceModalOpen(true)}
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primaryColor px-4 py-2 text-sm font-semibold text-white transition hover:bg-primaryColor/90 shrink-0 self-start sm:self-auto shadow-xs"
+        >
+          <span>Preferences</span>
+          <FiSliders className="text-sm text-white" />
+        </button>
       </header>
 
       {/* Search & Tabs */}
@@ -174,7 +185,6 @@ export default function RecommendedJobsPage() {
         searchParam={searchParam}
         onFilterChange={(val) => updateParam("employment_type", val, "all")}
         onSearchChange={(val) => updateParam("search", val)}
-        onPreferencesClick={() => setIsPreferenceModalOpen(true)}
       />
 
       {/* Job Cards Feed */}

@@ -72,6 +72,14 @@ const userJobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["UserJob", "JobPreference"],
     }),
+    getTopJobPicks: builder.query<any, any | void>({
+      query: (params) => ({
+        url: `/industry/jobs/top-picks`,
+        method: "GET",
+        params,
+      }),
+      providesTags: ["UserJob", "JobPreference"],
+    }),
     getUserJobPreference: builder.query<any, void>({
       query: () => ({
         url: `/user/job-preference`,
@@ -107,6 +115,7 @@ export const {
   useLikeByUserJobPostMutation,
   useSaveUserJobMutation,
   useGetRecommendedJobsQuery,
+  useGetTopJobPicksQuery,
   useGetUserJobPreferenceQuery,
   useSaveUserJobPreferenceMutation,
   useClearUserJobPreferenceMutation,

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumberIntoK } from "@/lib/utils";
 import { MessageSquare } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,8 +17,8 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
   const jobTitle = job?.job_title || "UI/UX Designer";
   const salaryText =
     job?.salary_min && job?.salary_max
-      ? `$${Number(job.salary_min).toLocaleString()} - $${Number(job.salary_max).toLocaleString()}`
-      : "$7,800.00 /month";
+      ? `$${formatNumberIntoK({ value: job.salary_min })} - $${formatNumberIntoK({ value: job.salary_max })}`
+      : "$7.8k /month";
 
   return (
     <div className="space-y-4">

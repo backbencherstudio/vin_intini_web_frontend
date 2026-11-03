@@ -2,7 +2,7 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
-import { getApplicationStatusConfig } from "@/lib/utils";
+import { formatNumberIntoK, getApplicationStatusConfig } from "@/lib/utils";
 import {
   ApplicantIcon,
   OpenEyeIcon,
@@ -52,10 +52,10 @@ function SaveJobcard({
 
   const salaryDisplay =
     jobData?.salary_min && jobData?.salary_max
-      ? `$${Number(jobData.salary_min).toLocaleString()} - $${Number(jobData.salary_max).toLocaleString()}`
+      ? `$${formatNumberIntoK({ value: jobData.salary_min })} - $${formatNumberIntoK({ value: jobData.salary_max })}`
       : jobData?.salary_min
-        ? `$${Number(jobData.salary_min).toLocaleString()}`
-        : "$6,200.00";
+        ? `$${formatNumberIntoK({ value: jobData.salary_min })}`
+        : "$6.2k";
 
   const statusConfig = getApplicationStatusConfig(status);
 

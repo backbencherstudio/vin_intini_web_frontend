@@ -1,5 +1,6 @@
 "use client";
 
+import CommonStatusDropdown from "@/components/reusable/CommonStatusDropdown";
 import DynamicTable from "@/components/reusable/DynamicTable";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { Eye, MapPin, Users } from "lucide-react";
@@ -89,9 +90,10 @@ export default function RecentJobsList({
       accessor: "status",
       formatter: (val: any) => (
         <div className="px-3">
-          <span className="px-2.5 py-1 rounded-full text-sm font-medium capitalize bg-lightGreenColor2/10 text-lightGreenColor2 border border-lightGreenColor2/50">
-            {val === "published" ? "Active" : val}
-          </span>
+          <CommonStatusDropdown
+            value={val === "published" ? "active" : val}
+            readOnly
+          />
         </div>
       ),
     },
