@@ -48,21 +48,20 @@ export default function ActiveSessions() {
   };
 
   return (
-    <div>
-      <section className="rounded-md border border-[#E8E8E8]   p-6">
-        <div className="mb-6 flex items-start justify-between">
-          <div>
-            <h2 className="text-headerColor  text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
-              Active Session
-            </h2>
+    <div className="h-full">
+      <section className="h-full flex flex-col justify-between rounded-md border border-[#E8E8E8] bg-white p-6">
+        <div>
+          <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+            Active Session
+          </h2>
 
-            <p className=" mt-2  text-sm font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
-              Manage devices that are currently signed in to your account.
-            </p>
-          </div>
+          <p className="mt-2 text-sm font-normal leading-[150%] tracking-[0.08px] text-[#4A4C56]">
+            Manage devices that are currently signed in to your account.
+          </p>
         </div>
 
-        <div className="space-y-2 h-[250px] pr-4 overflow-y-auto">
+        <div className="mt-4 flex-1 flex flex-col justify-between">
+          <div className="space-y-2 max-h-[250px] pr-4 overflow-y-auto custom-scrollbar">
           {ActiveSession.map((session) => (
             <div
               key={session.id}
@@ -122,15 +121,18 @@ export default function ActiveSessions() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
 
-        <button
-          type="button"
-          onClick={logoutAllSessions}
-          className="mt-4 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] cursor-pointer py-2 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor"
-        >
-          Sign out all the sessions
-        </button>
+          <div className="pt-4 mt-auto">
+            <button
+              type="button"
+              onClick={logoutAllSessions}
+              className="h-10 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] hover:bg-[#f8c4c9] active:scale-98 cursor-pointer text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor transition flex items-center justify-center"
+            >
+              Sign out all the sessions
+            </button>
+          </div>
+        </div>
       </section>
 
       <CustomModal
