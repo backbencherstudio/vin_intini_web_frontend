@@ -1,5 +1,4 @@
-import ConnectionRequestHeader from "@/app/(Front-End)/_components/mainPage/network/connectionRequests/ConnectionRequestHeader";
-import ConnectionRequestList from "@/app/(Front-End)/_components/mainPage/network/connectionRequests/ConnectionRequestList";
+import ConnectionRequestsTabContainer from "@/app/(Front-End)/_components/mainPage/network/connectionRequests/ConnectionRequestsTabContainer";
 import SuggestConnectionList from "@/app/(Front-End)/_components/mainPage/network/connectionUsers/SuggestConnectionList";
 
 async function Page({
@@ -14,10 +13,7 @@ async function Page({
     : rawSearch || "";
   return (
     <div>
-      <ConnectionRequestHeader />
-      <div>
-        <ConnectionRequestList isNetwork={true} />
-      </div>
+      <ConnectionRequestsTabContainer />
       <div className="mt-10">
         <h3 className="mb-5 text-xl font-semibold leading-[120%] text-headerColor">
           Connect With New Network

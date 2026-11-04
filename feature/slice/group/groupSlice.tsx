@@ -3,8 +3,8 @@ import baseApiSlice from "../baseApi";
 const groupSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMyGroups: builder.query({
-      query: () => ({
-        url: "/groups/my-groups",
+      query: (query = "") => ({
+        url: `/my-joined-groups${query ? `?${query}` : ""}`,
         method: "GET",
       }),
       providesTags: ["group"],
@@ -123,7 +123,7 @@ const groupSlice = baseApiSlice.injectEndpoints({
     }),
     groupBanUser: builder.mutation({
       query: ({ groupId, userId }) => ({
-        url: `/group/${groupId}/ban/${userId}`,
+        url: `/groups/${groupId}/ban/${userId}`,
         method: "POST",
       }),
       invalidatesTags: ["group"],

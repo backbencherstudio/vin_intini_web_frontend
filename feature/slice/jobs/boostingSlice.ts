@@ -19,7 +19,7 @@ const boostingSlice = baseApiSlice.injectEndpoints({
     }),
     getBoostingPosts: build.query({
       query: (params) => ({
-        url: `/job-boosting/list`,
+        url: `/industry/boost-campaigns`,
         method: "GET",
         params,
       }),

@@ -3,7 +3,7 @@ import baseApiSlice from "../baseApi";
 export const postApi = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPost: builder.query({
-      query: () => ({ url: "/posts", method: "GET" }),
+      query: (params) => ({ url: "/newsfeed", method: "GET", params }),
       providesTags: ["Post"],
     }),
 
@@ -27,6 +27,11 @@ export const postApi = baseApiSlice.injectEndpoints({
 
     getNewsfeed: builder.query({
       query: ({ query }) => ({ url: `/newsfeed?${query}`, method: "GET" }),
+      providesTags: ["Post"],
+    }),
+
+    getSinglePost: builder.query({
+      query: (id: string | number) => ({ url: `/single-post/${id}`, method: "GET" }),
       providesTags: ["Post"],
     }),
 
@@ -107,6 +112,7 @@ export const {
   useGetProfileTimelineQuery,
   useGetGroupListQuery,
   useGetNewsfeedQuery,
+  useGetSinglePostQuery,
   useGetPostProfileByIdQuery,
   useGetGroupPostByIDQuery,
   useGetGroupTimelineQuery,

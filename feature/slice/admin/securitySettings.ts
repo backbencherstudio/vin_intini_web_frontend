@@ -35,22 +35,22 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       providesTags: ["activeSessions"],
     }),
 
-    //delte activite session
+    //delete active session (revoke)
     DeleteActiveSessions: builder.mutation({
       query: (id) => ({
         url: `/security/sessions/revoke/${id}`,
         method: "POST",
       }),
-      invalidatesTags: ["activeSessions"],
+      invalidatesTags: ["activeSessions", "loginActivities"],
     }),
 
-    //Delet all session
+    //Delete all sessions
     DeletAllSessions: builder.mutation({
       query: () => ({
         url: "/security/sessions/sign-out-all",
         method: "POST",
       }),
-      invalidatesTags: ["activeSessions"],
+      invalidatesTags: ["activeSessions", "loginActivities"],
     }),
 
     //login-activity
@@ -63,8 +63,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       providesTags: ["loginActivities"],
     }),
 
-    //delet alll activity
-
+    //delete all activity
     DeleteAllLoginActivity: builder.mutation({
       query: () => ({
         url: `/security/login-activities/clear-all`,
@@ -73,22 +72,40 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["loginActivities"],
     }),
 
-    //delte activite
+    //delete single login activity
     DeleteLoginActivity: builder.mutation({
-      query: (id) => ({
-        url: `/security/sessions/revoke/${id}`,
-        method: "POST",
-      }),
-      invalidatesTags: ["loginActivities"],
-    }),
-
-    //logout user
-    LogoutActiveSessions: builder.mutation({
       query: (id) => ({
         url: `/security/login-activities/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["loginActivities"],
+    }),
+
+    //revoke session (sign out session)
+    LogoutActiveSessions: builder.mutation({
+      query: (id) => ({
+        url: `/security/sessions/revoke/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["activeSessions", "loginActivities"],
+    }),
+
+    //suspicious activities
+    getSuspiciousActivities: builder.query({
+      query: () => ({
+        url: "/security/suspicious-activities-list",
+        method: "GET",
+      }),
+      providesTags: ["loginActivities"],
+    }),
+
+    //resolve all suspicious activities
+    resolveAllActivities: builder.mutation({
+      query: () => ({
+        url: "/security/resolve-all",
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities", "overview"],
     }),
 
     //emabele pass
@@ -240,4 +257,10 @@ export const {
   useResendRecoveryEmailOtpMutation,
   useSingeleSessionTrustedMutation,
   useSecureAccountFromLoginActivityMutation,
+  useGetSuspiciousActivitiesQuery,
+  useResolveAllActivitiesMutation,
 } = securitySettingsSlice;
+
+export const useDeleteAllSessionsMutation = useDeletAllSessionsMutation;
+export const useDisablePasswdMutation = useDesablePasswdMutation;
+export const useSingleSessionTrustedMutation = useSingeleSessionTrustedMutation;

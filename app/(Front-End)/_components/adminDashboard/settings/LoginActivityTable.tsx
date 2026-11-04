@@ -74,10 +74,10 @@ export default function LoginActivityTable() {
 
   const loginActivities: LoginActivity[] = data?.data?.items || [];
   const [logoutActivity, { isLoading: logoutLoading }] =
-    useDeleteLoginActivityMutation();
+    useLogoutActiveSessionsMutation();
 
   const [deleteLoginActivity, { isLoading: deleteLoading }] =
-    useLogoutActiveSessionsMutation();
+    useDeleteLoginActivityMutation();
 
   const [singeleSessionTrusted, { isLoading: singeleSessionTrustedLoading }] =
     useSingeleSessionTrustedMutation();

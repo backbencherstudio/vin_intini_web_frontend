@@ -4,7 +4,23 @@ import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ConnectionActionButtons } from "./ConnectionActionButtons";
-function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
+function ConnectionRequestCard({
+  item,
+  isSent = false,
+}: {
+  item: ConnectionRequestType;
+  isSent?: boolean;
+}) {
+  const user = item?.user || (item as any)?.receiver;
+  const userName =
+    user?.name ||
+    (user?.first_name
+      ? `${user.first_name} ${user.last_name || ""}`.trim()
+      : "Member");
+  const userImage =
+    user?.profile_image_url || user?.profile?.profile_image_url || emptyImage;
+  const userTitle = user?.title || user?.profile?.title || "";
+  const username = user?.username || user?.id || "";
 
   return (
     <div>
@@ -15,8 +31,8 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
             ) : (
               <Image
-                src={item?.user?.profile_image_url || emptyImage}
-                alt={item?.user?.name}
+                src={userImage}
+                alt={userName}
                 width={150}
                 height={150}
                 unoptimized
@@ -27,14 +43,14 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
 
           <div className="flex-1">
             <Link
-              href={`/mu/profile/${item?.user?.username}`}
-              className=" text-[18px] text-headerColor font-semibold"
+              href={`/mu/profile/${username}`}
+              className=" text-[18px] text-headerColor font-semibold hover:text-primaryColor transition-colors"
             >
-              {item?.user?.name}
+              {userName}
             </Link>
-            <p className=" text-[14px] text-descriptionColor">
-              {item?.user?.title}
-            </p>
+            {userTitle && (
+              <p className=" text-[14px] text-descriptionColor">{userTitle}</p>
+            )}
             <div
               className={`flex ${item?.mutual_connections?.length > 0 ? "justify-between" : "justify-end"}  gap-3 items-center`}
             >
@@ -53,7 +69,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                   <span className="">
                     <Link
                       href={`/mu/profile/${item?.mutual_connections[0]?.username}`}
-                      className="text-headerColor"
+                      className="text-headerColor hover:underline"
                     >
                       {item?.mutual_connections[0]?.name}
                     </Link>{" "}
@@ -64,7 +80,7 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
                 </div>
               ) : null}
               <div className="">
-                {item?.status == "accepted" && (
+                {item?.status === "accepted" && (
                   <span className="text-[12px] leading-3 text-grayColor1 font-semibold">
                     {item?.connected_since}
                   </span>
@@ -77,8 +93,8 @@ function ConnectionRequestCard({ item }: { item: ConnectionRequestType }) {
         <div className="flex w-full md:w-fit justify-end items-center">
           <ConnectionActionButtons
             id={item?.id}
-            userId={item?.user?.id}
-            status={item?.status}
+            userId={user?.id}
+            status={isSent ? "sent" : item?.status}
             isFollower={item?.is_following_back}
             isfollowedBack={item?.is_followed_back}
           />

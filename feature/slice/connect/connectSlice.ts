@@ -7,6 +7,17 @@ const connectSlice = baseApiSlice.injectEndpoints({
         url: `/connections/requests${query}`,
         method: "GET",
       }),
+      providesTags: ["connect"],
+    }),
+    getSentConnections: builder.query({
+      query: (arg?: { query?: string }) => {
+        const query = arg?.query || "";
+        return {
+          url: `/connections/sent-requests${query ? (query.startsWith("?") ? query : `?${query}`) : ""}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["connect"],
     }),
     getMyConnections: builder.query({
       query: ({ query }) => ({
@@ -56,6 +67,7 @@ const connectSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useGetConnectionsQuery,
+  useGetSentConnectionsQuery,
   useGetMyConnectionsQuery,
   useGetMyConnectionSuggestionsQuery,
   useSendRequestMutation,
@@ -63,3 +75,5 @@ export const {
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } = connectSlice;
+
+export const useCancelSentRequestMutation = useRemoveRequestMutation;

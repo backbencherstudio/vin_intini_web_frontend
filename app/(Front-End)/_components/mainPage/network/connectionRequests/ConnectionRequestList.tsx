@@ -2,7 +2,10 @@
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
 import LoadMorePagination from "@/components/reusable/LoadMorePagination";
-import { useGetConnectionsQuery } from "@/feature/slice/connect/connectSlice";
+import {
+  useGetConnectionsQuery,
+  useGetSentConnectionsQuery,
+} from "@/feature/slice/connect/connectSlice";
 import { useLoadMore } from "@/hooks/useLoadMore";
 import { ConnectionRequestType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
@@ -10,14 +13,34 @@ import { useEffect, useState } from "react";
 import ConnectionNotFound from "./ConnectionNotFound";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
+function ConnectionRequestList({
+  isNetwork,
+  type = "received",
+}: {
+  isNetwork?: boolean;
+  type?: "received" | "sent";
+}) {
   const params = useSearchParams();
   const limit = 10;
   const [tempPage, setTempPage] = useState(1);
   const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
-  const { data, isFetching, isLoading, isError } = useGetConnectionsQuery({
-    query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
-  });
+
+  const receivedQuery = useGetConnectionsQuery(
+    {
+      query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
+    },
+    { skip: type !== "received" },
+  );
+
+  const sentQuery = useGetSentConnectionsQuery(
+    {
+      query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
+    },
+    { skip: type !== "sent" },
+  );
+
+  const { data, isFetching, isError } =
+    type === "sent" ? sentQuery : receivedQuery;
 
   const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
@@ -47,10 +70,27 @@ function ConnectionRequestList({ isNetwork }: { isNetwork?: boolean }) {
           : combinedData?.length > 0
             ? combinedData?.map((item: ConnectionRequestType) => (
                 <div key={item.id}>
-                  <ConnectionRequestCard key={item.id} item={item} />
+                  <ConnectionRequestCard
+                    key={item.id}
+                    item={item}
+                    isSent={type === "sent"}
+                  />
                 </div>
               ))
-            : isNetwork && <ConnectionNotFound />}
+            : isNetwork && (
+                <ConnectionNotFound
+                  title={
+                    type === "sent"
+                      ? "No Sent Requests"
+                      : "No Pending Requests"
+                  }
+                  description={
+                    type === "sent"
+                      ? "You haven't sent any pending connection requests."
+                      : "You have no pending requests right now. If you want to connect with new people, explore suggestions below!"
+                  }
+                />
+              )}
       </div>
 
       {showMoreLoader && (

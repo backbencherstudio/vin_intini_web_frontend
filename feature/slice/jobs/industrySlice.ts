@@ -3,7 +3,7 @@ import baseApiSlice from "../baseApi";
 export const postApi = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getIndustryPost: builder.query({
-      query: () => ({ url: "/posts", method: "GET" }),
+      query: (params) => ({ url: "/newsfeed", method: "GET", params }),
       providesTags: ["Post"],
     }),
     getIndustryJobPost: builder.query({

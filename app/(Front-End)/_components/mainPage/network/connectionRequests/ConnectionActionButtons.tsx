@@ -2,6 +2,7 @@
 
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
+  useRemoveRequestMutation,
   useRequestAcceptMutation,
   useRequestRejectMutation,
 } from "@/feature/slice/connect/connectSlice";
@@ -42,6 +43,8 @@ export const ConnectionActionButtons = ({
     useRequestAcceptMutation();
   const [requestReject, { isLoading: isRejecting }] =
     useRequestRejectMutation();
+  const [cancelRequest, { isLoading: isCanceling }] =
+    useRemoveRequestMutation();
   const [startConversation, { isLoading: isStartingConversation }] =
     useStartConversationMutation();
   const [unfollowUser, { isLoading: isUnfollowing }] =
@@ -61,6 +64,17 @@ export const ConnectionActionButtons = ({
     } catch (error) {
       toast.error(
         error?.data?.message || "Failed to process connection request.",
+      );
+    }
+  };
+
+  const handleCancelSent = async () => {
+    try {
+      const response = await cancelRequest({ id }).unwrap();
+      toast.success(response?.message || "Connection request withdrawn.");
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message || "Failed to withdraw connection request.",
       );
     }
   };
@@ -156,6 +170,20 @@ export const ConnectionActionButtons = ({
                 </button>
               </div>
             )}
+          </div>
+        );
+
+      case "sent":
+        return (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={isCanceling}
+              onClick={handleCancelSent}
+              className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              {isCanceling ? "Withdrawing..." : "Withdraw"}
+            </button>
           </div>
         );
 

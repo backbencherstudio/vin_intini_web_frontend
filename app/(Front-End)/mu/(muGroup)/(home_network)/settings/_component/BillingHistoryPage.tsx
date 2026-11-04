@@ -3,9 +3,14 @@
 import DynamicTable from "@/components/reusable/DynamicTable";
 import Pagination from "@/components/reusable/Pagination";
 import { useGetAllBilingHistoryQuery } from "@/feature/slice/settingSlice";
+import {
+  useGetSubscriptionStatusQuery,
+  useCancelSubscriptionMutation,
+} from "@/feature/slice/subscriptionSlice";
 import dayjs from "dayjs";
-import { CheckCircle2, CreditCard, Loader2 } from "lucide-react";
+import { CheckCircle2, CreditCard, Loader2, AlertCircle } from "lucide-react";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 export interface PlanInfo {
   id?: number;
@@ -117,6 +122,31 @@ export default function BillingHistoryPage() {
   const [activeTab, setActiveTab] = useState<"subscription" | "boosting">("subscription");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const { data: statusResponse, refetch: refetchStatus } =
+    useGetSubscriptionStatusQuery(undefined);
+  const [cancelSubscription, { isLoading: isCancelingSub }] =
+    useCancelSubscriptionMutation();
+
+  const activeSubscription = statusResponse?.data?.isActive
+    ? statusResponse.data
+    : null;
+
+  const handleCancelSubscription = async () => {
+    const subId =
+      activeSubscription?.id ?? activeSubscription?.subscription_id;
+    if (!subId) return;
+    try {
+      const res = await cancelSubscription(subId).unwrap();
+      toast.success(res?.message || "Subscription canceled successfully.");
+      setShowCancelModal(false);
+      refetchStatus();
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to cancel subscription.");
+    }
+  };
 
   const { data, isLoading, isError, refetch } = useGetAllBilingHistoryQuery({
     type: activeTab,
@@ -473,6 +503,92 @@ export default function BillingHistoryPage() {
           </p>
         </div>
       </div>
+
+      {/* ----------------- Active Subscription Banner (if active) ----------------- */}
+      {activeSubscription && (
+        <div className="rounded-2xl border border-borderColor bg-gradient-to-r from-cyan-50/70 via-sky-50/40 to-white p-5 sm:p-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primaryColor/10 px-3 py-1 text-xs font-semibold text-primaryColor">
+                  <span className="h-2 w-2 rounded-full bg-primaryColor animate-pulse" />
+                  Active Subscription
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold text-headerColor">
+                  {activeSubscription.plan?.name || "Premium Plan"}
+                </h3>
+              </div>
+              <p className="text-sm text-descriptionColor">
+                ${activeSubscription.plan?.billing_rate ?? "0.00"} /{" "}
+                {activeSubscription.plan?.billing_cycle ?? "month"}
+                {activeSubscription.expiresAt && (
+                  <>
+                    {" "}
+                    •{" "}
+                    {activeSubscription.willRenew
+                      ? `Renews on ${dayjs(activeSubscription.expiresAt).format("MMM DD, YYYY")}`
+                      : `Expires on ${dayjs(activeSubscription.expiresAt).format("MMM DD, YYYY")}`}
+                  </>
+                )}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {activeSubscription.willRenew ? (
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(true)}
+                  className="rounded-full border border-redColor/40 px-4 py-2 text-xs sm:text-sm font-semibold text-redColor hover:bg-redColor/10 transition-colors cursor-pointer"
+                >
+                  Cancel Subscription
+                </button>
+              ) : (
+                <span className="rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-medium text-amber-700">
+                  Scheduled for cancellation
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Confirmation Dialog */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-borderColor space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center gap-3 text-redColor">
+              <AlertCircle className="w-6 h-6 shrink-0" />
+              <h3 className="text-lg font-bold text-headerColor">
+                Cancel Subscription?
+              </h3>
+            </div>
+            <p className="text-sm text-descriptionColor leading-relaxed">
+              Are you sure you want to cancel your {activeSubscription?.plan?.name || "Premium"} subscription?
+              You will continue to have access to your plan benefits until the end of your current billing period on{" "}
+              <span className="font-semibold text-headerColor">
+                {activeSubscription?.expiresAt ? dayjs(activeSubscription.expiresAt).format("MMM DD, YYYY") : "the end of the cycle"}
+              </span>.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowCancelModal(false)}
+                className="rounded-full border border-borderColor px-4 py-2 text-sm font-semibold text-headerColor hover:bg-bgColor transition-colors cursor-pointer"
+              >
+                Keep Subscription
+              </button>
+              <button
+                type="button"
+                disabled={isCancelingSub}
+                onClick={handleCancelSubscription}
+                className="rounded-full bg-redColor px-5 py-2 text-sm font-semibold text-white hover:bg-redColor/90 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {isCancelingSub ? "Canceling..." : "Confirm Cancellation"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ----------------- Transactions Section ----------------- */}
       <div className="space-y-5">

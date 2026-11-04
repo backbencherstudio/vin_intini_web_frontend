@@ -13,7 +13,15 @@ const userJobSlice = baseApiSlice.injectEndpoints({
     }),
     getUserJobsApplications: builder.query<any, any | void>({
       query: (params) => ({
-        url: `/user/my-job-posts/archive`,
+        url: `/industry/my-job-applications`,
+        method: "GET",
+        params,
+      }),
+      providesTags: ["UserJob"],
+    }),
+    getUserArchivedJobPosts: builder.query<any, any | void>({
+      query: (params) => ({
+        url: `/industry/my-archived-job-posts`,
         method: "GET",
         params,
       }),
@@ -108,6 +116,7 @@ const userJobSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetUserAllJobsQuery,
   useGetUserJobsApplicationsQuery,
+  useGetUserArchivedJobPostsQuery,
   useGetUserSingleJobQuery,
   useGetAllSavedJobsQuery,
   useGetMyJobApplicationsQuery,

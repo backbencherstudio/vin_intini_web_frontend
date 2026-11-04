@@ -136,7 +136,7 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "universities",
         name: "Universities",
-        href: "/dashboard/academia/universites",
+        href: "/dashboard/academia/universities",
         icon: UniversitiseIcon,
       },
       {
@@ -183,7 +183,7 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "biotechnology",
         name: "Biotechnology",
-        href: "/dashboard/phychology/biotechnology",
+        href: "/dashboard/psychology/biotechnology",
         icon: Brain,
       },
     ],

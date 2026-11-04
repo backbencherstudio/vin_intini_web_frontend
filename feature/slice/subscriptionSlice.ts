@@ -30,7 +30,21 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: confirmationData,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User", "subscription"],
+    }),
+    getSubscriptionStatus: builder.query({
+      query: () => ({
+        url: "/subscriptions/status",
+        method: "GET",
+      }),
+      providesTags: ["subscription", "User"],
+    }),
+    cancelSubscription: builder.mutation({
+      query: (subscriptionId: string | number) => ({
+        url: `/subscriptions/${subscriptionId}/cancel`,
+        method: "POST",
+      }),
+      invalidatesTags: ["subscription", "User"],
     }),
   }),
 });
@@ -40,4 +54,6 @@ export const {
   useGetSubscriptionSinglePlansQuery,
   useSendSubscriptionOTPRequestMutation,
   useSendSubscriptionConfirmationMutation,
+  useGetSubscriptionStatusQuery,
+  useCancelSubscriptionMutation,
 } = subscriptionSlice;

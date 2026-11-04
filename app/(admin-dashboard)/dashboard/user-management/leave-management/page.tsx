@@ -1,4 +1,4 @@
-import LeaveManagement from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/LeaveManagement/LeaveManagement";
+import LeaveManagement from "@/app/(Front-End)/_components/adminDashboard/usermanagement/LeaveManagement/LeaveManagement";
 
 export default function page() {
   return (
