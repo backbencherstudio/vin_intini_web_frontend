@@ -183,354 +183,378 @@ export default function CreateGroupForm({
   };
 
   return (
-    <RootDialog open={open} setOpen={setOpen}>
-      <div className="max-h-[90vh] overflow-y-auto pt-10 ">
-        <form onSubmit={handleSubmit(onSubmit)} className="  ">
-          {/* Cover Photo & Logo Section */}
-          <div className="relative h-40 md:h-48 w-full bg-linear-to-r from-cyan-100 to-blue-200">
-            {coverPreview && (
-              <Image
-                src={coverPreview}
-                className="w-full h-full object-cover"
-                alt="Cover"
-                fill
-                sizes="(max-width: 768px) 100vw, 672px"
-              />
-            )}
-            <label className="absolute right-4 top-4 bg-white p-2 rounded-full cursor-pointer hover:bg-white shadow-sm transition-all">
-              <span className="text-xl">
-                <UploadUPIcon />
-              </span>
-              <input
-                id="coverInput"
-                name={coverRegistration.name}
-                ref={(node) => {
-                  coverRef.current = node;
-                  coverRegistration.ref(node);
-                }}
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onBlur={coverRegistration.onBlur}
-                onChange={(e) => {
-                  coverRegistration.onChange(e);
-                  const file = e.target.files?.[0];
-                  if (file) setCoverPreview(URL.createObjectURL(file));
-                }}
-              />
-            </label>
+    <RootDialog
+      open={open}
+      setOpen={setOpen}
+      className="sm:max-w-2xl md:max-w-2xl w-full rounded-2xl overflow-hidden p-0 max-h-[90vh] [&>button]:hidden"
+      ariaLabel={groupData ? "Edit Group" : "Create Group"}
+      ariaDescription="Form to create or update a group"
+    >
+      <div className="flex max-h-[90vh] flex-col overflow-hidden bg-white">
+        {/* Sticky Header with Title and Close Button */}
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-borderColor/60 bg-white px-6 py-4 shrink-0">
+          <h2 className="text-lg md:text-xl font-bold text-headerColor">
+            {groupData ? "Edit Group" : "Create a Group"}
+          </h2>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="w-9 h-9 flex items-center justify-center rounded-full text-descriptionColor hover:bg-bgColor hover:text-headerColor transition-colors cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-            {/* Floating Logo Box */}
-            <div className="absolute -bottom-12 left-8 h-20 w-20 bg-bgLightColor rounded-sm flex items-center justify-center">
-              {logoPreview ? (
-                <>
-                  <Image
-                    src={logoPreview}
-                    className="w-full h-full object-cover border border-bgColor rounded-sm "
-                    alt="Logo"
-                    fill
-                    sizes="80px"
-                  />
-                  <button
-                    onClick={() => setLogoPreview(null)}
-                    className="p-1 z-10 cursor-pointer rounded-full birder bg-redColor/15 absolute -right-2 -top-2 hover:bg-redColor/20 transition-all"
-                  >
-                    <X className="w-4 h-4  text-redColor" />
-                  </button>
-                </>
-              ) : (
-                <div>
-                  <ImageUploadIcon className="w-10 h-10 text-grayColor1" />
-
-                  <button className="absolute -right-2 -top-2 bg-white p-2 rounded-full cursor-pointer hover:bg-white  transition-all">
-                    <UploadUPIcon />
-                  </button>
-                </div>
+        {/* Scrollable Form Content */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Cover Photo & Logo Section */}
+            <div className="relative h-36 md:h-44 w-full bg-linear-to-r from-cyan-100 via-sky-100 to-blue-200">
+              {coverPreview && (
+                <Image
+                  src={coverPreview}
+                  className="w-full h-full object-cover"
+                  alt="Cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                />
               )}
-              <label className="absolute inset-0  cursor-pointer flex items-center justify-center transition-all">
+              <label className="absolute right-4 top-4 flex items-center gap-1.5 bg-white/90 hover:bg-white text-headerColor px-3 py-1.5 rounded-full cursor-pointer shadow-sm hover:shadow transition-all text-xs font-semibold backdrop-blur-xs">
+                <UploadUPIcon className="w-3.5 h-3.5" />
+                <span>{coverPreview ? "Change Cover" : "Add Cover"}</span>
                 <input
-                  id="logoInput"
-                  name={logoRegistration.name}
+                  id="coverInput"
+                  name={coverRegistration.name}
                   ref={(node) => {
-                    logoRef.current = node;
-                    logoRegistration.ref(node);
+                    coverRef.current = node;
+                    coverRegistration.ref(node);
                   }}
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  onBlur={logoRegistration.onBlur}
+                  onBlur={coverRegistration.onBlur}
                   onChange={(e) => {
-                    logoRegistration.onChange(e);
+                    coverRegistration.onChange(e);
                     const file = e.target.files?.[0];
-                    if (file) setLogoPreview(URL.createObjectURL(file));
+                    if (file) setCoverPreview(URL.createObjectURL(file));
                   }}
                 />
               </label>
-            </div>
-          </div>
 
-          <div className="p-8 pt-16 space-y-6">
-            {/* Group Name */}
-            <div>
-              <label className="block font-semibold text-descriptionColor mb-1.5">
-                Group name <span className="text-redColor">*</span>
-              </label>
-              <ReusableInput
-                id="name"
-                {...register("name", { required: "Group name is required" })}
-                placeholder="Ex. Product Design Community"
-                className={`w-full border rounded-lg p-3 text-base outline-none transition-all ${
-                  errors.name
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300 focus:border-[#00A3B1]"
-                }`}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-xs mt-1.5 font-medium">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
-                Description <span className="text-redColor">*</span>
-              </label>
-              <ReusableTextarea
-                {...register("description", {
-                  required: "Description is required to create a group",
-                  maxLength: 2500,
-                })}
-                placeholder="What is the purpose of the group?"
-                rows={4}
-                className={`w-full border rounded-lg p-3 text-base outline-none transition-all resize-none ${
-                  errors.description
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300 focus:border-[#00A3B1]"
-                }`}
-              />
-              <div className="flex justify-between mt-1 text-[11px]">
-                <span className="text-gray-400">
-                  {descriptionText.length}/2500
-                </span>
-                {errors.description && (
-                  <span className="text-red-500 font-medium">
-                    {errors.description.message}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Industry & Location */}
-            <div className="space-y-1.5">
-              <p className="block text-base font-semibold text-slate-700">
-             Collaboration Focus (up to 3)
-              </p>
-              <Controller
-                control={control}
-                name="industry"
-                render={({ field }) => (
-                  <CreatableSelectField
-                    placeholder="Select collaboration focus here..."
-                    values={field.value || []}
-                    onChangeValues={field.onChange}
-                    options={interestOptions}
-                    isMulti
-                    maxCount={3}
-                    className="w-full"
-                  />
-                )}
-              />
-            </div>
-            <div>
-              <label className="block text-base font-semibold text-descriptionColor mb-1.5">
-                Location
-              </label>
-              <ReusableInput
-                id="location"
-                {...register("location")}
-                placeholder="Add a location"
-                className="w-full resize-none rounded-lg border border-[#D6E8EC] bg-white px-4 py-3.5 text-base outline-none transition focus:border-primaryColor focus:ring-2 focus:ring-[#D9F4F7]"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="block text-base font-semibold text-slate-700">
-                Purpose
-              </label>
-
-              <ReusableTextarea
-                {...register("rules", {
-                  required: "Rules are required to create a group",
-                  maxLength: 2500,
-                })}
-                placeholder="What is the purpose of the group?"
-                rows={4}
-                className={`w-full border rounded-lg p-3 text-base outline-none transition-all resize-none ${
-                  errors.rules
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300 focus:border-[#00A3B1]"
-                }`}
-              />
-              <div className="flex justify-between mt-1 text-[11px]">
-                <span className="text-gray-400">
-                  {descriptionText.length}/2500
-                </span>
-                {errors.description && (
-                  <span className="text-red-500 font-medium">
-                    {errors.description.message}
-                  </span>
-                )}
-              </div>
-            </div>
-            {/* Group Type */}
-            <div className="space-y-4">
-              <p className="text-[16px] font-bold text-gray-800">Group type</p>
-              <div className="space-y-4">
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <input
-                    type="radio"
-                    value="public"
-                    {...register("type")}
-                    className="mt-1.5 h-4.5 w-4.5 accent-[#00A3B1]"
-                  />
-                  <div>
-                    <span className="font-semibold text-gray-800 block">
-                      Public
-                    </span>
-                    <p className="text-[12px] text-gray-500 leading-tight">
-                      Anyone in the Mind Unite platform can see posts in the
-                      group. The group appears in search results.
-                    </p>
+              {/* Floating Logo Box */}
+              <div className="absolute -bottom-10 left-6 sm:left-8 h-20 w-20 sm:h-22 sm:w-22 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center overflow-hidden group">
+                {logoPreview ? (
+                  <>
+                    <Image
+                      src={logoPreview}
+                      className="w-full h-full object-cover"
+                      alt="Logo"
+                      fill
+                      sizes="88px"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setLogoPreview(null);
+                        if (logoRef.current) logoRef.current.value = "";
+                      }}
+                      className="p-1 z-10 cursor-pointer rounded-full bg-redColor/80 hover:bg-redColor text-white absolute right-1.5 top-1.5 transition-all shadow-xs"
+                      title="Remove logo"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-grayColor1 group-hover:text-primaryColor transition-colors">
+                    <ImageUploadIcon className="w-8 h-8 opacity-60" />
+                    <div className="absolute -right-1 -top-1 bg-white p-1 rounded-full shadow-xs border border-borderColor/60">
+                      <UploadUPIcon className="w-3.5 h-3.5" />
+                    </div>
                   </div>
-                </label>
-                <label className="flex items-start gap-3 cursor-pointer group">
+                )}
+                <label className="absolute inset-0 cursor-pointer" title="Upload group logo">
                   <input
-                    type="radio"
-                    value="private"
-                    {...register("type")}
-                    className="mt-1.5 h-4.5 w-4.5 accent-[#00A3B1]"
+                    id="logoInput"
+                    name={logoRegistration.name}
+                    ref={(node) => {
+                      logoRef.current = node;
+                      logoRegistration.ref(node);
+                    }}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onBlur={logoRegistration.onBlur}
+                    onChange={(e) => {
+                      logoRegistration.onChange(e);
+                      const file = e.target.files?.[0];
+                      if (file) setLogoPreview(URL.createObjectURL(file));
+                    }}
                   />
-                  <div>
-                    <span className="font-semibold text-gray-800 block">
-                      Private
-                    </span>
-                    <p className="text-[12px] text-gray-500 leading-tight">
-                      Only group members will be able to see/post in the group.
-                    </p>
-                  </div>
                 </label>
               </div>
             </div>
 
-            {/* Conditional Discoverability (Shown only when Private is selected) */}
-            {selectedType === "private" && (
-              <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                <p className="text-[16px] font-bold text-gray-800">
-                  Discoverability
-                </p>
-                <div className="space-y-4">
-                  <label className="flex items-start gap-3 cursor-pointer">
+            <div className="p-6 sm:p-8 pt-14 space-y-6">
+              {/* Group Name */}
+              <div>
+                <label className="block text-sm md:text-base font-semibold text-headerColor mb-1.5">
+                  Group name <span className="text-redColor">*</span>
+                </label>
+                <ReusableInput
+                  id="name"
+                  {...register("name", { required: "Group name is required" })}
+                  placeholder="Ex. Product Design Community"
+                  className={`w-full border rounded-xl p-3 text-sm md:text-base outline-none transition-all ${
+                    errors.name
+                      ? "border-red-500 bg-red-50"
+                      : "border-borderColor focus:border-primaryColor"
+                  }`}
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1.5 font-medium">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm md:text-base font-semibold text-headerColor mb-1.5">
+                  Description <span className="text-redColor">*</span>
+                </label>
+                <ReusableTextarea
+                  {...register("description", {
+                    required: "Description is required to create a group",
+                    maxLength: 2500,
+                  })}
+                  placeholder="What is the purpose of the group?"
+                  rows={4}
+                  className={`w-full border rounded-xl p-3 text-sm md:text-base outline-none transition-all resize-none ${
+                    errors.description
+                      ? "border-red-500 bg-red-50"
+                      : "border-borderColor focus:border-primaryColor"
+                  }`}
+                />
+                <div className="flex justify-between mt-1 text-[11px]">
+                  <span className="text-gray-400">
+                    {descriptionText.length}/2500
+                  </span>
+                  {errors.description && (
+                    <span className="text-red-500 font-medium">
+                      {errors.description.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Collaboration Focus */}
+              <div className="space-y-1.5">
+                <label className="block text-sm md:text-base font-semibold text-headerColor mb-1.5">
+                  Collaboration Focus (up to 3)
+                </label>
+                <Controller
+                  control={control}
+                  name="industry"
+                  render={({ field }) => (
+                    <CreatableSelectField
+                      placeholder="Select collaboration focus here..."
+                      values={field.value || []}
+                      onChangeValues={field.onChange}
+                      options={interestOptions}
+                      isMulti
+                      maxCount={3}
+                      className="w-full"
+                    />
+                  )}
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm md:text-base font-semibold text-headerColor mb-1.5">
+                  Location
+                </label>
+                <ReusableInput
+                  id="location"
+                  {...register("location")}
+                  placeholder="Add a location"
+                  className="w-full resize-none rounded-xl border border-borderColor bg-white px-4 py-3 text-sm md:text-base outline-none transition focus:border-primaryColor focus:ring-1 focus:ring-primaryColor/20"
+                />
+              </div>
+
+              {/* Rules & Purpose */}
+              <div className="space-y-1.5">
+                <label className="block text-sm md:text-base font-semibold text-headerColor">
+                  Rules & Purpose
+                </label>
+                <ReusableTextarea
+                  {...register("rules", {
+                    required: "Rules are required to create a group",
+                    maxLength: 2500,
+                  })}
+                  placeholder="What are the rules and guidelines for this group?"
+                  rows={4}
+                  className={`w-full border rounded-xl p-3 text-sm md:text-base outline-none transition-all resize-none ${
+                    errors.rules
+                      ? "border-red-500 bg-red-50"
+                      : "border-borderColor focus:border-primaryColor"
+                  }`}
+                />
+                <div className="flex justify-between mt-1 text-[11px]">
+                  <span className="text-gray-400">
+                    {(watch("rules") || "").length}/2500
+                  </span>
+                  {errors.rules && (
+                    <span className="text-red-500 font-medium">
+                      {errors.rules.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Group Type */}
+              <div className="space-y-3">
+                <p className="text-sm md:text-base font-bold text-headerColor">Group type</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${selectedType === "public" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
                     <input
                       type="radio"
-                      value="listed"
-                      {...register("discoverability")}
-                      className="mt-1.5 h-4.5 w-4.5 accent-primaryColor"
+                      value="public"
+                      {...register("type")}
+                      className="mt-0.5 h-4 w-4 accent-primaryColor"
                     />
                     <div>
-                      <span className="font-semibold text-gray-800 block">
-                        Listed
+                      <span className="font-semibold text-headerColor block text-sm">
+                        Public
                       </span>
-                      <p className="text-[12px] text-gray-500 leading-tight">
-                        The group appears in search results, is visible to
-                        others on members&apos; profiles, and
-                        <span className="font-bold">MindUnite</span> users can
-                        see whether a connection is a member.
+                      <p className="text-xs text-descriptionColor leading-relaxed mt-0.5">
+                        Anyone on Mind Unite can view and search posts in this group.
                       </p>
                     </div>
                   </label>
-                  <label className="flex items-start gap-3 cursor-pointer">
+                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${selectedType === "private" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
                     <input
                       type="radio"
-                      value="unlisted"
-                      {...register("discoverability")}
-                      className="mt-1.5 h-4.5 w-4.5 accent-[#00A3B1]"
+                      value="private"
+                      {...register("type")}
+                      className="mt-0.5 h-4 w-4 accent-primaryColor"
                     />
                     <div>
-                      <span className="font-semibold text-gray-800 block">
-                        Unlisted
+                      <span className="font-semibold text-headerColor block text-sm">
+                        Private
                       </span>
-                      <p className="text-[12px] text-gray-500 leading-tight">
-                        The group does not appear in search results for
-                        non-group members and is not visible to non-group
-                        members on members&apos; profiles.
+                      <p className="text-xs text-descriptionColor leading-relaxed mt-0.5">
+                        Only approved group members can view and publish posts.
                       </p>
                     </div>
                   </label>
                 </div>
               </div>
-            )}
 
-            {/* Permissions */}
-            <div className="space-y-4 pt-4 border-t border-gray-100">
-              <p className="text-[16px] font-bold text-gray-800">Permissions</p>
-              <div className="space-y-3">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    {...register("allow_member_invites")}
-                    className="h-4.5 w-4.5 mt-1.5 accent-[#00A3B1] rounded"
-                  />
-                  <div>
-                    <span className="text-base  text-headerColor">
-                      Allow members to invite their connections
-                    </span>
-                    <p className="text-sm text-descriptionColor">
-                      Group members can invite 1st degree connections to the
-                      group. All requests to join will still require admin
-                      approval.
-                    </p>
+              {/* Conditional Discoverability (Shown only when Private is selected) */}
+              {selectedType === "private" && (
+                <div className="space-y-3 pt-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <p className="text-sm md:text-base font-bold text-headerColor">
+                    Discoverability
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-all">
+                      <input
+                        type="radio"
+                        value="listed"
+                        {...register("discoverability")}
+                        className="mt-0.5 h-4 w-4 accent-primaryColor"
+                      />
+                      <div>
+                        <span className="font-semibold text-headerColor block text-sm">
+                          Listed
+                        </span>
+                        <p className="text-xs text-descriptionColor leading-relaxed mt-0.5">
+                          Group appears in search results and on member profiles.
+                        </p>
+                      </div>
+                    </label>
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-all">
+                      <input
+                        type="radio"
+                        value="unlisted"
+                        {...register("discoverability")}
+                        className="mt-0.5 h-4 w-4 accent-primaryColor"
+                      />
+                      <div>
+                        <span className="font-semibold text-headerColor block text-sm">
+                          Unlisted
+                        </span>
+                        <p className="text-xs text-descriptionColor leading-relaxed mt-0.5">
+                          Hidden from search and non-member profiles.
+                        </p>
+                      </div>
+                    </label>
                   </div>
-                </label>
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    {...register("require_post_approval")}
-                    className="h-4.5 w-4.5 mt-1.5 accent-[#00A3B1] rounded"
-                  />
-                  <div className="">
-                    <span className="text-base text-headerColor">
-                      Require new posts to be reviewed by admins
-                    </span>
-                    <p className="text-sm text-descriptionColor">
-                      Members&apos; posts will require admin approval within 14 days
-                      before they become visible to others.
-                    </p>
-                  </div>
-                </label>
+                </div>
+              )}
+
+              {/* Permissions */}
+              <div className="space-y-3 pt-4 border-t border-borderColor/60">
+                <p className="text-sm md:text-base font-bold text-headerColor">Permissions</p>
+                <div className="space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register("allow_member_invites")}
+                      className="h-4.5 w-4.5 mt-0.5 accent-primaryColor rounded"
+                    />
+                    <div>
+                      <span className="text-sm md:text-base font-medium text-headerColor block">
+                        Allow members to invite their connections
+                      </span>
+                      <p className="text-xs md:text-sm text-descriptionColor mt-0.5">
+                        Group members can invite 1st degree connections. Requests still require admin approval.
+                      </p>
+                    </div>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register("require_post_approval")}
+                      className="h-4.5 w-4.5 mt-0.5 accent-primaryColor rounded"
+                    />
+                    <div>
+                      <span className="text-sm md:text-base font-medium text-headerColor block">
+                        Require new posts to be reviewed by admins
+                      </span>
+                      <p className="text-xs md:text-sm text-descriptionColor mt-0.5">
+                        Members&apos; posts will require admin review before becoming visible.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-center pt-2 pb-6">
+                <button
+                  type="submit"
+                  disabled={isLoading || isUpdateLoading}
+                  className="bg-primaryColor hover:bg-primaryColor/90 text-white px-12 py-3 rounded-full font-bold text-base hover:shadow-lg shadow-primaryColor/50 cursor-pointer transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[180px]"
+                >
+                  {isUpdateLoading ? (
+                    <Loader className="animate-spin h-5 w-5 text-white" />
+                  ) : groupData ? (
+                    "Update Group"
+                  ) : isLoading ? (
+                    <Loader className="animate-spin h-5 w-5 text-white" />
+                  ) : (
+                    "Create Group"
+                  )}
+                </button>
               </div>
             </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-center ">
-              <button
-                type="submit"
-                disabled={isLoading || isUpdateLoading}
-                className="bg-primaryColor disabled:cursor-not-allowed disabled:bg-grayColor1 disabled:shadow-transparent disabled:text-grayColor1 text-white px-14 py-3.5 rounded-full font-bold text-[16px] hover:bg-primaryColor/90 cursor-pointer hover:shadow-lg shadow-primaryColor/50 transition-all active:scale-95  "
-              >
-                {isUpdateLoading ? (
-                  <Loader className="animate-spin h-5 w-5 mx-auto text-white" />
-                ) : groupData ? (
-                  "Update Group"
-                ) : isLoading ? (
-                  <Loader className="animate-spin h-5 w-5 mx-auto text-white" />
-                ) : (
-                  "Create Group"
-                )}
-              </button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </RootDialog>
   );

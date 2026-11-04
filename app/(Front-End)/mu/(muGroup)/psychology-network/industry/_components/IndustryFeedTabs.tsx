@@ -36,7 +36,7 @@ export const IndustryFeedTabs = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 mb-2">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 mb-6 sm:mb-7">
       {/* Left Tabs */}
       <div className="inline-flex items-center p-1 rounded-xl bg-sectionColor border border-borderColor self-start sm:self-auto flex-wrap gap-1">
         {tabs?.map((tab) => {

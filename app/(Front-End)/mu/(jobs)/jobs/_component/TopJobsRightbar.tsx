@@ -53,7 +53,7 @@ export default function TopJobsRightbar({
 
       {/* Loading Skeleton */}
       {isLoading ? (
-        <div className="divide-y divide-gray-100 animate-pulse overflow-y-auto flex-1 pr-1.5 -mr-1.5 custom-scrollbar">
+        <div className="divide-y divide-gray-100 animate-pulse overflow-y-auto flex-1 scrollbar-hide">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="py-4 space-y-3">
               <div className="flex items-center gap-3">
@@ -78,7 +78,7 @@ export default function TopJobsRightbar({
         </div>
       ) : (
         /* Jobs List */
-        <div className="divide-y divide-gray-100 overflow-y-auto flex-1 pr-1.5 -mr-1.5 custom-scrollbar">
+        <div className="divide-y divide-gray-100 overflow-y-auto flex-1 scrollbar-hide">
           {jobs.map((job) => {
             const role = job.job_title || job.position || "Job Position";
             const company = job.industry?.name || "Company";

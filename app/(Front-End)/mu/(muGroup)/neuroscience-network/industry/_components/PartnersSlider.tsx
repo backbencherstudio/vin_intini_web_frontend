@@ -24,7 +24,7 @@ export default function PartnersSlider() {
 
   if (isLoading) {
     return (
-      <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-3 flex items-center">
+      <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-2 flex items-center">
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 w-full">
           <div className="w-full text-center md:col-span-5 md:text-left lg:col-span-4">
             <h3 className="text-lg sm:text-xl font-semibold leading-tight text-headerColor">
@@ -32,9 +32,9 @@ export default function PartnersSlider() {
             </h3>
           </div>
           <div className="w-full md:col-span-7 lg:col-span-8 flex items-center gap-2">
-            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
-            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
-            <div className="h-9 w-9 rounded-md bg-slate-100 animate-pulse" />
+            <div className="h-[50px] w-[50px] rounded-lg bg-slate-100 animate-pulse" />
+            <div className="h-[50px] w-[50px] rounded-lg bg-slate-100 animate-pulse" />
+            <div className="h-[50px] w-[50px] rounded-lg bg-slate-100 animate-pulse" />
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function PartnersSlider() {
   }
 
   return (
-    <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-3 flex items-center">
+    <div className="w-full mb-6 border-b border-borderColor h-[66px] pb-2 flex items-center overflow-hidden overflow-y-hidden scrollbar-hide">
       <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 w-full">
         {/* Left Side: Header & Text */}
         <div className="w-full text-center md:col-span-5 md:text-left lg:col-span-4">
@@ -52,7 +52,7 @@ export default function PartnersSlider() {
         </div>
 
         {/* Right Side: Marquee Slider */}
-        <div className="w-full overflow-hidden md:col-span-7 lg:col-span-8 flex items-center">
+        <div className="w-full overflow-hidden overflow-y-hidden scrollbar-hide md:col-span-7 lg:col-span-8 flex items-center [&_.rfm-marquee-container]:overflow-hidden [&_.rfm-marquee-container]:scrollbar-hide [&_.rfm-marquee]:overflow-hidden [&_.rfm-marquee]:scrollbar-hide">
           {partners.length > 0 ? (
             <Marquee
               gradient={true}
@@ -60,7 +60,7 @@ export default function PartnersSlider() {
               gradientColor="#fff"
               speed={45}
               pauseOnHover={true}
-              className="flex items-center"
+              className="flex items-center overflow-hidden overflow-y-hidden scrollbar-hide"
             >
               {partners.map((partner, index) => {
                 const imageUrl =
@@ -84,14 +84,14 @@ export default function PartnersSlider() {
                     target={isExternal ? "_blank" : undefined}
                     rel={isExternal ? "noopener noreferrer" : undefined}
                     title={`${partnerName}${websiteUrl ? ` • ${websiteUrl}` : ""}`}
-                    className="relative mx-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white p-1 overflow-hidden transition-transform duration-200 hover:scale-105 cursor-pointer"
+                    className="group relative mx-2.5 flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-lg bg-white p-0.5 overflow-hidden cursor-pointer"
                   >
                     <Image
                       src={imageUrl}
                       alt={partnerName}
-                      width={80}
-                      height={80}
-                      className="h-full w-full object-contain rounded-md"
+                      width={100}
+                      height={100}
+                      className="h-full w-full object-contain rounded-md transition-transform duration-200 group-hover:scale-110"
                       unoptimized
                     />
                   </a>

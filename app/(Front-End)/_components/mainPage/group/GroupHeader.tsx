@@ -19,7 +19,7 @@ function GroupHeader() {
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label="Create Group"
-            className="rounded-full border border-primaryColor px-4 py-1.5 font-semibold text-sm leading-[140%] text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
+            className="h-10 inline-flex items-center justify-center shrink-0 rounded-full border border-primaryColor px-5 font-semibold text-sm leading-none text-primaryColor cursor-pointer hover:bg-primaryColor hover:text-whiteColor hover:shadow-md shadow-primaryColor/50 tracking-wide transition-all duration-200"
           >
             Create Group
           </button>

@@ -60,7 +60,7 @@ export default function Search({
         value={search}
         onChange={handleChange}
         className={cn(
-          "w-full text-sm bg-white border border-borderColor rounded-lg py-2.5 px-4 pl-9 text-headerColor placeholder:text-placeholderColor focus:outline-none focus:border-primaryColor transition-all",
+          "w-full h-10 text-sm bg-white border border-borderColor rounded-lg px-4 pl-9 text-headerColor placeholder:text-placeholderColor focus:outline-none focus:border-primaryColor transition-all",
           className,
         )}
         placeholder={placeHolder || "Search..."}
