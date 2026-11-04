@@ -1,3 +1,4 @@
+import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import { GroupDetailType } from "@/lib/type";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
@@ -38,7 +39,7 @@ function GroupCard({ group }: { group: GroupDetailType }) {
           </div>
           <Link
             href={`/mu/my-network/group/${group.id}`}
-            className={`py-0.5! px-4! border rounded-full!   border-headerColor!  text-headerColor! bg-whiteColor! hover:border-primaryColor! hover:text-primaryColor! hover:bg-primaryColor/10! mt-4!`}
+            className={`${BUTTON_STYLES.borderBtn} mt-4 shrink-0`}
           >
             View
           </Link>

@@ -97,14 +97,18 @@ export const ConnectionActionButtons = ({
     switch (status) {
       case "accepted":
         return (
-          <div className="flex items-center gap-4">
-            <button onClick={handleMessageCreate} title="Message" className="cursor-pointer">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleMessageCreate}
+              title="Message"
+              className={BUTTON_STYLES.outlineIconBtn}
+            >
               <MessageIcon className="w-4.5 h-4.5" />
             </button>
             <button
               onClick={() => setIsUnfriend(true)}
               title="Unfriend"
-              className={` w-9 h-9 flex items-center disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor justify-center border border-descriptionColor cursor-pointer rounded-full hover:bg-lightGreenColor/20 hover:border-lightGreenColor hover:shadow-lg transition-all duration-200 `}
+              className={`${BUTTON_STYLES.outlineIconBtn} disabled:shadow-transparent disabled:cursor-not-allowed disabled:opacity-70 disabled:border-borderColor disabled:bg-bgColor`}
             >
               <UserMinusIcon className="w-4.5 h-4.5" />
             </button>
