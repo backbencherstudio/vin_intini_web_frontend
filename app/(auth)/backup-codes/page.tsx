@@ -19,6 +19,7 @@ export default function Page() {
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [challengeToken, setChallengeToken] = useState(searchParams.get("challenge_token") || "");
   const [errorRecovery, setErrorRecovery] = useState("");
   const route = useRouter();
   const [twoFactorEmailCode, { isLoading }] =
@@ -28,15 +29,18 @@ export default function Page() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const payload = {
+      const payload: Record<string, string> = {
         email: email,
         code: code,
       };
+      if (challengeToken) {
+        payload.challenge_token = challengeToken;
+      }
       const response = await twoFactorEmailCode(payload).unwrap();
       toast.success("2FA verification successful!");
       await setToken(response?.token || response.data.token);
       route.push(`/mu/home`);
-    } catch (error) {
+    } catch (error: any) {
       setError(error?.data?.message || "Invalid code. Please try again.");
       setErrorRecovery("");
     }
@@ -91,7 +95,7 @@ export default function Page() {
         <div className="text-center">
           Use{" "}
           <Link
-            href={`/two-factor?email=${email}`}
+            href={`/two-factor?email=${encodeURIComponent(email)}${challengeToken ? `&challenge_token=${encodeURIComponent(challengeToken)}` : ""}`}
             className="text-primaryColor"
           >
             Authentication App
