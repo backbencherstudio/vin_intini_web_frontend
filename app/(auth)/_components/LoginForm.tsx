@@ -34,7 +34,10 @@ function LoginForm() {
     try {
       const response = await login(data).unwrap();
       if (response?.two_factor_enabled) {
-        route.push(`/two-factor?email=${data.email}`);
+        const challengeParam = response?.challenge_token
+          ? `&challenge_token=${encodeURIComponent(response.challenge_token)}`
+          : "";
+        route.push(`/two-factor?email=${encodeURIComponent(data.email)}${challengeParam}`);
       } else if (response?.status == "pending_deletion") {
         route.push(
           `/account-recovery?email=${data.email}&message=${response.message}`,
