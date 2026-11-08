@@ -48,8 +48,8 @@ export default function ActiveSessions() {
   };
 
   return (
-    <div className="h-full">
-      <section className="h-full flex flex-col justify-between rounded-md border border-[#E8E8E8] bg-white p-6">
+    <div className="h-full flex flex-col">
+      <section className="flex-1 flex flex-col justify-between rounded-md border border-[#E8E8E8] bg-white p-6">
         <div>
           <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
             Active Session
