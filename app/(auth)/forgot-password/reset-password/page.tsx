@@ -35,14 +35,21 @@ export default function Page() {
   }, []);
   const onSubmit = async (data: any) => {
     try {
+      const resetToken = localStorage.getItem("resetToken") || "";
+      const resetOtp = localStorage.getItem("resetOtp") || "";
+
       const response = await resetPassword({
         email,
         new_password: data.new_password,
         new_password_confirmation: data.confirm_new_password,
+        reset_token: resetToken || undefined,
+        otp: !resetToken && resetOtp ? resetOtp : undefined,
       }).unwrap();
 
       toast.success(response?.message || "Password reset successfully.");
       localStorage.removeItem("resetEmail");
+      localStorage.removeItem("resetToken");
+      localStorage.removeItem("resetOtp");
       router.push("/login");
     } catch (error: any) {
       toast.error(
