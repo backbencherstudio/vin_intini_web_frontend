@@ -140,6 +140,11 @@ export default function Page() {
         otp: enteredOtp,
       }).unwrap();
 
+      if (response?.reset_token) {
+        localStorage.setItem("resetToken", response.reset_token);
+      }
+      localStorage.setItem("resetOtp", enteredOtp);
+
       toast.success(response?.message || "OTP verified successfully.");
 
       router.push("/forgot-password/verify-email");
