@@ -1,21 +1,54 @@
-"use client"
+"use client";
+
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Label } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Label, Tooltip } from 'recharts';
 import { RotateCw } from 'lucide-react';
+import type { RevenueBreakdownData } from '@/feature/slice/admin/dashboard/adminDashboardApi';
 
-const COLORS = ['#00A8B5', '#00B8D9', '#FF9F0A']; // Teal, Cyan, Orange
+const COLORS = ['#00A8B5', '#00B8D9', '#FF9F0A', '#A855F7'];
 
-export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
+interface TotalRevenuePieCardProps {
+    data?: RevenueBreakdownData;
+    isLoading?: boolean;
+    onRefresh?: () => void;
+}
+
+const defaultData: RevenueBreakdownData = {
+    total: 48789,
+    items: [
+        { name: 'Subscriptions', percentage: 39.98, amount: 32455, value: 32455 },
+        { name: 'Advertisements', percentage: 24.67, amount: 13200, value: 13200 },
+        { name: 'Sponsors', percentage: 14.76, amount: 7634, value: 7634 },
+    ]
+};
+
+export default function TotalRevenuePieCard({
+    data = defaultData,
+    isLoading = false,
+    onRefresh = () => { }
+}: TotalRevenuePieCardProps) {
+    const totalAmount = data?.total ?? defaultData.total;
+    const items = data?.items && data.items.length > 0 ? data.items : defaultData.items;
+
+    const totalValue = items.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
+    const hasData = totalValue > 0;
+
+    const chartData = hasData
+        ? items
+        : [{ name: 'No Revenue Recorded', value: 1, percentage: 0, amount: 0 }];
+
     return (
-        <div className="bg-white rounded-2xl p-3  border  w-full h-full ">
+        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm w-full h-full flex flex-col justify-between">
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-[#0D0D12] text-[18px] font-semibold leading-[150%]">Total Revenue</h3>
                 <button
                     onClick={onRefresh}
-                    className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-500 transition-colors"
+                    disabled={isLoading}
+                    className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-500 transition-colors disabled:opacity-50"
+                    title="Refresh Revenue Breakdown"
                 >
-                    <RotateCw className="w-4 h-4" />
+                    <RotateCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-primaryColor' : ''}`} />
                 </button>
             </div>
 
@@ -24,18 +57,18 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
-                            data={data.items}
+                            data={chartData}
                             innerRadius={70}
                             outerRadius={100}
-                            paddingAngle={0}
+                            paddingAngle={hasData ? 2 : 0}
                             dataKey="value"
                             startAngle={90}
                             endAngle={-270}
                         >
-                            {data.items.map((entry, index) => (
+                            {chartData.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={COLORS[index % COLORS.length]}
+                                    fill={hasData ? COLORS[index % COLORS.length] : '#E5E7EB'}
                                 />
                             ))}
 
@@ -51,7 +84,7 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
                                 }}
                             />
                             <Label
-                                value={`$${data.total.toLocaleString()}`}
+                                value={`$${Math.round(totalAmount).toLocaleString()}`}
                                 position="center"
                                 dy={12}
                                 style={{
@@ -61,24 +94,46 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
                                 }}
                             />
                         </Pie>
+                        {hasData && (
+                            <Tooltip
+                                content={({ active, payload }) => {
+                                    if (active && payload && payload.length) {
+                                        const p = payload[0].payload;
+                                        return (
+                                            <div className="bg-white px-3 py-1.5 shadow-lg rounded-xl border border-gray-100 text-xs font-semibold text-gray-900">
+                                                <p className="font-medium text-gray-600">{p.name}</p>
+                                                <p className="text-primaryColor font-bold">${Number(p.amount ?? p.value).toLocaleString()} ({p.percentage}%)</p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                        )}
                     </PieChart>
                 </ResponsiveContainer>
             </div>
 
             {/* Legend / Breakdown List */}
             <div className="mt-4 space-y-3">
-                {data.items.map((item, index) => (
+                {items.map((item, index) => (
                     <div key={item.name} className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-3">
                             <span
-                                className="w-3 h-3 rounded-full"
+                                className="w-3 h-3 rounded-full flex-shrink-0"
                                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
                             />
-                            <span className="text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px]">{item.name}</span>
+                            <span className="text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px] truncate max-w-[120px]">
+                                {item.name}
+                            </span>
                         </div>
-                        <div className="flex space-x-6 text-gray-600">
-                            <span className="w-16 text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px]">{item.percentage}%</span>
-                            <span className="w-20 text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px]">${item.amount.toLocaleString()}</span>
+                        <div className="flex space-x-4 text-gray-600">
+                            <span className="w-14 text-right text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px]">
+                                {item.percentage}%
+                            </span>
+                            <span className="w-20 text-right text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px]">
+                                ${Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            </span>
                         </div>
                     </div>
                 ))}
@@ -86,14 +141,3 @@ export default function TotalRevenuePieCard({ data = defaultData, onRefresh }) {
         </div>
     );
 }
-
-// Default Data for preview/API fallback
-// Updated Default Data with 'value' property for Recharts Pie
-const defaultData = {
-    total: 48789,
-    items: [
-        { name: 'Subscriptions', percentage: 39.98, amount: 32455, value: 32455 },
-        { name: 'Advertisements', percentage: 24.67, amount: 13200, value: 13200 },
-        { name: 'Sponsors', percentage: 14.76, amount: 7634, value: 7634 },
-    ]
-};
