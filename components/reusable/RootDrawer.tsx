@@ -28,7 +28,7 @@ function RootDrawer({
                 className="w-6 h-6 group-hover:scale-110 transition-all duration-200"
               />
             </button>
-            <div className="max-h-[calc(100vh)] overflow-y-auto pb-4 ">
+            <div className="max-h-[calc(100vh)] overflow-y-auto pb-4 scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {children}
             </div>
           </div>

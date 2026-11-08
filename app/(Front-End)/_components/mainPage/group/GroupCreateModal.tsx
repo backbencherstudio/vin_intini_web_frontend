@@ -207,7 +207,7 @@ export default function CreateGroupForm({
         </div>
 
         {/* Scrollable Form Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Cover Photo & Logo Section */}
             <div className="relative h-36 md:h-44 w-full bg-linear-to-r from-cyan-100 via-sky-100 to-blue-200">

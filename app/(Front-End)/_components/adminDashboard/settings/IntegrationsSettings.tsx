@@ -206,7 +206,7 @@ export default function IntegrationsSettings() {
         open={activeSection !== null}
         onOpenChange={(open) => !open && setActiveSection(null)}
       >
-        <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
+        <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto scrollbar-none">
           <DialogHeader>
             <DialogTitle>
               {activeSection !== null

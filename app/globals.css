@@ -380,6 +380,62 @@ body {
   scrollbar-width: none !important;
 }
 
+/* ==========================================================================
+   Global Modal & Dialog Scrollbar Suppression
+   Hide scrollbars across all modals/dialogs throughout the entire application
+   (admin panel, user pages, drawers, sheets) while preserving smooth scrolling.
+   ========================================================================== */
+
+dialog,
+dialog *,
+[role="dialog"],
+[role="dialog"] *,
+[role="alertdialog"],
+[role="alertdialog"] *,
+[aria-modal="true"],
+[aria-modal="true"] *,
+[data-slot="dialog-content"],
+[data-slot="dialog-content"] *,
+[data-slot="alert-dialog-content"],
+[data-slot="alert-dialog-content"] *,
+[data-slot="sheet-content"],
+[data-slot="sheet-content"] *,
+[data-slot="drawer-content"],
+[data-slot="drawer-content"] *,
+[data-radix-dialog-content],
+[data-radix-dialog-content] *,
+.modal-no-scrollbar,
+.modal-no-scrollbar * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+dialog::-webkit-scrollbar,
+dialog *::-webkit-scrollbar,
+[role="dialog"]::-webkit-scrollbar,
+[role="dialog"] *::-webkit-scrollbar,
+[role="alertdialog"]::-webkit-scrollbar,
+[role="alertdialog"] *::-webkit-scrollbar,
+[aria-modal="true"]::-webkit-scrollbar,
+[aria-modal="true"] *::-webkit-scrollbar,
+[data-slot="dialog-content"]::-webkit-scrollbar,
+[data-slot="dialog-content"] *::-webkit-scrollbar,
+[data-slot="alert-dialog-content"]::-webkit-scrollbar,
+[data-slot="alert-dialog-content"] *::-webkit-scrollbar,
+[data-slot="sheet-content"]::-webkit-scrollbar,
+[data-slot="sheet-content"] *::-webkit-scrollbar,
+[data-slot="drawer-content"]::-webkit-scrollbar,
+[data-slot="drawer-content"] *::-webkit-scrollbar,
+[data-radix-dialog-content]::-webkit-scrollbar,
+[data-radix-dialog-content] *::-webkit-scrollbar,
+.modal-no-scrollbar::-webkit-scrollbar,
+.modal-no-scrollbar *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
 .epr_-f1jbax:focus:before {
   border: 0px solid var(--primaryColor) !important;
 }

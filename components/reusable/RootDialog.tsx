@@ -26,7 +26,7 @@ function RootDialog({
     <div>
       <Dialog open={open} onOpenChange={setOpen} aria-label={ariaLabel}  >
         <DialogContent
-          className={`p-0 sm:max-w-2xl w-full max-h-[90vh]  ${className}`}
+          className={`p-0 sm:max-w-2xl w-full max-h-[90vh] overflow-hidden scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${className ?? ""}`}
         >
           <VisuallyHidden>
             <DialogTitle>{ariaLabel || "Dialog"}</DialogTitle>

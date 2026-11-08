@@ -554,7 +554,7 @@ export default function BillingHistoryPage() {
 
       {/* Cancel Confirmation Dialog */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+        <div role="alertdialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-borderColor space-y-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-3 text-redColor">
               <AlertCircle className="w-6 h-6 shrink-0" />

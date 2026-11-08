@@ -65,7 +65,7 @@ export default function AdvertismentViewModal({
           />
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 md:p-7 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-5 md:p-7 scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <div className="space-y-6">
             {isLoading ? (
               <div className="py-16 flex flex-col items-center justify-center space-y-3">
