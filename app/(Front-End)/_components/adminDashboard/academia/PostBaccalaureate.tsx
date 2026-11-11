@@ -35,7 +35,7 @@ export default function PostBaccalaureate() {
   const [selectedStateId, setSelectedStateId] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(20);
+  const [perPage, setPerPage] = useState(10);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] =
@@ -312,7 +312,7 @@ export default function PostBaccalaureate() {
 
           <Pagination
             page={pagination?.current_page || currentPage}
-            pageSize={pagination?.per_page ?? perPage}
+            pageSize={perPage}
             total={pagination?.total ?? 0}
             totalPages={pagination?.last_page ?? 1}
             onPageChange={setCurrentPage}
