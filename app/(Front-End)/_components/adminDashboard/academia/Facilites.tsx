@@ -32,6 +32,7 @@ import Pagination from "@/components/reusable/Pagination";
 import toast from "react-hot-toast";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
+import { formatMapPin } from "./formatMapPin";
 
 type FacilityItem = {
   id: number;
@@ -184,13 +185,9 @@ export default function Facilites() {
     {
       header: "Map Pin (Lat,Long)",
       cell: (row) => {
-        const coordinates = row.map_pin
-          ? `${row.map_pin.latitude}, ${row.map_pin.longitude}`
-          : row.latitude && row.longitude
-            ? `${row.latitude}, ${row.longitude}`
-            : row.mapPin || "-";
+        const coordinates = formatMapPin(row) ?? (row.mapPin || "-");
         return (
-          <span className="text-[#006EFF] text-right  text-xs font-semibold leading-[132%] tracking-[0.06px]">
+          <span className="text-[#006EFF] text-right text-xs font-semibold leading-[132%] tracking-[0.06px] tabular-nums whitespace-nowrap">
             {coordinates}
           </span>
         );

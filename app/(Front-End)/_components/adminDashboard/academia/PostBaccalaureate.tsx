@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import PostBaccalaureateCategoryManager from "./PostBaccalaureateCategoryManager";
 import PostBaccalaureateModal from "./PostBaccalaureateModal";
+import { formatMapPin } from "./formatMapPin";
 
 type ProgramTableRow = PostBaccalaureateProgramType & {
   rowNumber: number;
@@ -180,11 +181,10 @@ export default function PostBaccalaureate() {
       header: "Map Pin (Lat,Long)",
       accessor: "map_pin",
       cell: (row) => {
-        const lat = row.latitude ?? row.map_pin?.latitude;
-        const lng = row.longitude ?? row.map_pin?.longitude;
-        return lat && lng ? (
-          <span className="text-[#006EFF] text-xs font-semibold">
-            {Number(lat).toFixed(4)}, {Number(lng).toFixed(4)}
+        const coordinates = formatMapPin(row);
+        return coordinates ? (
+          <span className="text-[#006EFF] text-xs font-semibold tabular-nums whitespace-nowrap">
+            {coordinates}
           </span>
         ) : (
           <CustomBadge color="yellow">No Pin</CustomBadge>

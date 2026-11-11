@@ -19,6 +19,7 @@ import { MoveUpRight, Plus, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import AddUniversity from "./AddUniversity";
 import EditUniversity from "./EditUniversity";
+import { formatMapPin } from "./formatMapPin";
 
 interface UniversityQueryParams {
   search?: string;
@@ -197,10 +198,8 @@ export default function Universites() {
       header: "Map Pin (Lat,Long)",
       accessor: "map_pin",
       cell: (row) => (
-        <span className="text-[#006EFF] text-xs font-semibold">
-          {row.map_pin
-            ? `${row.map_pin.latitude}, ${row.map_pin.longitude}`
-            : "N/A"}
+        <span className="text-[#006EFF] text-xs font-semibold tabular-nums whitespace-nowrap">
+          {formatMapPin(row) ?? "N/A"}
         </span>
       ),
     },

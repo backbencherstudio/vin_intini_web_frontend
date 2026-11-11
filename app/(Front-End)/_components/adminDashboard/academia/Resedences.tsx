@@ -24,6 +24,7 @@ import Pagination from "@/components/reusable/Pagination";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import { useGetAllStateQuery } from "@/feature/slice/admin/academia/UniversitySlice";
+import { formatMapPin } from "./formatMapPin";
 
 type Job = {
   id: number;
@@ -135,10 +136,8 @@ export default function Resedences() {
     {
       header: "Map Pin (Lat,Long)",
       cell: (row: any) => (
-        <span className="text-[#006EFF] text-xs font-semibold">
-          {row?.map_pin
-            ? `${row.map_pin.latitude},${row.map_pin.longitude}`
-            : "-"}
+        <span className="text-[#006EFF] text-xs font-semibold tabular-nums whitespace-nowrap">
+          {formatMapPin(row) ?? "-"}
         </span>
       ),
     },
