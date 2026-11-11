@@ -102,14 +102,17 @@ export default function TopJobsRightbar({
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate text-sm font-bold text-headerColor">
-                      {company}
+                      <Link
+                        href={`/mu/jobs-details/${job.id}`}
+                        title={role}
+                        className="hover:text-primaryColor hover:underline transition"
+                      >
+                        {role}
+                      </Link>
                     </h3>
-                    <Link
-                      href={`/mu/jobs-details/${job.id}`}
-                      className="truncate text-xs text-descriptionColor block hover:text-primaryColor hover:underline transition"
-                    >
-                      {role}
-                    </Link>
+                    <p className="mt-0.5 truncate text-xs text-descriptionColor">
+                      {company}
+                    </p>
                   </div>
                 </div>
 
