@@ -225,8 +225,10 @@ const USAMapWithPointers = ({
             >
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
+                  type="hospital"
                   name={hospital?.name}
                   address={hospital?.location}
+                  phone={hospital?.phone}
                   website={hospital?.website}
                 />
               </Popup>
@@ -245,11 +247,12 @@ const USAMapWithPointers = ({
             >
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
+                  type="university"
                   name={university?.name}
                   psychologyDegrees={university?.psychology_degrees}
                   counselingDegrees={university?.counseling_degrees}
                   neuroscienceDegrees={university?.neuroscience_degrees}
-                  address={university?.address}
+                  address={university?.location || university?.address}
                   phone={university?.phone}
                   website={university?.website}
                 />
@@ -269,9 +272,10 @@ const USAMapWithPointers = ({
             >
               <Popup autoPan={false} closeButton={false}>
                 <MapPopup
-                type="residency"
+                  type="residency"
                   name={residency.program_name}
                   address={residency.location}
+                  phone={residency.phone}
                   website={residency.website}
                   degree={residency.degree_types}
                 />
@@ -295,6 +299,7 @@ const USAMapWithPointers = ({
                   type="postbacc"
                   name={program.program_name}
                   address={program.location}
+                  phone={program.phone}
                   website={program.website}
                   degree={program.degree_recognitions}
                 />
