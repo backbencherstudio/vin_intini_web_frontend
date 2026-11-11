@@ -81,11 +81,12 @@ export default function Pagination({
                 <button
                   type="button"
                   disabled={page === p}
+                  aria-current={page === p ? "page" : undefined}
                   onClick={() => onPageChange(Number(p))}
-                  className={`flex h-9 items-center justify-center rounded-md px-2 text-sm font-medium transition sm:h-10 sm:px-3 ${
+                  className={`flex h-9 items-center justify-center rounded-md px-2 text-sm transition sm:h-10 sm:px-3 ${
                     page === p
-                      ? "bg-[#E9E9EA] text-[#4A4C56] cursor-default"
-                      : "bg-red-100 text-red-500 hover:bg-red-200 cursor-pointer"
+                      ? "bg-lightGreenColor text-headerColor font-semibold cursor-default"
+                      : "bg-bgColor text-descriptionColor font-medium hover:bg-[#DCDCE0] cursor-pointer"
                   }`}
                 >
                   {p}
