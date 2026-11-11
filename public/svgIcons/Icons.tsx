@@ -3067,3 +3067,36 @@ export const BillingIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+
+export const PostBaccIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M4 5.5C4 4.39543 4.89543 3.5 6 3.5H15.5L19.5 7.5V18.5C19.5 19.6046 18.6046 20.5 17.5 20.5H6C4.89543 20.5 4 19.6046 4 18.5V5.5Z"
+      stroke="#4A4C56"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M15 3.5V8H19.5"
+      stroke="#4A4C56"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.5 12H15M8.5 15.5H12.5"
+      stroke="#4A4C56"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <circle cx="15.5" cy="15.5" r="2" stroke="#4A4C56" strokeWidth="1.5" />
+  </svg>
+);

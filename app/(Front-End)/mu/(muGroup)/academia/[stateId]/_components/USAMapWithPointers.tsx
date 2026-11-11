@@ -21,6 +21,14 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
+const postBaccIcon = new L.Icon({
+  iconUrl:
+    "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230F766E' d='M16 2C10.48 2 6 6.48 6 12c0 7.5 10 18 10 18s10-10.5 10-18c0-5.52-4.48-10-10-10z'/%3E%3Ccircle cx='16' cy='12' r='6.5' fill='%23ffffff'/%3E%3Cpath fill='%230F766E' d='M16 7.5L10.5 10.2 16 12.9l5.5-2.7L16 7.5zm-3.5 3.8v2.6c0 1.2 1.6 2.1 3.5 2.1s3.5-.9 3.5-2.1v-2.6L16 13.1l-3.5-1.8z'/%3E%3C/svg%3E",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+
 const hospitalIcon = new L.Icon({
   // Hospital Building Icon
   iconUrl: "https://cdn-icons-png.flaticon.com/512/3448/3448513.png",
@@ -266,6 +274,29 @@ const USAMapWithPointers = ({
                   address={residency.location}
                   website={residency.website}
                   degree={residency.degree_types}
+                />
+              </Popup>
+            </Marker>
+          ) : null,
+        )}
+
+        {data?.post_baccalaureate_programs?.map((program: any) =>
+          program?.latitude && program?.longitude ? (
+            <Marker
+              key={`postbacc-${program.id}`}
+              position={[
+                Number(program.latitude),
+                Number(program.longitude),
+              ]}
+              icon={postBaccIcon}
+            >
+              <Popup autoPan={false} closeButton={false}>
+                <MapPopup
+                  type="postbacc"
+                  name={program.program_name}
+                  address={program.location}
+                  website={program.website}
+                  degree={program.degree_recognitions}
                 />
               </Popup>
             </Marker>

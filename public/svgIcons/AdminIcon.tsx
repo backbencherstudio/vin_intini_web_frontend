@@ -521,10 +521,27 @@ export const TikIcon = ({ className }: { className?: string }) => (
     height="7"
     viewBox="0 0 10 7"
     fill="none"
+    className={className}
   >
     <path
       d="M2.98967 6.61917L0 3.64617L0.612667 3.01667L2.98967 5.39367L8.4 0L9.01267 0.612834L2.98967 6.61917Z"
       fill="#04A1B7"
+    />
+  </svg>
+);
+
+export const PostBaccAdminIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="15"
+    height="16"
+    viewBox="0 0 15 16"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M2.5 1.5C2.5 0.671573 3.17157 0 4 0H10.5L14 3.5V13.5C14 14.3284 13.3284 15 12.5 15H4C3.17157 15 2.5 14.3284 2.5 13.5V1.5ZM4 1.1V13.5C4 13.7209 4.17909 13.9 4.4 13.9H12.1C12.3209 13.9 12.5 13.7209 12.5 13.5V4.3H9.7V1.1H4ZM10.8 1.5V3.2H12.5L10.8 1.5ZM5.2 6.8H11.3V7.9H5.2V6.8ZM5.2 9.4H9.6V10.5H5.2V9.4Z"
+      fill="#1C1B1F"
     />
   </svg>
 );

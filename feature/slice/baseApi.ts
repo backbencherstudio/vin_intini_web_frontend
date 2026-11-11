@@ -41,6 +41,8 @@ export const baseApiSlice = createApi({
     "state",
     "residencies",
     "facilities",
+    "postBaccalaureatePrograms",
+    "postBaccalaureateCategories",
     "Employment",
     "subscription",
     "plan",

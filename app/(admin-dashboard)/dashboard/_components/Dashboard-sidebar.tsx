@@ -1,4 +1,4 @@
-import { AcademicIcon, AdvertizementIcon, BasicUserIcon, CategoryIcon, FacilitesIcon, NeuroscienceIcon, PartnerIcon, PremiumUserIcon, ProUserIcon, ResendenceIcon, SubPlanIcon, SubscriptIcon, SubTranscIcon, UniversitiseIcon, UserManagementIcon } from "@/public/svgIcons/AdminIcon";
+import { AcademicIcon, AdvertizementIcon, BasicUserIcon, CategoryIcon, FacilitesIcon, NeuroscienceIcon, PartnerIcon, PostBaccAdminIcon, PremiumUserIcon, ProUserIcon, ResendenceIcon, SubPlanIcon, SubscriptIcon, SubTranscIcon, UniversitiseIcon, UserManagementIcon } from "@/public/svgIcons/AdminIcon";
 import {
   List,
   Brain,
@@ -138,6 +138,12 @@ export const SidebarData: SidebarItem[] = [
         name: "Universities",
         href: "/dashboard/academia/universities",
         icon: UniversitiseIcon,
+      },
+      {
+        id: "post-baccalaureate",
+        name: "Post-Baccalaureate",
+        href: "/dashboard/academia/post-baccalaureate",
+        icon: PostBaccAdminIcon,
       },
       {
         id: "residencies",

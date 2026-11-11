@@ -25,6 +25,11 @@ export const routes: Record<string, RouteConfig> = {
         href: "/",
         buildHref: (stateId: string) => `/mu/academia/${stateId}/grad-undergrad-programs`,
     },
+    postbaccalaureateprograms: {
+        label: "Post-Baccalaureate Programs",
+        href: "/",
+        buildHref: (stateId: string) => `/mu/academia/${stateId}/post-baccalaureate-programs`,
+    },
     hospitals: {
         label: "Hospitals",
         href: "/",

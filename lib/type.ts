@@ -454,3 +454,35 @@ export interface userJobType {
   matched_criteria?: string[];
   industry: CompanyType;
 }
+
+export interface PostBaccalaureateCategoryType {
+  id: number;
+  name: string;
+  sort_order: number;
+  is_active: boolean;
+  programs_count?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PostBaccalaureateProgramType {
+  id: number;
+  state_id: number;
+  program_name: string;
+  location: string | null;
+  phone: string | null;
+  website: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  map_pin: {
+    latitude: string;
+    longitude: string;
+  } | null;
+  state?: string | null;
+  state_name?: string | null;
+  state_code?: string | null;
+  categories: PostBaccalaureateCategoryType[];
+  degree_recognitions: string[];
+  created_at?: string;
+  updated_at?: string;
+}

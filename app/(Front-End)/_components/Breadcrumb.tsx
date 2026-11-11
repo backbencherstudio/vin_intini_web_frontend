@@ -27,6 +27,7 @@ const LABEL_MAP: Record<string, string> = {
   profile: "Profile",
   chat: "Chat",
   "jobs-details": "Job Details",
+  "post-baccalaureate-programs": "Post-Baccalaureate Programs",
 };
 
 function toLabel(slug: string): string {

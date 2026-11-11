@@ -3,7 +3,7 @@ import React from "react";
 import { FaGlobeAmericas } from "react-icons/fa";
 
 type MapPopupProps = {
-  type?: "hospital" | "university" | "residency";
+  type?: "hospital" | "university" | "residency" | "postbacc";
   name: string;
   psychologyDegrees?: string[];
   counselingDegrees?: string[];
@@ -25,14 +25,20 @@ const MapPopup = ({
   website,
   degree,
 }: MapPopupProps) => {
+  const safeWebsite = website?.trim()
+    ? /^https?:\/\//i.test(website.trim())
+      ? website.trim()
+      : `https://${website.trim()}`
+    : undefined;
+
   return (
     <div className="text-[13px] leading-relaxed p-2 text-gray-800 min-w-55">
       <div>
         <div>
           <label className="text-gray-500 text-[11px]">name</label>
-          {website ? (
+          {safeWebsite ? (
             <Link
-              href={website}
+              href={safeWebsite}
               className="flex items-center gap-1.5"
               target="_blank"
               rel="noopener noreferrer"
@@ -51,7 +57,9 @@ const MapPopup = ({
           neuroscienceDegrees?.length > 0 ||
           degree?.length > 0) && (
           <div className="">
-            <label className="text-gray-500 text-[11px]">degrees</label>
+            <label className="text-gray-500 text-[11px]">
+              {type === "postbacc" ? "degree/recognition" : "degrees"}
+            </label>
             {psychologyDegrees && psychologyDegrees.length > 0 && (
               <h3 className="text-blackColor font-medium text-[11px]">
                 {psychologyDegrees.join(", ")} in Psychology
@@ -69,7 +77,7 @@ const MapPopup = ({
             )}
             {degree && degree.length > 0 && (
               <h3 className="text-blackColor font-medium text-[11px]">
-                {degree.join(", ")} { type !== "residency" ? "in " + degree[0] : "" }
+                {degree.join(", ")} {type !== "residency" && type !== "postbacc" ? "in " + degree[0] : ""}
               </h3>
             )}
           </div>

@@ -14,6 +14,7 @@ import {
   BrainIcon,
   HospitalIcon,
   JobSearchIcon,
+  PostBaccIcon,
   UndergradCapIcon,
 } from "../../../../../../../public/svgIcons/Icons";
 
@@ -35,6 +36,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       href: `/mu/academia/${stateId}/grad-undergrad-programs`,
       Icon: UndergradCapIcon,
       redirectKey: "undergradgradprograms",
+    },
+    {
+      label: "Post-Baccalaureate Programs",
+      href: `/mu/academia/${stateId}/post-baccalaureate-programs`,
+      Icon: PostBaccIcon,
+      redirectKey: "postbaccalaureateprograms",
     },
     {
       label: "Medical Residencies",
@@ -135,8 +142,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 key={href}
                 className={`flex items-center p-1.5 sm:p-2 hover:bg-[#E2E8F0] gap-1.5 rounded-md sm:gap-2 ${redirectUrl?.includes(redirectKey) ? "bg-[#E2E8F0]" : ""} ${toggleSidebar ? "w-fit" : "w-full"}`}
               >
-                <Icon className="w-6 h-6" />
-                {!toggleSidebar && <span>{label}</span>}
+                <Icon className="w-6 h-6 shrink-0" />
+                {!toggleSidebar && <span className="leading-snug">{label}</span>}
               </Link>
             );
           })}

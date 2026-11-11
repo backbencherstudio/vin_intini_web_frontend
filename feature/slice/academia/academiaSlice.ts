@@ -7,18 +7,37 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
         url: `/states`,
         method: "GET",
       }),
+      providesTags: ["state"],
     }),
     getAcademiaByState: builder.query({
       query: (id) => ({
         url: `/states/${id}`,
         method: "GET",
       }),
+      providesTags: ["state", "postBaccalaureatePrograms"],
     }),
     getUndergradGradPrograms: builder.query({
       query: ({ id, limit, page, searchItem, degree, sort }) => ({
         url: `/states/${id}/universities?per_page=${limit}&page=${page}&search=${searchItem}${degree ? `&degree=${degree}` : ""}${sort ? `&sort=${sort}` : ""}`,
         method: "GET",
       }),
+    }),
+    getPostBaccalaureatePrograms: builder.query({
+      query: ({ id, limit, page, searchItem, search, category, sort }) => {
+        const resolvedSearch = searchItem ?? search;
+        return {
+          url: `/states/${id}/post-baccalaureate-programs`,
+          method: "GET",
+          params: {
+            limit,
+            page,
+            ...(resolvedSearch ? { search: resolvedSearch } : {}),
+            ...(category ? { category } : {}),
+            ...(sort ? { sort } : {}),
+          },
+        };
+      },
+      providesTags: ["postBaccalaureatePrograms", "postBaccalaureateCategories"],
     }),
     getResidencies: builder.query({
       query: ({ id, limit, page, searchItem, degree, sort }) => ({
@@ -44,6 +63,7 @@ const acadamiaSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetAcademiaQuery,
   useGetUndergradGradProgramsQuery,
+  useGetPostBaccalaureateProgramsQuery,
   useGetResidenciesQuery,
   useGetHospitalsQuery,
   useGetAcademiaByStateQuery,
