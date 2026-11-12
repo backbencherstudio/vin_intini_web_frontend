@@ -104,10 +104,38 @@ export default function AdvertismentViewModal({
                         <h3 className="min-w-0 wrap-break-word text-base md:text-lg font-bold leading-snug text-headerColor">
                           {ad.product_name || "Product Name"}
                         </h3>
-                        <span className="inline-flex shrink-0 items-center rounded-full border border-lightGreenColor2/30 bg-lightGreenColor2/10 px-3 py-1 text-xs font-semibold capitalize text-lightGreenColor2">
+                        <span
+                          className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-xs font-semibold capitalize ${
+                            ad.status === "rejected"
+                              ? "border-red-200 bg-red-50 text-red-700"
+                              : ad.status === "inactive"
+                                ? "border-amber-200 bg-amber-50 text-amber-700"
+                                : "border-lightGreenColor2/30 bg-lightGreenColor2/10 text-lightGreenColor2"
+                          }`}
+                        >
                           {ad.status || "Active"}
                         </span>
                       </div>
+
+                      {ad.status === "rejected" && (
+                        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 space-y-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="font-semibold text-red-950">
+                              Rejected by Admin &amp; Hidden from Platform
+                            </p>
+                            {ad.rejected_at && (
+                              <span className="text-[11px] text-red-700">
+                                {dayjs(ad.rejected_at).format("DD MMM YYYY")}
+                              </span>
+                            )}
+                          </div>
+                          <p className="leading-relaxed">
+                            <span className="font-semibold">Reason:</span>{" "}
+                            {ad.rejection_reason ||
+                              "No rejection reason provided."}
+                          </p>
+                        </div>
+                      )}
 
                       {/* Attributes */}
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-1">

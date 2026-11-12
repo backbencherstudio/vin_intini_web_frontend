@@ -1,5 +1,10 @@
-import BiotechnologyPage from "@/app/(Front-End)/_components/adminDashboard/psychology/biotechnology/BiotechnologyPage";
+import NetworkProductsPage from "@/app/(Front-End)/_components/adminDashboard/products/NetworkProductsPage";
 
 export default function Page() {
-  return <BiotechnologyPage />;
+  return (
+    <NetworkProductsPage
+      networkType="psychology"
+      industryType="biotechnology"
+    />
+  );
 }

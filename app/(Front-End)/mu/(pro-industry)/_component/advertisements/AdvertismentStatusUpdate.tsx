@@ -4,6 +4,7 @@ import CommonStatusDropdown, {
   StatusOption,
 } from "@/components/reusable/CommonStatusDropdown";
 import { useUpdateAdvertisementStatusMutation } from "@/feature/slice/jobs/advertisementSlice";
+import { Lock } from "lucide-react";
 import toast from "react-hot-toast";
 
 const STATUS_OPTIONS: StatusOption[] = [
@@ -17,7 +18,7 @@ function AdvertismentStatusUpdate({
   disabled = false,
   className,
 }: {
-  row: { id: string | number; status?: string };
+  row: { id: string | number; status?: string; rejection_reason?: string | null };
   disabled?: boolean;
   className?: string;
 }) {
@@ -25,9 +26,10 @@ function AdvertismentStatusUpdate({
     useUpdateAdvertisementStatusMutation();
 
   const status = row.status?.toLowerCase() || "draft";
+  const isRejected = status === "rejected";
 
   const handleStatusChange = async (newStatus: string) => {
-    if (disabled || isUpdatingStatus || newStatus === status) return;
+    if (disabled || isRejected || isUpdatingStatus || newStatus === status) return;
 
     try {
       const response = await updateStatus({
@@ -42,6 +44,24 @@ function AdvertismentStatusUpdate({
       );
     }
   };
+
+  if (isRejected) {
+    return (
+      <div className={className || "flex justify-center px-3"}>
+        <span
+          title={
+            row.rejection_reason
+              ? `Rejected by Admin: ${row.rejection_reason}`
+              : "Rejected by Admin"
+          }
+          className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 cursor-not-allowed"
+        >
+          <Lock className="w-3 h-3 shrink-0" />
+          <span>Rejected</span>
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className={className || "flex justify-center px-3"}>

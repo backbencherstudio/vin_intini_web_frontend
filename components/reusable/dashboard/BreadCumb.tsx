@@ -22,7 +22,7 @@ const routeNames: Record<string, string> = {
   subscription: "Subscription",
 };
 
-const nonClickableRoutes = ["user-management", "academia"];
+const nonClickableRoutes = ["user-management", "academia", "psychology", "neuroscience"];
 
 export default function Breadcrumb() {
   const pathname = usePathname();

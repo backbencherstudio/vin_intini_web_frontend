@@ -1,7 +1,10 @@
-import React from 'react'
+import NetworkProductsPage from "@/app/(Front-End)/_components/adminDashboard/products/NetworkProductsPage";
 
 export default function Page() {
   return (
-    <div>page</div>
-  )
+    <NetworkProductsPage
+      networkType="psychology"
+      industryType="psychotropics"
+    />
+  );
 }

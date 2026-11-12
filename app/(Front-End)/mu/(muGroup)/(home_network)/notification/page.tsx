@@ -14,13 +14,22 @@ import NotificationSkeleton from "./_components/NotificationSkeleton";
 import toast from "react-hot-toast";
 
 type NotificationDataType = {
-  connection_request_id: number;
-  sender_id: number;
-  sender_name: string;
-  sender_profile_image_url: string;
-  message: string;
+  connection_request_id?: number;
+  sender_id?: number;
+  sender_name?: string;
+  sender_username?: string | null;
+  inviter_username?: string | null;
+  acceptor_name?: string;
+  sender_profile_image_url?: string | null;
+  acceptor_profile_image_url?: string | null;
+  message?: string;
+  description?: string | null;
+  action_url?: string | null;
+  rejection_reason?: string | null;
+  product_name?: string | null;
+  status?: string | null;
   type: string;
-  requested_at: string;
+  requested_at?: string;
 };
 
 type NotificationItem = {
@@ -69,65 +78,109 @@ function NotificationPage() {
       </div>
 
       <div className="mt-4 border-t border-borderColor">
-        {data?.data.map((item) => (
-          <article
-            key={item.id}
-            className="relative flex items-end justify-between gap-3 border-b border-[#d9d9d9] px-3 py-6 md:px-5"
-          >
-            {/* {item.isUnread && (
-              <span className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-x-1.5 -translate-y-1/2 rounded-full bg-[#5b3df5]" />
-            )} */}
+        {data?.data.map((item: NotificationItem) => {
+          const isProductRejected =
+            item?.type === "ProductRejectedNotification" ||
+            item?.data?.type === "ProductRejectedNotification" ||
+            item?.data?.status === "rejected";
+          const targetUsername =
+            item?.data?.sender_username || item?.data?.inviter_username;
+          const targetHref = item?.data?.action_url
+            ? item.data.action_url
+            : isProductRejected
+              ? "/mu/products"
+              : targetUsername
+                ? `/mu/profile/${targetUsername}`
+                : null;
+          const displaySender =
+            item?.data?.sender_name ||
+            item?.data?.acceptor_name ||
+            "MindUnite";
 
-            <div className="flex  items-center gap-3 md:gap-4">
-              <div className="h-10 w-10 shrink-0 rounded-full ">
-                {item?.data?.sender_profile_image_url ||
-                item?.data?.acceptor_profile_image_url ? (
-                  <Image
-                    src={
-                      item?.data?.sender_profile_image_url ||
-                      item?.data?.acceptor_profile_image_url
-                    }
-                    alt="User Avatar"
-                    width={40}
-                    height={40}
-                    className="rounded-full w-full h-full"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primaryColor flex items-center justify-center text-white font-bold text-sm">
-                    {item?.data?.sender_name?.slice(0, 2).toUpperCase() ||
-                      item?.data?.acceptor_name?.slice(0, 2).toUpperCase()}
+          return (
+            <article
+              key={item.id}
+              className="relative flex items-end justify-between gap-3 border-b border-[#d9d9d9] px-3 py-6 md:px-5"
+            >
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="h-10 w-10 shrink-0 rounded-full ">
+                  {item?.data?.sender_profile_image_url ||
+                  item?.data?.acceptor_profile_image_url ? (
+                    <Image
+                      src={
+                        item?.data?.sender_profile_image_url ||
+                        item?.data?.acceptor_profile_image_url ||
+                        ""
+                      }
+                      alt="User Avatar"
+                      width={40}
+                      height={40}
+                      className="rounded-full w-full h-full"
+                    />
+                  ) : (
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                        isProductRejected ? "bg-rose-600" : "bg-primaryColor"
+                      }`}
+                    >
+                      {displaySender.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {targetHref ? (
+                      <Link href={targetHref} className="hover:underline">
+                        <span className="font-bold">{displaySender}</span>
+                      </Link>
+                    ) : (
+                      <span className="font-bold">{displaySender}</span>
+                    )}
+
+                    {isProductRejected && (
+                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
+                        Product Rejected
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <div className="">
-                <Link
-                  href={`/mu/profile/${item?.data?.sender_username || item?.data?.inviter_username}`}
-                >
-                  {" "}
-                  <span className="font-bold">
-                    {item?.data?.sender_name || item?.data?.acceptor_name}
-                  </span>{" "}
-                </Link>
-                <p className="text-sm leading-[1.2] text-headerColor ">
-                  <span className="font-normal">{item?.data?.message}</span>
-                </p>
-
-                {item?.data?.description && (
-                  <p className="mt-1 text-xs leading-tight text-descriptionColor ">
-                    {item?.data?.description}
+                  <p className="text-sm leading-[1.3] text-headerColor mt-0.5">
+                    <span className="font-normal">{item?.data?.message}</span>
                   </p>
-                )}
-              </div>
-            </div>
 
-            {item?.created_at && (
-              <p className="shrink-0 pt-1 text-xs leading-none text-descriptionColor">
-                {calculateTime(item?.created_at)}
-              </p>
-            )}
-          </article>
-        ))}
+                  {isProductRejected &&
+                  (item?.data?.rejection_reason || item?.data?.description) ? (
+                    <div className="mt-2 rounded-lg border border-rose-200 bg-rose-50/75 px-3 py-2 text-xs text-rose-800">
+                      <p className="leading-relaxed">
+                        {item?.data?.description ||
+                          `Reason: ${item?.data?.rejection_reason}`}
+                      </p>
+                      <Link
+                        href="/mu/products"
+                        className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
+                      >
+                        View product listings &rarr;
+                      </Link>
+                    </div>
+                  ) : (
+                    item?.data?.description && (
+                      <p className="mt-1 text-xs leading-tight text-descriptionColor ">
+                        {item?.data?.description}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {item?.created_at && (
+                <p className="shrink-0 pt-1 text-xs leading-none text-descriptionColor">
+                  {calculateTime(item?.created_at)}
+                </p>
+              )}
+            </article>
+          );
+        })}
       </div>
     </section>
   );

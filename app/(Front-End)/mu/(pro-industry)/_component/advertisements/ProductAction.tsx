@@ -20,6 +20,7 @@ export default function ProductAction({
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
+  const isRejected = row.status?.toLowerCase() === "rejected";
   const isBoosted = Boolean(
     row.is_boosted || (row.boost_days_left && row.boost_days_left > 0),
   );
@@ -28,10 +29,15 @@ export default function ProductAction({
     <>
       <div className={className || "flex items-center justify-end gap-2 pr-3"}>
         {/* Boost Now Button -> Navigate to dedicated Boosting Plan page */}
-        {isBoosted ? (
+        {isBoosted || isRejected ? (
           <button
             type="button"
             disabled
+            title={
+              isRejected
+                ? "Rejected products cannot be boosted"
+                : "Already boosted"
+            }
             className="px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1 border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed"
           >
             <Zap className="w-3.5 h-3.5 fill-slate-300" />
@@ -68,13 +74,24 @@ export default function ProductAction({
         </button>
 
         {/* Edit Ad Button */}
-        <Link
-          href={`/mu/products/${row.id}/edit`}
-          className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
-          title="Edit Ad"
-        >
-          <Pencil className="w-4 h-4" />
-        </Link>
+        {isRejected ? (
+          <button
+            type="button"
+            disabled
+            title="Rejected by Admin — cannot be edited or reactivated"
+            className="p-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-300 cursor-not-allowed"
+          >
+            <Pencil className="w-4 h-4" />
+          </button>
+        ) : (
+          <Link
+            href={`/mu/products/${row.id}/edit`}
+            className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
+            title="Edit Ad"
+          >
+            <Pencil className="w-4 h-4" />
+          </Link>
+        )}
       </div>
 
       {/* View Modal */}
