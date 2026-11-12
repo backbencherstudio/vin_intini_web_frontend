@@ -408,9 +408,16 @@ export default function LoginActivityTable() {
       <CustomModal
         open={selectedLoginActivity !== null}
         onOpenChange={(open) => {
-          if (!open) setSelectedLoginActivity(null);
+          if (!open) {
+            setSelectedLoginActivity(null);
+            setSecureAccountMessage(null);
+          }
         }}
-        title="Your account secure successfully."
+        title={
+          secureAccountMessage
+            ? "Account Secured"
+            : "Confirm Login Activity"
+        }
         size="xsm"
         className="!pb-4"
       >
