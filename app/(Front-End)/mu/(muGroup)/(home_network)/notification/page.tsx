@@ -26,6 +26,7 @@ type NotificationDataType = {
   description?: string | null;
   action_url?: string | null;
   rejection_reason?: string | null;
+  previous_status?: string | null;
   product_name?: string | null;
   status?: string | null;
   type: string;
@@ -83,11 +84,15 @@ function NotificationPage() {
             item?.type === "ProductRejectedNotification" ||
             item?.data?.type === "ProductRejectedNotification" ||
             item?.data?.status === "rejected";
+          const isProductRestored =
+            item?.type === "ProductStatusUpdatedNotification" ||
+            item?.data?.type === "ProductStatusUpdatedNotification" ||
+            item?.data?.previous_status === "rejected";
           const targetUsername =
             item?.data?.sender_username || item?.data?.inviter_username;
           const targetHref = item?.data?.action_url
             ? item.data.action_url
-            : isProductRejected
+            : isProductRejected || isProductRestored
               ? "/mu/products"
               : targetUsername
                 ? `/mu/profile/${targetUsername}`
@@ -120,7 +125,11 @@ function NotificationPage() {
                   ) : (
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                        isProductRejected ? "bg-rose-600" : "bg-primaryColor"
+                        isProductRejected
+                          ? "bg-rose-600"
+                          : isProductRestored
+                            ? "bg-emerald-600"
+                            : "bg-primaryColor"
                       }`}
                     >
                       {displaySender.slice(0, 2).toUpperCase()}
@@ -143,6 +152,12 @@ function NotificationPage() {
                         Product Rejected
                       </span>
                     )}
+
+                    {!isProductRejected && isProductRestored && (
+                      <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                        Product Status Updated
+                      </span>
+                    )}
                   </div>
 
                   <p className="text-sm leading-[1.3] text-headerColor mt-0.5">
@@ -159,6 +174,16 @@ function NotificationPage() {
                       <Link
                         href="/mu/products"
                         className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
+                      >
+                        View product listings &rarr;
+                      </Link>
+                    </div>
+                  ) : isProductRestored && item?.data?.description ? (
+                    <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/75 px-3 py-2 text-xs text-emerald-800">
+                      <p className="leading-relaxed">{item.data.description}</p>
+                      <Link
+                        href="/mu/products"
+                        className="mt-1 inline-block font-semibold text-emerald-700 hover:underline"
                       >
                         View product listings &rarr;
                       </Link>
