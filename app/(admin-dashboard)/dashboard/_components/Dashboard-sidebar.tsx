@@ -8,6 +8,8 @@ import {
   Mail,
   ClipboardCheck,
   ClipboardList,
+  FlaskConical,
+  Pill,
 } from "lucide-react";
 import { LuChartNoAxesColumn } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -182,15 +184,40 @@ export const SidebarData: SidebarItem[] = [
   },
 
   {
-    id: "psychology",
-    name: "Psychology",
+    id: "psychology-products",
+    name: "Psychology Products",
     icon: Brain,
     children: [
       {
-        id: "biotechnology",
+        id: "psychology-biotechnology",
         name: "Biotechnology",
         href: "/dashboard/psychology/biotechnology",
-        icon: Brain,
+        icon: FlaskConical,
+      },
+      {
+        id: "psychology-psychotropics",
+        name: "Psychotropics",
+        href: "/dashboard/psychology/psychotropics",
+        icon: Pill,
+      },
+    ],
+  },
+  {
+    id: "neuroscience-products",
+    name: "Neuroscience Products",
+    icon: NeuroscienceIcon,
+    children: [
+      {
+        id: "neuroscience-biotechnology",
+        name: "Biotechnology",
+        href: "/dashboard/neuroscience/biotechnology",
+        icon: FlaskConical,
+      },
+      {
+        id: "neuroscience-psychotropics",
+        name: "Psychotropics",
+        href: "/dashboard/neuroscience/psychotropics",
+        icon: Pill,
       },
     ],
   },

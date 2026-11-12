@@ -110,6 +110,11 @@ export default function CreateAdvertisementForm({
     skip: !id,
   });
 
+  const existingAd = editResponse?.data || editResponse;
+  const isRejectedAd =
+    Boolean(id) &&
+    String(existingAd?.status || "").toLowerCase() === "rejected";
+
   // File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -390,6 +395,24 @@ export default function CreateAdvertisementForm({
         </p>
         <div className="border-b border-borderColor/60 mt-4" />
       </div>
+
+      {isRejectedAd && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-xs sm:text-sm text-red-900 space-y-1.5">
+          <p className="font-bold text-red-950">
+            Rejected by Admin &mdash; Status Locked
+          </p>
+          <p className="text-red-800 leading-relaxed">
+            This product has been hidden from the platform and cannot be
+            modified or reactivated by the industry account.
+          </p>
+          {existingAd?.rejection_reason && (
+            <p className="rounded-lg border border-red-200 bg-white px-3 py-2 text-red-900">
+              <span className="font-semibold">Admin Reason:</span>{" "}
+              {existingAd.rejection_reason}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -813,8 +836,8 @@ export default function CreateAdvertisementForm({
           </button>
           <button
             type="submit"
-            disabled={isSubmitting || isCreating || isUpdating}
-            className="px-10 py-2.5 rounded-full bg-primaryColor text-white font-medium text-sm hover:bg-primaryColor/90 transition-colors cursor-pointer disabled:opacity-50 shadow-xs"
+            disabled={isRejectedAd || isSubmitting || isCreating || isUpdating}
+            className="px-10 py-2.5 rounded-full bg-primaryColor text-white font-medium text-sm hover:bg-primaryColor/90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
           >
             {isSubmitting || isCreating || isUpdating ? (
               <span className="flex items-center gap-2">

@@ -1,110 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-
 export interface CategoryTab {
-    id: string;
-    label: string;
+  id: string;
+  label: string;
+  count?: number;
 }
 
 interface CategoryTabsProps {
-    tabs: CategoryTab[];
-    value?: string;
-    defaultValue?: string;
-    onValueChange?: (id: string) => void;
-    maxVisible?: number;
-    className?: string;
+  tabs: CategoryTab[];
+  activeTabId: string;
+  onTabChange: (tabId: string) => void;
 }
 
-const tabClassName = (isActive: boolean) =>
-    cn(
-        "inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-        isActive
-            ? "bg-[#1D1F2C] text-white"
-            : "bg-[#F3F4F6] text-[#4A4C56] hover:bg-[#E8E9ED]",
-    );
-
 export default function CategoryTabs({
-    tabs,
-    value,
-    defaultValue,
-    onValueChange,
-    maxVisible = 3,
-    className,
+  tabs,
+  activeTabId,
+  onTabChange,
 }: CategoryTabsProps) {
-    const [internalValue, setInternalValue] = useState(
-        defaultValue ?? tabs[0]?.id ?? "",
-    );
-    const activeId = value ?? internalValue;
+  return (
+    <div className="mb-5 inline-flex max-w-full flex-wrap items-center gap-1 rounded-xl border border-[#E5E7EB] bg-white p-1.5">
+      {tabs.map((tab) => {
+        const isActive = tab.id === activeTabId;
 
-    const selectTab = (id: string) => {
-        if (value === undefined) setInternalValue(id);
-        onValueChange?.(id);
-    };
-
-    const visibleTabs = tabs.slice(0, maxVisible);
-    const overflowTabs = tabs.slice(maxVisible);
-    const isOverflowActive = overflowTabs.some((tab) => tab.id === activeId);
-
-    return (
-        <div
-            className={cn(
-                "inline-flex max-w-full items-center gap-2 overflow-x-auto rounded-xl border border-[#E5E7EB] bg-white p-1 scrollbar-none",
-                className,
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => onTabChange(tab.id)}
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+              isActive
+                ? "bg-[#111827] text-white shadow-xs"
+                : "text-[#4A4C56] hover:bg-gray-100 hover:text-[#1D1F2C]"
+            }`}
+          >
+            <span>{tab.label}</span>
+            {typeof tab.count === "number" && (
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-[11px] font-semibold leading-none ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {tab.count}
+              </span>
             )}
-        >
-            {visibleTabs.map((tab) => {
-                const isActive = tab.id === activeId;
-
-                return (
-                    <button
-                        key={tab.id}
-                        type="button"
-                        aria-pressed={isActive}
-                        onClick={() => selectTab(tab.id)}
-                        className={tabClassName(isActive)}
-                    >
-                        {tab.label}
-                    </button>
-                );
-            })}
-
-            {overflowTabs.length > 0 && (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button
-                            type="button"
-                            aria-pressed={isOverflowActive}
-                            className={cn(tabClassName(isOverflowActive), "group")}
-                        >
-                            Other
-                            <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="min-w-48 bg-white">
-                        {overflowTabs.map((tab) => (
-                            <DropdownMenuItem
-                                key={tab.id}
-                                onSelect={() => selectTab(tab.id)}
-                                className={cn(
-                                    "cursor-pointer",
-                                    tab.id === activeId && "bg-gray-100 font-medium",
-                                )}
-                            >
-                                {tab.label}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )}
-        </div>
-    );
+          </button>
+        );
+      })}
+    </div>
+  );
 }

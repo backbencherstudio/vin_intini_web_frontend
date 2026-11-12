@@ -61,6 +61,7 @@ export const baseApiSlice = createApi({
     "industryConversationList",
     "industryMessage",
     "adminDashboard",
+    "adminProducts",
     "JobPreference",
   ],
 });

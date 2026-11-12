@@ -59,6 +59,8 @@ function ProductBoostingPlanContent() {
   const boostData = configResponse?.data;
   const product =
     productDetailsResponse?.data || productDetailsResponse?.product || null;
+  const isRejectedProduct =
+    String(product?.status || "").toLowerCase() === "rejected";
 
   // On page reload at Step 2 or 3, fetch order summary if missing in memory
   const orderQueryParams = useMemo(() => {
@@ -187,7 +189,7 @@ function ProductBoostingPlanContent() {
       </div>
 
       {/* Step Indicators */}
-      {step < 4 && (
+      {step < 4 && !isRejectedProduct && (
         <div className="bg-white rounded-xl border border-borderColor p-4">
           <div className="flex items-center justify-between max-w-2xl mx-auto">
             {/* Step 1 */}
@@ -258,7 +260,32 @@ function ProductBoostingPlanContent() {
       )}
 
       {/* Main Steps Content with Stripe Elements Provider */}
-      {isLoadingConfig || (step > 1 && !orderSummary && isLoadingSummary) ? (
+      {isRejectedProduct ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50/80 p-6 text-center space-y-3">
+          <h2 className="text-base sm:text-lg font-bold text-red-950">
+            This Product Has Been Rejected by Admin
+          </h2>
+          <p className="text-sm text-red-800 max-w-xl mx-auto leading-relaxed">
+            Rejected products are hidden from the platform and cannot be boosted
+            or reactivated.
+          </p>
+          {product?.rejection_reason && (
+            <div className="mx-auto max-w-xl rounded-xl border border-red-200 bg-white px-4 py-3 text-xs sm:text-sm text-red-900">
+              <span className="font-semibold">Reason:</span>{" "}
+              {product.rejection_reason}
+            </div>
+          )}
+          <div className="pt-2">
+            <Link
+              href="/mu/products"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primaryColor px-4 py-2 text-sm font-semibold text-white hover:bg-primaryColor/90 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Return to Product Dashboard</span>
+            </Link>
+          </div>
+        </div>
+      ) : isLoadingConfig || (step > 1 && !orderSummary && isLoadingSummary) ? (
         <div className="py-20 text-center text-sm text-descriptionColor flex items-center justify-center gap-2">
           <Loader2 className="w-5 h-5 animate-spin text-primaryColor" />
           <span>Loading boosting configuration...</span>

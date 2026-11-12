@@ -143,6 +143,14 @@ export default function AdvertisementsPage() {
                   row.product_id ||
                   "BioPac Systems"}
               </p>
+              {row.status === "rejected" && row.rejection_reason && (
+                <p
+                  title={row.rejection_reason}
+                  className="mt-1 line-clamp-1 rounded bg-red-50 px-1.5 py-0.5 text-[11px] font-medium text-red-700 border border-red-200"
+                >
+                  Reason: {row.rejection_reason}
+                </p>
+              )}
               {isBoosted && (
                 <div className="mt-1">
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F3FF] text-LiteBlueColor border border-[#DDD6FE]">
@@ -276,6 +284,7 @@ export default function AdvertisementsPage() {
                   { value: "active", label: "Active" },
                   { value: "inactive", label: "Inactive" },
                   { value: "draft", label: "Draft" },
+                  { value: "rejected", label: "Rejected" },
                 ]}
                 className="h-10! text-sm font-medium rounded-lg shadow-none border border-borderColor bg-white"
               />
