@@ -306,7 +306,7 @@ function SortableCard({
               {title || `Entry #${index + 1}`}
             </span>
             {subtitle && (
-              <span className="text-2xs text-gray-400 truncate block">
+              <span className="text-[11px] text-gray-400 truncate block">
                 {subtitle}
               </span>
             )}
@@ -669,7 +669,7 @@ export default function ContentPages() {
                 ],
               }))
             }
-            className="inline-flex items-center gap-1.5 rounded-xl bg-primaryColor px-4 py-2 text-xs font-semibold text-white shadow-2xs transition hover:bg-primaryColor/90 focus:ring-2 focus:ring-primaryColor/20"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-primaryColor px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-primaryColor/90 focus:ring-2 focus:ring-primaryColor/20"
           >
             <Plus className="h-4 w-4" />
             Add {isTeam ? "Member" : key === "faqs" ? "Question" : isInstitution ? "Institution" : "Entry"}
@@ -679,7 +679,7 @@ export default function ContentPages() {
         <div className="space-y-4">
           {items.length === 0 ? (
             <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 px-6 py-12 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-gray-200 text-gray-400 shadow-2xs">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-gray-200 text-gray-400 shadow-xs">
                 {isInstitution ? (
                   <Landmark className="h-6 w-6 text-primaryColor" />
                 ) : isTeam ? (
@@ -818,7 +818,7 @@ export default function ContentPages() {
                             {/* Image / Logo Upload Box */}
                             <div className="flex flex-col items-center sm:items-start shrink-0">
                               <div
-                                className={`relative h-24 w-24 overflow-hidden border border-gray-200 bg-gray-50/80 shadow-2xs ${
+                                className={`relative h-24 w-24 overflow-hidden border border-gray-200 bg-gray-50/80 shadow-xs ${
                                   isTeam ? "rounded-full" : "rounded-2xl p-2"
                                 }`}
                               >
@@ -850,7 +850,7 @@ export default function ContentPages() {
                                     ? "Upload logo"
                                     : "Upload photo"}
                               </label>
-                              <span className="mt-0.5 text-2xs text-gray-400">
+                              <span className="mt-0.5 text-[11px] text-gray-400">
                                 JPG, PNG, WEBP (max 5MB)
                               </span>
                               <CustomInput
@@ -1145,8 +1145,8 @@ export default function ContentPages() {
       {/* Main Grid: Sidebar + Content */}
       <div className="grid min-h-[620px] gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
         {/* Navigation Sidebar */}
-        <aside className="h-fit rounded-2xl border border-gray-100 bg-white p-3.5 shadow-xs">
-          <h2 className="px-3 py-2 text-2xs font-bold uppercase tracking-wider text-gray-400">
+        <aside className="h-fit rounded-2xl border border-gray-100 bg-white p-3 shadow-xs">
+          <h2 className="px-0 pb-2 text-xs font-semibold text-gray-500">
             Pages
           </h2>
           <nav aria-label="Content pages" className="space-y-1">
@@ -1162,9 +1162,9 @@ export default function ContentPages() {
                     setActiveSection("who");
                   }}
                   aria-current={active ? "page" : undefined}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition ${
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition ${
                     active
-                      ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-2xs"
+                      ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-xs"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
@@ -1177,8 +1177,8 @@ export default function ContentPages() {
 
           {slug === "about-us" && (
             <>
-              <div className="my-3.5 border-t border-gray-100" />
-              <h2 className="px-3 py-2 text-2xs font-bold uppercase tracking-wider text-gray-400">
+              <div className="my-3 border-t border-gray-100" />
+              <h2 className="px-0 pb-2 text-xs font-semibold text-gray-500">
                 About Us Sections
               </h2>
               <nav aria-label="About Us sections" className="space-y-1">
@@ -1195,19 +1195,19 @@ export default function ContentPages() {
                       type="button"
                       onClick={() => setActiveSection(section.id)}
                       aria-current={active ? "page" : undefined}
-                      className={`flex w-full items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition ${
+                      className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition ${
                         active
-                          ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-2xs"
+                          ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-xs"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
-                      <span className="flex min-w-0 items-center gap-3">
+                      <span className="flex min-w-0 items-center gap-2.5">
                         <Icon className={`h-4 w-4 shrink-0 ${active ? "text-primaryColor" : "text-gray-400"}`} />
                         <span className="truncate">{section.label}</span>
                       </span>
                       {count !== null && (
                         <span
-                          className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-2xs font-bold transition ${
+                          className={`flex h-4.5 min-w-4.5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition ${
                             active
                               ? "bg-primaryColor text-white"
                               : "bg-gray-100 text-gray-500"
@@ -1294,7 +1294,7 @@ export default function ContentPages() {
                       />
                     </div>
                     <p className="text-sm font-bold text-gray-800">Founder Photo</p>
-                    <p className="mt-0.5 text-2xs text-gray-400">JPG or PNG, up to 5 MB</p>
+                    <p className="mt-0.5 text-[11px] text-gray-400">JPG or PNG, up to 5 MB</p>
                     <CustomInput
                       id="founder-photo-upload"
                       type="file"
@@ -1366,7 +1366,7 @@ export default function ContentPages() {
                         </span>
                         <div
                           aria-label={`Signature preview: ${founder.signature || "empty"}`}
-                          className="flex h-10 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 px-3 shadow-2xs"
+                          className="flex h-10 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 px-3 shadow-xs"
                         >
                           <span className="font-great-vibes whitespace-nowrap text-2xl text-gray-700">
                             {founder.signature || "Signature"}
@@ -1385,7 +1385,7 @@ export default function ContentPages() {
                 description="Manage the vision, mission, and strategy displayed on the About Us page."
               >
                 <div className="grid gap-4 xl:grid-cols-3">
-                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-emerald-50/40 to-white p-5 shadow-2xs">
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-emerald-50/40 to-white p-5 shadow-xs">
                     <div className="flex items-center gap-2.5 mb-3">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
                         <Eye className="h-4 w-4" />
@@ -1405,7 +1405,7 @@ export default function ContentPages() {
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-sky-50/40 to-white p-5 shadow-2xs">
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-sky-50/40 to-white p-5 shadow-xs">
                     <div className="flex items-center gap-2.5 mb-3">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
                         <Compass className="h-4 w-4" />
@@ -1425,7 +1425,7 @@ export default function ContentPages() {
                     />
                   </div>
 
-                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-amber-50/40 to-white p-5 shadow-2xs">
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-amber-50/40 to-white p-5 shadow-xs">
                     <div className="flex items-center gap-2.5 mb-3">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
                         <Lightbulb className="h-4 w-4" />
