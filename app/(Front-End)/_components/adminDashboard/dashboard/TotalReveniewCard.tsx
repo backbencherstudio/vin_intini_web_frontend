@@ -5,7 +5,14 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Label, Tooltip } from 'rechar
 import { RotateCw } from 'lucide-react';
 import type { RevenueBreakdownData } from '@/feature/slice/admin/dashboard/adminDashboardApi';
 
-const COLORS = ['#00A8B5', '#00B8D9', '#FF9F0A', '#A855F7'];
+const COLORS = ['#00A8B5', '#FF9F0A'];
+
+const ITEM_COLORS: Record<string, string> = {
+    Subscriptions: '#00A8B5',
+    Advertisements: '#FF9F0A',
+};
+
+const ALLOWED_REVENUE_SOURCES = new Set(['Subscriptions', 'Advertisements']);
 
 interface TotalRevenuePieCardProps {
     data?: RevenueBreakdownData;
@@ -14,11 +21,10 @@ interface TotalRevenuePieCardProps {
 }
 
 const defaultData: RevenueBreakdownData = {
-    total: 48789,
+    total: 45655,
     items: [
-        { name: 'Subscriptions', percentage: 39.98, amount: 32455, value: 32455 },
-        { name: 'Advertisements', percentage: 24.67, amount: 13200, value: 13200 },
-        { name: 'Sponsors', percentage: 14.76, amount: 7634, value: 7634 },
+        { name: 'Subscriptions', percentage: 71.09, amount: 32455, value: 32455 },
+        { name: 'Advertisements', percentage: 28.91, amount: 13200, value: 13200 },
     ]
 };
 
@@ -27,15 +33,22 @@ export default function TotalRevenuePieCard({
     isLoading = false,
     onRefresh = () => { }
 }: TotalRevenuePieCardProps) {
-    const totalAmount = data?.total ?? defaultData.total;
-    const items = data?.items && data.items.length > 0 ? data.items : defaultData.items;
+    const rawItems = data?.items && data.items.length > 0 ? data.items : defaultData.items;
+    const filteredItems = rawItems.filter((item) => ALLOWED_REVENUE_SOURCES.has(item.name));
+    const items = filteredItems.length > 0 ? filteredItems : defaultData.items;
 
     const totalValue = items.reduce((acc, item) => acc + (Number(item.value) || 0), 0);
+    const totalAmount = totalValue;
     const hasData = totalValue > 0;
+    const activePieItems = items.filter((item) => (Number(item.value) || 0) > 0);
+    const hasMultipleActiveSlices = activePieItems.length > 1;
 
     const chartData = hasData
-        ? items
+        ? activePieItems
         : [{ name: 'No Revenue Recorded', value: 1, percentage: 0, amount: 0 }];
+
+    const getItemColor = (name: string, index: number) =>
+        ITEM_COLORS[name] ?? COLORS[index % COLORS.length];
 
     return (
         <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm w-full h-full flex flex-col justify-between">
@@ -60,15 +73,16 @@ export default function TotalRevenuePieCard({
                             data={chartData}
                             innerRadius={70}
                             outerRadius={100}
-                            paddingAngle={hasData ? 2 : 0}
+                            paddingAngle={hasMultipleActiveSlices ? 2 : 0}
+                            minAngle={hasMultipleActiveSlices ? 4 : 0}
                             dataKey="value"
                             startAngle={90}
                             endAngle={-270}
                         >
                             {chartData.map((entry, index) => (
                                 <Cell
-                                    key={`cell-${index}`}
-                                    fill={hasData ? COLORS[index % COLORS.length] : '#E5E7EB'}
+                                    key={`cell-${entry.name}-${index}`}
+                                    fill={hasData ? getItemColor(entry.name, index) : '#E5E7EB'}
                                 />
                             ))}
 
@@ -121,7 +135,7 @@ export default function TotalRevenuePieCard({
                         <div className="flex items-center space-x-3">
                             <span
                                 className="w-3 h-3 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                style={{ backgroundColor: getItemColor(item.name, index) }}
                             />
                             <span className="text-[#121212] text-xs font-semibold leading-[132%] tracking-[0.06px] truncate max-w-[120px]">
                                 {item.name}
