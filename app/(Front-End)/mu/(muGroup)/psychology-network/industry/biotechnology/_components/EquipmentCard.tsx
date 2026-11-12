@@ -41,7 +41,18 @@ export const EquipmentCard = ({
   const description = card?.short_description || card?.description || "";
   const displayImage =
     card?.image_url || card?.image || card?.product_image || image1;
-  const viewsCount = Number(card?.views_count) || 0;
+  const baseViewsCount = Number(card?.views_count) || 0;
+  const [viewOverride, setViewOverride] = useState<{
+    cardId: string | number | undefined;
+    baseCount: number;
+    count: number;
+  } | null>(null);
+  const viewsCount =
+    viewOverride &&
+    viewOverride.cardId === card?.id &&
+    viewOverride.baseCount === baseViewsCount
+      ? viewOverride.count
+      : baseViewsCount;
 
   const isBoosted = toBool(card?.is_boosted);
   const isNewRelease = toBool(card?.is_new_release);
@@ -181,6 +192,13 @@ export const EquipmentCard = ({
       if (payload && typeof payload.likes_count !== "undefined") {
         setLikesCount(Number(payload.likes_count));
       }
+      if (payload && typeof payload.views_count !== "undefined") {
+        setViewOverride({
+          cardId: card?.id,
+          baseCount: baseViewsCount,
+          count: Number(payload.views_count),
+        });
+      }
     } catch (error) {
       console.error("Error liking product:", error);
       setIsLiked(prevLiked);
@@ -191,8 +209,8 @@ export const EquipmentCard = ({
   };
 
   return (
-    <div ref={cardRef}>
-      <div className="flex w-full h-full flex-col justify-between items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pt-0 pb-2 pr-px">
+    <div ref={cardRef} className="h-full">
+      <div className="flex h-full w-full flex-col items-start justify-between gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pt-0 pr-px pb-2 shadow-xs transition-all hover:border-[#04A1B7]/45 hover:shadow-md">
         <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
           {badgeText && (
             <div
@@ -215,9 +233,16 @@ export const EquipmentCard = ({
         </div>
 
         <div className="flex w-full items-center justify-between gap-2 px-3">
-          <h4 className="flex-1 text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] line-clamp-1">
-            {title}
-          </h4>
+          <button
+            type="button"
+            onClick={() => setViewModalOpen(true)}
+            className="min-w-0 flex-1 cursor-pointer text-left group/title"
+            title={title}
+          >
+            <h4 className="text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] line-clamp-1 transition-colors group-hover/title:text-primaryColor">
+              {title}
+            </h4>
+          </button>
           {primaryTag && (
             <span className="shrink-0 rounded-full bg-[#E9E9EA] px-2.5 py-1 text-xs font-normal text-[#4A4C56]">
               {primaryTag}
@@ -274,7 +299,24 @@ export const EquipmentCard = ({
         open={viewModalOpen}
         setOpen={setViewModalOpen}
         adId={card?.id}
-        is_owner={card?.industry?.is_own_industry}
+        is_owner={false}
+        isLiked={isLiked}
+        likesCount={likesCount}
+        isLiking={isLiking}
+        onToggleLike={() => handleLike(card?.id || card?.product_id)}
+        onViewsUpdated={(nextViews) =>
+          setViewOverride((prev) =>
+            prev?.cardId === card?.id &&
+            prev?.baseCount === baseViewsCount &&
+            prev?.count === nextViews
+              ? prev
+              : {
+                  cardId: card?.id,
+                  baseCount: baseViewsCount,
+                  count: nextViews,
+                },
+          )
+        }
       />
     </div>
   );

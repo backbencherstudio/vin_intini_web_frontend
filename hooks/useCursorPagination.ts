@@ -200,6 +200,7 @@ function extractPaginationData<T>(
   // 6. Total count
   const total =
     response?.total_jobs ??
+    response?.total_products ??
     response?.stats?.total_jobs ??
     paginationObj?.total ??
     response?.total ??
@@ -296,7 +297,7 @@ export function useCursorPagination<T = any>({
 
     setNextCursor(extractedNextCursor);
     setHasMore(extractedHasMore);
-    if (extractedTotal) setTotal(extractedTotal);
+    if (typeof extractedTotal === "number") setTotal(extractedTotal);
 
     setCombinedData((prev) => {
       // First page: replace data completely
@@ -421,7 +422,29 @@ export function useCursorQuery<T = any>(
     "data" | "isLoading" | "isFetching" | "cursor" | "setCursor"
   >,
 ) {
-  const [cursor, setCursor] = useState<string | null>(null);
+  // Tie cursor lifetime directly to serialized params so search/filter changes
+  // clear cursor synchronously during render instead of firing a stale-cursor fetch.
+  const paramsKey = useMemo(() => {
+    try {
+      return JSON.stringify(params ?? {});
+    } catch {
+      return "";
+    }
+  }, [params]);
+
+  const [cursorState, setCursorState] = useState<{
+    key: string;
+    value: string | null;
+  }>({ key: paramsKey, value: null });
+
+  const cursor = cursorState.key === paramsKey ? cursorState.value : null;
+
+  const setCursor = useCallback(
+    (next: string | null) => {
+      setCursorState({ key: paramsKey, value: next });
+    },
+    [paramsKey],
+  );
 
   // Automatically append limit and cursor to query params
   const queryParams = {
@@ -431,9 +454,15 @@ export function useCursorQuery<T = any>(
   };
 
   const queryResult = queryHook(queryParams);
+  // Prefer RTK Query's currentData so changing search/filter params never feeds
+  // stale previous-query data back into the list while the new query loads.
+  const activeData =
+    queryResult && "currentData" in queryResult
+      ? queryResult.currentData
+      : queryResult?.data;
 
   const pagination = useCursorPagination<T>({
-    data: queryResult?.data,
+    data: activeData,
     isLoading: queryResult?.isLoading,
     isFetching: queryResult?.isFetching,
     cursor,
