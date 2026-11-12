@@ -34,9 +34,13 @@ import {
   Clapperboard,
   ArrowDown,
   ArrowUp,
+  Compass,
+  Eye,
   FileText,
   GripVertical,
   Landmark,
+  Lightbulb,
+  Loader2,
   Plus,
   Save,
   ShieldCheck,
@@ -99,7 +103,7 @@ const defaultRowFields: Record<StructuredKey, string[]> = {
   team: ["name", "title", "bio", "photo_url"],
   videos: ["title", "url", "thumbnail_url", "source"],
   faqs: ["question", "answer"],
-  leading_institutions: ["name", "description", "website", "logo"],
+  leading_institutions: ["name", "website", "description", "logo_url"],
 };
 
 function toEditableRows(value: unknown, defaults: string[]): EditableRow[] {
@@ -134,6 +138,14 @@ function toTeamEditableRows(value: unknown): EditableRow[] {
     fields.title ||= typeof designation === "string" ? designation : "";
     delete fields.designation;
     return { ...row, original, fields };
+  });
+}
+
+function toInstitutionEditableRows(value: unknown): EditableRow[] {
+  return toEditableRows(value, defaultRowFields.leading_institutions).map((row) => {
+    const fields = { ...row.fields };
+    delete fields.logo;
+    return { ...row, fields };
   });
 }
 
@@ -180,20 +192,37 @@ function SectionHeading({
   number,
   title,
   description,
+  badge,
+  actions,
   children,
 }: {
   number: string;
   title: string;
   description: string;
+  badge?: string;
+  actions?: ReactNode;
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-      <div className="mb-5 border-b border-gray-200 pb-3">
-        <h2 className="text-lg font-semibold text-headerColor">
-          {number}. {title}
-        </h2>
-        <p className="mt-1 text-sm text-gray-500">{description}</p>
+    <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs transition sm:p-7">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primaryColor/10 text-sm font-bold text-primaryColor">
+            {number}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-gray-900 sm:text-lg">{title}</h2>
+              {badge && (
+                <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+                  {badge}
+                </span>
+              )}
+            </div>
+            <p className="mt-0.5 text-xs text-gray-500 sm:text-sm">{description}</p>
+          </div>
+        </div>
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
       {children}
     </section>
@@ -203,19 +232,25 @@ function SectionHeading({
 function SortableCard({
   id,
   index,
+  title,
+  subtitle,
   children,
   isDropTarget,
   onMoveUp,
   onMoveDown,
+  onDelete,
   isFirst,
   isLast,
 }: {
   id: string;
   index: number;
+  title?: string;
+  subtitle?: string;
   children: ReactNode;
   isDropTarget: boolean;
   onMoveUp: () => void;
   onMoveDown: () => void;
+  onDelete: () => void;
   isFirst: boolean;
   isLast: boolean;
 }) {
@@ -240,33 +275,80 @@ function SortableCard({
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 1 : undefined,
+        zIndex: isDragging ? 2 : undefined,
       }}
-      className={`grid gap-4 rounded-lg border bg-gray-50/70 p-4 shadow-sm md:grid-cols-[64px_100px_minmax(0,1fr)_40px] md:items-center ${
+      className={`group rounded-2xl border bg-white p-5 shadow-xs transition-all duration-200 ${
         isDragging
-          ? "border-primaryColor opacity-35"
+          ? "border-primaryColor opacity-40 shadow-xl"
           : isDropTarget
-            ? "border-primaryColor bg-sky-50 shadow-md"
-            : "border-gray-200"
+            ? "border-primaryColor bg-emerald-50/30 ring-2 ring-primaryColor/20 shadow-md"
+            : "border-gray-200/90 hover:border-gray-300 hover:shadow-xs"
       }`}
     >
-      <div className="flex items-center gap-2 text-gray-500 md:flex-col md:justify-center md:border-r md:border-gray-200 md:py-2 md:pr-3">
-        <button
-          type="button"
-          {...attributes}
-          {...listeners}
-          aria-label={`Drag to reorder entry ${index + 1}`}
-          title="Drag to reorder"
-          className="cursor-grab touch-none select-none text-xl leading-none active:cursor-grabbing"
-        >
-          <GripVertical className="h-5 w-5" />
-        </button>
-        <span className="text-sm font-semibold">#{index + 1}</span>
-        <div className="flex md:flex-col">
-          <button type="button" onClick={onMoveUp} disabled={isFirst} aria-label={`Move ${index + 1} up`} className="rounded p-1 hover:bg-white disabled:opacity-30"><ArrowUp className="h-3.5 w-3.5" /></button>
-          <button type="button" onClick={onMoveDown} disabled={isLast} aria-label={`Move ${index + 1} down`} className="rounded p-1 hover:bg-white disabled:opacity-30"><ArrowDown className="h-3.5 w-3.5" /></button>
+      {/* Card Header Bar */}
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            aria-label={`Drag to reorder entry ${index + 1}`}
+            title="Drag to reorder"
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-grab active:cursor-grabbing transition"
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+          <span className="flex h-6 items-center px-2 rounded-md bg-gray-100 font-bold text-xs text-gray-700">
+            #{index + 1}
+          </span>
+          <div className="min-w-0 truncate">
+            <span className="font-semibold text-sm text-gray-900 truncate block">
+              {title || `Entry #${index + 1}`}
+            </span>
+            {subtitle && (
+              <span className="text-2xs text-gray-400 truncate block">
+                {subtitle}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50/50 p-0.5">
+            <button
+              type="button"
+              onClick={onMoveUp}
+              disabled={isFirst}
+              aria-label={`Move ${index + 1} up`}
+              title="Move up"
+              className="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-white hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent transition"
+            >
+              <ArrowUp className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={onMoveDown}
+              disabled={isLast}
+              aria-label={`Move ${index + 1} down`}
+              title="Move down"
+              className="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-white hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent transition"
+            >
+              <ArrowDown className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label={`Remove entry ${index + 1}`}
+            title="Delete entry"
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 transition"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
         </div>
       </div>
+
+      {/* Card Content */}
       {children}
     </article>
   );
@@ -338,9 +420,8 @@ export default function ContentPages() {
       team: toTeamEditableRows(currentData.data.team),
       videos: toVideoEditableRows(currentData.data.videos),
       faqs: toEditableRows(currentData.data.faqs, defaultRowFields.faqs),
-      leading_institutions: toEditableRows(
+      leading_institutions: toInstitutionEditableRows(
         currentData.data.leading_institutions,
-        defaultRowFields.leading_institutions,
       ),
     });
   }, [currentData]);
@@ -361,9 +442,7 @@ export default function ContentPages() {
     };
   }, [rowImageUploads]);
 
-  const handleFounderPhotoChange = (
-    event: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFounderPhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
@@ -388,8 +467,8 @@ export default function ContentPages() {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Choose an image file");
+    if (!file.type.startsWith("image/") && file.type !== "image/svg+xml") {
+      toast.error("Choose an image file (PNG, JPG, WEBP, or SVG)");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -486,7 +565,10 @@ export default function ContentPages() {
         body.leading_institutions = toApiRows(
           structuredContent.leading_institutions,
           uploadedIds("leading_institutions"),
-        );
+        ).map((institution) => {
+          const { logo_url: _logoUrl, ...payload } = institution;
+          return payload;
+        });
       }
 
       const queuedUploads = [
@@ -516,7 +598,9 @@ export default function ContentPages() {
             ? "photo"
             : section === "videos" && field === "thumbnail_url"
               ? "thumbnail"
-              : field;
+              : section === "leading_institutions" && field === "logo_url"
+                ? "logo"
+                : field;
         return [{ fieldName: `${section}[${index}][${apiField}]`, file }];
       });
 
@@ -526,7 +610,7 @@ export default function ContentPages() {
         ...(slug === "about-us" && founderPhoto ? { founderPhoto } : {}),
         ...(uploads.length ? { uploads } : {}),
       }).unwrap();
-      toast.success("Page content saved");
+      toast.success("Page content saved successfully");
     } catch {
       toast.error("Could not save page content. Please review the fields and try again.");
     }
@@ -552,49 +636,89 @@ export default function ContentPages() {
     };
     const imageField = (item: EditableRow) =>
       Object.keys(item.fields).find((field) =>
-        /(photo|image|avatar|logo|thumbnail)/i.test(field),
+        /(photo_url|logo_url|thumbnail_url|photo|image|avatar|logo|thumbnail)/i.test(field),
       );
 
-    return (
-      <SectionHeading number={number} title={label} description={description}>
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-gray-500">
-              {items.length} {label.toLowerCase()} {items.length === 1 ? "entry" : "entries"}
-            </p>
-            <button
-              type="button"
-              onClick={() =>
-                setStructuredContent((current) => ({
-                  ...current,
-                  [key]: [
-                    ...current[key],
-                    {
-                      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-                      original: {},
-                      fields: Object.fromEntries(
-                        defaultRowFields[key].map((field) => [
-                          field,
-                          key === "videos" && field === "source" ? "url" : "",
-                        ]),
-                      ),
-                    },
-                  ],
-                }))
-              }
-              className="inline-flex items-center gap-2 rounded-full border border-primaryColor px-4 py-2 text-sm font-semibold text-primaryColor transition hover:bg-primaryColor hover:text-white"
-            >
-              <Plus className="h-4 w-4" />
-              Add {key === "team" ? "Member" : key === "faqs" ? "Question" : "Entry"}
-            </button>
-          </div>
+    const isInstitution = key === "leading_institutions";
+    const isTeam = key === "team";
 
+    return (
+      <SectionHeading
+        number={number}
+        title={label}
+        description={description}
+        badge={`${items.length} ${items.length === 1 ? "entry" : "entries"}`}
+        actions={
+          <button
+            type="button"
+            onClick={() =>
+              setStructuredContent((current) => ({
+                ...current,
+                [key]: [
+                  ...current[key],
+                  {
+                    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                    original: {},
+                    fields: Object.fromEntries(
+                      defaultRowFields[key].map((field) => [
+                        field,
+                        key === "videos" && field === "source" ? "url" : "",
+                      ]),
+                    ),
+                  },
+                ],
+              }))
+            }
+            className="inline-flex items-center gap-1.5 rounded-xl bg-primaryColor px-4 py-2 text-xs font-semibold text-white shadow-2xs transition hover:bg-primaryColor/90 focus:ring-2 focus:ring-primaryColor/20"
+          >
+            <Plus className="h-4 w-4" />
+            Add {isTeam ? "Member" : key === "faqs" ? "Question" : isInstitution ? "Institution" : "Entry"}
+          </button>
+        }
+      >
+        <div className="space-y-4">
           {items.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-10 text-center">
-              <p className="text-sm font-medium text-gray-700">No entries yet</p>
-              <p className="mt-1 text-sm text-gray-500">
-                Add an entry to start building this section.
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 px-6 py-12 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-gray-200 text-gray-400 shadow-2xs">
+                {isInstitution ? (
+                  <Landmark className="h-6 w-6 text-primaryColor" />
+                ) : isTeam ? (
+                  <UsersRound className="h-6 w-6 text-primaryColor" />
+                ) : key === "videos" ? (
+                  <Clapperboard className="h-6 w-6 text-primaryColor" />
+                ) : (
+                  <CircleHelp className="h-6 w-6 text-primaryColor" />
+                )}
+              </div>
+              <p className="mt-3 text-sm font-bold text-gray-800">No {label.toLowerCase()} added yet</p>
+              <p className="mt-1 text-xs text-gray-500 max-w-sm mx-auto">
+                Add your first entry to display this section on the public About Us page.
               </p>
+              <button
+                type="button"
+                onClick={() =>
+                  setStructuredContent((current) => ({
+                    ...current,
+                    [key]: [
+                      ...current[key],
+                      {
+                        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                        original: {},
+                        fields: Object.fromEntries(
+                          defaultRowFields[key].map((field) => [
+                            field,
+                            key === "videos" && field === "source" ? "url" : "",
+                          ]),
+                        ),
+                      },
+                    ],
+                  }))
+                }
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-primaryColor/30 bg-primaryColor/5 px-4 py-2 text-xs font-semibold text-primaryColor hover:bg-primaryColor hover:text-white transition"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Entry
+              </button>
             </div>
           ) : (
             <DndContext
@@ -630,194 +754,269 @@ export default function ContentPages() {
                 items={items.map((item) => item.id)}
                 strategy={verticalListSortingStrategy}
               >
-              <div className="space-y-3">
-              {items.map((item, index) => {
-                const photoField = imageField(item);
-                const uploadKey = photoField ? `${item.id}:${photoField}` : "";
-                const photoUrl = photoField
-                  ? rowImageUploads[uploadKey]?.preview || item.fields[photoField]
-                  : "";
-                const fields = Object.entries(item.fields).filter(
-                  ([field]) =>
-                    field !== photoField &&
-                    !(key === "videos" && ["source", "url", "file_url", "type"].includes(field)),
-                );
+                <div className="space-y-4">
+                  {items.map((item, index) => {
+                    const photoField = imageField(item);
+                    const uploadKey = photoField ? `${item.id}:${photoField}` : "";
+                    const photoUrl = photoField
+                      ? rowImageUploads[uploadKey]?.preview || item.fields[photoField]
+                      : "";
+                    const fields = Object.entries(item.fields).filter(
+                      ([field]) =>
+                        field !== photoField &&
+                        !(key === "videos" && ["source", "url", "file_url", "type"].includes(field)),
+                    );
 
-                return (
-                  <SortableCard
-                    key={item.id}
-                    id={item.id}
-                    index={index}
-                    isDropTarget={dragOverRow?.key === key && dragOverRow.id === item.id}
-                    onMoveUp={() => moveRow(key, index, index - 1)}
-                    onMoveDown={() => moveRow(key, index, index + 1)}
-                    isFirst={index === 0}
-                    isLast={index === items.length - 1}
-                  >
-                    {photoField ? (
-                      <div className="flex items-center gap-3 md:flex-col">
-                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-white shadow-sm">
-                          {photoUrl ? (
-                            <Image
-                              src={photoUrl}
-                              alt={`${item.fields.name || label} image`}
-                              fill
-                              unoptimized
-                              sizes="64px"
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xl text-gray-500">
-                              {(item.fields.name || "?").slice(0, 1).toUpperCase()}
-                            </div>
-                          )}
-                        </div>
-                        <label htmlFor={`row-image-${item.id}`} className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-primaryColor hover:underline"><Upload className="h-3 w-3" />Upload image</label>
-                        <CustomInput
-                          id={`row-image-${item.id}`}
-                          type="file"
-                          accept="image/*"
-                          containerClassName="hidden"
-                          onChange={(event) => handleRowImageChange(event, item.id, photoField!)}
-                        />
-                      </div>
-                    ) : (
-                      <div className="hidden md:block" />
-                    )}
+                    const itemTitle =
+                      item.fields.name ||
+                      item.fields.title ||
+                      item.fields.question ||
+                      `${isInstitution ? "Institution" : isTeam ? "Member" : "Entry"} #${index + 1}`;
+                    const itemSubtitle = isInstitution
+                      ? item.fields.website
+                      : isTeam
+                        ? item.fields.title
+                        : undefined;
 
-                    <div className="grid min-w-0 gap-2 md:grid-cols-2">
-                      {fields.map(([field, value]) => {
-                        const fieldLabel = field
-                          .replace(/_/g, " ")
-                          .replace(/\b\w/g, (letter) => letter.toUpperCase());
-                        const longText = /(bio|description|answer|content)/i.test(field);
-                        return longText ? (
-                          <CustomTextArea
-                            key={field}
-                            label={fieldLabel}
-                            rows={3}
-                            value={value}
-                            onChange={(event) =>
-                              updateField(index, field, event.target.value)
-                            }
-                            containerClassName="md:col-span-2"
-                          />
-                        ) : (
-                          <CustomInput
-                            key={field}
-                            label={fieldLabel}
-                            value={value}
-                            onChange={(event) =>
-                              updateField(index, field, event.target.value)
-                            }
-                            containerClassName={fields.length === 1 ? "md:col-span-2" : ""}
-                          />
-                        );
-                      })}
-                      {key === "videos" && (
-                        <div className="grid gap-2 md:col-span-2 md:grid-cols-2">
-                          <AdminSelect
-                            id={`video-source-${item.id}`}
-                            label="Video Source"
-                            value={item.fields.source || "url"}
-                            onChange={(event) => {
-                              updateField(index, "source", event.target.value);
-                              if (event.target.value === "url") {
-                                setRowVideoUploads((current) => {
-                                  const next = { ...current };
-                                  delete next[`${item.id}:file`];
-                                  return next;
-                                });
-                              }
-                            }}
-                          >
-                            <option value="url">YouTube Embed URL</option>
-                            <option value="file">Local File Upload</option>
-                          </AdminSelect>
-                          {item.fields.source === "url" || !item.fields.source ? (
-                            <CustomInput
-                              label="YouTube URL"
-                              value={item.fields.url || ""}
-                              onChange={(event) => updateField(index, "url", event.target.value)}
-                            />
-                          ) : (
-                            <div>
-                              <label
-                                htmlFor={`video-file-${item.id}`}
-                                className="mb-1.5 block text-sm font-medium text-[#4A4C56]"
+                    const handleDeleteRow = () => {
+                      const rowUploads = Object.entries(rowImageUploads).filter(([uk]) =>
+                        uk.startsWith(`${item.id}:`),
+                      );
+                      rowUploads.forEach(([, upload]) => URL.revokeObjectURL(upload.preview));
+                      setRowImageUploads((current) => {
+                        const next = { ...current };
+                        rowUploads.forEach(([uk]) => delete next[uk]);
+                        return next;
+                      });
+                      setRowVideoUploads((current) => {
+                        const next = { ...current };
+                        delete next[`${item.id}:file`];
+                        return next;
+                      });
+                      setStructuredContent((current) => ({
+                        ...current,
+                        [key]: current[key].filter((_, itemIndex) => itemIndex !== index),
+                      }));
+                    };
+
+                    return (
+                      <SortableCard
+                        key={item.id}
+                        id={item.id}
+                        index={index}
+                        title={itemTitle}
+                        subtitle={itemSubtitle}
+                        isDropTarget={dragOverRow?.key === key && dragOverRow.id === item.id}
+                        onMoveUp={() => moveRow(key, index, index - 1)}
+                        onMoveDown={() => moveRow(key, index, index + 1)}
+                        onDelete={handleDeleteRow}
+                        isFirst={index === 0}
+                        isLast={index === items.length - 1}
+                      >
+                        {photoField ? (
+                          <div className="flex flex-col gap-5 sm:flex-row sm:items-start pt-1">
+                            {/* Image / Logo Upload Box */}
+                            <div className="flex flex-col items-center sm:items-start shrink-0">
+                              <div
+                                className={`relative h-24 w-24 overflow-hidden border border-gray-200 bg-gray-50/80 shadow-2xs ${
+                                  isTeam ? "rounded-full" : "rounded-2xl p-2"
+                                }`}
                               >
-                                Video File
-                              </label>
-                              <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-gray-300 bg-white text-sm focus-within:border-primaryColor focus-within:ring-2 focus-within:ring-primaryColor/15">
-                                <label
-                                  htmlFor={`video-file-${item.id}`}
-                                  className="inline-flex h-full shrink-0 cursor-pointer items-center gap-2 border-r border-gray-300 bg-gray-50 px-3 font-medium text-gray-700 transition hover:bg-gray-100"
-                                >
-                                  <Upload className="h-4 w-4 text-primaryColor" />
-                                  Choose file
-                                </label>
-                                <span className="truncate px-3 text-gray-600">
-                                  {rowVideoUploads[`${item.id}:file`]?.name || "No file selected"}
-                                </span>
+                                {photoUrl ? (
+                                  <Image
+                                    src={photoUrl}
+                                    alt={`${item.fields.name || label} image`}
+                                    fill
+                                    unoptimized
+                                    sizes="96px"
+                                    className={isTeam ? "object-cover" : "object-contain p-1.5"}
+                                  />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center bg-gray-100 text-xl font-bold text-gray-400">
+                                    {(item.fields.name || "?").slice(0, 1).toUpperCase()}
+                                  </div>
+                                )}
                               </div>
+                              <label
+                                htmlFor={`row-image-${item.id}`}
+                                className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-primaryColor hover:underline"
+                              >
+                                <Upload className="h-3.5 w-3.5" />
+                                {photoUrl
+                                  ? isInstitution
+                                    ? "Change logo"
+                                    : "Change photo"
+                                  : isInstitution
+                                    ? "Upload logo"
+                                    : "Upload photo"}
+                              </label>
+                              <span className="mt-0.5 text-2xs text-gray-400">
+                                JPG, PNG, WEBP (max 5MB)
+                              </span>
                               <CustomInput
-                                id={`video-file-${item.id}`}
+                                id={`row-image-${item.id}`}
                                 type="file"
-                                accept=".mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv"
-                                onChange={(event) => handleVideoFileChange(event, item.id)}
-                                containerClassName="sr-only"
-                                className="sr-only"
+                                accept="image/*"
+                                containerClassName="hidden"
+                                onChange={(event) =>
+                                  handleRowImageChange(event, item.id, photoField)
+                                }
                               />
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const rowUploads = Object.entries(rowImageUploads).filter(([uploadKey]) => uploadKey.startsWith(`${item.id}:`));
-                        rowUploads.forEach(([, upload]) => URL.revokeObjectURL(upload.preview));
-                        setRowImageUploads((current) => {
-                          const next = { ...current };
-                          rowUploads.forEach(([uploadKey]) => delete next[uploadKey]);
-                          return next;
-                        });
-                        setRowVideoUploads((current) => {
-                          const next = { ...current };
-                          delete next[`${item.id}:file`];
-                          return next;
-                        });
-                        setStructuredContent((current) => ({
-                          ...current,
-                          [key]: current[key].filter(
-                            (_entry, itemIndex) => itemIndex !== index,
-                          ),
-                        }));
-                      }}
-                      aria-label={`Remove ${label.toLowerCase()} entry ${index + 1}`}
-                      className="inline-flex h-9 w-9 items-center justify-center justify-self-end rounded-md bg-red-500 text-white transition hover:bg-red-600 md:justify-self-center"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </SortableCard>
-                );
-              })}
-              <div
-                className={`h-4 rounded border-t-2 transition-colors ${
-                  dragOverRow?.key === key && dragOverRow.id === "__end__"
-                    ? "border-primaryColor"
-                    : "border-transparent"
-                }`}
-                aria-hidden="true"
-              />
-              <p className="sr-only" aria-live="polite">
-                {draggedRow?.key === key
-                  ? `Moving entry ${items.findIndex((row) => row.id === draggedRow.id) + 1}. Drop above a card or at the end of the list.`
-                  : ""}
-              </p>
-            </div>
+                            {/* Form Inputs Grid */}
+                            <div className="grid flex-1 min-w-0 gap-3 md:grid-cols-2">
+                              {fields.map(([field, value]) => {
+                                const fieldLabel = field
+                                  .replace(/_/g, " ")
+                                  .replace(/\b\w/g, (letter) => letter.toUpperCase());
+                                const longText = /(bio|description|answer|content)/i.test(field);
+                                return longText ? (
+                                  <CustomTextArea
+                                    key={field}
+                                    label={fieldLabel}
+                                    rows={3}
+                                    value={value}
+                                    placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
+                                    onChange={(event) =>
+                                      updateField(index, field, event.target.value)
+                                    }
+                                    containerClassName="md:col-span-2"
+                                  />
+                                ) : (
+                                  <CustomInput
+                                    key={field}
+                                    label={fieldLabel}
+                                    value={value}
+                                    placeholder={
+                                      field === "website"
+                                        ? "https://..."
+                                        : `Enter ${fieldLabel.toLowerCase()}...`
+                                    }
+                                    onChange={(event) =>
+                                      updateField(index, field, event.target.value)
+                                    }
+                                    containerClassName={
+                                      fields.length === 1 ? "md:col-span-2" : ""
+                                    }
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="grid min-w-0 gap-3 md:grid-cols-2 pt-1">
+                            {fields.map(([field, value]) => {
+                              const fieldLabel = field
+                                .replace(/_/g, " ")
+                                .replace(/\b\w/g, (letter) => letter.toUpperCase());
+                              const longText = /(bio|description|answer|content)/i.test(field);
+                              return longText ? (
+                                <CustomTextArea
+                                  key={field}
+                                  label={fieldLabel}
+                                  rows={3}
+                                  value={value}
+                                  placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
+                                  onChange={(event) =>
+                                    updateField(index, field, event.target.value)
+                                  }
+                                  containerClassName="md:col-span-2"
+                                />
+                              ) : (
+                                <CustomInput
+                                  key={field}
+                                  label={fieldLabel}
+                                  value={value}
+                                  placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
+                                  onChange={(event) =>
+                                    updateField(index, field, event.target.value)
+                                  }
+                                  containerClassName={
+                                    fields.length === 1 || key === "faqs" ? "md:col-span-2" : ""
+                                  }
+                                />
+                              );
+                            })}
+
+                            {key === "videos" && (
+                              <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
+                                <AdminSelect
+                                  id={`video-source-${item.id}`}
+                                  label="Video Source"
+                                  value={item.fields.source || "url"}
+                                  onChange={(event) => {
+                                    updateField(index, "source", event.target.value);
+                                    if (event.target.value === "url") {
+                                      setRowVideoUploads((current) => {
+                                        const next = { ...current };
+                                        delete next[`${item.id}:file`];
+                                        return next;
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <option value="url">YouTube Embed URL</option>
+                                  <option value="file">Local File Upload</option>
+                                </AdminSelect>
+                                {item.fields.source === "url" || !item.fields.source ? (
+                                  <CustomInput
+                                    label="YouTube URL"
+                                    value={item.fields.url || ""}
+                                    placeholder="https://www.youtube.com/embed/..."
+                                    onChange={(event) =>
+                                      updateField(index, "url", event.target.value)
+                                    }
+                                  />
+                                ) : (
+                                  <div>
+                                    <label
+                                      htmlFor={`video-file-${item.id}`}
+                                      className="mb-1.5 block text-sm font-medium text-[#4A4C56]"
+                                    >
+                                      Video File
+                                    </label>
+                                    <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-gray-300 bg-white text-sm focus-within:border-primaryColor focus-within:ring-2 focus-within:ring-primaryColor/15">
+                                      <label
+                                        htmlFor={`video-file-${item.id}`}
+                                        className="inline-flex h-full shrink-0 cursor-pointer items-center gap-2 border-r border-gray-300 bg-gray-50 px-3 font-medium text-gray-700 transition hover:bg-gray-100"
+                                      >
+                                        <Upload className="h-4 w-4 text-primaryColor" />
+                                        Choose file
+                                      </label>
+                                      <span className="truncate px-3 text-gray-600">
+                                        {rowVideoUploads[`${item.id}:file`]?.name ||
+                                          "No file selected"}
+                                      </span>
+                                    </div>
+                                    <CustomInput
+                                      id={`video-file-${item.id}`}
+                                      type="file"
+                                      accept=".mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv"
+                                      onChange={(event) =>
+                                        handleVideoFileChange(event, item.id)
+                                      }
+                                      containerClassName="sr-only"
+                                      className="sr-only"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </SortableCard>
+                    );
+                  })}
+                  <div
+                    className={`h-3 rounded-lg border-2 border-dashed transition-colors ${
+                      dragOverRow?.key === key && dragOverRow.id === "__end__"
+                        ? "border-primaryColor bg-primaryColor/5"
+                        : "border-transparent"
+                    }`}
+                    aria-hidden="true"
+                  />
+                </div>
               </SortableContext>
               <DragOverlay
                 adjustScale={false}
@@ -836,56 +1035,65 @@ export default function ContentPages() {
                   const photoUrl = photoField
                     ? rowImageUploads[`${item.id}:${photoField}`]?.preview || item.fields[photoField]
                     : "";
-                  const fields = Object.entries(item.fields).filter(
-                    ([field]) => field !== photoField,
-                  );
                   const itemIndex = items.findIndex((row) => row.id === item.id);
                   return (
                     <div
                       style={{
                         width: draggedRow.width || undefined,
-                        height: draggedRow.height || undefined,
                         boxSizing: "border-box",
                       }}
-                      className="grid w-[min(1100px,calc(100vw-2rem))] gap-4 rounded-lg border border-primaryColor bg-white p-4 shadow-2xl md:grid-cols-[64px_100px_minmax(0,1fr)_40px] md:items-center"
+                      className="w-[min(1100px,calc(100vw-2rem))] rounded-2xl border-2 border-primaryColor bg-white p-5 shadow-2xl ring-4 ring-primaryColor/10"
                       aria-hidden="true"
                     >
-                      <div className="flex items-center gap-2 text-gray-500 md:flex-col md:justify-center md:border-r md:border-gray-200 md:py-2 md:pr-3">
-                        <GripVertical className="h-5 w-5 text-primaryColor" />
-                        <span className="text-sm font-semibold">#{itemIndex + 1}</span>
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <GripVertical className="h-4 w-4 text-primaryColor" />
+                          <span className="flex h-6 items-center px-2 rounded-md bg-primaryColor/10 font-bold text-xs text-primaryColor">
+                            #{itemIndex + 1}
+                          </span>
+                          <span className="font-semibold text-sm text-gray-900 truncate">
+                            {item.fields.name || item.fields.title || item.fields.question || `Entry #${itemIndex + 1}`}
+                          </span>
+                        </div>
                       </div>
-                      {photoField ? (
-                        <div className="flex items-center gap-3 md:flex-col">
-                          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-white shadow-sm">
+                      <div className={photoField ? "flex gap-4 items-center" : ""}>
+                        {photoField && (
+                          <div
+                            className={`relative h-14 w-14 shrink-0 overflow-hidden border border-gray-200 bg-gray-50 ${
+                              isTeam ? "rounded-full" : "rounded-xl p-1"
+                            }`}
+                          >
                             {photoUrl ? (
-                              <Image src={photoUrl} alt="" fill unoptimized sizes="64px" className="object-cover" />
+                              <Image
+                                src={photoUrl}
+                                alt=""
+                                fill
+                                unoptimized
+                                sizes="56px"
+                                className={isTeam ? "object-cover" : "object-contain"}
+                              />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xl text-gray-500">
+                              <div className="flex h-full w-full items-center justify-center bg-gray-100 text-sm font-bold text-gray-400">
                                 {(item.fields.name || "?").slice(0, 1).toUpperCase()}
                               </div>
                             )}
                           </div>
-                          <span className="text-xs font-medium text-primaryColor">Upload image</span>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-800">
+                            {item.fields.name || item.fields.title || item.fields.question}
+                          </p>
+                          {item.fields.description && (
+                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                              {item.fields.description}
+                            </p>
+                          )}
+                          {item.fields.bio && (
+                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                              {item.fields.bio}
+                            </p>
+                          )}
                         </div>
-                      ) : <div className="hidden md:block" />}
-                      <div className="grid min-w-0 gap-2 md:grid-cols-2">
-                        {fields.map(([field, value]) => {
-                          const fieldLabel = field
-                            .replace(/_/g, " ")
-                            .replace(/\b\w/g, (letter) => letter.toUpperCase());
-                          const longText = /(bio|description|answer|content)/i.test(field);
-                          return (
-                            <div key={field} className={longText ? "md:col-span-2" : ""}>
-                              <span className="mb-1 block text-sm text-gray-600">{fieldLabel}</span>
-                              <div className={`overflow-hidden rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 ${longText ? "min-h-24" : "min-h-10"}`}>
-                                {value || <span className="text-gray-400">{fieldLabel}</span>}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="flex h-9 w-9 items-center justify-center justify-self-end rounded-md bg-red-500 text-white md:justify-self-center">
-                        <Trash2 className="h-4 w-4" />
                       </div>
                     </div>
                   );
@@ -899,30 +1107,46 @@ export default function ContentPages() {
   };
 
   return (
-    <form onSubmit={save} className="space-y-6 pb-6">
-      <header className="admin-page-header flex flex-wrap items-center justify-between gap-4 border border-gray-200 bg-white px-5 py-4 shadow-sm">
+    <form onSubmit={save} className="space-y-6 pb-8">
+      {/* Page Header */}
+      <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white px-6 py-4 shadow-xs">
         <div>
-          <h1 className="admin-page-title text-xl font-semibold text-primaryColor sm:text-2xl">
-            Edit {currentPage.label} Page
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Slug: {slug} <span aria-hidden="true">|</span> Update the content
-            shown on the public page.
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+              Edit {currentPage.label}
+            </h1>
+            <span className="rounded-md bg-gray-100 px-2.5 py-0.5 text-xs font-mono font-medium text-gray-600">
+              /{slug}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500 sm:text-sm">
+            Manage and update the public content displayed on the {currentPage.label.toLowerCase()} page.
           </p>
         </div>
         <button
           type="submit"
           disabled={isSaving || isLoading || isError}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primaryColor px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primaryColor/90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primaryColor px-6 text-sm font-semibold text-white shadow-xs transition hover:bg-primaryColor/90 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <Save className="h-4 w-4" />
-          {isSaving ? "Saving…" : "Save Changes"}
+          {isSaving ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Saving Changes…</span>
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              <span>Save Changes</span>
+            </>
+          )}
         </button>
       </header>
 
-      <div className="grid min-h-[620px] gap-4 lg:grid-cols-[250px_minmax(0,1fr)]">
-        <aside className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
-          <h2 className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+      {/* Main Grid: Sidebar + Content */}
+      <div className="grid min-h-[620px] gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+        {/* Navigation Sidebar */}
+        <aside className="h-fit rounded-2xl border border-gray-100 bg-white p-3.5 shadow-xs">
+          <h2 className="px-3 py-2 text-2xs font-bold uppercase tracking-wider text-gray-400">
             Pages
           </h2>
           <nav aria-label="Content pages" className="space-y-1">
@@ -938,14 +1162,14 @@ export default function ContentPages() {
                     setActiveSection("who");
                   }}
                   aria-current={active ? "page" : undefined}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
+                  className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition ${
                     active
-                      ? "border border-primaryColor bg-[#D3F4EF] font-semibold text-headerColor shadow-sm"
+                      ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-2xs"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  {page.label}
+                  <Icon className={`h-4 w-4 shrink-0 ${active ? "text-primaryColor" : "text-gray-400"}`} />
+                  <span>{page.label}</span>
                 </button>
               );
             })}
@@ -953,8 +1177,8 @@ export default function ContentPages() {
 
           {slug === "about-us" && (
             <>
-              <div className="my-3 border-t border-gray-100" />
-              <h2 className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+              <div className="my-3.5 border-t border-gray-100" />
+              <h2 className="px-3 py-2 text-2xs font-bold uppercase tracking-wider text-gray-400">
                 About Us Sections
               </h2>
               <nav aria-label="About Us sections" className="space-y-1">
@@ -971,19 +1195,23 @@ export default function ContentPages() {
                       type="button"
                       onClick={() => setActiveSection(section.id)}
                       aria-current={active ? "page" : undefined}
-                      className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
+                      className={`flex w-full items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition ${
                         active
-                          ? "border border-primaryColor bg-[#D3F4EF] font-semibold text-headerColor shadow-sm"
+                          ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-2xs"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
                       <span className="flex min-w-0 items-center gap-3">
-                        <Icon className="h-4 w-4 shrink-0" />
+                        <Icon className={`h-4 w-4 shrink-0 ${active ? "text-primaryColor" : "text-gray-400"}`} />
                         <span className="truncate">{section.label}</span>
                       </span>
                       {count !== null && (
                         <span
-                          className={`text-xs ${active ? "text-primaryColor" : "text-gray-400"}`}
+                          className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-2xs font-bold transition ${
+                            active
+                              ? "bg-primaryColor text-white"
+                              : "bg-gray-100 text-gray-500"
+                          }`}
                         >
                           {count}
                         </span>
@@ -996,32 +1224,37 @@ export default function ContentPages() {
           )}
         </aside>
 
+        {/* Main Content Area */}
         <main className="min-w-0">
           {isLoading ? (
-            <div className="rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              Loading page content…
+            <div className="flex h-64 items-center justify-center rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Loader2 className="h-4 w-4 animate-spin text-primaryColor" />
+                <span>Loading page content…</span>
+              </div>
             </div>
           ) : isError ? (
-            <div className="rounded-xl border border-red-200 bg-white p-6 text-sm text-red-700 shadow-sm">
-              Page content could not be loaded.
+            <div className="rounded-2xl border border-red-200 bg-red-50/50 p-6 text-sm text-red-700 shadow-xs">
+              Page content could not be loaded. Please refresh or try again later.
             </div>
           ) : slug !== "about-us" ? (
             <SectionHeading
               number="1"
               title={`${currentPage.label} Content`}
-              description="Update the page heading and the content shown to visitors."
+              description="Update the page title and detailed legal/policy content shown to visitors."
             >
               <div className="space-y-5">
                 <CustomInput
-                  label="Page title"
+                  label="Page Title"
                   required
                   maxLength={255}
                   value={title}
+                  placeholder="e.g. Terms & Conditions"
                   onChange={(event) => setTitle(event.target.value)}
                 />
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Page content
+                    Page Content
                   </label>
                   <JoditEditor
                     value={content}
@@ -1030,21 +1263,23 @@ export default function ContentPages() {
                     height={520}
                   />
                   <p className="mt-2 text-xs text-gray-500">
-                    Use the toolbar to format headings, paragraphs, lists, links, and images.
+                    Use the rich-text toolbar to format headings, paragraphs, lists, and links.
                   </p>
                 </div>
               </div>
             </SectionHeading>
           ) : activeSection === "who" ? (
-            <div className="space-y-4">
+            <div className="space-y-5">
+              {/* Founder Profile */}
               <SectionHeading
                 number="1"
                 title="Founder Profile"
-                description="Manage the founder information shown on the About Us page."
+                description="Manage the founder photo, biography, and signature shown on the About Us page."
               >
-                <div className="grid gap-4 xl:grid-cols-[minmax(220px,0.8fr)_minmax(0,2fr)]">
-                  <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-5 text-center">
-                    <div className="relative mb-3 h-40 w-full max-w-44 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div className="grid gap-6 xl:grid-cols-[220px_minmax(0,1fr)]">
+                  {/* Photo Uploader */}
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200/80 bg-gray-50/70 p-6 text-center">
+                    <div className="relative mb-3 h-44 w-36 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs">
                       <Image
                         src={
                           founderPhotoPreview ||
@@ -1054,12 +1289,12 @@ export default function ContentPages() {
                         alt="Founder portrait preview"
                         fill
                         unoptimized
-                        sizes="176px"
+                        sizes="160px"
                         className="object-cover"
                       />
                     </div>
-                    <p className="text-sm font-semibold text-gray-700">Founder photo</p>
-                    <p className="mt-1 text-xs text-gray-500">JPG or PNG, up to 5 MB</p>
+                    <p className="text-sm font-bold text-gray-800">Founder Photo</p>
+                    <p className="mt-0.5 text-2xs text-gray-400">JPG or PNG, up to 5 MB</p>
                     <CustomInput
                       id="founder-photo-upload"
                       type="file"
@@ -1069,17 +1304,19 @@ export default function ContentPages() {
                     />
                     <label
                       htmlFor="founder-photo-upload"
-                      className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-lg border border-primaryColor px-4 py-2 text-sm font-semibold text-primaryColor transition hover:bg-primaryColor hover:text-white"
+                      className="mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-primaryColor/30 bg-primaryColor/5 px-4 py-2 text-xs font-semibold text-primaryColor transition hover:bg-primaryColor hover:text-white"
                     >
-                      <Upload className="h-4 w-4" />
-                      Change photo
+                      <Upload className="h-3.5 w-3.5" />
+                      Change Photo
                     </label>
                   </div>
 
+                  {/* Form fields */}
                   <div className="grid gap-4 md:grid-cols-2">
                     <CustomInput
-                      label="Founder name"
+                      label="Founder Name"
                       value={founder.name}
+                      placeholder="e.g. Vanni Intini"
                       onChange={(event) =>
                         setFounder((current) => ({
                           ...current,
@@ -1090,6 +1327,7 @@ export default function ContentPages() {
                     <CustomInput
                       label="Designation"
                       value={founder.designation}
+                      placeholder="e.g. Founder & CEO of Mind Unite"
                       onChange={(event) =>
                         setFounder((current) => ({
                           ...current,
@@ -1098,9 +1336,10 @@ export default function ContentPages() {
                       }
                     />
                     <CustomTextArea
-                      label="Biography / intro text"
+                      label="Biography / Intro Text"
                       rows={5}
                       value={founder.bio}
+                      placeholder="Share the founder's background, journey, and mission..."
                       onChange={(event) =>
                         setFounder((current) => ({
                           ...current,
@@ -1109,10 +1348,11 @@ export default function ContentPages() {
                       }
                       containerClassName="md:col-span-2"
                     />
-                    <div className="grid items-end gap-3 md:col-span-2 md:grid-cols-[minmax(0,1fr)_180px]">
+                    <div className="grid items-end gap-3 md:col-span-2 md:grid-cols-[minmax(0,1fr)_200px]">
                       <CustomInput
-                        label="Signature text"
+                        label="Signature Text"
                         value={founder.signature}
+                        placeholder="e.g. Vanni Intini"
                         onChange={(event) =>
                           setFounder((current) => ({
                             ...current,
@@ -1120,41 +1360,90 @@ export default function ContentPages() {
                           }))
                         }
                       />
-                      <div
-                        aria-label={`Signature preview: ${founder.signature || "empty"}`}
-                        className="flex h-11 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white px-3 shadow-sm"
-                      >
-                        <span className="font-great-vibes whitespace-nowrap text-3xl text-[#777980]">
-                          {founder.signature || "Signature"}
+                      <div>
+                        <span className="mb-1.5 block text-xs font-medium text-gray-500">
+                          Signature Preview
                         </span>
+                        <div
+                          aria-label={`Signature preview: ${founder.signature || "empty"}`}
+                          className="flex h-10 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 px-3 shadow-2xs"
+                        >
+                          <span className="font-great-vibes whitespace-nowrap text-2xl text-gray-700">
+                            {founder.signature || "Signature"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </SectionHeading>
 
+              {/* Core Values */}
               <SectionHeading
                 number="2"
                 title="Core Values"
-                description="Manage the vision, mission, and strategy shown on the About Us page."
+                description="Manage the vision, mission, and strategy displayed on the About Us page."
               >
                 <div className="grid gap-4 xl:grid-cols-3">
-                  {(["vision", "mission", "strategy"] as const).map((key) => (
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-emerald-50/40 to-white p-5 shadow-2xs">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                        <Eye className="h-4 w-4" />
+                      </div>
+                      <h3 className="font-bold text-sm text-gray-900">Our Vision</h3>
+                    </div>
                     <CustomTextArea
-                      key={key}
-                      label={`Our ${key}`}
-                      rows={7}
-                      value={coreValues[key]}
+                      rows={6}
+                      value={coreValues.vision}
+                      placeholder="Describe the long-term vision..."
                       onChange={(event) =>
                         setCoreValues((current) => ({
                           ...current,
-                          [key]: event.target.value,
+                          vision: event.target.value,
                         }))
                       }
-                      containerClassName="capitalize"
                     />
-                  ))}
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-sky-50/40 to-white p-5 shadow-2xs">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                        <Compass className="h-4 w-4" />
+                      </div>
+                      <h3 className="font-bold text-sm text-gray-900">Our Mission</h3>
+                    </div>
+                    <CustomTextArea
+                      rows={6}
+                      value={coreValues.mission}
+                      placeholder="Describe the mission and daily purpose..."
+                      onChange={(event) =>
+                        setCoreValues((current) => ({
+                          ...current,
+                          mission: event.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-amber-50/40 to-white p-5 shadow-2xs">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                        <Lightbulb className="h-4 w-4" />
+                      </div>
+                      <h3 className="font-bold text-sm text-gray-900">Our Strategy</h3>
+                    </div>
+                    <CustomTextArea
+                      rows={6}
+                      value={coreValues.strategy}
+                      placeholder="Describe the core strategy and approach..."
+                      onChange={(event) =>
+                        setCoreValues((current) => ({
+                          ...current,
+                          strategy: event.target.value,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
               </SectionHeading>
             </div>
@@ -1162,14 +1451,14 @@ export default function ContentPages() {
             renderStructuredEditor(
               "team",
               "Meet The Team",
-              "Manage the team member entries displayed on the About Us page.",
+              "Manage the team member profiles displayed on the About Us page.",
               "3",
             )
           ) : activeSection === "features" ? (
             renderStructuredEditor(
               "videos",
               "Key Features & Videos",
-              "Manage the feature videos and their display information.",
+              "Manage feature videos and their display information on the About Us page.",
               "4",
             )
           ) : activeSection === "faqs" ? (
@@ -1183,7 +1472,7 @@ export default function ContentPages() {
             renderStructuredEditor(
               "leading_institutions",
               "Leading Institutions",
-              "Manage the institution entries shown on the About Us page.",
+              "Manage the institution and partner entries shown on the About Us page.",
               "6",
             )
           )}
