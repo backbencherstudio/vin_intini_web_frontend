@@ -3,13 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  ArrowRight,
   Building2,
-  Eye,
-  Heart,
+  ChevronRight,
   Package,
   Sparkles,
 } from "lucide-react";
+import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import type {
   AdminProductItem,
   AdminProductStatus,
@@ -157,32 +156,35 @@ export default function ProductCard({
       </div>
 
       {/* Footer Actions & Metrics */}
-      <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-100 pt-3">
+      <div className="mt-4 flex flex-col gap-2.5 border-t border-gray-100 pt-3">
         <button
           type="button"
           onClick={() => onView(product)}
-          className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-[#04A1B7] transition-colors hover:text-[#038A9D]"
+          className="inline-flex w-fit cursor-pointer items-center gap-1 text-sm font-medium text-[#1D1F2C] transition-colors hover:text-[#04A1B7]"
         >
           <span>Learn more</span>
-          <ArrowRight className="h-3.5 w-3.5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
 
-        <div className="flex items-center gap-3 text-xs text-gray-500">
-          <span
-            className="inline-flex items-center gap-1"
+        <div className="flex w-full items-center justify-between border-t border-gray-100 px-8 pt-2.5">
+          <div
+            className="flex items-center justify-center gap-2 py-1 text-[15px] text-[#1D1F2C]/90"
             title="Total likes"
           >
-            <Heart className="h-3.5 w-3.5 text-rose-500" />
+            <LikeIcon className="h-4.5 w-4.5" />
             <span>{(product.likes_count ?? 0).toLocaleString()}</span>
-          </span>
+          </div>
 
-          <span
-            className="inline-flex items-center gap-1"
+          <button
+            type="button"
+            onClick={() => onView(product)}
+            className="flex cursor-pointer items-center justify-center gap-2 py-1 text-[15px] text-[#1D1F2C]/90 transition-opacity hover:opacity-80"
             title="Total views"
           >
-            <Eye className="h-3.5 w-3.5 text-[#04A1B7]" />
+            <OpenEyeIcon className="h-4.5 w-4.5" />
             <span>{(product.views_count ?? 0).toLocaleString()}</span>
-          </span>
+            <span>Views</span>
+          </button>
         </div>
       </div>
     </article>
