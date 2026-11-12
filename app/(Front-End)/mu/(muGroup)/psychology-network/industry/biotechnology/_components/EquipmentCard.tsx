@@ -210,7 +210,7 @@ export const EquipmentCard = ({
 
   return (
     <div ref={cardRef} className="h-full">
-      <div className="flex h-full w-full flex-col items-start justify-between gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pt-0 pr-px pb-2 shadow-xs transition-all hover:border-[#04A1B7]/45 hover:shadow-md">
+      <div className="flex h-full w-full flex-col items-start justify-between gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pt-0 pr-px pb-2 shadow-xs transition-shadow hover:shadow-md">
         <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
           {badgeText && (
             <div

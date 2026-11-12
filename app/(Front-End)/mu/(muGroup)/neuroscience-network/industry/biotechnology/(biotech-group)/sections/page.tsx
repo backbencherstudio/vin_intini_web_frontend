@@ -72,7 +72,7 @@ export default function NeuroscienceBiotechnologySectionsPage() {
             <div className="flex w-full justify-center py-16">
               <p className="text-liteDescriptionColor text-base">
                 {search
-                  ? `No sections found matching "${search}".`
+                  ? `No products found matching "${search}".`
                   : "No sections available."}
               </p>
             </div>
