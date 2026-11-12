@@ -61,7 +61,7 @@ export default function ProductCard({
       : product.badge;
 
   return (
-    <article className="group flex flex-col justify-between rounded-2xl border border-[#E9EAEC] bg-white p-4 shadow-xs transition-all hover:border-[#04A1B7]/45 hover:shadow-md">
+    <article className="flex flex-col justify-between rounded-2xl border border-[#E9EAEC] bg-white p-4 shadow-xs transition-all hover:border-[#04A1B7]/45 hover:shadow-md">
       <div>
         {/* Product Image + Overlay Badges + Card Actions */}
         <div className="relative mb-3.5 h-44 w-full overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
@@ -72,7 +72,7 @@ export default function ProductCard({
               fill
               unoptimized
               onError={() => setFailedImageUrl(product.image_url)}
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-gray-400">
