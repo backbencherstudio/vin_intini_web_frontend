@@ -31,6 +31,8 @@ export interface JobItem {
   location?: string;
   views_count?: number;
   applications_count?: number;
+  rejection_reason?: string | null;
+  reviewed_at?: string | null;
 }
 
 interface JobListCardProps {
@@ -163,56 +165,57 @@ export default function JobListCard({
           </div>
 
           {/* Status Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                disabled={isUpdatingStatus}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1 shrink-0 transition-colors cursor-pointer outline-none ${statusBadge.className}`}
-              >
-                <span>{statusBadge.label}</span>
-                <ChevronDown className="w-3 h-3 opacity-70" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32 bg-white">
-              <DropdownMenuItem
-                onClick={() => handleStatusSelect("published")}
-                className="flex items-center justify-between text-xs cursor-pointer py-1.5"
-              >
-                <span>Active</span>
-                {["published", "active"].includes(currentStatus) && (
-                  <Check className="w-3.5 h-3.5 text-[#009dae]" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleStatusSelect("archive")}
-                className="flex items-center justify-between text-xs cursor-pointer py-1.5"
-              >
-                <span>Archive</span>
-                {["archive", "archived"].includes(currentStatus) && (
-                  <Check className="w-3.5 h-3.5 text-[#d97706]" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleStatusSelect("expired")}
-                className="flex items-center justify-between text-xs cursor-pointer py-1.5"
-              >
-                <span>Expired</span>
-                {currentStatus === "expired" && (
-                  <Check className="w-3.5 h-3.5 text-[#6b7280]" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleStatusSelect("rejected")}
-                className="flex items-center justify-between text-xs cursor-pointer py-1.5 text-red-600 focus:text-red-600"
-              >
-                <span>Rejected</span>
-                {currentStatus === "rejected" && (
-                  <Check className="w-3.5 h-3.5 text-red-600" />
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {currentStatus === "rejected" ? (
+            <span
+              className="px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 bg-red-50 text-red-700 border border-red-200 cursor-not-allowed select-none"
+              title="Rejected by Admin - Status cannot be modified"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-red-600" />
+              <span>Rejected</span>
+            </span>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  disabled={isUpdatingStatus}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1 shrink-0 transition-colors cursor-pointer outline-none ${statusBadge.className}`}
+                >
+                  <span>{statusBadge.label}</span>
+                  <ChevronDown className="w-3 h-3 opacity-70" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-32 bg-white">
+                <DropdownMenuItem
+                  onClick={() => handleStatusSelect("published")}
+                  className="flex items-center justify-between text-xs cursor-pointer py-1.5"
+                >
+                  <span>Active</span>
+                  {["published", "active"].includes(currentStatus) && (
+                    <Check className="w-3.5 h-3.5 text-[#009dae]" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleStatusSelect("archive")}
+                  className="flex items-center justify-between text-xs cursor-pointer py-1.5"
+                >
+                  <span>Archive</span>
+                  {["archive", "archived"].includes(currentStatus) && (
+                    <Check className="w-3.5 h-3.5 text-[#d97706]" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleStatusSelect("expired")}
+                  className="flex items-center justify-between text-xs cursor-pointer py-1.5"
+                >
+                  <span>Expired</span>
+                  {currentStatus === "expired" && (
+                    <Check className="w-3.5 h-3.5 text-[#6b7280]" />
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Badges / Tags */}

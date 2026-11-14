@@ -26,13 +26,15 @@ function JobListAction({ row }: { row: JobItem }) {
         </Link>
 
         {/* Edit icon */}
-        <Link
-          href={`/mu/job-listing/${row.id}/edite`}
-          title="Edit Job"
-          className="w-8 h-8 rounded-lg border border-gray-200 text-descriptionColor hover:text-headerColor hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-        >
-          <PencileIcon className="w-4 h-4" />
-        </Link>
+        {row.status?.toLowerCase() !== "rejected" && (
+          <Link
+            href={`/mu/job-listing/${row.id}/edite`}
+            title="Edit Job"
+            className="w-8 h-8 rounded-lg border border-gray-200 text-descriptionColor hover:text-headerColor hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+          >
+            <PencileIcon className="w-4 h-4" />
+          </Link>
+        )}
       </div>
     </div>
   );

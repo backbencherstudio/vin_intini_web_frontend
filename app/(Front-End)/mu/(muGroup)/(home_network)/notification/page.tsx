@@ -28,6 +28,13 @@ type NotificationDataType = {
   rejection_reason?: string | null;
   previous_status?: string | null;
   product_name?: string | null;
+  product_id?: number | string | null;
+  job_id?: number | string | null;
+  job_unique_id?: string | null;
+  job_title?: string | null;
+  industry_id?: number | string | null;
+  industry_name?: string | null;
+  industry_slug?: string | null;
   status?: string | null;
   type: string;
   requested_at?: string;
@@ -80,27 +87,72 @@ function NotificationPage() {
 
       <div className="mt-4 border-t border-borderColor">
         {data?.data.map((item: NotificationItem) => {
+          const rawType = item?.type || item?.data?.type || "";
+
+          // Check if this is a job-related notification
+          const isJobNotification =
+            rawType.includes("Job") ||
+            Boolean(item?.data?.job_id) ||
+            Boolean(item?.data?.job_title);
+
+          const isJobRejected =
+            isJobNotification &&
+            (rawType === "JobRejectedNotification" ||
+              item?.data?.status === "rejected");
+
+          const isJobRestored =
+            isJobNotification &&
+            (rawType === "JobStatusUpdatedNotification" ||
+              item?.data?.previous_status === "rejected");
+
+          const isAdminCreatedJob =
+            isJobNotification && rawType === "AdminCreatedJobNotification";
+
+          const isJobApplicationUpdated =
+            isJobNotification &&
+            rawType === "JobApplicationStatusUpdatedNotification";
+
+          // Check if this is a product-related notification
+          const isProductNotification =
+            !isJobNotification &&
+            (rawType.includes("Product") ||
+              Boolean(item?.data?.product_id) ||
+              Boolean(item?.data?.product_name));
+
           const isProductRejected =
-            item?.type === "ProductRejectedNotification" ||
-            item?.data?.type === "ProductRejectedNotification" ||
-            item?.data?.status === "rejected";
+            isProductNotification &&
+            (rawType === "ProductRejectedNotification" ||
+              item?.data?.status === "rejected");
+
           const isProductRestored =
-            item?.type === "ProductStatusUpdatedNotification" ||
-            item?.data?.type === "ProductStatusUpdatedNotification" ||
-            item?.data?.previous_status === "rejected";
+            isProductNotification &&
+            (rawType === "ProductStatusUpdatedNotification" ||
+              item?.data?.previous_status === "rejected");
+
           const targetUsername =
             item?.data?.sender_username || item?.data?.inviter_username;
+
           const targetHref = item?.data?.action_url
             ? item.data.action_url
-            : isProductRejected || isProductRestored
-              ? "/mu/products"
-              : targetUsername
-                ? `/mu/profile/${targetUsername}`
-                : null;
+            : isJobNotification
+              ? "/mu/recruiter-dashboard"
+              : isProductNotification
+                ? "/mu/products"
+                : targetUsername
+                  ? `/mu/profile/${targetUsername}`
+                  : null;
+
           const displaySender =
             item?.data?.sender_name ||
             item?.data?.acceptor_name ||
             "MindUnite";
+
+          const isNegative = isProductRejected || isJobRejected;
+          const isPositive =
+            isProductRestored ||
+            isJobRestored ||
+            isAdminCreatedJob ||
+            isJobApplicationUpdated;
 
           return (
             <article
@@ -125,9 +177,9 @@ function NotificationPage() {
                   ) : (
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                        isProductRejected
+                        isNegative
                           ? "bg-rose-600"
-                          : isProductRestored
+                          : isPositive
                             ? "bg-emerald-600"
                             : "bg-primaryColor"
                       }`}
@@ -147,6 +199,30 @@ function NotificationPage() {
                       <span className="font-bold">{displaySender}</span>
                     )}
 
+                    {isJobRejected && (
+                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
+                        Job Rejected
+                      </span>
+                    )}
+
+                    {!isJobRejected && isJobRestored && (
+                      <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                        Job Status Updated
+                      </span>
+                    )}
+
+                    {isAdminCreatedJob && (
+                      <span className="inline-flex items-center rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 text-[11px] font-semibold text-cyan-700">
+                        Job Posted by Admin
+                      </span>
+                    )}
+
+                    {isJobApplicationUpdated && (
+                      <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
+                        Application Status Updated
+                      </span>
+                    )}
+
                     {isProductRejected && (
                       <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
                         Product Rejected
@@ -164,7 +240,7 @@ function NotificationPage() {
                     <span className="font-normal">{item?.data?.message}</span>
                   </p>
 
-                  {isProductRejected &&
+                  {isJobRejected &&
                   (item?.data?.rejection_reason || item?.data?.description) ? (
                     <div className="mt-2 rounded-lg border border-rose-200 bg-rose-50/75 px-3 py-2 text-xs text-rose-800">
                       <p className="leading-relaxed">
@@ -172,7 +248,47 @@ function NotificationPage() {
                           `Reason: ${item?.data?.rejection_reason}`}
                       </p>
                       <Link
-                        href="/mu/products"
+                        href={item?.data?.action_url || "/mu/recruiter-dashboard"}
+                        className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
+                      >
+                        View recruiter dashboard &rarr;
+                      </Link>
+                    </div>
+                  ) : (isJobRestored || isAdminCreatedJob) &&
+                    (item?.data?.description || item?.data?.message) ? (
+                    <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/75 px-3 py-2 text-xs text-emerald-800">
+                      <p className="leading-relaxed">
+                        {item?.data?.description || item?.data?.message}
+                      </p>
+                      <Link
+                        href={item?.data?.action_url || "/mu/recruiter-dashboard"}
+                        className="mt-1 inline-block font-semibold text-emerald-700 hover:underline"
+                      >
+                        View recruiter dashboard &rarr;
+                      </Link>
+                    </div>
+                  ) : isJobApplicationUpdated &&
+                    (item?.data?.description || item?.data?.message) ? (
+                    <div className="mt-2 rounded-lg border border-blue-200 bg-blue-50/75 px-3 py-2 text-xs text-blue-800">
+                      <p className="leading-relaxed">
+                        {item?.data?.description || item?.data?.message}
+                      </p>
+                      <Link
+                        href={item?.data?.action_url || "/mu/jobs/my-applications"}
+                        className="mt-1 inline-block font-semibold text-blue-700 hover:underline"
+                      >
+                        View my applications &rarr;
+                      </Link>
+                    </div>
+                  ) : isProductRejected &&
+                  (item?.data?.rejection_reason || item?.data?.description) ? (
+                    <div className="mt-2 rounded-lg border border-rose-200 bg-rose-50/75 px-3 py-2 text-xs text-rose-800">
+                      <p className="leading-relaxed">
+                        {item?.data?.description ||
+                          `Reason: ${item?.data?.rejection_reason}`}
+                      </p>
+                      <Link
+                        href={item?.data?.action_url || "/mu/products"}
                         className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
                       >
                         View product listings &rarr;
@@ -182,7 +298,7 @@ function NotificationPage() {
                     <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/75 px-3 py-2 text-xs text-emerald-800">
                       <p className="leading-relaxed">{item.data.description}</p>
                       <Link
-                        href="/mu/products"
+                        href={item?.data?.action_url || "/mu/products"}
                         className="mt-1 inline-block font-semibold text-emerald-700 hover:underline"
                       >
                         View product listings &rarr;

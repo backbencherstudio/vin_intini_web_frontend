@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 const JoditEditors = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -43,6 +44,8 @@ function JoditEditor({
       statusbar: false,
       allowResizeX: false,
       allowResizeY: false,
+      addNewLine: false,
+      addNewLineOnDBLClick: false,
       cleanHTML: {
         fillEmptyParagraph: true,
       },
@@ -78,7 +81,7 @@ function JoditEditor({
   );
 
   return (
-    <div className={className}>
+    <div className={cn("[&_.jodit-add-new-line]:hidden!", className)}>
       <JoditEditors
         value={value}
         config={config}

@@ -29,9 +29,10 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
 
   const renderApplyAction = () => {
     if (!isPublished) {
+      const isRejected = jobData.status?.toLowerCase() === "rejected";
       return (
         <ButtonReuseable
-          title="Expired"
+          title={isRejected ? "Rejected" : "Expired"}
           disabled
           className="px-5 font-semibold! py-2! rounded-full! disabled:bg-redColor/10! disabled:text-redColor! border-redColor! cursor-not-allowed! text-sm!"
         />

@@ -10,6 +10,7 @@ import {
   ClipboardList,
   FlaskConical,
   Pill,
+  Briefcase,
 } from "lucide-react";
 import { LuChartNoAxesColumn } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -222,6 +223,12 @@ export const SidebarData: SidebarItem[] = [
     ],
   },
 
+  {
+    id: "jobs",
+    name: "Job Management",
+    href: "/dashboard/jobs",
+    icon: Briefcase,
+  },
   {
     id: "partner-program",
     name: "Partners",

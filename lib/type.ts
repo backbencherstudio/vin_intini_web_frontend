@@ -311,6 +311,9 @@ export interface JobDetails {
   industry?: { id: number; name: string; logo?: string | null } | null;
   announcement_start_date: string;
   announcement_end_date: string;
+  rejection_reason?: string | null;
+  reviewed_at?: string | null;
+  submitted_at?: string | null;
 }
 
 export interface ApplicantItemType {

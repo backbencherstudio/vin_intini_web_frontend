@@ -17,6 +17,23 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
   const [updateStatus, { isLoading: isUpdatingStatus }] =
     useStatusUpdateForJobsMutation();
 
+  const isRejected =
+    value?.toLowerCase() === "rejected" ||
+    row?.status?.toLowerCase() === "rejected";
+
+  if (isRejected) {
+    return (
+      <div className="flex justify-center">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3.5 py-1 text-xs font-semibold text-red-700 cursor-not-allowed select-none shadow-2xs"
+        >
+          <span className="h-2 w-2 rounded-full bg-red-600 shrink-0" />
+          Rejected
+        </span>
+      </div>
+    );
+  }
+
   const handleStatusChange = async (newStatus: string) => {
     const payload: { status: string; rejection_reason?: string } = {
       status: newStatus,
