@@ -22,8 +22,8 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
     },
   ];
   return (
-    <div>
-      <div className="md:grid grid-cols-12 gap-6">
+    <div className="h-full min-h-[calc(100vh-14rem)]">
+      <div className="md:grid grid-cols-12 gap-6 h-full min-h-full">
         <div className="md:col-span-8 col-span-12 space-y-4">
           <div>
             <GroupHeader />
@@ -36,8 +36,10 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <div className="col-span-4 hidden md:block border-l border-borderColor md:sticky md:top-25  md:overflow-y-auto self-start pl-4 lg:pl-6 h-full">
-          <GroupSidbarWrapper />
+        <div className="col-span-4 hidden md:block border-l border-borderColor pl-4 lg:pl-6 h-full min-h-full">
+          <div className="md:sticky md:top-25 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <GroupSidbarWrapper />
+          </div>
         </div>
       </div>
     </div>

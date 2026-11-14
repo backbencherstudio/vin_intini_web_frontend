@@ -15,7 +15,7 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="lg:hidden">
         <button
           type="button"
@@ -52,7 +52,7 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
           <MainPageLeftSidebar onItemClick={() => setMenuOpen(false)} />
         </div>
       </div>
-      <div className="mt-3 lg:mt-0">{children}</div>
+      <div className="mt-3 lg:mt-0 flex-1 h-full">{children}</div>
     </div>
   );
 }

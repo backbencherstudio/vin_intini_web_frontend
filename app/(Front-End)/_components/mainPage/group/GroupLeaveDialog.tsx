@@ -6,20 +6,25 @@ import toast from "react-hot-toast";
 function GroupLeaveDialog({
   groupId,
   setIsNotify,
+  redirectOnLeave = false,
 }: {
   groupId: string;
   setIsNotify: (value: boolean) => void;
+  redirectOnLeave?: boolean;
 }) {
-  const [leaveGroup, { isLoading, isError }] = useLeaveGroupMutation();
+  const [leaveGroup, { isLoading }] = useLeaveGroupMutation();
   const router = useRouter();
   const handleLeaveGroup = async () => {
     try {
       const result = await leaveGroup({ group_id: groupId }).unwrap();
-      toast.success(result.data?.message || "Successfully left the group.");
-      router.push("/mu/my-network/groups");
+      toast.success(
+        result?.data?.message || result?.message || "Successfully left the group.",
+      );
       setIsNotify(false);
-    } catch (error) {
-
+      if (redirectOnLeave) {
+        router.push("/mu/my-network/groups");
+      }
+    } catch (error: any) {
       toast.error(error?.data?.message || "Failed to leave the group.");
     }
   };

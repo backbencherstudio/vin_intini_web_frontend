@@ -297,7 +297,7 @@ export default function CreateGroupForm({
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 pt-14 space-y-6">
+            <div className="p-6 sm:p-8 pt-16 sm:pt-20 space-y-6">
               {/* Group Name */}
               <div>
                 <label className="block text-sm md:text-base font-semibold text-headerColor mb-1.5">
@@ -419,7 +419,7 @@ export default function CreateGroupForm({
               <div className="space-y-3">
                 <p className="text-sm md:text-base font-bold text-headerColor">Group type</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${selectedType === "public" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
+                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-colors ${selectedType === "public" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
                     <input
                       type="radio"
                       value="public"
@@ -435,7 +435,7 @@ export default function CreateGroupForm({
                       </p>
                     </div>
                   </label>
-                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${selectedType === "private" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
+                  <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-colors ${selectedType === "private" ? "border-primaryColor bg-primaryColor/5" : "border-borderColor bg-white hover:bg-gray-50/60"}`}>
                     <input
                       type="radio"
                       value="private"
@@ -456,12 +456,12 @@ export default function CreateGroupForm({
 
               {/* Conditional Discoverability (Shown only when Private is selected) */}
               {selectedType === "private" && (
-                <div className="space-y-3 pt-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="space-y-3 pt-1">
                   <p className="text-sm md:text-base font-bold text-headerColor">
                     Discoverability
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-all">
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-colors">
                       <input
                         type="radio"
                         value="listed"
@@ -477,7 +477,7 @@ export default function CreateGroupForm({
                         </p>
                       </div>
                     </label>
-                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-all">
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-borderColor bg-white hover:bg-gray-50/60 cursor-pointer transition-colors">
                       <input
                         type="radio"
                         value="unlisted"
@@ -539,7 +539,7 @@ export default function CreateGroupForm({
                 <button
                   type="submit"
                   disabled={isLoading || isUpdateLoading}
-                  className="bg-primaryColor hover:bg-primaryColor/90 text-white px-12 py-3 rounded-full font-bold text-base hover:shadow-lg shadow-primaryColor/50 cursor-pointer transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[180px]"
+                  className="bg-primaryColor hover:bg-primaryColor/90 text-white px-12 py-3 rounded-full font-bold text-base cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[180px]"
                 >
                   {isUpdateLoading ? (
                     <Loader className="animate-spin h-5 w-5 text-white" />
