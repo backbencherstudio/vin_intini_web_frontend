@@ -30,8 +30,8 @@ import {
   locationTypeOptions,
   networkOptions,
 } from "@/public/demoData/RealData";
-import { format, isBefore } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { addDays, format, isBefore, startOfDay } from "date-fns";
+import { Calendar as CalendarIcon, CalendarClock, Clock, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -51,10 +51,14 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const [createJobs, { isLoading: isCreating }] = useCreateJobsMutation();
   const [updateJobs, { isLoading: isUpdating }] = useUpdateJobsMutation();
   const { data: jobResponse } = useGetJobDetailsQuery(id, { skip: !id });
+  const currentJob = (jobResponse?.data ?? jobResponse) as any;
+  const currentJobStatus = currentJob?.status;
   const { data: statesData, isLoading: isStateLoading } =
     useGetAllStatesQuery(undefined);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
+  const [isScheduledMode, setIsScheduledMode] = useState(false);
+  const [deadlineMode, setDeadlineMode] = useState<"open" | "deadline">("open");
   const [jobId, setJobId] = useState<string | number | null>(null);
   const stateOptions = (statesData?.data || []).map((s: any) => ({
     value: String(s.id),
@@ -145,6 +149,15 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     const job = (jobResponse?.data ?? jobResponse) as any;
     if (!job || !id) return;
 
+    const hasFutureStartDate = Boolean(
+      job.announcement_start_date &&
+      isBefore(startOfDay(new Date()), startOfDay(new Date(`${job.announcement_start_date}T00:00:00`)))
+    );
+    setIsScheduledMode(hasFutureStartDate);
+
+    const hasEndDate = Boolean(job.announcement_end_date);
+    setDeadlineMode(hasEndDate ? "deadline" : "open");
+
     reset({
       job_title: job.job_title || "",
       position: job.position || "",
@@ -196,6 +209,44 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         return isNaN(num) ? val : num;
       };
 
+      if (isScheduledMode) {
+        if (!data.start_date) {
+          toast.error("Please select a start date to schedule this job.");
+          return;
+        }
+        const today = startOfDay(new Date());
+        if (isBefore(startOfDay(data.start_date), today)) {
+          toast.error("The scheduled start date must be today or a future date.");
+          return;
+        }
+      }
+
+      if (deadlineMode === "deadline") {
+        if (!data.end_date) {
+          toast.error("Please select an application deadline end date.");
+          return;
+        }
+        const today = startOfDay(new Date());
+        if (!id && isBefore(startOfDay(data.end_date), today)) {
+          toast.error("The application end date must be today or a future date to post a new job.");
+          return;
+        }
+        if (isScheduledMode && data.start_date && isBefore(data.end_date, data.start_date)) {
+          toast.error("The application deadline cannot be earlier than the start date.");
+          return;
+        }
+      }
+
+      const finalStartDate = isScheduledMode && data.start_date
+        ? format(data.start_date, "yyyy-MM-dd")
+        : (!isScheduledMode && id && currentJob?.announcement_start_date && !isBefore(startOfDay(new Date()), startOfDay(new Date(`${currentJob.announcement_start_date}T00:00:00`)))
+            ? currentJob.announcement_start_date
+            : null);
+
+      const finalEndDate = deadlineMode === "deadline" && data.end_date
+        ? format(data.end_date, "yyyy-MM-dd")
+        : null;
+
       const payload = {
         job_title: data.job_title,
         position: data.position,
@@ -217,20 +268,22 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         salary_type: data.salary_type,
         website: data.website || undefined,
         job_description: data.job_description,
-        start_date: data.start_date
-          ? format(data.start_date, "yyyy-MM-dd")
-          : undefined,
-        end_date: data.end_date
-          ? format(data.end_date, "yyyy-MM-dd")
-          : undefined,
+        start_date: finalStartDate,
+        end_date: finalEndDate,
         tags: data.tags || undefined,
         information_confirmed: data.information_confirmed ? 1 : 0,
       };
 
       if (id) {
         const response = await updateJobs({ id, data: payload }).unwrap();
+        const updatedStatus = response?.data?.status;
 
-        toast.success("Job position updated successfully!");
+        if (updatedStatus === "expired") {
+          toast.success("Job details updated successfully! (Job remains expired because deadline has passed)");
+        } else {
+          toast.success(response?.message || "Job position updated successfully!");
+        }
+
         setJobId(response.data?.id);
         setIsCreated(true);
       } else {
@@ -241,6 +294,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         setIsCreated(true);
       }
       reset();
+      setIsScheduledMode(false);
+      setDeadlineMode("open");
     } catch (error: any) {
       console.error("Error creating job position:", error);
       const serverErrors = error?.data?.errors;
@@ -271,6 +326,28 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
             opportunity and connect with qualified candidates.
           </p>
         </div>
+
+        {id && currentJobStatus === "expired" && (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50/80 p-4 text-xs text-amber-900 flex items-start gap-3 shadow-2xs">
+            <CalendarClock className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-bold text-amber-900 text-sm">
+                This job posting is currently Expired
+              </p>
+              <p className="text-amber-800 leading-relaxed text-xs">
+                {currentJob?.announcement_end_date ? (
+                  <>
+                    This job had a deadline that has passed. You can update any job information below. To reactivate & publish this position, set the <strong>End Date</strong> to a future date.
+                  </>
+                ) : (
+                  <>
+                    This job was marked as expired. You can update its information or reactivate it anytime. Dates are optional.
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -696,138 +773,386 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
             )}
           </div>
 
-          {/* Row 10: Start Date & End Date */}
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="start_date"
-              className="text-sm text-descriptionColor font-medium"
-            >
-              Start Date
-            </Label>
-            <Controller
-              control={control}
-              name="start_date"
-              render={({ field }) => (
-                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      id="start_date"
-                      type="button"
-                      className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
-                        errors.start_date
-                          ? "border-red-500! ring-1 ring-red-500/20!"
-                          : "border-borderColor",
-                        field.value
-                          ? "text-headerColor font-normal"
-                          : "text-muted-foreground font-normal",
-                      )}
-                    >
-                      <span className="truncate">
-                        {field.value
-                          ? format(field.value, "MMM dd, yyyy")
-                          : "Start Date"}
-                      </span>
-                      <CalendarIcon
-                        className={cn(
-                          "w-4 h-4 shrink-0",
-                          field.value ? "text-headerColor" : "text-muted-foreground",
-                        )}
-                      />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
-                    align="start"
-                  >
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={(date) => {
-                        field.onChange(date);
-                        if (
-                          date &&
-                          selectedEndDate &&
-                          isBefore(selectedEndDate, date)
-                        ) {
-                          setValue("end_date", undefined);
-                        }
-                        setStartDateOpen(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              )}
-            />
-            {errors.start_date && (
-              <p className="text-redColor text-xs">
-                {errors.start_date.message}
+          {/* Row 10: Posting Schedule & Application Deadline */}
+          <div className="md:col-span-2 rounded-xl border border-borderColor bg-gray-50/60 p-4 sm:p-5 space-y-4">
+            <div>
+              <h4 className="text-sm font-semibold text-headerColor">
+                Posting Schedule & Application Deadline
+              </h4>
+              <p className="text-xs text-descriptionColor mt-0.5">
+                Configure whether this job goes live immediately or at a scheduled date, and manage application deadlines.
               </p>
-            )}
-          </div>
+            </div>
 
-          <div className="space-y-1.5">
-            <Label
-              htmlFor="end_date"
-              className="text-sm text-descriptionColor font-medium"
-            >
-              End Date
-            </Label>
-            <Controller
-              control={control}
-              name="end_date"
-              render={({ field }) => (
-                <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      id="end_date"
-                      type="button"
-                      className={cn(
-                        "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
-                        errors.end_date
-                          ? "border-red-500! ring-1 ring-red-500/20!"
-                          : "border-borderColor",
-                        field.value
-                          ? "text-headerColor font-normal"
-                          : "text-muted-foreground font-normal",
-                      )}
-                    >
-                      <span className="truncate">
-                        {field.value
-                          ? format(field.value, "MMM dd, yyyy")
-                          : "End Date"}
-                      </span>
-                      <CalendarIcon
-                        className={cn(
-                          "w-4 h-4 shrink-0",
-                          field.value ? "text-headerColor" : "text-muted-foreground",
-                        )}
-                      />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
-                    align="start"
-                  >
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      disabled={
-                        selectedStartDate
-                          ? { before: selectedStartDate }
-                          : undefined
-                      }
-                      onSelect={(date) => {
-                        field.onChange(date);
-                        setEndDateOpen(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
+            {/* Schedule Option Toggle/Card */}
+            <div
+              onClick={() => {
+                const next = !isScheduledMode;
+                setIsScheduledMode(next);
+                if (!next) {
+                  setValue("start_date", undefined);
+                } else if (!selectedStartDate) {
+                  setValue("start_date", addDays(new Date(), 1));
+                }
+              }}
+              className={cn(
+                "flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none",
+                isScheduledMode
+                  ? "border-[#009dae] bg-[#009dae]/5 ring-1 ring-[#009dae]/20"
+                  : "border-gray-200 bg-white hover:bg-gray-50"
               )}
-            />
-            {errors.end_date && (
-              <p className="text-redColor text-xs">{errors.end_date.message}</p>
+            >
+              <input
+                type="checkbox"
+                id="create_job_schedule_mode"
+                checked={isScheduledMode}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setIsScheduledMode(checked);
+                  if (!checked) {
+                    setValue("start_date", undefined);
+                  } else if (!selectedStartDate) {
+                    setValue("start_date", addDays(new Date(), 1));
+                  }
+                }}
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#009dae] focus:ring-[#009dae] cursor-pointer"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5">
+                  <CalendarClock className="w-4 h-4 text-[#009dae]" />
+                  <span className="text-xs font-bold text-headerColor">
+                    Schedule for Future Release
+                  </span>
+                  <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700">
+                    Optional
+                  </span>
+                </div>
+                <p className="text-[11px] text-descriptionColor mt-0.5">
+                  Specify a future date when this job post will go live. If unchecked, the job goes live immediately upon publishing.
+                </p>
+              </div>
+            </div>
+
+            {/* Deadline Selection */}
+            <div>
+              <label className="text-xs font-semibold text-headerColor block mb-2">
+                Application Deadline
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  onClick={() => {
+                    setDeadlineMode("open");
+                    setValue("end_date", undefined);
+                  }}
+                  className={cn(
+                    "flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none",
+                    deadlineMode === "open"
+                      ? "border-[#009dae] bg-[#009dae]/5 ring-1 ring-[#009dae]/20"
+                      : "border-gray-200 bg-white hover:bg-gray-50"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="industry_deadline_mode"
+                    checked={deadlineMode === "open"}
+                    onChange={() => {
+                      setDeadlineMode("open");
+                      setValue("end_date", undefined);
+                    }}
+                    className="mt-0.5 text-[#009dae] focus:ring-[#009dae] cursor-pointer"
+                  />
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-headerColor">
+                        Open Until Filled
+                      </span>
+                      <span className="rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700">
+                        Recommended
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-descriptionColor mt-0.5">
+                      No fixed deadline. Stays active until you manually pause or close it.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => {
+                    setDeadlineMode("deadline");
+                    if (!selectedEndDate) {
+                      setValue("end_date", addDays(selectedStartDate || new Date(), 30));
+                    }
+                  }}
+                  className={cn(
+                    "flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none",
+                    deadlineMode === "deadline"
+                      ? "border-[#009dae] bg-[#009dae]/5 ring-1 ring-[#009dae]/20"
+                      : "border-gray-200 bg-white hover:bg-gray-50"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="industry_deadline_mode"
+                    checked={deadlineMode === "deadline"}
+                    onChange={() => {
+                      setDeadlineMode("deadline");
+                      if (!selectedEndDate) {
+                        setValue("end_date", addDays(selectedStartDate || new Date(), 30));
+                      }
+                    }}
+                    className="mt-0.5 text-[#009dae] focus:ring-[#009dae] cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-headerColor">
+                      Set Application Deadline
+                    </span>
+                    <p className="text-[11px] text-descriptionColor mt-0.5">
+                      Automatically close applications on a specific closing date.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Extension Presets (visible ONLY if deadline mode is active) */}
+            {deadlineMode === "deadline" && (
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-xs font-medium text-gray-500 flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-[#009dae]" /> Quick Presets:
+                </span>
+                {[14, 30, 60, 90].map((days) => (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => {
+                      const base = selectedStartDate || new Date();
+                      setValue("end_date", addDays(base, days));
+                    }}
+                    className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:border-[#009dae] hover:bg-cyan-50 hover:text-[#009dae] transition cursor-pointer"
+                  >
+                    +{days} Days
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Dynamic Date Inputs: Shown ONLY if isScheduledMode or deadlineMode === "deadline" */}
+            {(isScheduledMode || deadlineMode === "deadline") ? (
+              <div
+                className={cn(
+                  "grid gap-4 pt-1",
+                  isScheduledMode && deadlineMode === "deadline"
+                    ? "grid-cols-1 sm:grid-cols-2"
+                    : "grid-cols-1"
+                )}
+              >
+                {/* Start Date: ONLY SHOWN IF isScheduledMode IS TRUE */}
+                {isScheduledMode && (
+                  <div className="space-y-1.5">
+                    <Label
+                      htmlFor="start_date"
+                      className="text-sm text-descriptionColor font-medium"
+                    >
+                      Start Date (Scheduled Publish Date)
+                    </Label>
+                    <Controller
+                      control={control}
+                      name="start_date"
+                      render={({ field }) => (
+                        <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                          <PopoverTrigger asChild>
+                            <button
+                              id="start_date"
+                              type="button"
+                              className={cn(
+                                "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                                errors.start_date
+                                  ? "border-red-500! ring-1 ring-red-500/20!"
+                                  : "border-borderColor",
+                                field.value
+                                  ? "text-headerColor font-normal"
+                                  : "text-muted-foreground font-normal",
+                              )}
+                            >
+                              <span className="truncate">
+                                {field.value
+                                  ? format(field.value, "MMM dd, yyyy")
+                                  : "Select Start Date"}
+                              </span>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                {field.value && (
+                                  <span
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      field.onChange(undefined);
+                                    }}
+                                    title="Clear date"
+                                    className="rounded-full p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition cursor-pointer"
+                                  >
+                                    <X className="h-3.5 w-3.5" />
+                                  </span>
+                                )}
+                                <CalendarIcon
+                                  className={cn(
+                                    "w-4 h-4 shrink-0",
+                                    field.value ? "text-headerColor" : "text-muted-foreground",
+                                  )}
+                                />
+                              </div>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                field.onChange(date);
+                                if (
+                                  date &&
+                                  selectedEndDate &&
+                                  isBefore(selectedEndDate, date)
+                                ) {
+                                  setValue("end_date", undefined);
+                                }
+                                setStartDateOpen(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
+                    {errors.start_date && (
+                      <p className="text-redColor text-xs">
+                        {errors.start_date.message}
+                      </p>
+                    )}
+                    {selectedStartDate && isBefore(startOfDay(new Date()), startOfDay(selectedStartDate)) ? (
+                      <p className="text-indigo-600 text-xs mt-1 font-medium flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" /> Scheduled: Position will go live on {format(selectedStartDate, "MMM dd, yyyy")}.
+                      </p>
+                    ) : (
+                      <p className="text-gray-400 text-xs mt-1">
+                        Select a future date when this job post will go live.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* End Date: ONLY SHOWN IF deadlineMode === "deadline" */}
+                {deadlineMode === "deadline" && (
+                  <div className="space-y-1.5">
+                    <Label
+                      htmlFor="end_date"
+                      className="text-sm text-descriptionColor font-medium"
+                    >
+                      End Date (Application Deadline)
+                    </Label>
+                    <Controller
+                      control={control}
+                      name="end_date"
+                      render={({ field }) => (
+                        <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                          <PopoverTrigger asChild>
+                            <button
+                              id="end_date"
+                              type="button"
+                              className={cn(
+                                "h-12! md:h-13! w-full px-3.5 border rounded-lg bg-white flex items-center justify-between text-sm hover:bg-gray-50/70 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 transition-all cursor-pointer",
+                                errors.end_date
+                                  ? "border-red-500! ring-1 ring-red-500/20!"
+                                  : "border-borderColor",
+                                field.value
+                                  ? "text-headerColor font-normal"
+                                  : "text-muted-foreground font-normal",
+                              )}
+                            >
+                              <span className="truncate">
+                                {field.value
+                                  ? format(field.value, "MMM dd, yyyy")
+                                  : "Select Application Deadline"}
+                              </span>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                {field.value && (
+                                  <span
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      field.onChange(undefined);
+                                    }}
+                                    title="Clear date"
+                                    className="rounded-full p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition cursor-pointer"
+                                  >
+                                    <X className="h-3.5 w-3.5" />
+                                  </span>
+                                )}
+                                <CalendarIcon
+                                  className={cn(
+                                    "w-4 h-4 shrink-0",
+                                    field.value ? "text-headerColor" : "text-muted-foreground",
+                                  )}
+                                />
+                              </div>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              disabled={
+                                selectedStartDate
+                                  ? { before: selectedStartDate }
+                                  : undefined
+                              }
+                              onSelect={(date) => {
+                                field.onChange(date);
+                                setEndDateOpen(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
+                    {errors.end_date && (
+                      <p className="text-redColor text-xs">{errors.end_date.message}</p>
+                    )}
+                    {selectedEndDate ? (
+                      <p
+                        className={cn(
+                          "text-xs mt-1 font-medium",
+                          isBefore(startOfDay(selectedEndDate), startOfDay(new Date()))
+                            ? "text-amber-600"
+                            : "text-emerald-600"
+                        )}
+                      >
+                        {isBefore(startOfDay(selectedEndDate), startOfDay(new Date()))
+                          ? "Deadline is in the past. Job info will update, but post will remain expired."
+                          : `Applications will automatically close on ${format(selectedEndDate, "MMM dd, yyyy")}.`}
+                      </p>
+                    ) : (
+                      <p className="text-gray-400 text-xs mt-1">
+                        Select a date when applications will automatically close.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* When NEITHER is selected/checked: Clean default status message */
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs">
+                <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>
+                  Immediate & Open-Ended: This job will go live immediately upon publishing and stay active until you manually pause or close it.
+                </span>
+              </div>
             )}
           </div>
 

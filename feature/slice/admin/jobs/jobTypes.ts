@@ -4,7 +4,10 @@ export type AdminJobStatus =
   | "draft"
   | "rejected"
   | "archive"
-  | "expired";
+  | "expired"
+  | "scheduled"
+  | "paused"
+  | "closed";
 
 export type AdminJobNetworkType = "psychology" | "neuroscience";
 export type AdminJobWorkMode = "remote" | "onsite" | "hybrid";
@@ -98,6 +101,7 @@ export interface AdminJobsSummary {
   rejected: number;
   expired: number;
   draft: number;
+  archive?: number;
 }
 
 export interface AdminJobsMeta {

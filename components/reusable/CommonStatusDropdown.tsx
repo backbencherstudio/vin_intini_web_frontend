@@ -24,6 +24,14 @@ export function getStatusStyle(status: string): {
 } {
   const s = status?.toLowerCase().trim();
   switch (s) {
+    case "scheduled":
+    case "upcoming":
+      return {
+        bg: "bg-[#EEF2FF]",
+        text: "text-[#4F46E5]",
+        border: "border-[#C7D2FE]",
+        dot: "bg-[#4F46E5]",
+      };
     case "active":
     case "published":
       return {
@@ -33,6 +41,19 @@ export function getStatusStyle(status: string): {
         dot: "bg-[#009dae]",
       };
     case "paused":
+      return {
+        bg: "bg-[#FEF3C7]",
+        text: "text-[#D97706]",
+        border: "border-[#FDE68A]",
+        dot: "bg-[#D97706]",
+      };
+    case "closed":
+      return {
+        bg: "bg-[#F1F5F9]",
+        text: "text-[#475569]",
+        border: "border-[#CBD5E1]",
+        dot: "bg-[#64748B]",
+      };
     case "draft":
     case "reviewing":
     case "interviewed":
@@ -91,7 +112,13 @@ export default function CommonStatusDropdown({
   const currentOption = options.find(
     (opt) => opt.value.toLowerCase() === normalizedValue,
   );
-  const displayLabel = currentOption?.label || value;
+  const fallbackLabel =
+    normalizedValue === "archive" || normalizedValue === "archived"
+      ? "Archived"
+      : normalizedValue === "published"
+        ? "Active"
+        : value;
+  const displayLabel = currentOption?.label || fallbackLabel;
   const style = getStatusStyle(normalizedValue);
 
   if (readOnly || !options.length || !onChange) {

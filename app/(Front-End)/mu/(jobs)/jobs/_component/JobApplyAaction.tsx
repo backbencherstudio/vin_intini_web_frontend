@@ -1,5 +1,14 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { cn } from "@/lib/utils";
+import {
+  Archive,
+  CalendarClock,
+  ClockAlert,
+  Lock,
+  PauseCircle,
+  ShieldAlert,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { IoMdDoneAll } from "react-icons/io";
@@ -28,25 +37,61 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const isBasicUser = planName === "basic_user";
 
   const renderApplyAction = () => {
-    if (!isPublished) {
-      const isRejected = jobData.status?.toLowerCase() === "rejected";
-      return (
-        <ButtonReuseable
-          title={isRejected ? "Rejected" : "Expired"}
-          disabled
-          className="px-5 font-semibold! py-2! rounded-full! disabled:bg-redColor/10! disabled:text-redColor! border-redColor! cursor-not-allowed! text-sm!"
-        />
-      );
-    }
-
+    // 1. If candidate ALREADY applied, always show clean "Applied" confirmation
     if (hasApplied) {
       return (
         <ButtonReuseable
           title="Applied"
           disabled
-          icon={<IoMdDoneAll className="w-4 h-4 text-lightGreenColor2" />}
-          className="px-5 font-semibold! py-2! rounded-full! disabled:bg-lightGreenColor2/10! disabled:text-lightGreenColor2! disabled:border-lightGreenColor2! cursor-not-allowed! text-sm!"
+          icon={<IoMdDoneAll className="w-4 h-4 text-emerald-600" />}
+          className="px-5 font-semibold! py-2! rounded-full! disabled:bg-emerald-50! disabled:text-emerald-700! disabled:border-emerald-300! border cursor-not-allowed! text-sm!"
         />
+      );
+    }
+
+    // 2. If candidate did NOT apply and job is closed / expired / archived
+    if (!isPublished) {
+      const s = jobData.status?.toLowerCase();
+      let icon = <Archive className="w-4 h-4 shrink-0 text-slate-600" />;
+      let label = "Archived • Applications Closed";
+      let badgeStyle = "bg-slate-100 text-slate-700 border-slate-300";
+
+      if (s === "rejected") {
+        icon = <ShieldAlert className="w-4 h-4 shrink-0 text-red-500" />;
+        label = "Unlisted Listing";
+        badgeStyle = "bg-red-50 text-red-700 border-red-200";
+      } else if (s === "paused") {
+        icon = <PauseCircle className="w-4 h-4 shrink-0 text-amber-600" />;
+        label = "Applications Paused";
+        badgeStyle = "bg-amber-50 text-amber-800 border-amber-300";
+      } else if (s === "closed") {
+        icon = <Lock className="w-4 h-4 shrink-0 text-gray-500" />;
+        label = "Position Closed";
+        badgeStyle = "bg-gray-100 text-gray-700 border-gray-300";
+      } else if (s === "scheduled") {
+        icon = <CalendarClock className="w-4 h-4 shrink-0 text-indigo-600" />;
+        label = "Scheduled • Opening Soon";
+        badgeStyle = "bg-indigo-50 text-indigo-700 border-indigo-200";
+      } else if (s === "expired") {
+        icon = <ClockAlert className="w-4 h-4 shrink-0 text-rose-500" />;
+        label = "Deadline Passed";
+        badgeStyle = "bg-rose-50 text-rose-700 border-rose-200";
+      } else if (s === "archive" || s === "archived") {
+        icon = <Archive className="w-4 h-4 shrink-0 text-slate-600" />;
+        label = "Archived • Applications Closed";
+        badgeStyle = "bg-slate-100 text-slate-700 border-slate-300";
+      }
+
+      return (
+        <div
+          className={cn(
+            "inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border select-none transition-all shadow-2xs",
+            badgeStyle
+          )}
+        >
+          {icon}
+          <span>{label}</span>
+        </div>
       );
     }
 

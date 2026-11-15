@@ -22,6 +22,10 @@ import {
 } from "lucide-react";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
+import CommonStatusDropdown, {
+  type StatusOption,
+} from "@/components/reusable/CommonStatusDropdown";
 import type { AdminJobItem } from "@/feature/slice/admin/jobs";
 import { useGetAdminJobByIdQuery } from "@/feature/slice/admin/jobs";
 
@@ -34,6 +38,15 @@ interface AdminJobViewModalProps {
   onEdit?: (job: AdminJobItem) => void;
   isUpdatingStatus?: boolean;
 }
+
+const ADMIN_JOB_STATUS_OPTIONS: StatusOption[] = [
+  { value: "published", label: "Published" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "expired", label: "Expired" },
+  { value: "archive", label: "Archive" },
+  { value: "draft", label: "Draft" },
+  { value: "rejected", label: "Rejected" },
+];
 
 export default function AdminJobViewModal({
   job,
@@ -53,6 +66,12 @@ export default function AdminJobViewModal({
   const appStats = detailData?.application_stats;
 
   if (!activeJob) return null;
+
+  const effectiveStatus = getEffectiveJobStatus(
+    activeJob.status,
+    activeJob.announcement_start_date,
+    activeJob.announcement_end_date
+  );
 
   const isRejected = activeJob.status === "rejected";
   const isPublished = activeJob.status === "published";
@@ -74,10 +93,28 @@ export default function AdminJobViewModal({
 
   const getStatusBadge = (status: string) => {
     switch (status) {
+      case "scheduled":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">
+            <Clock className="h-3.5 w-3.5" /> Scheduled
+          </span>
+        );
       case "published":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
             <CheckCircle2 className="h-3.5 w-3.5" /> Published
+          </span>
+        );
+      case "paused":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+            <Clock className="h-3.5 w-3.5" /> Paused
+          </span>
+        );
+      case "closed":
+        return (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
+            <XCircle className="h-3.5 w-3.5" /> Closed
           </span>
         );
       case "expired":
@@ -168,7 +205,12 @@ export default function AdminJobViewModal({
                 <h3 className="text-lg font-bold text-gray-900">
                   {activeJob.job_title}
                 </h3>
-                {getStatusBadge(activeJob.status)}
+                <CommonStatusDropdown
+                  value={effectiveStatus}
+                  options={ADMIN_JOB_STATUS_OPTIONS}
+                  onChange={(newStatus) => onToggleStatus(activeJob, newStatus)}
+                  isLoading={isUpdatingStatus}
+                />
               </div>
               <p className="text-sm font-medium text-gray-600">
                 {activeJob.industry?.name || "Verified Partner"}
@@ -318,13 +360,13 @@ export default function AdminJobViewModal({
         {/* Posting Schedule */}
         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-            Posting Schedule & Timeline
+            Schedule &amp; Application Deadline
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-2xs">
               <Calendar className="h-5 w-5 text-emerald-600 shrink-0" />
               <div>
-                <p className="text-[11px] font-medium text-gray-400 uppercase">Announcement Start Date</p>
+                <p className="text-[11px] font-medium text-gray-400 uppercase">Start Date</p>
                 <p className="text-xs font-bold text-gray-800">
                   {formatDate(activeJob.announcement_start_date) || "Immediate / Not Specified"}
                 </p>
@@ -334,7 +376,7 @@ export default function AdminJobViewModal({
             <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-2xs">
               <Clock className="h-5 w-5 text-amber-600 shrink-0" />
               <div>
-                <p className="text-[11px] font-medium text-gray-400 uppercase">Application Deadline (End Date)</p>
+                <p className="text-[11px] font-medium text-gray-400 uppercase">Application Deadline</p>
                 <p className="text-xs font-bold text-gray-800">
                   {formatDate(activeJob.announcement_end_date) || "Open Until Filled"}
                 </p>

@@ -8,6 +8,7 @@ import AdminEditJobModal from "@/app/(Front-End)/_components/adminDashboard/jobs
 import AdminJobViewModal from "@/app/(Front-End)/_components/adminDashboard/jobs/AdminJobViewModal";
 import AdminJobsTable from "@/app/(Front-End)/_components/adminDashboard/jobs/AdminJobsTable";
 import AdminRejectJobModal from "@/app/(Front-End)/_components/adminDashboard/jobs/AdminRejectJobModal";
+import AdminRepublishJobModal from "@/app/(Front-End)/_components/adminDashboard/jobs/AdminRepublishJobModal";
 import JobsOverviewCards from "@/app/(Front-End)/_components/adminDashboard/jobs/JobsOverviewCards";
 import {
   useDeleteAdminJobMutation,
@@ -32,6 +33,7 @@ export default function AdminJobsPage() {
   // Modal states
   const [viewingJob, setViewingJob] = useState<AdminJobItem | null>(null);
   const [editingJob, setEditingJob] = useState<AdminJobItem | null>(null);
+  const [republishingJob, setRepublishingJob] = useState<AdminJobItem | null>(null);
   const [rejectingJob, setRejectingJob] = useState<AdminJobItem | null>(null);
   const [deletingJob, setDeletingJob] = useState<AdminJobItem | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
@@ -99,6 +101,28 @@ export default function AdminJobsPage() {
   };
 
   const handleToggleStatus = async (job: AdminJobItem, newStatus: string) => {
+    if (newStatus === "rejected") {
+      setRejectingJob(job);
+      return;
+    }
+
+    if (newStatus === "published") {
+      if (job.announcement_end_date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const end = new Date(
+          job.announcement_end_date.includes("T")
+            ? job.announcement_end_date
+            : `${job.announcement_end_date}T23:59:59`
+        );
+        if (end < today) {
+          // Job had a deadline that has passed -> Must update end date to republish
+          setRepublishingJob(job);
+          return;
+        }
+      }
+    }
+
     try {
       await updateStatus({
         id: job.id,
@@ -106,7 +130,7 @@ export default function AdminJobsPage() {
       }).unwrap();
       toast.success(`Job status changed to ${newStatus}.`);
       if (viewingJob?.id === job.id) {
-        setViewingJob((prev) => (prev ? { ...prev, status: newStatus } : null));
+        setViewingJob((prev) => (prev ? { ...prev, status: newStatus, rejection_reason: null } : null));
       }
       refetch();
     } catch (err: any) {
@@ -240,6 +264,20 @@ export default function AdminJobsPage() {
         onSuccess={() => {
           refetch();
           if (viewingJob && editingJob && viewingJob.id === editingJob.id) {
+            setViewingJob(null);
+          }
+        }}
+      />
+
+      <AdminRepublishJobModal
+        job={republishingJob}
+        open={Boolean(republishingJob)}
+        onOpenChange={(open) => {
+          if (!open) setRepublishingJob(null);
+        }}
+        onSuccess={() => {
+          refetch();
+          if (viewingJob && republishingJob && viewingJob.id === republishingJob.id) {
             setViewingJob(null);
           }
         }}

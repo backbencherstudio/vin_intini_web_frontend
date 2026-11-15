@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiBookmark } from "react-icons/fi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import { HiOutlineCheckBadge } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import {
   useGetTopJobPicksQuery,
@@ -101,14 +102,18 @@ export default function TopJobsRightbar({
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-sm font-bold text-headerColor">
+                    <h3 className="flex items-center gap-1.5 min-w-0 text-sm font-bold text-headerColor">
                       <Link
                         href={`/mu/jobs-details/${job.id}`}
                         title={role}
-                        className="hover:text-primaryColor hover:underline transition"
+                        className="truncate hover:text-primaryColor no-underline transition-colors"
                       >
                         {role}
                       </Link>
+                      <HiOutlineCheckBadge
+                        aria-label="Verified company"
+                        className="shrink-0 text-base text-primaryColor"
+                      />
                     </h3>
                     <p className="mt-0.5 truncate text-xs text-descriptionColor">
                       {company}

@@ -1,21 +1,45 @@
 "use client";
 
+import { useState, useMemo } from "react";
+import { format } from "date-fns";
 import CommonStatusDropdown, {
   StatusOption,
 } from "@/components/reusable/CommonStatusDropdown";
 import { useStatusUpdateForJobsMutation } from "@/feature/slice/jobs/jobSlice";
+import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
 import toast from "react-hot-toast";
 import { JobItem } from "./JobListCard";
+import IndustryRepublishJobModal from "./IndustryRepublishJobModal";
 
-const JOB_STATUS_OPTIONS: StatusOption[] = [
+const BASE_JOB_STATUS_OPTIONS: StatusOption[] = [
   { value: "published", label: "Active" },
-  { value: "archive", label: "Archive" },
+  { value: "paused", label: "Paused" },
+  { value: "closed", label: "Closed" },
+  { value: "archive", label: "Archived" },
   { value: "expired", label: "Expired" },
 ];
 
 function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
   const [updateStatus, { isLoading: isUpdatingStatus }] =
     useStatusUpdateForJobsMutation();
+  const [isRepublishOpen, setIsRepublishOpen] = useState(false);
+
+  const effectiveStatus = getEffectiveJobStatus(
+    row.status || value,
+    row.announcement_start_date,
+    row.announcement_end_date
+  );
+
+  const options = useMemo(() => {
+    const list = [...BASE_JOB_STATUS_OPTIONS];
+    if (effectiveStatus === "scheduled") {
+      return [{ value: "scheduled", label: "Scheduled" }, ...list];
+    }
+    if (effectiveStatus === "draft") {
+      return [{ value: "draft", label: "Draft" }, ...list];
+    }
+    return list;
+  }, [effectiveStatus]);
 
   const isRejected =
     value?.toLowerCase() === "rejected" ||
@@ -35,6 +59,32 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
   }
 
   const handleStatusChange = async (newStatus: string) => {
+    if (newStatus === effectiveStatus) return;
+
+    if (newStatus === "scheduled") {
+      toast("To schedule a job post, please edit the job and set a future start date.", {
+        icon: "ℹ️",
+      });
+      return;
+    }
+
+    if (newStatus === "published") {
+      if (row.announcement_end_date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const end = new Date(
+          row.announcement_end_date.includes("T")
+            ? row.announcement_end_date
+            : `${row.announcement_end_date}T23:59:59`
+        );
+        if (end < today) {
+          // Job had a deadline that has passed -> Must update end date to reactivate
+          setIsRepublishOpen(true);
+          return;
+        }
+      }
+    }
+
     const payload: { status: string; rejection_reason?: string } = {
       status: newStatus,
     };
@@ -51,18 +101,23 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
     }
   };
 
-  const currentVal =
-    value?.toLowerCase() === "active"
-      ? "published"
-      : value?.toLowerCase() || "published";
-
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center justify-center gap-1">
       <CommonStatusDropdown
-        value={currentVal}
-        options={JOB_STATUS_OPTIONS}
+        value={effectiveStatus}
+        options={options}
         onChange={handleStatusChange}
         isLoading={isUpdatingStatus}
+      />
+      {effectiveStatus === "scheduled" && row.announcement_start_date && (
+        <span className="text-[10px] font-medium text-indigo-600">
+          Goes live {format(new Date(row.announcement_start_date.split("T")[0] + "T00:00:00"), "MMM dd")}
+        </span>
+      )}
+      <IndustryRepublishJobModal
+        job={row}
+        open={isRepublishOpen}
+        onOpenChange={setIsRepublishOpen}
       />
     </div>
   );

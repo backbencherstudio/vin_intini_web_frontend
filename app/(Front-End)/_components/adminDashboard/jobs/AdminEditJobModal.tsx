@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { Building2, Check, Pencil, Search } from "lucide-react";
+import { addDays, format, isBefore, startOfDay } from "date-fns";
+import { Building2, CalendarClock, Check, Clock, Pencil, Search, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import CustomButton from "@/components/reusable/dashboard/CustomButton";
@@ -12,6 +13,7 @@ import CustomSelect, {
   type SelectOption,
 } from "@/components/reusable/dashboard/CustomSelect";
 import JoditEditor from "@/components/reusable/InputFiled/JoditEditor";
+import AdminDateField from "./AdminDateField";
 import {
   useGetVerifiedJobIndustriesQuery,
   useUpdateAdminJobMutation,
@@ -80,14 +82,15 @@ const STATUS_OPTIONS: SelectOption[] = [
   { label: "Rejected", value: "rejected" },
 ];
 
-const toDateInputValue = (val?: string | null): string => {
-  if (!val) return "";
+const parseJobDate = (val?: string | null): Date | undefined => {
+  if (!val) return undefined;
   try {
-    const d = new Date(val);
-    if (isNaN(d.getTime())) return "";
-    return d.toISOString().slice(0, 10);
+    const raw = String(val).split("T")[0];
+    const [y, m, d] = raw.split("-").map(Number);
+    if (!y || !m || !d) return undefined;
+    return new Date(y, m - 1, d);
   } catch {
-    return "";
+    return undefined;
   }
 };
 
@@ -155,8 +158,34 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
     job.city_id ? String(job.city_id) : ""
   );
 
-  const [startDate, setStartDate] = useState(toDateInputValue(job.announcement_start_date));
-  const [endDate, setEndDate] = useState(toDateInputValue(job.announcement_end_date));
+  const initialHasFutureStartDate = Boolean(
+    job.announcement_start_date &&
+    isBefore(startOfDay(new Date()), startOfDay(new Date(job.announcement_start_date.includes("T") ? job.announcement_start_date : `${job.announcement_start_date}T00:00:00`)))
+  );
+  const [isScheduledMode, setIsScheduledMode] = useState<boolean>(initialHasFutureStartDate);
+  const [deadlineMode, setDeadlineMode] = useState<"open" | "deadline">(
+    job.announcement_end_date ? "deadline" : "open"
+  );
+
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    parseJobDate(job.announcement_start_date)
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    parseJobDate(job.announcement_end_date)
+  );
+
+  useEffect(() => {
+    if (job) {
+      const hasFuture = Boolean(
+        job.announcement_start_date &&
+        isBefore(startOfDay(new Date()), startOfDay(new Date(job.announcement_start_date.includes("T") ? job.announcement_start_date : `${job.announcement_start_date}T00:00:00`)))
+      );
+      setIsScheduledMode(hasFuture);
+      setDeadlineMode(job.announcement_end_date ? "deadline" : "open");
+      setStartDate(parseJobDate(job.announcement_start_date));
+      setEndDate(parseJobDate(job.announcement_end_date));
+    }
+  }, [job]);
 
   const [email, setEmail] = useState(job.email || "");
   const [phoneNumber, setPhoneNumber] = useState(job.phone_number || "");
@@ -323,6 +352,23 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
     if (salaryMin && salaryMax && Number(salaryMin) > Number(salaryMax)) {
       errors.salary_max = "Max salary must be greater than or equal to min salary.";
     }
+
+    if (isScheduledMode) {
+      if (!startDate) {
+        errors.start_date = "Please select a start date to schedule this job.";
+      }
+    }
+
+    if (deadlineMode === "deadline") {
+      if (!endDate) {
+        errors.end_date = "Please select an application deadline end date.";
+      } else {
+        if (isScheduledMode && startDate && isBefore(endDate, startDate)) {
+          errors.end_date = "Application deadline cannot be earlier than start date.";
+        }
+      }
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -359,8 +405,12 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
         salary_type: salaryType || null,
         location_url: locationUrl.trim() || null,
         job_description: jobDescription.trim(),
-        announcement_start_date: startDate ? startDate : null,
-        announcement_end_date: endDate ? endDate : null,
+        announcement_start_date: isScheduledMode && startDate
+          ? format(startDate, "yyyy-MM-dd")
+          : (!isScheduledMode && initialHasFutureStartDate ? null : (job.announcement_start_date ?? null)),
+        announcement_end_date: deadlineMode === "deadline" && endDate
+          ? format(endDate, "yyyy-MM-dd")
+          : null,
         tags: tags.trim() ? tags.split(",").map((t) => t.trim()).filter(Boolean) : null,
         status,
       };
@@ -685,20 +735,238 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <CustomInput
-            type="date"
-            label="Announcement Start Date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
+        {/* Timeline & Deadline Selector */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-4">
+          <div>
+            <h5 className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+              Posting Schedule & Deadline
+            </h5>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Set recruitment timeline or leave open-ended.
+            </p>
+          </div>
 
-          <CustomInput
-            type="date"
-            label="Announcement End Date (Application Deadline)"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+          {/* Schedule Option Toggle/Card */}
+          <div
+            onClick={() => {
+              const next = !isScheduledMode;
+              setIsScheduledMode(next);
+              if (!next) {
+                setStartDate(undefined);
+              } else if (!startDate) {
+                setStartDate(addDays(new Date(), 1));
+              }
+            }}
+            className={cn(
+              "flex items-start gap-2.5 p-3 rounded-xl border transition cursor-pointer select-none",
+              isScheduledMode
+                ? "border-[#04A1B7] bg-cyan-50/60 ring-1 ring-[#04A1B7]/20"
+                : "border-gray-200 bg-white hover:bg-gray-50"
+            )}
+          >
+            <input
+              type="checkbox"
+              id="admin_edit_schedule_mode"
+              checked={isScheduledMode}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsScheduledMode(checked);
+                if (!checked) {
+                  setStartDate(undefined);
+                } else if (!startDate) {
+                  setStartDate(addDays(new Date(), 1));
+                }
+              }}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#04A1B7] focus:ring-[#04A1B7] cursor-pointer"
+            />
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5">
+                <CalendarClock className="w-3.5 h-3.5 text-[#04A1B7]" />
+                <span className="text-xs font-bold text-gray-800">
+                  Schedule for Future Release
+                </span>
+                <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700">
+                  Optional
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Specify a future date when this job post will go live. If unchecked, the job goes live immediately upon publishing.
+              </p>
+            </div>
+          </div>
+
+          {/* Radio Mode Selection for Deadline */}
+          <div>
+            <label className="text-xs font-semibold text-gray-700 block mb-2">
+              Application Deadline
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                onClick={() => {
+                  setDeadlineMode("open");
+                  setEndDate(undefined);
+                }}
+                className={cn(
+                  "flex items-start gap-2.5 p-3 rounded-xl border transition cursor-pointer select-none",
+                  deadlineMode === "open"
+                    ? "border-[#04A1B7] bg-cyan-50/60 ring-1 ring-[#04A1B7]/20"
+                    : "border-gray-200 bg-white hover:bg-gray-50"
+                )}
+              >
+                <input
+                  type="radio"
+                  name="admin_edit_deadline_mode"
+                  checked={deadlineMode === "open"}
+                  onChange={() => {
+                    setDeadlineMode("open");
+                    setEndDate(undefined);
+                  }}
+                  className="mt-0.5 text-[#04A1B7] focus:ring-[#04A1B7] cursor-pointer"
+                />
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-gray-800">
+                      Open Until Filled
+                    </span>
+                    <span className="rounded bg-teal-100 px-1.5 py-0.5 text-[10px] font-semibold text-teal-800">
+                      Recommended
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-500 mt-0.5">
+                    No fixed deadline. Stays active until manually closed.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                onClick={() => {
+                  setDeadlineMode("deadline");
+                  if (!endDate) {
+                    setEndDate(addDays(startDate || new Date(), 30));
+                  }
+                }}
+                className={cn(
+                  "flex items-start gap-2.5 p-3 rounded-xl border transition cursor-pointer select-none",
+                  deadlineMode === "deadline"
+                    ? "border-[#04A1B7] bg-cyan-50/60 ring-1 ring-[#04A1B7]/20"
+                    : "border-gray-200 bg-white hover:bg-gray-50"
+                )}
+              >
+                <input
+                  type="radio"
+                  name="admin_edit_deadline_mode"
+                  checked={deadlineMode === "deadline"}
+                  onChange={() => {
+                    setDeadlineMode("deadline");
+                    if (!endDate) {
+                      setEndDate(addDays(startDate || new Date(), 30));
+                    }
+                  }}
+                  className="mt-0.5 text-[#04A1B7] focus:ring-[#04A1B7] cursor-pointer"
+                />
+                <div>
+                  <span className="text-xs font-bold text-gray-800">
+                    Set Application Deadline
+                  </span>
+                  <p className="text-[11px] text-gray-500 mt-0.5">
+                    Automatically close on a specific closing date.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Extension Presets (visible ONLY if deadline mode is active) */}
+          {deadlineMode === "deadline" && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs font-medium text-gray-500 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-[#04A1B7]" /> Presets:
+              </span>
+              {[14, 30, 60, 90].map((days) => (
+                <button
+                  key={days}
+                  type="button"
+                  onClick={() => {
+                    const base = startDate || new Date();
+                    setEndDate(addDays(base, days));
+                  }}
+                  className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:border-[#04A1B7] hover:bg-cyan-50 hover:text-[#04A1B7] transition cursor-pointer"
+                >
+                  +{days} Days
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Dynamic Date Inputs: Shown ONLY if isScheduledMode or deadlineMode === "deadline" */}
+          {(isScheduledMode || deadlineMode === "deadline") ? (
+            <div
+              className={cn(
+                "grid gap-4 pt-1",
+                isScheduledMode && deadlineMode === "deadline"
+                  ? "grid-cols-1 sm:grid-cols-2"
+                  : "grid-cols-1"
+              )}
+            >
+              {/* Start Date: ONLY SHOWN IF isScheduledMode IS TRUE */}
+              {isScheduledMode && (
+                <div>
+                  <AdminDateField
+                    label="Start Date (Scheduled Publish Date)"
+                    placeholder="Select start date"
+                    value={startDate}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      if (date && endDate && isBefore(endDate, date)) {
+                        setEndDate(undefined);
+                      }
+                    }}
+                    error={formErrors.start_date}
+                  />
+                  {startDate && isBefore(startOfDay(new Date()), startOfDay(startDate)) ? (
+                    <p className="text-indigo-600 text-xs mt-1 font-medium flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" /> Scheduled: Goes live on {format(startDate, "MMM dd, yyyy")}.
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-xs mt-1">
+                      Select a future date when this job post will go live.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* End Date: ONLY SHOWN IF deadlineMode === "deadline" */}
+              {deadlineMode === "deadline" && (
+                <div>
+                  <AdminDateField
+                    label="End Date (Application Deadline)"
+                    placeholder="Select application deadline"
+                    value={endDate}
+                    minDate={startDate}
+                    onChange={setEndDate}
+                    error={formErrors.end_date}
+                  />
+                  {endDate ? (
+                    <p className="text-gray-500 text-xs mt-1">
+                      Applications close on {format(endDate, "MMM dd, yyyy")}.
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 text-xs mt-1">
+                      Select a date when applications will automatically close.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* When NEITHER is selected/checked: Clean default status message */
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs">
+              <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>
+                Immediate & Open-Ended: This job will go live immediately upon publishing and stay active until manually paused or closed.
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

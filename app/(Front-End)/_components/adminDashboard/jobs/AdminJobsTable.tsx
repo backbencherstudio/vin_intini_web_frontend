@@ -24,6 +24,11 @@ import CustomButton from "@/components/reusable/dashboard/CustomButton";
 import CustomSelect, {
   type SelectOption,
 } from "@/components/reusable/dashboard/CustomSelect";
+import CommonStatusDropdown, {
+  type StatusOption,
+} from "@/components/reusable/CommonStatusDropdown";
+import { format } from "date-fns";
+import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
 import Pagination from "@/components/reusable/Pagination";
 import type { AdminJobItem, AdminJobsMeta, AdminJobsSummary } from "@/feature/slice/admin/jobs";
 import { useGetAllStatesQuery } from "@/feature/slice/settingSlice";
@@ -70,6 +75,17 @@ const WORK_MODE_FILTER_OPTIONS: SelectOption[] = [
   { label: "Remote", value: "remote" },
   { label: "On-site", value: "on_site" },
   { label: "Hybrid", value: "hybrid" },
+];
+
+export const ADMIN_JOB_STATUS_OPTIONS: StatusOption[] = [
+  { value: "published", label: "Published" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "paused", label: "Paused" },
+  { value: "closed", label: "Closed" },
+  { value: "expired", label: "Expired" },
+  { value: "archive", label: "Archived" },
+  { value: "draft", label: "Draft" },
+  { value: "rejected", label: "Rejected" },
 ];
 
 export default function AdminJobsTable({
@@ -157,9 +173,13 @@ export default function AdminJobsTable({
   const statusTabs = [
     { id: "all", label: "All Jobs", count: summary?.total ?? 0 },
     { id: "published", label: "Published", count: summary?.published ?? 0 },
+    { id: "scheduled", label: "Scheduled", count: (summary as any)?.scheduled ?? 0 },
+    { id: "paused", label: "Paused", count: (summary as any)?.paused ?? 0 },
+    { id: "closed", label: "Closed", count: (summary as any)?.closed ?? 0 },
     { id: "expired", label: "Expired", count: summary?.expired ?? 0 },
     { id: "rejected", label: "Rejected", count: summary?.rejected ?? 0 },
     { id: "draft", label: "Drafts", count: summary?.draft ?? 0 },
+    { id: "archive", label: "Archive", count: summary?.archive ?? 0 },
   ];
 
   const hasActiveFilters = Boolean(
@@ -194,6 +214,13 @@ export default function AdminJobsTable({
         return (
           <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
             Draft
+          </span>
+        );
+      case "archive":
+      case "archived":
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+            Archive
           </span>
         );
       default:
@@ -503,9 +530,29 @@ export default function AdminJobsTable({
                         </Link>
                       </td>
 
-                      {/* Status Badge */}
+                      {/* Status Dropdown */}
                       <td className="px-4 py-3.5 text-center">
-                        {getStatusBadge(job.status)}
+                        {(() => {
+                          const effectiveStatus = getEffectiveJobStatus(
+                            job.status,
+                            job.announcement_start_date,
+                            job.announcement_end_date
+                          );
+                          return (
+                            <div className="flex flex-col items-center justify-center gap-1">
+                              <CommonStatusDropdown
+                                value={effectiveStatus}
+                                options={ADMIN_JOB_STATUS_OPTIONS}
+                                onChange={(newStatus) => onToggleStatus(job, newStatus)}
+                              />
+                              {effectiveStatus === "scheduled" && job.announcement_start_date && (
+                                <span className="text-[10px] font-medium text-indigo-600">
+                                  Goes live {format(new Date(job.announcement_start_date.split("T")[0] + "T00:00:00"), "MMM dd")}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </td>
 
                       {/* Actions */}

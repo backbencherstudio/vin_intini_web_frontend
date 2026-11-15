@@ -303,12 +303,14 @@ export interface JobDetails {
   salary_max: string;
   salary_type: string;
   is_applied: boolean;
+  is_saved?: boolean;
   tags: string[];
   status: string;
   applications_count: number;
   state?: { name: string } | null;
   city?: { name: string } | null;
-  industry?: { id: number; name: string; logo?: string | null } | null;
+  industry?: { id: number; name: string; logo?: string | null; slug?: string | null } | null;
+  industry_name?: string;
   announcement_start_date: string;
   announcement_end_date: string;
   rejection_reason?: string | null;

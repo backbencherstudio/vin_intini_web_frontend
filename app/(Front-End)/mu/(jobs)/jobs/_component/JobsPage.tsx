@@ -4,7 +4,6 @@ import { useGetUserAllJobsQuery } from "@/feature/slice/jobs/userJobSlice";
 import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
 import { JobCard } from "./JobCard";
-import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
 import { JobSearchBar } from "./JobSearchBar";
 
@@ -74,11 +73,6 @@ export default function JobsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          <JobCardSection
-            title={`${jobsType} Time Jobs`}
-            subtitle="Because you expressed interest in remote work"
-          />
-
           <div className="space-y-3">
             {jobs?.map((job, index) => (
               <div

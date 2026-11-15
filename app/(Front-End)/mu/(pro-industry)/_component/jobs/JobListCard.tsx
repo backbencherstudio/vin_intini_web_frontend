@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
+import IndustryRepublishJobModal from "./IndustryRepublishJobModal";
 
 export interface JobItem {
   id: number | string;
@@ -33,6 +35,8 @@ export interface JobItem {
   applications_count?: number;
   rejection_reason?: string | null;
   reviewed_at?: string | null;
+  announcement_start_date?: string | null;
+  announcement_end_date?: string | null;
 }
 
 interface JobListCardProps {
@@ -53,10 +57,18 @@ export default function JobListCard({
   const [currentStatus, setCurrentStatus] = useState(
     job.status?.toLowerCase() || "published",
   );
+  const [isRepublishOpen, setIsRepublishOpen] = useState(false);
 
   // Status visual configurations
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
+      case "scheduled":
+      case "upcoming":
+        return {
+          label: "Scheduled",
+          key: "scheduled",
+          className: "bg-[#eef2ff] text-[#4f46e5] hover:bg-[#e0e7ff]",
+        };
       case "active":
       case "published":
         return {
@@ -64,12 +76,24 @@ export default function JobListCard({
           key: "published",
           className: "bg-[#dcf4f2] text-[#009dae] hover:bg-[#cbf0ec]",
         };
+      case "paused":
+        return {
+          label: "Paused",
+          key: "paused",
+          className: "bg-[#fef3c7] text-[#d97706] hover:bg-[#fde68a]",
+        };
+      case "closed":
+        return {
+          label: "Closed",
+          key: "closed",
+          className: "bg-[#f1f5f9] text-[#475569] hover:bg-[#e2e8f0]",
+        };
       case "archive":
       case "archived":
         return {
-          label: "Archive",
+          label: "Archived",
           key: "archive",
-          className: "bg-[#fef4d8] text-[#d97706] hover:bg-[#feeec0]",
+          className: "bg-[#f1f5f9] text-[#475569] hover:bg-[#e2e8f0]",
         };
       case "rejected":
         return {
@@ -92,10 +116,33 @@ export default function JobListCard({
     }
   };
 
-  const statusBadge = getStatusBadge(currentStatus);
+  const effectiveStatus = getEffectiveJobStatus(
+    currentStatus,
+    job.announcement_start_date,
+    job.announcement_end_date
+  );
+  const statusBadge = getStatusBadge(effectiveStatus);
 
   const handleStatusSelect = async (newStatus: string) => {
     if (newStatus === currentStatus) return;
+
+    if (newStatus === "published" || newStatus === "active") {
+      if (job.announcement_end_date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const end = new Date(
+          job.announcement_end_date.includes("T")
+            ? job.announcement_end_date
+            : `${job.announcement_end_date}T23:59:59`
+        );
+        if (end < today) {
+          // Job had a deadline that has passed -> Must update end date to reactivate
+          setIsRepublishOpen(true);
+          return;
+        }
+      }
+    }
+
     setCurrentStatus(newStatus);
     try {
       if (onStatusChange) {
@@ -196,12 +243,30 @@ export default function JobListCard({
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  onClick={() => handleStatusSelect("paused")}
+                  className="flex items-center justify-between text-xs cursor-pointer py-1.5"
+                >
+                  <span>Paused</span>
+                  {currentStatus === "paused" && (
+                    <Check className="w-3.5 h-3.5 text-[#d97706]" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleStatusSelect("closed")}
+                  className="flex items-center justify-between text-xs cursor-pointer py-1.5"
+                >
+                  <span>Closed</span>
+                  {currentStatus === "closed" && (
+                    <Check className="w-3.5 h-3.5 text-[#475569]" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onClick={() => handleStatusSelect("archive")}
                   className="flex items-center justify-between text-xs cursor-pointer py-1.5"
                 >
-                  <span>Archive</span>
+                  <span>Archived</span>
                   {["archive", "archived"].includes(currentStatus) && (
-                    <Check className="w-3.5 h-3.5 text-[#d97706]" />
+                    <Check className="w-3.5 h-3.5 text-[#475569]" />
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -293,6 +358,12 @@ export default function JobListCard({
           </button>
         </div>
       </div>
+
+      <IndustryRepublishJobModal
+        job={job}
+        open={isRepublishOpen}
+        onOpenChange={setIsRepublishOpen}
+      />
     </div>
   );
 }

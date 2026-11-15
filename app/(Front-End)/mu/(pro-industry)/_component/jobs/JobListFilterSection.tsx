@@ -15,12 +15,18 @@ function JobListFilterSection() {
   const currentStatusParam = searchParams.get("status") || "all";
   const getFilterStyle = (status: string) => {
     switch (status) {
+      case "scheduled":
+        return "bg-[#EEF2FF] text-[#4F46E5] border-[#C7D2FE]";
       case "active":
       case "published":
         return "bg-[#E6F8F6] text-[#009dae] border-[#b2e7e2]";
+      case "paused":
+        return "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]";
+      case "closed":
+        return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1]";
       case "archive":
       case "archived":
-        return "bg-[#FEF6E6] text-[#d97706] border-[#fde68a]";
+        return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1]";
       case "expired":
         return "bg-[#FEECEC] text-[#eb3d4d] border-[#fecaca]";
       case "rejected":
@@ -94,7 +100,10 @@ function JobListFilterSection() {
                 options={[
                   { value: "all", label: "All Status" },
                   { value: "active", label: "Active" },
-                  { value: "archive", label: "Archive" },
+                  { value: "scheduled", label: "Scheduled" },
+                  { value: "paused", label: "Paused" },
+                  { value: "closed", label: "Closed" },
+                  { value: "archive", label: "Archived" },
                   { value: "expired", label: "Expired" },
                   { value: "rejected", label: "Rejected" },
                 ]}
