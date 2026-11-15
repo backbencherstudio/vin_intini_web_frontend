@@ -26,7 +26,7 @@ const adminJobsApi = baseApiSlice.injectEndpoints({
           params: {
             ...(p.status && p.status !== "all" ? { status: p.status } : {}),
             ...(p.network_type && p.network_type !== "all" ? { network_type: p.network_type } : {}),
-            ...(p.industry_id ? { industry_id: p.industry_id } : {}),
+            ...(p.industry_id && p.industry_id !== "all" ? { industry_id: p.industry_id } : {}),
             ...(p.work_mode && p.work_mode !== "all" ? { work_mode: p.work_mode } : {}),
             ...(p.state_id && p.state_id !== "all" ? { state_id: p.state_id } : {}),
             ...(p.city_id && p.city_id !== "all" ? { city_id: p.city_id } : {}),

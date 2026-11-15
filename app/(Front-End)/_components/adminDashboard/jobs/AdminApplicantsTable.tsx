@@ -108,6 +108,21 @@ export default function AdminApplicantsTable({
     }
   };
 
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return "N/A";
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return String(dateStr);
+      return d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return String(dateStr);
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Back button and Job Banner */}
@@ -303,7 +318,7 @@ export default function AdminApplicantsTable({
 
                       {/* Applied Date */}
                       <td className="px-4 py-3.5 text-gray-600">
-                        {app.created_at ? new Date(app.created_at).toLocaleDateString() : "N/A"}
+                        {formatDate(app.created_at)}
                       </td>
 
                       {/* Resume Download */}

@@ -114,7 +114,7 @@ export interface AdminJobsMeta {
 export interface GetAdminJobsParams {
   status?: string;
   network_type?: string;
-  industry_id?: number;
+  industry_id?: number | string;
   work_mode?: string;
   state_id?: number | string;
   city_id?: number | string;

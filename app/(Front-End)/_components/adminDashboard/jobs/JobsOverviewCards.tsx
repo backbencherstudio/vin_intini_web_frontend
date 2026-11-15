@@ -24,7 +24,7 @@ export default function JobsOverviewCards({
     },
     {
       id: "published",
-      label: "Active & Published",
+      label: "Active Listings",
       value: summary?.published ?? 0,
       icon: CheckCircle2,
       color: "text-emerald-600",

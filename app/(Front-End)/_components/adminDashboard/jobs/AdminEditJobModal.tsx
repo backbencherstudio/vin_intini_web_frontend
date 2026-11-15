@@ -75,7 +75,7 @@ const SALARY_TYPE_OPTIONS: SelectOption[] = [
 ];
 
 const STATUS_OPTIONS: SelectOption[] = [
-  { label: "Published (Live)", value: "published" },
+  { label: "Active (Live)", value: "published" },
   { label: "Draft", value: "draft" },
   { label: "Expired", value: "expired" },
   { label: "Archive", value: "archive" },

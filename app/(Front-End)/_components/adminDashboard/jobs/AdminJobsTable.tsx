@@ -30,7 +30,12 @@ import CommonStatusDropdown, {
 import { format } from "date-fns";
 import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
 import Pagination from "@/components/reusable/Pagination";
-import type { AdminJobItem, AdminJobsMeta, AdminJobsSummary } from "@/feature/slice/admin/jobs";
+import type {
+  AdminJobItem,
+  AdminJobsMeta,
+  AdminJobsSummary,
+} from "@/feature/slice/admin/jobs";
+import { useGetVerifiedJobIndustriesQuery } from "@/feature/slice/admin/jobs";
 import { useGetAllStatesQuery } from "@/feature/slice/settingSlice";
 import { useGetStateByCityQuery } from "@/feature/slice/jobs/jobSlice";
 
@@ -43,6 +48,8 @@ interface AdminJobsTableProps {
   onStatusChange: (status: string) => void;
   selectedNetwork: string;
   onNetworkChange: (network: string) => void;
+  selectedIndustryId?: string;
+  onIndustryChange?: (industryId: string) => void;
   selectedWorkMode: string;
   onWorkModeChange: (mode: string) => void;
   selectedStateId: string;
@@ -77,16 +84,15 @@ const WORK_MODE_FILTER_OPTIONS: SelectOption[] = [
   { label: "Hybrid", value: "hybrid" },
 ];
 
-export const ADMIN_JOB_STATUS_OPTIONS: StatusOption[] = [
-  { value: "published", label: "Published" },
-  { value: "scheduled", label: "Scheduled" },
+export const ADMIN_BASE_STATUS_OPTIONS: StatusOption[] = [
+  { value: "published", label: "Active" },
   { value: "paused", label: "Paused" },
   { value: "closed", label: "Closed" },
-  { value: "expired", label: "Expired" },
   { value: "archive", label: "Archived" },
-  { value: "draft", label: "Draft" },
-  { value: "rejected", label: "Rejected" },
+  { value: "expired", label: "Expired" },
 ];
+
+export const ADMIN_JOB_STATUS_OPTIONS: StatusOption[] = ADMIN_BASE_STATUS_OPTIONS;
 
 export default function AdminJobsTable({
   jobs,
@@ -97,6 +103,8 @@ export default function AdminJobsTable({
   onStatusChange,
   selectedNetwork,
   onNetworkChange,
+  selectedIndustryId,
+  onIndustryChange,
   selectedWorkMode,
   onWorkModeChange,
   selectedStateId,
@@ -170,9 +178,24 @@ export default function AdminJobsTable({
     return [{ label: "All Cities", value: "all" }, ...list];
   }, [citiesData]);
 
+  // Fetch verified industries for company filter
+  const { data: industriesData, isLoading: isIndustriesLoading } =
+    useGetVerifiedJobIndustriesQuery();
+
+  const companyOptions: SelectOption[] = useMemo(() => {
+    const list = Array.isArray(industriesData?.data) ? industriesData.data : [];
+    return [
+      { label: "All Companies", value: "all" },
+      ...list.map((ind) => ({
+        label: ind.name,
+        value: String(ind.id),
+      })),
+    ];
+  }, [industriesData]);
+
   const statusTabs = [
     { id: "all", label: "All Jobs", count: summary?.total ?? 0 },
-    { id: "published", label: "Published", count: summary?.published ?? 0 },
+    { id: "published", label: "Active", count: summary?.published ?? 0 },
     { id: "scheduled", label: "Scheduled", count: (summary as any)?.scheduled ?? 0 },
     { id: "paused", label: "Paused", count: (summary as any)?.paused ?? 0 },
     { id: "closed", label: "Closed", count: (summary as any)?.closed ?? 0 },
@@ -184,6 +207,7 @@ export default function AdminJobsTable({
 
   const hasActiveFilters = Boolean(
     searchQuery.trim() ||
+    (selectedIndustryId && selectedIndustryId !== "all") ||
     (selectedStateId && selectedStateId !== "all") ||
     (selectedCityId && selectedCityId !== "all") ||
     (selectedNetwork && selectedNetwork !== "all") ||
@@ -195,7 +219,7 @@ export default function AdminJobsTable({
       case "published":
         return (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="h-3 w-3" /> Published
+            <CheckCircle2 className="h-3 w-3" /> Active
           </span>
         );
       case "expired":
@@ -289,8 +313,18 @@ export default function AdminJobsTable({
         </div>
 
         {/* Dropdowns + Reset */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:flex lg:items-center lg:gap-3">
-          <div className="w-full lg:w-40">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:flex lg:items-center lg:gap-3">
+          {/* Company Filter */}
+          <div className="w-full lg:w-44">
+            <CustomSelect
+              options={companyOptions}
+              value={selectedIndustryId || "all"}
+              onChange={(val) => onIndustryChange?.(String(val))}
+              placeholder={isIndustriesLoading ? "Loading Companies..." : "All Companies"}
+            />
+          </div>
+
+          <div className="w-full lg:w-36">
             <CustomSelect
               options={stateOptions}
               value={selectedStateId}
@@ -315,7 +349,7 @@ export default function AdminJobsTable({
             />
           </div>
 
-          <div className="w-full lg:w-38">
+          <div className="w-full lg:w-36">
             <CustomSelect
               options={NETWORK_FILTER_OPTIONS}
               value={selectedNetwork}
@@ -324,7 +358,7 @@ export default function AdminJobsTable({
             />
           </div>
 
-          <div className="w-full lg:w-38">
+          <div className="w-full lg:w-36">
             <CustomSelect
               options={WORK_MODE_FILTER_OPTIONS}
               value={selectedWorkMode}
@@ -339,7 +373,7 @@ export default function AdminJobsTable({
             onClick={onResetFilters}
             disabled={!hasActiveFilters}
             title={hasActiveFilters ? "Reset all filters" : "No filters active"}
-            className={`col-span-2 sm:col-span-4 lg:col-span-1 flex h-10 items-center justify-center gap-1.5 rounded-xl border transition-all lg:w-10 lg:shrink-0 ${
+            className={`col-span-2 sm:col-span-1 lg:col-span-1 flex h-10 items-center justify-center gap-1.5 rounded-xl border transition-all lg:w-10 lg:shrink-0 ${
               hasActiveFilters
                 ? "border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 shadow-2xs cursor-pointer"
                 : "border-gray-200 bg-white text-gray-300 opacity-60 cursor-not-allowed"
@@ -538,12 +572,37 @@ export default function AdminJobsTable({
                             job.announcement_start_date,
                             job.announcement_end_date
                           );
+
+                          // Build contextual options for this job
+                          const rowStatusOptions: StatusOption[] = [
+                            ...ADMIN_BASE_STATUS_OPTIONS,
+                          ];
+                          if (effectiveStatus === "scheduled") {
+                            rowStatusOptions.unshift({
+                              value: "scheduled",
+                              label: "Scheduled",
+                            });
+                          } else if (effectiveStatus === "draft") {
+                            rowStatusOptions.unshift({
+                              value: "draft",
+                              label: "Draft",
+                            });
+                          } else if (effectiveStatus === "rejected") {
+                            rowStatusOptions.unshift({
+                              value: "rejected",
+                              label: "Rejected",
+                            });
+                          }
+
                           return (
                             <div className="flex flex-col items-center justify-center gap-1">
                               <CommonStatusDropdown
                                 value={effectiveStatus}
-                                options={ADMIN_JOB_STATUS_OPTIONS}
-                                onChange={(newStatus) => onToggleStatus(job, newStatus)}
+                                options={rowStatusOptions}
+                                onChange={(newStatus) => {
+                                  if (newStatus === "scheduled") return;
+                                  onToggleStatus(job, newStatus);
+                                }}
                               />
                               {effectiveStatus === "scheduled" && job.announcement_start_date && (
                                 <span className="text-[10px] font-medium text-indigo-600">

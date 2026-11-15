@@ -39,13 +39,12 @@ interface AdminJobViewModalProps {
   isUpdatingStatus?: boolean;
 }
 
-const ADMIN_JOB_STATUS_OPTIONS: StatusOption[] = [
-  { value: "published", label: "Published" },
-  { value: "scheduled", label: "Scheduled" },
+const BASE_JOB_STATUS_OPTIONS: StatusOption[] = [
+  { value: "published", label: "Active" },
+  { value: "paused", label: "Paused" },
+  { value: "closed", label: "Closed" },
+  { value: "archive", label: "Archived" },
   { value: "expired", label: "Expired" },
-  { value: "archive", label: "Archive" },
-  { value: "draft", label: "Draft" },
-  { value: "rejected", label: "Rejected" },
 ];
 
 export default function AdminJobViewModal({
@@ -72,6 +71,17 @@ export default function AdminJobViewModal({
     activeJob.announcement_start_date,
     activeJob.announcement_end_date
   );
+
+  const modalStatusOptions: StatusOption[] = [
+    ...BASE_JOB_STATUS_OPTIONS,
+  ];
+  if (effectiveStatus === "scheduled") {
+    modalStatusOptions.unshift({ value: "scheduled", label: "Scheduled" });
+  } else if (effectiveStatus === "draft") {
+    modalStatusOptions.unshift({ value: "draft", label: "Draft" });
+  } else if (effectiveStatus === "rejected") {
+    modalStatusOptions.unshift({ value: "rejected", label: "Rejected" });
+  }
 
   const isRejected = activeJob.status === "rejected";
   const isPublished = activeJob.status === "published";
@@ -102,7 +112,7 @@ export default function AdminJobViewModal({
       case "published":
         return (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-            <CheckCircle2 className="h-3.5 w-3.5" /> Published
+            <CheckCircle2 className="h-3.5 w-3.5" /> Active
           </span>
         );
       case "paused":
@@ -207,8 +217,11 @@ export default function AdminJobViewModal({
                 </h3>
                 <CommonStatusDropdown
                   value={effectiveStatus}
-                  options={ADMIN_JOB_STATUS_OPTIONS}
-                  onChange={(newStatus) => onToggleStatus(activeJob, newStatus)}
+                  options={modalStatusOptions}
+                  onChange={(newStatus) => {
+                    if (newStatus === "scheduled") return;
+                    onToggleStatus(activeJob, newStatus);
+                  }}
                   isLoading={isUpdatingStatus}
                 />
               </div>
@@ -351,7 +364,7 @@ export default function AdminJobViewModal({
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Created Date</p>
               <p className="text-xs font-semibold text-gray-800">
-                {activeJob.created_at ? new Date(activeJob.created_at).toLocaleDateString() : "N/A"}
+                {formatDate(activeJob.created_at) || "N/A"}
               </p>
             </div>
           </div>

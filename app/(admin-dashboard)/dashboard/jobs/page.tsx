@@ -23,6 +23,7 @@ export default function AdminJobsPage() {
   // Query parameters state
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedNetwork, setSelectedNetwork] = useState<string>("all");
+  const [selectedIndustryId, setSelectedIndustryId] = useState<string>("all");
   const [selectedWorkMode, setSelectedWorkMode] = useState<string>("all");
   const [selectedStateId, setSelectedStateId] = useState<string>("all");
   const [selectedCityId, setSelectedCityId] = useState<string>("all");
@@ -42,6 +43,7 @@ export default function AdminJobsPage() {
   const { data, isLoading, refetch } = useGetAdminJobsQuery({
     status: selectedStatus,
     network_type: selectedNetwork,
+    industry_id: selectedIndustryId !== "all" ? selectedIndustryId : undefined,
     work_mode: selectedWorkMode,
     state_id: selectedStateId,
     city_id: selectedCityId,
@@ -62,6 +64,11 @@ export default function AdminJobsPage() {
 
   const handleNetworkChange = (network: string) => {
     setSelectedNetwork(network);
+    setCurrentPage(1);
+  };
+
+  const handleIndustryChange = (industryId: string) => {
+    setSelectedIndustryId(industryId);
     setCurrentPage(1);
   };
 
@@ -93,6 +100,7 @@ export default function AdminJobsPage() {
 
   const handleResetFilters = () => {
     setSearchQuery("");
+    setSelectedIndustryId("all");
     setSelectedStateId("all");
     setSelectedCityId("all");
     setSelectedNetwork("all");
@@ -200,6 +208,8 @@ export default function AdminJobsPage() {
         onStatusChange={handleStatusTabChange}
         selectedNetwork={selectedNetwork}
         onNetworkChange={handleNetworkChange}
+        selectedIndustryId={selectedIndustryId}
+        onIndustryChange={handleIndustryChange}
         selectedWorkMode={selectedWorkMode}
         onWorkModeChange={handleWorkModeChange}
         selectedStateId={selectedStateId}

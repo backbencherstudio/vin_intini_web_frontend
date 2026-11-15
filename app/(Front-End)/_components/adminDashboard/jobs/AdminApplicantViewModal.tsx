@@ -69,6 +69,21 @@ export default function AdminApplicantViewModal({
     }
   })();
 
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return "N/A";
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return String(dateStr);
+      return d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return String(dateStr);
+    }
+  };
+
   return (
     <CustomModal
       open={open}
@@ -162,7 +177,7 @@ export default function AdminApplicantViewModal({
               <span className="text-[11px] font-medium uppercase">Applied Date</span>
             </div>
             <p className="text-xs font-semibold text-gray-800">
-              {applicant.created_at ? new Date(applicant.created_at).toLocaleDateString() : "N/A"}
+              {formatDate(applicant.created_at)}
             </p>
           </div>
         </div>
