@@ -213,6 +213,8 @@ export default function AdminApplicantsTable({
           <table className="w-full text-left text-xs">
             <thead className="border-b border-gray-200 bg-gray-50/75 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
               <tr>
+                <th className="w-12 px-3 py-3.5 text-center whitespace-nowrap">SL</th>
+                <th className="px-4 py-3.5 whitespace-nowrap">Application ID</th>
                 <th className="px-4 py-3.5">Candidate</th>
                 <th className="px-4 py-3.5">Current Role</th>
                 <th className="px-4 py-3.5">Expected Salary</th>
@@ -226,6 +228,12 @@ export default function AdminApplicantsTable({
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="animate-pulse">
+                    <td className="w-12 px-3 py-4 text-center">
+                      <div className="mx-auto h-4 w-5 rounded bg-gray-200" />
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="h-4 w-20 rounded bg-gray-200" />
+                    </td>
                     <td className="px-4 py-4">
                       <div className="h-4 w-32 rounded bg-gray-200 mb-1" />
                       <div className="h-3 w-20 rounded bg-gray-100" />
@@ -252,7 +260,7 @@ export default function AdminApplicantsTable({
                 ))
               ) : applicants.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
                     <Users className="mx-auto h-10 w-10 text-gray-300 mb-2" />
                     <p className="text-sm font-semibold text-gray-700">No applicants found</p>
                     <p className="text-xs text-gray-400 mt-0.5">
@@ -261,14 +269,36 @@ export default function AdminApplicantsTable({
                   </td>
                 </tr>
               ) : (
-                applicants.map((app) => {
+                applicants.map((app, index) => {
                   const isUpdatingThis = updatingId === app.id;
+                  const pageSize = meta?.per_page ?? 15;
+                  const serialNumber = (currentPage - 1) * pageSize + index + 1;
+                  const rawId = app.application_id || (app.id ? String(app.id) : "");
+                  const cleanId = rawId ? String(rawId).replace(/^#?APP-?/i, "").replace(/^#/, "").trim() : "";
+                  const displayAppId = cleanId ? `#${cleanId}` : "-";
 
                   return (
                     <tr
                       key={app.id}
                       className="transition-colors hover:bg-gray-50/70"
                     >
+                      {/* Serial Number */}
+                      <td className="w-12 px-3 py-3.5 text-center font-medium text-gray-500">
+                        {serialNumber}
+                      </td>
+
+                      {/* Application ID */}
+                      <td className="px-4 py-3.5 whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => onViewApplicant(app)}
+                          className="font-mono text-xs font-semibold text-gray-800 hover:text-[#04A1B7] transition-colors cursor-pointer"
+                          title="View Application Details"
+                        >
+                          {displayAppId}
+                        </button>
+                      </td>
+
                       {/* Candidate Name & Contact */}
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-3">

@@ -119,8 +119,8 @@ export default function AdminApplicantViewModal({
                   <span className="text-gray-400"> • @{applicant.applicant.username}</span>
                 )}
               </p>
-              <p className="text-[11px] font-mono text-gray-400">
-                Application ID: #{applicant.application_id}
+              <p className="text-[11px] font-mono text-gray-500 font-medium">
+                Application ID: <span className="font-bold text-gray-900">#{applicant.application_id ? String(applicant.application_id).replace(/^#?APP-?/i, "").replace(/^#/, "").trim() : applicant.id}</span>
               </p>
             </div>
           </div>

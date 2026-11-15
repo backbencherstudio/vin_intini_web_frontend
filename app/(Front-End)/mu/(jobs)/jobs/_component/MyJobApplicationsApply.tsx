@@ -1,10 +1,12 @@
 "use client";
 
+import React, { useState } from "react";
 import { useGetMyJobApplicationsQuery } from "@/feature/slice/jobs/userJobSlice";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
 import { StatusCountsType } from "@/lib/type";
 import SaveJobcard from "./SaveJobcard";
 import { SaveJobcardSkeleton } from "./SaveJobcardSkeleton";
+import UserApplicationDetailsModal from "./UserApplicationDetailsModal";
 
 const FILTER_TABS = [
   { id: "all", label: "All" },
@@ -28,6 +30,7 @@ const normalizeStatus = (status?: string): string => {
 
 function MyJobApplicationsApply() {
   const { params, updateParam } = useUrlQueryParams();
+  const [selectedApp, setSelectedApp] = useState<any | null>(null);
 
   const activeTab = normalizeStatus(params?.status);
 
@@ -113,10 +116,20 @@ function MyJobApplicationsApply() {
               job={item}
               showSaveButton={false}
               status={item?.status}
+              onViewApplication={() => setSelectedApp(item)}
             />
           ))}
         </div>
       )}
+
+      {/* Candidate Application Details Modal */}
+      <UserApplicationDetailsModal
+        application={selectedApp}
+        open={Boolean(selectedApp)}
+        setOpen={(open) => {
+          if (!open) setSelectedApp(null);
+        }}
+      />
     </div>
   );
 }

@@ -23,6 +23,7 @@ export interface SaveJobcardProps {
   showSaveButton?: boolean;
   status?: string;
   isApply?: boolean;
+  onViewApplication?: () => void;
 }
 
 function SaveJobcard({
@@ -31,6 +32,7 @@ function SaveJobcard({
   showSaveButton = true,
   status,
   isApply = false,
+  onViewApplication,
 }: SaveJobcardProps) {
   const [saveUserJob, { isLoading: isUnsaving }] = useSaveUserJobMutation();
   const jobData = job?.job ?? job;
@@ -160,12 +162,29 @@ function SaveJobcard({
 
       {/* Bottom Row: Status Banner or Location/Salary */}
       {status !== undefined ? (
-        <div className="mt-4 pt-2">
-          <div
-            className={`w-full py-2.5 px-4 rounded-lg text-center text-sm font-medium transition-colors select-none ${statusConfig.className}`}
+        <div className="mt-4 pt-2 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onViewApplication}
+            className={`w-full py-2.5 px-4 rounded-lg text-center text-sm font-medium transition-opacity select-none ${statusConfig.className} ${onViewApplication ? "cursor-pointer hover:opacity-90" : ""}`}
+            title={onViewApplication ? "Click to view application details" : undefined}
           >
             {statusConfig.label}
-          </div>
+          </button>
+          {onViewApplication && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onViewApplication();
+              }}
+              className="w-full py-2 px-3 rounded-lg border border-primaryColor/40 text-primaryColor hover:bg-primaryColor hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <OpenEyeIcon />
+              <span>View Application Details</span>
+            </button>
+          )}
         </div>
       ) : (
         <div className="flex items-center justify-between gap-2 mt-4 pt-2 border-t border-gray-50 text-sm">
