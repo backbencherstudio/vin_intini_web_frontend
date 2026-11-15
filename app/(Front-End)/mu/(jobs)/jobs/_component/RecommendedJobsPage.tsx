@@ -14,7 +14,6 @@ import {
 import React, { useState } from "react";
 import { FiSliders } from "react-icons/fi";
 import { JobCard } from "./JobCard";
-import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
 import JobPreferenceModal from "./JobPreferenceModal";
 import { JobSearchBar } from "./JobSearchBar";
@@ -220,15 +219,6 @@ export default function RecommendedJobsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          <JobCardSection
-            title={jobsType}
-            subtitle={
-              hasPreference
-                ? "Ranked by match with your career preferences"
-                : "Recommended jobs available on the platform"
-            }
-          />
-
           <div className="space-y-3">
             {jobs?.map((job, index) => (
               <div
