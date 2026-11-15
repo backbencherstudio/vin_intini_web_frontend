@@ -28,7 +28,8 @@ export default function TopJobsRightbar({
 
   const [saveUserJob, { isLoading: isSaving }] = useSaveUserJobMutation();
 
-  const jobs: any[] = topJobsResponse?.data || [];
+  const rawJobs: any[] = topJobsResponse?.data || [];
+  const jobs: any[] = rawJobs.filter((job) => !job.is_applied);
 
   const handleToggleSave = async (jobId: number) => {
     try {
