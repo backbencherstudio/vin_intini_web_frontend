@@ -6,6 +6,7 @@ import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { Eye, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatBadge } from "@/lib/jobStatusHelper";
 
 interface RecentJobsListProps {
   recentJobs?: any[];
@@ -67,9 +68,9 @@ export default function RecentJobsList({
           {(badges || []).map((badge, idx) => (
             <span
               key={idx}
-              className="text-sm font-medium leading-[120%] px-2.5 py-0.5 rounded-full bg-bgColor text-descriptionColor capitalize"
+              className="text-sm font-medium leading-[120%] px-2.5 py-0.5 rounded-full bg-bgColor text-descriptionColor"
             >
-              {badge.replace(/_/g, " ")}
+              {formatBadge(badge)}
             </span>
           ))}
         </div>

@@ -12,6 +12,7 @@ import JobListAction from "./JobListAction";
 import { JobItem } from "./JobListCard";
 import JoblistSkleton from "./JoblistSkleton";
 import JobStatusChange from "./JobStatusChange";
+import { formatBadge } from "@/lib/jobStatusHelper";
 
 export default function AllJobList() {
   const defaultLimit = 10;
@@ -130,16 +131,16 @@ export default function AllJobList() {
               {row.job_title}
             </h4>
 
-            <div className="flex  items-center gap-1.5  mt-0.5">
+            <div className="flex items-center gap-1.5 mt-0.5">
               {(row.badges && row.badges.length > 0
                 ? row.badges
-                : ["Full-Time"]
+                : ["Full-time"]
               ).map((badge, idx) => (
                 <span
                   key={idx}
-                  className="inline-block  text-descriptionColor text-xs  capitalize whitespace-nowrap font-normal"
+                  className="inline-block text-descriptionColor text-xs whitespace-nowrap font-normal"
                 >
-                  {badge}
+                  {formatBadge(badge)}
                 </span>
               ))}
             </div>

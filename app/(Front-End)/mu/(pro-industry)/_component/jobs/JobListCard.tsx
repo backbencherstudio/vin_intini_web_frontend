@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
+import { getEffectiveJobStatus, formatBadge } from "@/lib/jobStatusHelper";
 import IndustryRepublishJobModal from "./IndustryRepublishJobModal";
 
 export interface JobItem {
@@ -289,9 +289,9 @@ export default function JobListCard({
             (badge, idx) => (
               <span
                 key={idx}
-                className="bg-[#f3f4f6] text-gray-600 text-[11px] md:text-xs px-2.5 py-0.5 rounded-full capitalize font-normal"
+                className="bg-[#f3f4f6] text-gray-600 text-[11px] md:text-xs px-2.5 py-0.5 rounded-full font-normal"
               >
-                {badge}
+                {formatBadge(badge)}
               </span>
             ),
           )}

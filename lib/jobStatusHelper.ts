@@ -134,3 +134,34 @@ export function formatJobTimeline(
     text: "Open until filled (No deadline)",
   };
 }
+
+/**
+ * Formats raw database badge/tag values into clean human-readable text.
+ * e.g., 'full_time' -> 'Full-time', 'on_site' -> 'On-site'
+ */
+export function formatBadge(badge?: string | null): string {
+  if (!badge) return "";
+  const cleaned = badge.replace(/_/g, " ").trim();
+  const lower = cleaned.toLowerCase();
+
+  const map: Record<string, string> = {
+    "full time": "Full-time",
+    "part time": "Part-time",
+    "short term": "Short-term",
+    "on site": "On-site",
+    "onsite": "On-site",
+    "remote": "Remote",
+    "hybrid": "Hybrid",
+    "contract": "Contract",
+    "internship": "Internship",
+    "psychology": "Psychology",
+    "neuroscience": "Neuroscience",
+  };
+
+  if (map[lower]) {
+    return map[lower];
+  }
+
+  return cleaned.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
