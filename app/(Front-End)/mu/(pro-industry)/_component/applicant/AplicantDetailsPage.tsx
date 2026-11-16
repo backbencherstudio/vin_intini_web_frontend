@@ -19,6 +19,7 @@ import AllJobList from "../jobs/AllJobList";
 import EmptyJobs from "../jobs/EmptyJobs";
 import ApplicantStatusUpdate from "./ApplicantStatusUpdate";
 import ApplicantsFilter from "./ApplicantsFilter";
+import { formatApplicationId } from "@/lib/jobStatusHelper";
 
 export interface AplicantDetailsPageProps {
   id?: string | number;
@@ -87,13 +88,33 @@ export default function AplicantDetailsPage({
   // DynamicTable Columns Configuration
   const columns = [
     {
-      label: renderHeaderLabel("ID"),
+      label: (
+        <span className="font-medium text-xs md:text-sm text-gray-500">
+          SL
+        </span>
+      ),
+      accessor: "sl",
+      width: "60px",
+      position: "justify-center",
+      formatter: (_: any, __: any, index: number) => {
+        const pageNum = urlPage ? Number(urlPage) : currentPage;
+        const limitNum = urlLimit ? Number(urlLimit) : limit;
+        const serialNumber = (pageNum - 1) * limitNum + index + 1;
+        return (
+          <div className="px-3 text-center font-medium text-descriptionColor text-sm">
+            {serialNumber}
+          </div>
+        );
+      },
+    },
+    {
+      label: renderHeaderLabel("Application ID"),
       accessor: "application_id",
-      width: "80px",
+      width: "140px",
       position: "justify-start",
       formatter: (_: any, row: ApplicantItemType) => (
-        <div className="px-4 py-3.5 text-sm text-descriptionColor font-normal whitespace-nowrap">
-          #{row.application_id || row.id}
+        <div className="px-4 py-3.5 text-sm text-descriptionColor font-medium whitespace-nowrap">
+          {formatApplicationId(row.application_id || row.id) || (row.id ? `#${row.id}` : "-")}
         </div>
       ),
     },

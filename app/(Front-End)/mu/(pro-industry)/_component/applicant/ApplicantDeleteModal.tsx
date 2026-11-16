@@ -1,4 +1,5 @@
 import RootDialog from "@/components/reusable/RootDialog";
+import { formatApplicationId } from "@/lib/jobStatusHelper";
 import { ApplicantItemType } from "@/lib/type";
 import toast from "react-hot-toast";
 
@@ -23,7 +24,7 @@ function ApplicantDeleteModal({
             <span className="font-semibold text-headerColor">
               {applicantToDelete.applicant_name}
             </span>{" "}
-            (#{applicantToDelete.application_id}) from this job application
+            ({formatApplicationId(applicantToDelete.application_id || applicantToDelete.id)}) from this job application
             list?
           </p>
           <div className="flex items-center justify-end gap-3">

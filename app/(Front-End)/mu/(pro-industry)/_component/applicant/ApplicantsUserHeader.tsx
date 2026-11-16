@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ApplicantStatusUpdate from "./ApplicantStatusUpdate";
+import { formatApplicationId } from "@/lib/jobStatusHelper";
 
 function ApplicantsUserHeader({
   applicant,
@@ -132,7 +133,7 @@ function ApplicantsUserHeader({
           {/* Right action buttons */}
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-xs md:text-sm px-3 py-1.5 rounded-full border border-grayColor2/60 text-descriptionColor bg-bgLightColor">
-              Application ID: #{applicant.application_id || applicant.id}
+              Application ID: {formatApplicationId(applicant.application_id || applicant.id) || (applicant.id ? `#${applicant.id}` : "N/A")}
             </span>
             <button
               type="button"

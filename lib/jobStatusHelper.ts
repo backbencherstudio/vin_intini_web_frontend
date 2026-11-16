@@ -165,3 +165,14 @@ export function formatBadge(badge?: string | null): string {
   return cleaned.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+/**
+ * Strips the 'APP-' prefix from application IDs to display clean #123456 format.
+ * e.g., 'APP-737716' -> '#737716', '#APP-737716' -> '#737716', '737716' -> '#737716'
+ */
+export function formatApplicationId(id?: string | number | null): string {
+  if (!id) return "";
+  const cleaned = String(id).replace(/^#?APP-?/i, "").replace(/^#/, "").trim();
+  return cleaned ? `#${cleaned}` : "";
+}
+
+
