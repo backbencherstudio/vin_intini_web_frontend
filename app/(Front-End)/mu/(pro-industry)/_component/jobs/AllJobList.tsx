@@ -93,6 +93,20 @@ export default function AllJobList() {
 
   const columns = [
     {
+      label: "SL",
+      accessor: "sl",
+      width: "60px",
+      position: "justify-center",
+      formatter: (_: any, __: any, index: number) => {
+        const serialNumber = (page - 1) * pageSize + index + 1;
+        return (
+          <div className="px-3 text-center font-medium text-descriptionColor">
+            {serialNumber}
+          </div>
+        );
+      },
+    },
+    {
       label: "Job ID",
       accessor: "job_id",
       width: "80px",

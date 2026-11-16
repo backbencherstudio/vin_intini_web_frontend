@@ -103,7 +103,6 @@ function JobListFilterSection() {
                   { value: "scheduled", label: "Scheduled" },
                   { value: "paused", label: "Paused" },
                   { value: "closed", label: "Closed" },
-                  { value: "archive", label: "Archived" },
                   { value: "expired", label: "Expired" },
                   { value: "rejected", label: "Rejected" },
                 ]}
