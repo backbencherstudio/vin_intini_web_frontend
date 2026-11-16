@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { format } from "date-fns";
 import CommonStatusDropdown, {
   StatusOption,
@@ -35,9 +36,6 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
     if (effectiveStatus === "scheduled") {
       return [{ value: "scheduled", label: "Scheduled" }, ...list];
     }
-    if (effectiveStatus === "draft") {
-      return [{ value: "draft", label: "Draft" }, ...list];
-    }
     return list;
   }, [effectiveStatus]);
 
@@ -54,6 +52,21 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
           <span className="h-2 w-2 rounded-full bg-red-600 shrink-0" />
           Rejected
         </span>
+      </div>
+    );
+  }
+
+  if (effectiveStatus === "draft") {
+    return (
+      <div className="flex justify-center">
+        <Link
+          href={`/mu/job-listing/${row.id}/edite`}
+          title="Draft job - Click to complete and publish"
+          className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-[#FEF6E6] px-3.5 py-1 text-xs font-semibold text-[#d97706] hover:bg-amber-100/90 hover:border-amber-300 transition-colors cursor-pointer select-none shadow-2xs"
+        >
+          <span className="h-2 w-2 rounded-full bg-[#d97706] shrink-0" />
+          Draft
+        </Link>
       </div>
     );
   }

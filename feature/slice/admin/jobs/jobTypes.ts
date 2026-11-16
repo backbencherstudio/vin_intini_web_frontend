@@ -158,14 +158,14 @@ export interface CreateAdminJobPayload {
   position?: string;
   category?: string;
   sub_category?: string;
-  job_description: string;
-  work_mode: string;
-  employment_type: string;
+  job_description?: string;
+  work_mode?: string;
+  employment_type?: string;
   level?: string;
   experience?: string;
   state_id?: number | null;
   city_id?: number | null;
-  email: string;
+  email?: string;
   phone_number?: string | null;
   website?: string | null;
   salary_min?: number | null;

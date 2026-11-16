@@ -573,6 +573,22 @@ export default function AdminJobsTable({
                             job.announcement_end_date
                           );
 
+                          if (effectiveStatus === "draft") {
+                            return (
+                              <div className="flex justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => onEditJob(job)}
+                                  title="Draft job - Click to complete and publish"
+                                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-[#FEF6E6] px-3.5 py-1 text-xs font-semibold text-[#d97706] hover:bg-amber-100/90 transition-colors cursor-pointer shadow-2xs"
+                                >
+                                  <span className="h-1.5 w-1.5 rounded-full bg-[#d97706] shrink-0" />
+                                  Draft
+                                </button>
+                              </div>
+                            );
+                          }
+
                           // Build contextual options for this job
                           const rowStatusOptions: StatusOption[] = [
                             ...ADMIN_BASE_STATUS_OPTIONS,
@@ -581,11 +597,6 @@ export default function AdminJobsTable({
                             rowStatusOptions.unshift({
                               value: "scheduled",
                               label: "Scheduled",
-                            });
-                          } else if (effectiveStatus === "draft") {
-                            rowStatusOptions.unshift({
-                              value: "draft",
-                              label: "Draft",
                             });
                           } else if (effectiveStatus === "rejected") {
                             rowStatusOptions.unshift({

@@ -20,6 +20,8 @@ function JobListFilterSection() {
       case "active":
       case "published":
         return "bg-[#E6F8F6] text-[#009dae] border-[#b2e7e2]";
+      case "draft":
+        return "bg-[#FEF6E6] text-[#d97706] border-[#fde68a]";
       case "paused":
         return "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]";
       case "closed":
@@ -100,6 +102,7 @@ function JobListFilterSection() {
                 options={[
                   { value: "all", label: "All Status" },
                   { value: "active", label: "Active" },
+                  { value: "draft", label: "Draft" },
                   { value: "scheduled", label: "Scheduled" },
                   { value: "paused", label: "Paused" },
                   { value: "closed", label: "Closed" },

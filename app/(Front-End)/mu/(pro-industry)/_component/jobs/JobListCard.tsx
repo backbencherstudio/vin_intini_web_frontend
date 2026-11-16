@@ -16,6 +16,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { getEffectiveJobStatus, formatBadge } from "@/lib/jobStatusHelper";
 import IndustryRepublishJobModal from "./IndustryRepublishJobModal";
@@ -126,6 +127,13 @@ export default function JobListCard({
   const handleStatusSelect = async (newStatus: string) => {
     if (newStatus === currentStatus) return;
 
+    if (effectiveStatus === "draft") {
+      toast.error(
+        "Draft jobs cannot be activated directly. Please click Edit to complete and publish this job."
+      );
+      return;
+    }
+
     if (newStatus === "published" || newStatus === "active") {
       if (job.announcement_end_date) {
         const today = new Date();
@@ -220,6 +228,15 @@ export default function JobListCard({
               <span className="h-1.5 w-1.5 rounded-full bg-red-600" />
               <span>Rejected</span>
             </span>
+          ) : effectiveStatus === "draft" ? (
+            <Link
+              href={`/mu/job-listing/${job.id}/edite`}
+              title="Draft job - Click to complete and publish"
+              className="px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 bg-[#FEF6E6] text-[#d97706] border border-amber-200 hover:bg-amber-100/90 transition-colors cursor-pointer select-none"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-[#d97706]" />
+              <span>Draft</span>
+            </Link>
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

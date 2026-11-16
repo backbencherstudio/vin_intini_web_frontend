@@ -13,6 +13,9 @@ interface JoditEditorProps {
   onBlur?: () => void;
   showToolbar?: boolean;
   height?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  allowResizeY?: boolean;
   buttons?: (string | { name: string })[];
   className?: string;
 }
@@ -23,7 +26,10 @@ function JoditEditor({
   onChange,
   onBlur,
   showToolbar = true,
-  height = 180,
+  height = 280,
+  minHeight = 220,
+  maxHeight = 1200,
+  allowResizeY = true,
   buttons,
   className,
 }: JoditEditorProps) {
@@ -31,7 +37,8 @@ function JoditEditor({
     () => ({
       readonly: false,
       height,
-      minHeight: height,
+      minHeight,
+      maxHeight,
       placeholder,
       toolbar: showToolbar,
       toolbarAdaptive: false,
@@ -41,9 +48,9 @@ function JoditEditor({
       showBrowserColorPicker: false,
       showCharsCounter: false,
       showWordsCounter: false,
-      statusbar: false,
+      statusbar: allowResizeY,
       allowResizeX: false,
-      allowResizeY: false,
+      allowResizeY,
       addNewLine: false,
       addNewLineOnDBLClick: false,
       cleanHTML: {
@@ -77,11 +84,25 @@ function JoditEditor({
           ]
         : [],
     }),
-    [buttons, height, placeholder, showToolbar],
+    [buttons, height, minHeight, maxHeight, placeholder, showToolbar, allowResizeY],
   );
 
   return (
-    <div className={cn("[&_.jodit-add-new-line]:hidden!", className)}>
+    <div
+      className={cn(
+        "[&_.jodit-add-new-line]:hidden!",
+        "[&_.jodit-status-bar]:bg-gray-50",
+        "[&_.jodit-status-bar]:border-t",
+        "[&_.jodit-status-bar]:border-gray-100",
+        "[&_.jodit-status-bar]:min-h-[22px]",
+        "[&_.jodit-status-bar]:py-0.5",
+        "[&_.jodit-status-bar]:px-2",
+        "[&_.jodit-status-bar-resizer]:cursor-ns-resize",
+        "[&_.jodit-status-bar-resizer]:opacity-70",
+        "[&_.jodit-status-bar-resizer]:hover:opacity-100",
+        className
+      )}
+    >
       <JoditEditors
         value={value}
         config={config}
