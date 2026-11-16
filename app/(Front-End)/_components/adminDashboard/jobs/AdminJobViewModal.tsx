@@ -329,13 +329,13 @@ export default function AdminJobViewModal({
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Salary Range</p>
               <p className="text-xs font-semibold text-gray-800">
-                {activeJob.salary_min || activeJob.salary_max ? (
+                {activeJob.salary_type?.toLowerCase() === "negotiable" || (!activeJob.salary_min && !activeJob.salary_max) ? (
+                  "Negotiable"
+                ) : (
                   <>
                     ${Number(activeJob.salary_min || 0).toLocaleString()} - ${Number(activeJob.salary_max || 0).toLocaleString()}
                     {activeJob.salary_type ? ` / ${activeJob.salary_type}` : ""}
                   </>
-                ) : (
-                  "Competitive / Negotiable"
                 )}
               </p>
             </div>

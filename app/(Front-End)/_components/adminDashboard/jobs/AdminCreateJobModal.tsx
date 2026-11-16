@@ -70,6 +70,7 @@ const SALARY_TYPE_OPTIONS: SelectOption[] = [
   { label: "Yearly", value: "Yearly" },
   { label: "Monthly", value: "Monthly" },
   { label: "Hourly", value: "Hourly" },
+  { label: "Negotiable", value: "Negotiable" },
 ];
 
 const STATUS_OPTIONS: SelectOption[] = [
@@ -133,7 +134,7 @@ export default function AdminCreateJobModal({
   const [website, setWebsite] = useState("");
   const [salaryMin, setSalaryMin] = useState<string>("");
   const [salaryMax, setSalaryMax] = useState<string>("");
-  const [salaryType, setSalaryType] = useState<string>("Yearly");
+  const [salaryType, setSalaryType] = useState<string>("");
   const [locationUrl, setLocationUrl] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [tags, setTags] = useState("");
@@ -298,7 +299,7 @@ export default function AdminCreateJobModal({
     setWebsite("");
     setSalaryMin("");
     setSalaryMax("");
-    setSalaryType("Yearly");
+    setSalaryType("");
     setLocationUrl("");
     setJobDescription("");
     setTags("");
@@ -335,7 +336,7 @@ export default function AdminCreateJobModal({
     if (!strippedDescription || strippedDescription.length < 20) {
       errors.job_description = "Job description is required (min 20 characters).";
     }
-    if (salaryMin && salaryMax && Number(salaryMin) > Number(salaryMax)) {
+    if (salaryType !== "Negotiable" && salaryMin && salaryMax && Number(salaryMin) > Number(salaryMax)) {
       errors.salary_max = "Max salary must be greater than or equal to min salary.";
     }
 
@@ -390,8 +391,8 @@ export default function AdminCreateJobModal({
         email: email.trim(),
         phone_number: phoneNumber.trim() || undefined,
         website: website.trim() || undefined,
-        salary_min: salaryMin ? Number(salaryMin) : undefined,
-        salary_max: salaryMax ? Number(salaryMax) : undefined,
+        salary_min: (salaryType === "Negotiable" || !salaryMin) ? undefined : Number(salaryMin),
+        salary_max: (salaryType === "Negotiable" || !salaryMax) ? undefined : Number(salaryMax),
         salary_type: salaryType || undefined,
         location_url: locationUrl.trim() || undefined,
         job_description: jobDescription.trim(),
@@ -957,29 +958,43 @@ export default function AdminCreateJobModal({
           </h4>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <CustomInput
-              label="Salary Range Min ($)"
-              type="number"
-              placeholder="e.g. 50000"
-              value={salaryMin}
-              onChange={(e) => setSalaryMin(e.target.value)}
-            />
+            <div className={!(salaryType && salaryType !== "Negotiable") ? "sm:col-span-3" : ""}>
+              <CustomSelect
+                label="Salary Frequency / Type"
+                placeholder="Select salary type"
+                options={SALARY_TYPE_OPTIONS}
+                value={salaryType}
+                onChange={(val) => {
+                  const newType = String(val);
+                  setSalaryType(newType);
+                  if (newType === "Negotiable" || !newType) {
+                    setSalaryMin("");
+                    setSalaryMax("");
+                  }
+                }}
+              />
+            </div>
 
-            <CustomInput
-              label="Salary Range Max ($)"
-              type="number"
-              placeholder="e.g. 90000"
-              value={salaryMax}
-              onChange={(e) => setSalaryMax(e.target.value)}
-              error={formErrors.salary_max}
-            />
+            {salaryType && salaryType !== "Negotiable" && (
+              <>
+                <CustomInput
+                  label="Salary Range Min ($)"
+                  type="number"
+                  placeholder="e.g. 50000"
+                  value={salaryMin}
+                  onChange={(e) => setSalaryMin(e.target.value)}
+                />
 
-            <CustomSelect
-              label="Salary Frequency"
-              options={SALARY_TYPE_OPTIONS}
-              value={salaryType}
-              onChange={(val) => setSalaryType(String(val))}
-            />
+                <CustomInput
+                  label="Salary Range Max ($)"
+                  type="number"
+                  placeholder="e.g. 90000"
+                  value={salaryMax}
+                  onChange={(e) => setSalaryMax(e.target.value)}
+                  error={formErrors.salary_max}
+                />
+              </>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

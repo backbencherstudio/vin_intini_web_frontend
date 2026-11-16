@@ -91,9 +91,11 @@ export default function EmploymentCard({ data }: PropType) {
             {data?.work_mode?.replace(/_/g, " ") || "Hybrid"}
           </p>
           <p className="px-2 py-1 rounded-lg bg-sectionColor text-grayColor1 text-xs  font-semibold">
-            {data?.salary_min && data?.salary_max
-              ? `$${formatNumberIntoK({ value: data.salary_min })} - $${formatNumberIntoK({ value: data.salary_max })}`
-              : "$0 - $0"}
+            {data?.salary_type?.toLowerCase() === "negotiable"
+              ? "Negotiable"
+              : data?.salary_min && data?.salary_max
+                ? `$${formatNumberIntoK({ value: data.salary_min })} - $${formatNumberIntoK({ value: data.salary_max })}`
+                : "Negotiable"}
           </p>
         </div>
 

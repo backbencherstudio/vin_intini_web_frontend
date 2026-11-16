@@ -72,6 +72,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     watch,
     reset,
     setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<JobPositionFormData>({
     defaultValues: {
@@ -101,6 +102,26 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const selectedStateId = watch("state_id");
   const selectedStartDate = watch("start_date");
   const selectedEndDate = watch("end_date");
+  const selectedSalaryType = watch("salary_type");
+  const isSalaryNegotiable = selectedSalaryType?.toLowerCase() === "negotiable";
+  const showSalaryRange = Boolean(
+    selectedSalaryType &&
+      selectedSalaryType.trim() !== "" &&
+      !isSalaryNegotiable
+  );
+
+  const salaryTypeOptions = [
+    { value: "Hourly", label: "Hourly" },
+    { value: "Monthly", label: "Monthly" },
+    { value: "Yearly", label: "Yearly" },
+    { value: "Negotiable", label: "Negotiable" },
+  ];
+
+  useEffect(() => {
+    if (!showSalaryRange) {
+      clearErrors(["salary_min", "salary_max"]);
+    }
+  }, [showSalaryRange, clearErrors]);
 
   // Find the selected state's code from statesData
   const selectedStateObj = (statesData?.data || []).find(
@@ -180,7 +201,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       phone_number: job.phone_number || "",
       salary_min: job.salary_min || "",
       salary_max: job.salary_max || "",
-      salary_type: job.salary_type || "",
+      salary_type: getOptionValue(salaryTypeOptions, job.salary_type),
       website: job.website || "",
       job_description: job.job_description || "",
       start_date: job.announcement_start_date
@@ -263,8 +284,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         city_id: parseId(data.city_id),
         email: data.email,
         phone_number: data.phone_number,
-        salary_min: parseNumber(data.salary_min),
-        salary_max: parseNumber(data.salary_max),
+        salary_min: showSalaryRange ? parseNumber(data.salary_min) : null,
+        salary_max: showSalaryRange ? parseNumber(data.salary_max) : null,
         salary_type: data.salary_type,
         website: data.website || undefined,
         job_description: data.job_description,
@@ -590,11 +611,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   value={field.value || undefined}
                   onChange={field.onChange}
                   placeholder="Select salary type"
-                  options={[
-                    { value: "Hourly", label: "Hourly" },
-                    { value: "Monthly", label: "Monthly" },
-                    { value: "Yearly", label: "Yearly" },
-                  ]}
+                  options={salaryTypeOptions}
                   className="h-12! md:h-13! rounded-lg bg-white w-full text-sm font-normal text-headerColor"
                   error={errors.salary_type?.message}
                 />
@@ -606,30 +623,38 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
               </p>
             )}
           </div>
-          {/* Row 7: Salary Range min & Salary Range Max */}
-          <ReusableInput
-            id="salary_min"
-            label="Salary Range min"
-            required
-            placeholder="e.g. $20,000 USD"
-            className="rounded-lg border-borderColor text-sm text-headerColor"
-            error={errors.salary_min?.message}
-            {...register("salary_min", {
-              required: "Minimum salary range is required",
-            })}
-          />
+          {/* Row 7: Salary Range min & Salary Range Max (Hidden by default, shown when salary type is Hourly/Monthly/Yearly) */}
+          {showSalaryRange && (
+            <>
+              <ReusableInput
+                id="salary_min"
+                label="Salary Range min"
+                required
+                placeholder="e.g. $20,000 USD"
+                className="rounded-lg border-borderColor text-sm text-headerColor"
+                error={errors.salary_min?.message}
+                {...register("salary_min", {
+                  required: showSalaryRange
+                    ? "Minimum salary range is required"
+                    : false,
+                })}
+              />
 
-          <ReusableInput
-            id="salary_max"
-            label="Salary Range Max"
-            required
-            placeholder="e.g. $90,000 USD"
-            className="rounded-lg border-borderColor text-sm text-headerColor"
-            error={errors.salary_max?.message}
-            {...register("salary_max", {
-              required: "Maximum salary range is required",
-            })}
-          />
+              <ReusableInput
+                id="salary_max"
+                label="Salary Range Max"
+                required
+                placeholder="e.g. $90,000 USD"
+                className="rounded-lg border-borderColor text-sm text-headerColor"
+                error={errors.salary_max?.message}
+                {...register("salary_max", {
+                  required: showSalaryRange
+                    ? "Maximum salary range is required"
+                    : false,
+                })}
+              />
+            </>
+          )}
 
           {/* Row 5: State & City */}
           <div className="space-y-1.5">

@@ -541,15 +541,15 @@ export default function AdminJobsTable({
 
                       {/* Compensation */}
                       <td className="px-4 py-3.5">
-                        {job.salary_min || job.salary_max ? (
+                        {job.salary_type?.toLowerCase() === "negotiable" || (!job.salary_min && !job.salary_max) ? (
+                          <span className="text-gray-500 font-medium">Negotiable</span>
+                        ) : (
                           <div className="font-medium text-gray-800">
                             ${Number(job.salary_min || 0).toLocaleString()} - ${Number(job.salary_max || 0).toLocaleString()}
                             <span className="block text-[10px] text-gray-400 uppercase">
                               {job.salary_type || "Annual"}
                             </span>
                           </div>
-                        ) : (
-                          <span className="text-gray-400 italic">Negotiable</span>
                         )}
                       </td>
 

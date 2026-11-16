@@ -68,12 +68,17 @@ function JobDetailsHeader() {
   if (!job) return null;
 
   const location = [job.city?.name, job.state?.name].filter(Boolean).join(", ");
-  const salary =
-    job.salary_min && job.salary_max
+  const isNegotiable =
+    job.salary_type?.toLowerCase() === "negotiable" ||
+    (!job.salary_min && !job.salary_max);
+
+  const salary = isNegotiable
+    ? "Negotiable"
+    : job.salary_min && job.salary_max
       ? `$${formatNumberIntoK({ value: job.salary_min })} - $${formatNumberIntoK({ value: job.salary_max })}`
       : job.salary_min
         ? `$${formatNumberIntoK({ value: job.salary_min })}`
-        : "";
+        : "Negotiable";
 
   const normStatus = job.status?.toLowerCase();
   const companyName = job?.industry?.name || job?.industry_name;
@@ -451,7 +456,9 @@ function JobDetailsHeader() {
           <span className="flex items-center gap-1.5 font-medium text-headerColor">
             <Banknote className="h-3.5 w-3.5 text-grayColor1" />
             <span>
-              {salary ? `${salary}/${job?.salary_type}` : "Negotiable"}
+              {isNegotiable
+                ? "Negotiable"
+                : `${salary}${job?.salary_type ? `/${job.salary_type}` : ""}`}
             </span>
           </span>
         </div>

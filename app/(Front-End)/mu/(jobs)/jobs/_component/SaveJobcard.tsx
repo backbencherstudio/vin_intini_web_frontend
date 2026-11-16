@@ -52,12 +52,17 @@ function SaveJobcard({
     [jobData?.city?.name, jobData?.state?.name].filter(Boolean).join(", ") ||
     "California, United States";
 
-  const salaryDisplay =
-    jobData?.salary_min && jobData?.salary_max
+  const isNegotiable =
+    jobData?.salary_type?.toLowerCase() === "negotiable" ||
+    (!jobData?.salary_min && !jobData?.salary_max);
+
+  const salaryDisplay = isNegotiable
+    ? "Negotiable"
+    : jobData?.salary_min && jobData?.salary_max
       ? `$${formatNumberIntoK({ value: jobData.salary_min })} - $${formatNumberIntoK({ value: jobData.salary_max })}`
       : jobData?.salary_min
         ? `$${formatNumberIntoK({ value: jobData.salary_min })}`
-        : "$6.2k";
+        : "Negotiable";
 
   const statusConfig = getApplicationStatusConfig(status);
 
@@ -199,9 +204,11 @@ function SaveJobcard({
             <span className="text-sm sm:text-base font-bold text-headerColor">
               {salaryDisplay}
             </span>
-            <span className="text-xs sm:text-sm text-grayColor1 font-normal">
-              /{jobData?.salary_type}
-            </span>
+            {!isNegotiable && jobData?.salary_type && (
+              <span className="text-xs sm:text-sm text-grayColor1 font-normal">
+                /{jobData?.salary_type}
+              </span>
+            )}
           </div>
         </div>
       )}

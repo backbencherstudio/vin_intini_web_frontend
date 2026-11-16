@@ -15,10 +15,17 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
     [job?.city?.name, job?.state?.name].filter(Boolean).join(", ") ||
     "Dhaka, Bangladesh";
   const jobTitle = job?.job_title || "UI/UX Designer";
-  const salaryText =
-    job?.salary_min && job?.salary_max
+  const isNegotiable =
+    job?.salary_type?.toLowerCase() === "negotiable" ||
+    (!job?.salary_min && !job?.salary_max);
+
+  const salaryText = isNegotiable
+    ? "Negotiable"
+    : job?.salary_min && job?.salary_max
       ? `$${formatNumberIntoK({ value: job.salary_min })} - $${formatNumberIntoK({ value: job.salary_max })}`
-      : "$7.8k /month";
+      : job?.salary_min
+        ? `$${formatNumberIntoK({ value: job.salary_min })}`
+        : "Negotiable";
 
   return (
     <div className="space-y-4">
