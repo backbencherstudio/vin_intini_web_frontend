@@ -165,51 +165,67 @@ export default function DynamicTable({
             </thead>
             <tbody>
               {data.length > 0 ? (
-                data.map((row, i) => (
-                  <tr
-                    key={i}
-                    className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ""} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ""} ${(rowStyle?.rowClickable && rowStyle.rowClickCheck ? row?.[rowStyle.rowClickCheck?.split(",")?.[0]] && row?.[rowStyle.rowClickCheck?.split(",")?.[1]] : true) ? "cursor-pointer" : "cursor-default"}`}
-                    onClick={() =>
-                      rowStyle?.rowClickable && rowStyle.rowClick
-                        ? rowStyle.rowClick(row)
-                        : null
-                    }
-                  >
-                    {columns.map((col, idx) => (
-                      <td
-                        key={idx}
-                        style={{ width: col.width || "auto" }}
-                        className="text-Gray-Black-400"
-                      >
-                        {col.formatter
-                          ? col.formatter(row[col.accessor], row, i)
-                          : row[col.accessor]}
-                      </td>
-                    ))}
-                    {(onView || onDelete) && (
-                      <td className="px-4 py-3 flex gap-4 items-center">
-                        {onView && (
-                          <span
-                            className="text-sm underline text-Gray-Black-400  cursor-pointer"
-                            onClick={() => onView(row)}
-                          >
-                            View details
-                          </span>
-                        )}
-                        {onDelete && (
-                          <Image
-                            onClick={() => onDelete(row.id)}
-                            src="/dashboard/icon/delete.svg"
-                            alt="delete"
-                            width={16}
-                            height={16}
-                            className="h-4 w-4 cursor-pointer"
-                          />
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                ))
+                data.map((row, i) => {
+                  const checkFields = rowStyle?.rowClickCheck
+                    ? rowStyle.rowClickCheck.split(",").map((f) => f.trim())
+                    : [];
+                  const passesCheck =
+                    checkFields.length > 0
+                      ? checkFields.every((f) => Boolean(row?.[f]))
+                      : true;
+                  const isClickable = Boolean(
+                    rowStyle?.rowClickable && passesCheck
+                  );
+                  const cursorClass =
+                    rowStyle?.cursorStype ||
+                    (isClickable ? "cursor-pointer" : "cursor-default");
+
+                  return (
+                    <tr
+                      key={i}
+                      className={`w-full h-full ${rowStyle?.hover ? rowStyle.hoverbg : ""} ${rowStyle?.bg || "bg-white"} ${rowStyle?.border ? `border ${rowStyle.border}` : ""} ${cursorClass}`}
+                      onClick={() =>
+                        isClickable && rowStyle?.rowClick
+                          ? rowStyle.rowClick(row)
+                          : null
+                      }
+                    >
+                      {columns.map((col, idx) => (
+                        <td
+                          key={idx}
+                          style={{ width: col.width || "auto" }}
+                          className="text-Gray-Black-400"
+                        >
+                          {col.formatter
+                            ? col.formatter(row[col.accessor], row, i)
+                            : row[col.accessor]}
+                        </td>
+                      ))}
+                      {(onView || onDelete) && (
+                        <td className="px-4 py-3 flex gap-4 items-center">
+                          {onView && (
+                            <span
+                              className="text-sm underline text-Gray-Black-400  cursor-pointer"
+                              onClick={() => onView(row)}
+                            >
+                              View details
+                            </span>
+                          )}
+                          {onDelete && (
+                            <Image
+                              onClick={() => onDelete(row.id)}
+                              src="/dashboard/icon/delete.svg"
+                              alt="delete"
+                              width={16}
+                              height={16}
+                              className="h-4 w-4 cursor-pointer"
+                            />
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td

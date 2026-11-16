@@ -3,6 +3,7 @@
 import DynamicTable from "@/components/reusable/DynamicTable";
 import { useGetJobsArchiveQuery } from "@/feature/slice/jobs/jobSlice";
 import { Eye, FileText } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
@@ -99,12 +100,17 @@ export default function ArchiveJobList() {
       formatter: (_: any, row: JobItem) => (
         <div className=" px-4 py-3.5">
           <div className="min-w-0">
-            <h4
-              className="text-sm font-semibold text-headerColor truncate hover:text-[#009dae] transition-colors cursor-pointer max-w-50"
-              title={row.job_title}
+            <Link
+              href={`/mu/job-listing/${row.id}/job-details`}
+              className="inline-block"
             >
-              {row.job_title}
-            </h4>
+              <h4
+                className="text-sm font-semibold text-headerColor truncate hover:text-[#009dae] transition-colors cursor-pointer max-w-50"
+                title={row.job_title}
+              >
+                {row.job_title}
+              </h4>
+            </Link>
 
             <div className="flex items-center gap-1.5 mt-0.5">
               {(row.badges && row.badges.length > 0
