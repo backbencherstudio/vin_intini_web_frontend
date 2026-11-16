@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import { ShieldCheck } from "lucide-react";
 import { calculateTime } from "./_components/CalculateTime";
 import NotificationSkeleton from "./_components/NotificationSkeleton";
 import toast from "react-hot-toast";
@@ -20,8 +21,11 @@ type NotificationDataType = {
   sender_username?: string | null;
   inviter_username?: string | null;
   acceptor_name?: string;
+  applicant_name?: string | null;
+  applicant_id?: number | string | null;
   sender_profile_image_url?: string | null;
   acceptor_profile_image_url?: string | null;
+  applicant_profile_url?: string | null;
   message?: string;
   description?: string | null;
   action_url?: string | null;
@@ -49,11 +53,26 @@ type NotificationItem = {
   created_at: string;
 };
 
+function cleanText(text?: string | null): string {
+  if (!text) return "";
+  return text
+    .replace(/mindunite admin/gi, "Mind Unite Team")
+    .replace(/mind unite admin/gi, "Mind Unite Team")
+    .replace(/approved and published/gi, "approved and activated")
+    .replace(/from rejected to published/gi, "from Rejected to Active")
+    .replace(/to published/gi, "to Active")
+    .replace(/\bpublished\b/gi, "Active")
+    .replace(/\(on_site\)/gi, "(On-site)")
+    .replace(/\(part_time\)/gi, "(Part-time)")
+    .replace(/\(full_time\)/gi, "(Full-time)");
+}
+
 function NotificationPage() {
-  const { data, isLoading, error } = useGetNotificationsQuery("notifications");
+  const { data, isLoading } = useGetNotificationsQuery("notifications");
   const [markAsRead] = useUpdateNotificationReadStatusMutation();
   const [clearNotifications, { isLoading: isClearing }] =
     useClearNotificationsMutation();
+
   useEffect(() => {
     markAsRead("mark-all-as-read");
   }, [markAsRead]);
@@ -61,6 +80,7 @@ function NotificationPage() {
   if (isLoading) {
     return <NotificationSkeleton />;
   }
+
   const handleClear = async () => {
     try {
       await clearNotifications(undefined).unwrap();
@@ -142,10 +162,25 @@ function NotificationPage() {
                   ? `/mu/profile/${targetUsername}`
                   : null;
 
-          const displaySender =
+          const rawSender =
             item?.data?.sender_name ||
             item?.data?.acceptor_name ||
-            "MindUnite";
+            item?.data?.applicant_name ||
+            "";
+
+          const isAdminOrSystem =
+            !rawSender ||
+            rawSender.toLowerCase().includes("admin") ||
+            rawSender.toLowerCase().includes("mindunite") ||
+            rawSender.toLowerCase().includes("mind unite") ||
+            rawType.toLowerCase().includes("admin") ||
+            rawType.toLowerCase().includes("system") ||
+            rawType.includes("JobStatus") ||
+            rawType.includes("JobRejected") ||
+            rawType.includes("ProductStatus") ||
+            rawType.includes("ProductRejected");
+
+          const displaySender = isAdminOrSystem ? "Mind Unite Team" : rawSender;
 
           const isNegative = isProductRejected || isJobRejected;
           const isPositive =
@@ -160,19 +195,28 @@ function NotificationPage() {
               className="relative flex items-end justify-between gap-3 border-b border-[#d9d9d9] px-3 py-6 md:px-5"
             >
               <div className="flex items-start gap-3 md:gap-4">
-                <div className="h-10 w-10 shrink-0 rounded-full ">
-                  {item?.data?.sender_profile_image_url ||
-                  item?.data?.acceptor_profile_image_url ? (
+                <div className="h-10 w-10 shrink-0 rounded-full">
+                  {isAdminOrSystem ? (
+                    <div
+                      className="w-10 h-10 rounded-full bg-[#e8f8f9] text-primaryColor flex items-center justify-center border border-primaryColor/25 shrink-0 shadow-2xs"
+                      title="Mind Unite Official Notification"
+                    >
+                      <ShieldCheck className="w-5 h-5 text-primaryColor" />
+                    </div>
+                  ) : item?.data?.sender_profile_image_url ||
+                    item?.data?.acceptor_profile_image_url ||
+                    item?.data?.applicant_profile_url ? (
                     <Image
                       src={
                         item?.data?.sender_profile_image_url ||
                         item?.data?.acceptor_profile_image_url ||
+                        item?.data?.applicant_profile_url ||
                         ""
                       }
-                      alt="User Avatar"
+                      alt={displaySender}
                       width={40}
                       height={40}
-                      className="rounded-full w-full h-full"
+                      className="rounded-full w-full h-full object-cover"
                     />
                   ) : (
                     <div
@@ -190,126 +234,33 @@ function NotificationPage() {
                 </div>
 
                 <div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div>
                     {targetHref ? (
-                      <Link href={targetHref} className="hover:underline">
-                        <span className="font-bold">{displaySender}</span>
+                      <Link href={targetHref}>
+                        <span className="font-bold text-headerColor hover:text-primaryColor transition-colors">
+                          {displaySender}
+                        </span>
                       </Link>
                     ) : (
-                      <span className="font-bold">{displaySender}</span>
-                    )}
-
-                    {isJobRejected && (
-                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
-                        Job Rejected
-                      </span>
-                    )}
-
-                    {!isJobRejected && isJobRestored && (
-                      <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-                        Job Status Updated
-                      </span>
-                    )}
-
-                    {isAdminCreatedJob && (
-                      <span className="inline-flex items-center rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 text-[11px] font-semibold text-cyan-700">
-                        Job Posted by Admin
-                      </span>
-                    )}
-
-                    {isJobApplicationUpdated && (
-                      <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
-                        Application Status Updated
-                      </span>
-                    )}
-
-                    {isProductRejected && (
-                      <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
-                        Product Rejected
-                      </span>
-                    )}
-
-                    {!isProductRejected && isProductRestored && (
-                      <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-                        Product Status Updated
+                      <span className="font-bold text-headerColor">
+                        {displaySender}
                       </span>
                     )}
                   </div>
 
                   <p className="text-sm leading-[1.3] text-headerColor mt-0.5">
-                    <span className="font-normal">{item?.data?.message}</span>
+                    <span className="font-normal">{cleanText(item?.data?.message)}</span>
                   </p>
 
-                  {isJobRejected &&
-                  (item?.data?.rejection_reason || item?.data?.description) ? (
-                    <div className="mt-2 rounded-lg border border-rose-200 bg-rose-50/75 px-3 py-2 text-xs text-rose-800">
-                      <p className="leading-relaxed">
-                        {item?.data?.description ||
-                          `Reason: ${item?.data?.rejection_reason}`}
-                      </p>
-                      <Link
-                        href={item?.data?.action_url || "/mu/recruiter-dashboard"}
-                        className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
-                      >
-                        View recruiter dashboard &rarr;
-                      </Link>
-                    </div>
-                  ) : (isJobRestored || isAdminCreatedJob) &&
-                    (item?.data?.description || item?.data?.message) ? (
-                    <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/75 px-3 py-2 text-xs text-emerald-800">
-                      <p className="leading-relaxed">
-                        {item?.data?.description || item?.data?.message}
-                      </p>
-                      <Link
-                        href={item?.data?.action_url || "/mu/recruiter-dashboard"}
-                        className="mt-1 inline-block font-semibold text-emerald-700 hover:underline"
-                      >
-                        View recruiter dashboard &rarr;
-                      </Link>
-                    </div>
-                  ) : isJobApplicationUpdated &&
-                    (item?.data?.description || item?.data?.message) ? (
-                    <div className="mt-2 rounded-lg border border-blue-200 bg-blue-50/75 px-3 py-2 text-xs text-blue-800">
-                      <p className="leading-relaxed">
-                        {item?.data?.description || item?.data?.message}
-                      </p>
-                      <Link
-                        href={item?.data?.action_url || "/mu/jobs/my-applications"}
-                        className="mt-1 inline-block font-semibold text-blue-700 hover:underline"
-                      >
-                        View my applications &rarr;
-                      </Link>
-                    </div>
-                  ) : isProductRejected &&
-                  (item?.data?.rejection_reason || item?.data?.description) ? (
-                    <div className="mt-2 rounded-lg border border-rose-200 bg-rose-50/75 px-3 py-2 text-xs text-rose-800">
-                      <p className="leading-relaxed">
-                        {item?.data?.description ||
-                          `Reason: ${item?.data?.rejection_reason}`}
-                      </p>
-                      <Link
-                        href={item?.data?.action_url || "/mu/products"}
-                        className="mt-1 inline-block font-semibold text-rose-700 hover:underline"
-                      >
-                        View product listings &rarr;
-                      </Link>
-                    </div>
-                  ) : isProductRestored && item?.data?.description ? (
-                    <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/75 px-3 py-2 text-xs text-emerald-800">
-                      <p className="leading-relaxed">{item.data.description}</p>
-                      <Link
-                        href={item?.data?.action_url || "/mu/products"}
-                        className="mt-1 inline-block font-semibold text-emerald-700 hover:underline"
-                      >
-                        View product listings &rarr;
-                      </Link>
-                    </div>
-                  ) : (
-                    item?.data?.description && (
-                      <p className="mt-1 text-xs leading-tight text-descriptionColor ">
-                        {item?.data?.description}
-                      </p>
-                    )
+                  {isJobRejected && (item?.data?.rejection_reason || item?.data?.description) && (
+                    <p className="text-xs text-rose-600 mt-1 font-medium">
+                      Reason:{" "}
+                      <span className="font-normal">
+                        {cleanText(
+                          (item?.data?.rejection_reason || item?.data?.description || "").replace(/^Reason:\s*/i, "")
+                        )}
+                      </span>
+                    </p>
                   )}
                 </div>
               </div>
