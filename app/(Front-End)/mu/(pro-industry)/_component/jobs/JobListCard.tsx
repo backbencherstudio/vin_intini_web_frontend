@@ -230,7 +230,7 @@ export default function JobListCard({
             </span>
           ) : effectiveStatus === "draft" ? (
             <Link
-              href={`/mu/job-listing/${job.id}/edite`}
+              href={`/mu/job-listing/${job.id}/edit`}
               title="Draft job - Click to complete and publish"
               className="px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 bg-[#FEF6E6] text-[#d97706] border border-amber-200 hover:bg-amber-100/90 transition-colors cursor-pointer select-none"
             >

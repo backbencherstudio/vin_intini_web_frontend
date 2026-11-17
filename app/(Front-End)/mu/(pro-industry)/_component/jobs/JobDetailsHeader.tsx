@@ -184,7 +184,7 @@ function JobDetailsHeader() {
                 />
                 {job.status?.toLowerCase() !== "rejected" && (
                   <Link
-                    href={`/mu/job-listing/${id}/edite`}
+                    href={`/mu/job-listing/${id}/edit`}
                     className="cursor-pointer px-4 py-1.5 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center text-sm font-medium hover:bg-primaryColor/90 transition shadow-xs"
                   >
                     <EditeIcon className="w-4 h-4" /> Edit
@@ -460,7 +460,7 @@ function JobDetailsHeader() {
                 </div>
               </div>
               <Link
-                href={`/mu/job-listing/${id}/edite`}
+                href={`/mu/job-listing/${id}/edit`}
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primaryColor text-white hover:bg-primaryColor/90 font-semibold text-xs transition shadow-2xs shrink-0 self-start sm:self-auto"
               >
                 Complete &amp; Publish <ArrowRight className="w-3.5 h-3.5" />

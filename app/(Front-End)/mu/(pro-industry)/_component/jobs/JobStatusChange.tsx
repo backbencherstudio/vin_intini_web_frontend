@@ -60,7 +60,7 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
     return (
       <div className="flex justify-center">
         <Link
-          href={`/mu/job-listing/${row.id}/edite`}
+          href={`/mu/job-listing/${row.id}/edit`}
           title="Draft job - Click to complete and publish"
           className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-[#FEF6E6] px-3.5 py-1 text-xs font-semibold text-[#d97706] hover:bg-amber-100/90 hover:border-amber-300 transition-colors cursor-pointer select-none shadow-2xs"
         >

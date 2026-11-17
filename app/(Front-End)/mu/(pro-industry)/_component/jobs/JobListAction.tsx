@@ -28,7 +28,7 @@ function JobListAction({ row }: { row: JobItem }) {
         {/* Edit icon */}
         {row.status?.toLowerCase() !== "rejected" && (
           <Link
-            href={`/mu/job-listing/${row.id}/edite`}
+            href={`/mu/job-listing/${row.id}/edit`}
             title="Edit Job"
             className="w-8 h-8 rounded-lg border border-gray-200 text-descriptionColor hover:text-headerColor hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
           >
