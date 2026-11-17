@@ -188,8 +188,12 @@ function JobsDetailsPage({ id }: { id: string }) {
           <h2 className="mb-4 border-b border-borderColor pb-3 text-lg md:text-xl font-bold text-headerColor">
             Job Description
           </h2>
-          <p
-            dangerouslySetInnerHTML={{ __html: job.job_description }}
+          <div
+            dangerouslySetInnerHTML={{
+              __html:
+                job.job_description ||
+                "<p class='text-gray-400 italic text-sm'>No job description provided yet (Draft position).</p>",
+            }}
             className="whitespace-pre-line text-sm leading-relaxed text-descriptionColor"
           />
 
@@ -321,24 +325,35 @@ function JobsDetailsPage({ id }: { id: string }) {
               Contact Us
             </h2>
             <div className="space-y-2.5">
-              <ContactRow
-                icon={<EmailIcon className="h-5 w-5" />}
-                label="Email Address"
-                value={job.email}
-                href={`mailto:${job.email}`}
-              />
-              <ContactRow
-                icon={<PhoneIcon className="h-5 w-5" />}
-                label="Phone Number"
-                value={job.phone_number}
-                href={`tel:${job.phone_number}`}
-              />
-              <ContactRow
-                icon={<GlobalIcon className="h-5 w-5" />}
-                label="Website"
-                value={job.website}
-                href={job.website}
-              />
+              {job.email ? (
+                <ContactRow
+                  icon={<EmailIcon className="h-5 w-5" />}
+                  label="Email Address"
+                  value={job.email}
+                  href={`mailto:${job.email}`}
+                />
+              ) : null}
+              {job.phone_number ? (
+                <ContactRow
+                  icon={<PhoneIcon className="h-5 w-5" />}
+                  label="Phone Number"
+                  value={job.phone_number}
+                  href={`tel:${job.phone_number}`}
+                />
+              ) : null}
+              {job.website ? (
+                <ContactRow
+                  icon={<GlobalIcon className="h-5 w-5" />}
+                  label="Website"
+                  value={job.website}
+                  href={job.website}
+                />
+              ) : null}
+              {!job.email && !job.phone_number && !job.website && (
+                <p className="text-xs text-gray-400 italic py-2">
+                  No contact details provided yet.
+                </p>
+              )}
             </div>
           </section>
         </div>

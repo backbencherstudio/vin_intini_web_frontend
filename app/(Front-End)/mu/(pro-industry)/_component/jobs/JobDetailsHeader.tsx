@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   Clock3,
   ClockAlert,
+  FileText,
   Lock,
   PauseCircle,
   ShieldAlert,
@@ -130,7 +131,7 @@ function JobDetailsHeader() {
               <p className="mt-1 text-sm md:text-base text-descriptionColor">
                 Position -{" "}
                 <span className="font-semibold text-headerColor">
-                  {job.position}
+                  {job.position || "Not specified"}
                 </span>
               </p>
               {companyName && (
@@ -436,6 +437,38 @@ function JobDetailsHeader() {
           )
         )}
 
+        {/* Industry Recruiter Draft Notice Banner */}
+        {!pathName.includes("mu/jobs-details") && normStatus === "draft" && (
+          <div className="mt-4 rounded-2xl border border-amber-200 bg-[#FEF6E6]/90 p-4 text-xs text-amber-950 shadow-2xs">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-[#d97706]">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-bold text-sm text-amber-950">
+                      Draft Job Position
+                    </h4>
+                    <span className="rounded-full bg-amber-200/80 px-2 py-0.5 text-[10px] font-bold text-[#b45309] uppercase tracking-wide">
+                      Draft
+                    </span>
+                  </div>
+                  <p className="text-amber-800 text-xs mt-1 leading-relaxed">
+                    This job posting is saved as an incomplete draft and is not visible publicly. Complete all steps and publish when ready.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={`/mu/job-listing/${id}/edite`}
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primaryColor text-white hover:bg-primaryColor/90 font-semibold text-xs transition shadow-2xs shrink-0 self-start sm:self-auto"
+              >
+                Complete &amp; Publish <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-descriptionColor pt-2 border-t border-gray-100">
           <span className="flex items-center gap-1.5">
             <LocationIcon className="h-3.5 w-3.5" />
@@ -444,13 +477,17 @@ function JobDetailsHeader() {
           <span className="flex items-center gap-1.5">
             <JobsIcon className="h-3.5 w-3.5" />
             <span className="capitalize">
-              {job.work_mode.split("_").join(" ")}
+              {job.work_mode
+                ? job.work_mode.split("_").join(" ")
+                : "Work mode not specified"}
             </span>
           </span>
           <span className="flex items-center gap-1.5">
             <Clock3 className="h-3.5 w-3.5" />
             <span className="capitalize">
-              {job.employment_type.split("_").join(" ")}
+              {job.employment_type
+                ? job.employment_type.split("_").join(" ")
+                : "Employment type not specified"}
             </span>
           </span>
           <span className="flex items-center gap-1.5 font-medium text-headerColor">

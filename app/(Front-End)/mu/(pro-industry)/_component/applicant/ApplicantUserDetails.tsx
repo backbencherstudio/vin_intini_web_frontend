@@ -140,10 +140,10 @@ function ApplicantUserDetails({
                     <span className="text-descriptionColor">
                      Work Mode
                     </span>
-                    <span className="font-semibold text-headerColor">
-                      { 
-                        applicant?.job?.work_mode.split("_").join(" ") ||
-                        "State and Institution"}
+                    <span className="font-semibold text-headerColor capitalize">
+                      {applicant?.job?.work_mode
+                        ? applicant.job.work_mode.split("_").join(" ")
+                        : "Not specified"}
                     </span>
                   </div>
                 </div>
