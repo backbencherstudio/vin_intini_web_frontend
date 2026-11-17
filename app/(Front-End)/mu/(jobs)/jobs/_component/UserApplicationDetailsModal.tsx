@@ -81,6 +81,18 @@ export default function UserApplicationDetailsModal({
     return String(raw).replace(/^#?APP-?/i, "").replace(/^#/, "").trim();
   })();
 
+  // Clean job ID (e.g. "123456" -> "#123456")
+  const displayJobCode = (() => {
+    const raw =
+      job?.job_id ||
+      application?.job?.job_id ||
+      job?.id ||
+      application?.job_id;
+    if (!raw) return null;
+    const clean = String(raw).replace(/^#/, "").trim();
+    return clean ? `#${clean}` : null;
+  })();
+
   const formatSalary = (val?: any) => {
     if (!val) return null;
     const num = Number(val);
@@ -110,7 +122,7 @@ export default function UserApplicationDetailsModal({
         </div>
 
         {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6 overscroll-contain [overscroll-behavior:contain]">
           {/* Job & Company Overview Card */}
           <div className="rounded-2xl border border-borderColor/80 bg-white p-4 sm:p-5 shadow-2xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -168,10 +180,13 @@ export default function UserApplicationDetailsModal({
               </div>
 
               {/* Status and Applied Date */}
-              <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+              <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
                 <span
-                  className={`py-1 px-3 rounded-full text-xs font-semibold ${statusConfig.className}`}
+                  className={`inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold border ${statusConfig.className}`}
                 >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusConfig.dotClassName}`}
+                  />
                   {statusConfig.label}
                 </span>
                 <span className="text-xs text-grayColor1 flex items-center gap-1">
@@ -181,6 +196,11 @@ export default function UserApplicationDetailsModal({
                 {displayAppId && (
                   <span className="text-xs text-headerColor font-medium">
                     Application ID: <span className="font-bold text-black">#{displayAppId}</span>
+                  </span>
+                )}
+                {displayJobCode && (
+                  <span className="text-xs text-headerColor font-medium">
+                    Job ID: <span className="font-bold text-black">{displayJobCode}</span>
                   </span>
                 )}
               </div>

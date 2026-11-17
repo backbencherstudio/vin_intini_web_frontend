@@ -124,62 +124,112 @@ export const formatNumberIntoK = ({
   }
 
   
-  export const getApplicationStatusConfig = (statusRaw?: string) => {
-    const s = String(statusRaw || "")
-      .toLowerCase()
-      .trim();
-  
-    if (s === "pending" || s.includes("review")) {
-      return {
-        label: "Appliaction is being reviewed",
-        className: "bg-[#FEF6D8] text-[#B45309]",
-      };
-    }
-    if (s.includes("interview")) {
-      return {
-        label: "Interview HR",
-        className: "bg-[#E6F8F6] text-[#0D9488]",
-      };
-    }
-    if (s.includes("assessment")) {
-      return {
-        label: "Assessment",
-        className: "bg-[#E8F0FE] text-[#2563EB]",
-      };
-    }
-    if (s.includes("offer")) {
-      return {
-        label: "Offering",
-        className: "bg-[#F3E8FF] text-[#7E22CE]",
-      };
-    }
-    if (s === "hired" || s.includes("accept")) {
-      return {
-        label: "Hired",
-        className: "bg-[#E6F8F6] text-[#059669]",
-      };
-    }
-    if (s.includes("reject")) {
-      return {
-        label: "Rejected",
-        className: "bg-[#FEE2E2] text-[#DC2626]",
-      };
-    }
-    if (s.includes("close")) {
-      return {
-        label: "Hiring Closed",
-        className: "bg-[#F3F4F6] text-[#6B7280]",
-      };
-    }
-  
-    const formatted = s
-      ? s.charAt(0).toUpperCase() + s.slice(1)
-      : "Appliaction is being reviewed";
+export interface ApplicationStatusConfig {
+  label: string;
+  className: string;
+  dotClassName: string;
+  badgeClassName: string;
+}
+
+export const getApplicationStatusConfig = (
+  statusRaw?: string
+): ApplicationStatusConfig => {
+  const s = String(statusRaw || "")
+    .toLowerCase()
+    .trim();
+
+  if (s === "pending") {
     return {
-      label: formatted,
-      className: "bg-[#FEF6D8] text-[#B45309]",
+      label: "Pending",
+      className: "bg-amber-50 text-amber-800 border-amber-200/80",
+      dotClassName: "bg-amber-500",
+      badgeClassName: "bg-amber-50 text-amber-800 border-amber-200/80",
     };
+  }
+
+  if (s === "reviewing" || s.includes("review")) {
+    return {
+      label: "In Review",
+      className: "bg-blue-50 text-blue-700 border-blue-200/80",
+      dotClassName: "bg-blue-500",
+      badgeClassName: "bg-blue-50 text-blue-700 border-blue-200/80",
+    };
+  }
+
+  if (s.includes("shortlist")) {
+    return {
+      label: "Shortlisted",
+      className: "bg-purple-50 text-purple-700 border-purple-200/80",
+      dotClassName: "bg-purple-500",
+      badgeClassName: "bg-purple-50 text-purple-700 border-purple-200/80",
+    };
+  }
+
+  if (s.includes("interview")) {
+    return {
+      label: "Interview",
+      className: "bg-teal-50 text-teal-700 border-teal-200/80",
+      dotClassName: "bg-teal-500",
+      badgeClassName: "bg-teal-50 text-teal-700 border-teal-200/80",
+    };
+  }
+
+  if (s.includes("assessment")) {
+    return {
+      label: "Assessment",
+      className: "bg-sky-50 text-sky-700 border-sky-200/80",
+      dotClassName: "bg-sky-500",
+      badgeClassName: "bg-sky-50 text-sky-700 border-sky-200/80",
+    };
+  }
+
+  if (s.includes("offer")) {
+    return {
+      label: "Offered",
+      className: "bg-indigo-50 text-indigo-700 border-indigo-200/80",
+      dotClassName: "bg-indigo-500",
+      badgeClassName: "bg-indigo-50 text-indigo-700 border-indigo-200/80",
+    };
+  }
+
+  if (s === "hired" || s.includes("accept")) {
+    return {
+      label: "Hired",
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200/80",
+      dotClassName: "bg-emerald-600",
+      badgeClassName: "bg-emerald-50 text-emerald-700 border-emerald-200/80",
+    };
+  }
+
+  if (s.includes("reject")) {
+    return {
+      label: "Rejected",
+      className: "bg-rose-50 text-rose-700 border-rose-200/80",
+      dotClassName: "bg-rose-500",
+      badgeClassName: "bg-rose-50 text-rose-700 border-rose-200/80",
+    };
+  }
+
+  if (s.includes("close")) {
+    return {
+      label: "Closed",
+      className: "bg-gray-100 text-gray-700 border-gray-200",
+      dotClassName: "bg-gray-400",
+      badgeClassName: "bg-gray-100 text-gray-700 border-gray-200",
+    };
+  }
+
+  const formatted = s
+    ? s.charAt(0).toUpperCase() + s.slice(1).replace(/[-_]/g, " ")
+    : "Pending";
+
+  return {
+    label: formatted,
+    className: "bg-slate-50 text-slate-700 border-slate-200",
+    dotClassName: "bg-slate-400",
+    badgeClassName: "bg-slate-50 text-slate-700 border-slate-200",
   };
+};
 
 /**
  * Escapes unsafe HTML characters while preserving UTF-8 emojis and symbols

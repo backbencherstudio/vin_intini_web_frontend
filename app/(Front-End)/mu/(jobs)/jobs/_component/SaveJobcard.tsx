@@ -172,10 +172,18 @@ function SaveJobcard({
           <button
             type="button"
             onClick={onViewApplication}
-            className={`w-full py-2.5 px-4 rounded-lg text-center text-sm font-medium transition-opacity select-none ${statusConfig.className} ${onViewApplication ? "cursor-pointer hover:opacity-90" : ""}`}
+            className={`w-full py-2.5 px-4 rounded-xl text-center text-xs sm:text-sm font-semibold transition-all select-none border flex items-center justify-center gap-2 ${statusConfig.className} ${onViewApplication ? "cursor-pointer hover:shadow-xs active:scale-[0.99]" : ""}`}
             title={onViewApplication ? "Click to view application details" : undefined}
           >
-            {statusConfig.label}
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusConfig.dotClassName}`}
+              ></span>
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${statusConfig.dotClassName}`}
+              ></span>
+            </span>
+            <span>{statusConfig.label}</span>
           </button>
           {onViewApplication && (
             <button
@@ -185,7 +193,7 @@ function SaveJobcard({
                 e.stopPropagation();
                 onViewApplication();
               }}
-              className="w-full py-2 px-3 rounded-lg border border-primaryColor/40 text-primaryColor hover:bg-primaryColor hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="w-full py-2 px-3 rounded-xl border border-primaryColor/40 bg-primaryColor/5 hover:bg-primaryColor hover:text-white text-primaryColor text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
             >
               <OpenEyeIcon />
               <span>View Application Details</span>

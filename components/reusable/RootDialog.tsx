@@ -22,11 +22,26 @@ function RootDialog({
   ariaLabel?: string;
   ariaDescription?: string;
 }) {
+  React.useEffect(() => {
+    if (!open) return;
+
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
+  }, [open]);
+
   return (
     <div>
-      <Dialog open={open} onOpenChange={setOpen} aria-label={ariaLabel}  >
+      <Dialog open={open} onOpenChange={setOpen} aria-label={ariaLabel}>
         <DialogContent
-          className={`p-0 sm:max-w-2xl w-full max-h-[90vh] overflow-hidden scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${className ?? ""}`}
+          className={`p-0 sm:max-w-2xl w-full max-h-[90vh] overflow-hidden overscroll-contain [overscroll-behavior:contain] scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${className ?? ""}`}
         >
           <VisuallyHidden>
             <DialogTitle>{ariaLabel || "Dialog"}</DialogTitle>
