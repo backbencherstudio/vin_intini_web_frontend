@@ -28,6 +28,7 @@ import CommonStatusDropdown, {
 } from "@/components/reusable/CommonStatusDropdown";
 import type { AdminJobItem } from "@/feature/slice/admin/jobs";
 import { useGetAdminJobByIdQuery } from "@/feature/slice/admin/jobs";
+import { getSafeExternalUrl, sanitizeJobHtml } from "./jobHelpers";
 
 interface AdminJobViewModalProps {
   job: AdminJobItem | null;
@@ -71,6 +72,9 @@ export default function AdminJobViewModal({
     activeJob.announcement_start_date,
     activeJob.announcement_end_date
   );
+
+  const safeWebsite = getSafeExternalUrl(activeJob.website);
+  const safeLocationUrl = getSafeExternalUrl(activeJob.location_url);
 
   const modalStatusOptions: StatusOption[] = [
     ...BASE_JOB_STATUS_OPTIONS,
@@ -193,6 +197,35 @@ export default function AdminJobViewModal({
           </div>
         )}
 
+        {/* Draft Notice Banner */}
+        {effectiveStatus === "draft" && (
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-amber-900 shadow-sm">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+              <div className="space-y-0.5 text-xs">
+                <p className="text-sm font-bold text-amber-800">
+                  This job post is currently a Draft
+                </p>
+                <p className="text-amber-700">
+                  It is not visible to candidates. Complete all required steps to publish.
+                </p>
+              </div>
+            </div>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenChange(false);
+                  onEdit(activeJob);
+                }}
+                className="shrink-0 rounded-xl bg-amber-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-amber-700 transition-colors cursor-pointer"
+              >
+                Complete & Publish
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Header Profile / Basic Info */}
         <div className="flex flex-col gap-4 border-b border-gray-100 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
@@ -215,15 +248,30 @@ export default function AdminJobViewModal({
                 <h3 className="text-lg font-bold text-gray-900">
                   {activeJob.job_title}
                 </h3>
-                <CommonStatusDropdown
-                  value={effectiveStatus}
-                  options={modalStatusOptions}
-                  onChange={(newStatus) => {
-                    if (newStatus === "scheduled") return;
-                    onToggleStatus(activeJob, newStatus);
-                  }}
-                  isLoading={isUpdatingStatus}
-                />
+                {effectiveStatus === "draft" ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenChange(false);
+                      onEdit?.(activeJob);
+                    }}
+                    title="Draft job - Click to complete and publish"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-[#FEF6E6] px-3 py-1 text-xs font-semibold text-[#d97706] hover:bg-amber-100/90 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#d97706] shrink-0" />
+                    Draft
+                  </button>
+                ) : (
+                  <CommonStatusDropdown
+                    value={effectiveStatus}
+                    options={modalStatusOptions}
+                    onChange={(newStatus) => {
+                      if (newStatus === "scheduled") return;
+                      onToggleStatus(activeJob, newStatus);
+                    }}
+                    isLoading={isUpdatingStatus}
+                  />
+                )}
               </div>
               <p className="text-sm font-medium text-gray-600">
                 {activeJob.industry?.name || "Verified Partner"}
@@ -305,7 +353,7 @@ export default function AdminJobViewModal({
         {/* Detailed Metadata Grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <Building2 className="h-5 w-5 text-gray-400" />
+            <Building2 className="h-5 w-5 text-gray-400 shrink-0" />
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Position & Category</p>
               <p className="text-xs font-semibold text-gray-800">
@@ -315,17 +363,17 @@ export default function AdminJobViewModal({
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <MapPin className="h-5 w-5 text-gray-400" />
+            <MapPin className="h-5 w-5 text-gray-400 shrink-0" />
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Work Mode & Location</p>
               <p className="text-xs font-semibold text-gray-800 capitalize">
-                {activeJob.work_mode} {activeJob.state?.name ? `• ${activeJob.state.name}` : ""}
+                {activeJob.work_mode ? activeJob.work_mode.replace(/_/g, " ") : "Not specified"} {activeJob.state?.name ? `• ${activeJob.state.name}` : ""}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <DollarSign className="h-5 w-5 text-gray-400" />
+            <DollarSign className="h-5 w-5 text-gray-400 shrink-0" />
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Salary Range</p>
               <p className="text-xs font-semibold text-gray-800">
@@ -342,25 +390,25 @@ export default function AdminJobViewModal({
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <UserCheck className="h-5 w-5 text-gray-400" />
+            <UserCheck className="h-5 w-5 text-gray-400 shrink-0" />
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Employment & Experience</p>
               <p className="text-xs font-semibold text-gray-800 capitalize">
-                {activeJob.employment_type || "Full Time"} {activeJob.experience ? `• ${activeJob.experience}` : ""}
+                {activeJob.employment_type ? activeJob.employment_type.replace(/_/g, " ") : "Not specified"} {activeJob.experience ? `• ${activeJob.experience}` : ""}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <Mail className="h-5 w-5 text-gray-400" />
-            <div>
+            <Mail className="h-5 w-5 text-gray-400 shrink-0" />
+            <div className="min-w-0">
               <p className="text-[11px] font-medium text-gray-400 uppercase">Contact Email</p>
-              <p className="text-xs font-semibold text-gray-800 truncate">{activeJob.email}</p>
+              <p className="text-xs font-semibold text-gray-800 truncate">{activeJob.email || "Not specified"}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
-            <Calendar className="h-5 w-5 text-gray-400" />
+            <Calendar className="h-5 w-5 text-gray-400 shrink-0" />
             <div>
               <p className="text-[11px] font-medium text-gray-400 uppercase">Created Date</p>
               <p className="text-xs font-semibold text-gray-800">
@@ -368,6 +416,53 @@ export default function AdminJobViewModal({
               </p>
             </div>
           </div>
+
+          {/* Contact Phone if available */}
+          {activeJob.phone_number && (
+            <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+              <Phone className="h-5 w-5 text-gray-400 shrink-0" />
+              <div>
+                <p className="text-[11px] font-medium text-gray-400 uppercase">Contact Phone</p>
+                <p className="text-xs font-semibold text-gray-800">{activeJob.phone_number}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Safe Website link if available */}
+          {safeWebsite && (
+            <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+              <Globe className="h-5 w-5 text-gray-400 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium text-gray-400 uppercase">Company Website</p>
+                <a
+                  href={safeWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-xs font-semibold text-[#04A1B7] hover:underline truncate"
+                >
+                  {activeJob.website}
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Safe Location URL link if available */}
+          {safeLocationUrl && (
+            <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+              <MapPin className="h-5 w-5 text-gray-400 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium text-gray-400 uppercase">Map / Portal URL</p>
+                <a
+                  href={safeLocationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-xs font-semibold text-[#04A1B7] hover:underline truncate"
+                >
+                  View on Map / Portal
+                </a>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Posting Schedule */}
@@ -408,15 +503,21 @@ export default function AdminJobViewModal({
           </div>
         </div>
 
-        {/* Job Description */}
+        {/* Job Description (Sanitized against Stored XSS) */}
         <div className="space-y-2">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
             Job Description & Responsibilities
           </h4>
-          <div
-            className="prose prose-sm max-w-none rounded-2xl border border-gray-100 bg-gray-50/50 p-4 text-xs leading-relaxed text-gray-700"
-            dangerouslySetInnerHTML={{ __html: activeJob.job_description }}
-          />
+          {activeJob.job_description && activeJob.job_description.trim() ? (
+            <div
+              className="prose prose-sm max-w-none rounded-2xl border border-gray-100 bg-gray-50/50 p-4 text-xs leading-relaxed text-gray-700"
+              dangerouslySetInnerHTML={{ __html: sanitizeJobHtml(activeJob.job_description) }}
+            />
+          ) : (
+            <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-4 text-xs text-gray-500 italic">
+              No job description provided yet ({effectiveStatus === "draft" ? "Draft" : "Empty"}).
+            </div>
+          )}
         </div>
 
         {/* Tags */}

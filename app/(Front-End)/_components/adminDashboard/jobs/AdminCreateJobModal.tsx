@@ -32,6 +32,7 @@ import CustomSelect, {
 import JoditEditor from "@/components/reusable/InputFiled/JoditEditor";
 import TagInputField from "@/components/reusable/InputFiled/TagInputField";
 import AdminDateField from "./AdminDateField";
+import { isValidWebUrl } from "./jobHelpers";
 import {
   useCreateAdminJobMutation,
   useGetVerifiedJobIndustriesQuery,
@@ -345,9 +346,13 @@ export default function AdminCreateJobModal({
     }
     if (!jobTitle.trim()) {
       errors.job_title = "Job title is required.";
+    } else if (jobTitle.trim().length > 255) {
+      errors.job_title = "Job title cannot exceed 255 characters.";
     }
     if (!position.trim()) {
       errors.position = "Position / Role is required.";
+    } else if (position.trim().length > 255) {
+      errors.position = "Position / Role cannot exceed 255 characters.";
     }
     if (!category.trim()) {
       errors.category = "Category is required.";
@@ -368,8 +373,16 @@ export default function AdminCreateJobModal({
     if (!employmentType) {
       errors.employment_type = "Employment type is required.";
     }
-    if (salaryType !== "Negotiable" && salaryMin && salaryMax && Number(salaryMin) > Number(salaryMax)) {
-      errors.salary_max = "Max salary must be greater than or equal to min salary.";
+    if (salaryType !== "Negotiable") {
+      if (salaryMin && (isNaN(Number(salaryMin)) || Number(salaryMin) < 0)) {
+        errors.salary_min = "Min salary must be a valid positive number.";
+      }
+      if (salaryMax && (isNaN(Number(salaryMax)) || Number(salaryMax) < 0)) {
+        errors.salary_max = "Max salary must be a valid positive number.";
+      }
+      if (salaryMin && salaryMax && Number(salaryMin) > Number(salaryMax)) {
+        errors.salary_max = "Max salary must be greater than or equal to min salary.";
+      }
     }
 
     setFormErrors((prev) => ({ ...prev, ...errors }));
@@ -380,6 +393,12 @@ export default function AdminCreateJobModal({
     const errors: Record<string, string> = {};
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = "A valid contact email is required.";
+    }
+    if (website.trim() && !isValidWebUrl(website)) {
+      errors.website = "Please provide a valid website URL (e.g. https://example.com).";
+    }
+    if (locationUrl.trim() && !isValidWebUrl(locationUrl)) {
+      errors.location_url = "Please provide a valid map or location URL.";
     }
 
     setFormErrors((prev) => ({ ...prev, ...errors }));
@@ -908,7 +927,18 @@ export default function AdminCreateJobModal({
                       type="number"
                       placeholder="e.g. 50000"
                       value={salaryMin}
-                      onChange={(e) => setSalaryMin(e.target.value)}
+                      onChange={(e) => {
+                        setSalaryMin(e.target.value);
+                        if (formErrors.salary_min || formErrors.salary_max) {
+                          setFormErrors((prev) => {
+                            const c = { ...prev };
+                            delete c.salary_min;
+                            delete c.salary_max;
+                            return c;
+                          });
+                        }
+                      }}
+                      error={formErrors.salary_min}
                     />
 
                     <CustomInput
@@ -916,7 +946,16 @@ export default function AdminCreateJobModal({
                       type="number"
                       placeholder="e.g. 90000"
                       value={salaryMax}
-                      onChange={(e) => setSalaryMax(e.target.value)}
+                      onChange={(e) => {
+                        setSalaryMax(e.target.value);
+                        if (formErrors.salary_max) {
+                          setFormErrors((prev) => {
+                            const c = { ...prev };
+                            delete c.salary_max;
+                            return c;
+                          });
+                        }
+                      }}
                       error={formErrors.salary_max}
                     />
                   </>
@@ -982,7 +1021,17 @@ export default function AdminCreateJobModal({
               label="Location Map / Portal URL"
               placeholder="https://maps.google.com/..."
               value={locationUrl}
-              onChange={(e) => setLocationUrl(e.target.value)}
+              onChange={(e) => {
+                setLocationUrl(e.target.value);
+                if (formErrors.location_url) {
+                  setFormErrors((prev) => {
+                    const c = { ...prev };
+                    delete c.location_url;
+                    return c;
+                  });
+                }
+              }}
+              error={formErrors.location_url}
             />
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -1016,7 +1065,17 @@ export default function AdminCreateJobModal({
                 label="Company Website / Career URL"
                 placeholder="https://example.com"
                 value={website}
-                onChange={(e) => setWebsite(e.target.value)}
+                onChange={(e) => {
+                  setWebsite(e.target.value);
+                  if (formErrors.website) {
+                    setFormErrors((prev) => {
+                      const c = { ...prev };
+                      delete c.website;
+                      return c;
+                    });
+                  }
+                }}
+                error={formErrors.website}
               />
             </div>
           </div>
