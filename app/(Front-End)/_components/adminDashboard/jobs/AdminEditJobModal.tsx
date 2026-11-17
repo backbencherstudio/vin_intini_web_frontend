@@ -724,7 +724,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
                 <button
                   type="button"
                   onClick={() => handleStepJump(step.id as AdminStepNumber)}
-                  className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left transition-all cursor-pointer focus:outline-hidden"
+                  className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left shrink-0 transition-colors duration-150 cursor-pointer focus:outline-hidden"
                 >
                   <div
                     className={cn(
@@ -768,7 +768,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
 
       {/* STEP 1: Company & Basics */}
       {currentStep === 1 && (
-        <div className="space-y-4 animate-in fade-in-50 duration-200">
+        <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <CustomInput
               label="Job Title"
@@ -850,7 +850,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
 
       {/* STEP 2: Role Details & Compensation */}
       {currentStep === 2 && (
-        <div className="space-y-4 animate-in fade-in-50 duration-200">
+        <div className="space-y-4">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
             Work Arrangement & Compensation
           </h4>
@@ -960,7 +960,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
 
       {/* STEP 3: Location & Contact Channels */}
       {currentStep === 3 && (
-        <div className="space-y-4 animate-in fade-in-50 duration-200">
+        <div className="space-y-4">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
             Location & Contact Channels
           </h4>
@@ -1076,7 +1076,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
 
       {/* STEP 4: Job Description & Tags */}
       {currentStep === 4 && (
-        <div className="space-y-4 animate-in fade-in-50 duration-200">
+        <div className="space-y-4">
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="block text-sm font-medium text-[#4A4C56]">
@@ -1128,7 +1128,7 @@ function AdminEditJobForm({ job, onClose, onSuccess }: AdminEditJobFormProps) {
 
       {/* STEP 5: Schedule & Publish */}
       {currentStep === 5 && (
-        <div className="space-y-4 animate-in fade-in-50 duration-200">
+        <div className="space-y-4">
           {/* Publishing Status Card */}
           <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-2">
             <div>

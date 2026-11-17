@@ -340,7 +340,11 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   }, [jobResponse, id, reset]);
 
   const scrollToTop = () => {
-    formTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!formTopRef.current) return;
+    const rect = formTopRef.current.getBoundingClientRect();
+    if (rect.top < 0) {
+      formTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   // Build draft payload from current form state
@@ -610,7 +614,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     // Allow jumping backward freely
     if (stepId < currentStep) {
       setCurrentStep(stepId);
-      scrollToTop();
       return;
     }
 
@@ -622,7 +625,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
     if (stepId <= maxStepReached || id) {
       setCurrentStep(stepId);
-      scrollToTop();
     }
   };
 
@@ -778,27 +780,27 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     disabled={!isAccessible}
                     onClick={() => handleStepClick(step.id as StepNumber)}
                     className={cn(
-                      "flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left transition-all",
+                      "flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left shrink-0 transition-colors duration-150",
                       isAccessible ? "cursor-pointer" : "cursor-not-allowed opacity-50"
                     )}
                   >
                     <div
                       className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors",
+                        "w-7 h-7 min-w-[1.75rem] min-h-[1.75rem] rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors duration-150",
                         isPassed
                           ? "bg-primaryColor text-white shadow-xs"
                           : "bg-slate-100 text-grayColor1"
                       )}
                     >
                       {isCompleted ? (
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <Check className="w-3.5 h-3.5 stroke-[3] shrink-0" />
                       ) : (
-                        step.id
+                        <span className="shrink-0">{step.id}</span>
                       )}
                     </div>
                     <span
                       className={cn(
-                        "text-xs md:text-sm font-semibold whitespace-nowrap transition-colors",
+                        "text-xs md:text-sm font-semibold whitespace-nowrap transition-colors duration-150 shrink-0",
                         isPassed ? "text-primaryColor" : "text-grayColor1"
                       )}
                     >
@@ -826,7 +828,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         <form onSubmit={handleSubmit(onFinalPublish)} className="space-y-6">
           {/* ================= STEP 1: Basic Information ================= */}
           {currentStep === 1 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-200">
+            <div className="space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-base font-bold text-headerColor flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-[#009dae]" /> Step 1: Basic Information & Classification
@@ -962,7 +964,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
           {/* ================= STEP 2: Role Details & Compensation ================= */}
           {currentStep === 2 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-200">
+            <div className="space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-base font-bold text-headerColor flex items-center gap-2">
                   <DollarSign className="w-5 h-5 text-[#009dae]" /> Step 2: Role Details & Compensation
@@ -1147,7 +1149,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
           {/* ================= STEP 3: Location & Contact Details ================= */}
           {currentStep === 3 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-200">
+            <div className="space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-base font-bold text-headerColor flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-[#009dae]" /> Step 3: Location & Contact Details
@@ -1281,7 +1283,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
           {/* ================= STEP 4: Job Description & Tags ================= */}
           {currentStep === 4 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-200">
+            <div className="space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-base font-bold text-headerColor flex items-center gap-2">
                   <FileText className="w-5 h-5 text-[#009dae]" /> Step 4: Job Description & Requirements
@@ -1359,7 +1361,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
           {/* ================= STEP 5: Schedule & Final Publish ================= */}
           {currentStep === 5 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-200">
+            <div className="space-y-5">
               <div className="border-b border-gray-100 pb-3">
                 <h3 className="text-base font-bold text-headerColor flex items-center gap-2">
                   <Rocket className="w-5 h-5 text-[#009dae]" /> Step 5: Posting Schedule & Final Publish

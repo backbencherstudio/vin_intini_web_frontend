@@ -634,7 +634,7 @@ export default function AdminCreateJobModal({
                     disabled={!isClickable}
                     onClick={() => handleStepJump(step.id as AdminStepNumber)}
                     className={cn(
-                      "flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left transition-all",
+                      "flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 text-center sm:text-left shrink-0 transition-colors duration-150",
                       isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-50"
                     )}
                   >
@@ -680,7 +680,7 @@ export default function AdminCreateJobModal({
 
         {/* STEP 1: Company & Basics */}
         {currentStep === 1 && (
-          <div className="space-y-4 animate-in fade-in-50 duration-200">
+          <div className="space-y-4">
             {/* Industry Selection Section */}
             <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -855,7 +855,7 @@ export default function AdminCreateJobModal({
 
         {/* STEP 2: Role Details & Compensation */}
         {currentStep === 2 && (
-          <div className="space-y-4 animate-in fade-in-50 duration-200">
+          <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
               Work Arrangement & Compensation
             </h4>
@@ -967,7 +967,7 @@ export default function AdminCreateJobModal({
 
         {/* STEP 3: Location & Contact Info */}
         {currentStep === 3 && (
-          <div className="space-y-4 animate-in fade-in-50 duration-200">
+          <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
               Location & Contact Channels
             </h4>
@@ -1083,7 +1083,7 @@ export default function AdminCreateJobModal({
 
         {/* STEP 4: Job Description & Tags */}
         {currentStep === 4 && (
-          <div className="space-y-4 animate-in fade-in-50 duration-200">
+          <div className="space-y-4">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-medium text-[#4A4C56]">
@@ -1135,7 +1135,7 @@ export default function AdminCreateJobModal({
 
         {/* STEP 5: Schedule & Publish */}
         {currentStep === 5 && (
-          <div className="space-y-4 animate-in fade-in-50 duration-200">
+          <div className="space-y-4">
             {/* Publishing Status */}
             <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-2">
               <div>
