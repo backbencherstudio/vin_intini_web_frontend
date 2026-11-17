@@ -3,6 +3,7 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
 import { formatNumberIntoK, getApplicationStatusConfig } from "@/lib/utils";
+import { sanitizeJobHtml } from "@/lib/jobSecurityHelpers";
 import {
   ApplicantIcon,
   OpenEyeIcon,
@@ -160,7 +161,7 @@ function SaveJobcard({
 
         {/* Description */}
         <p
-          dangerouslySetInnerHTML={{ __html: jobData?.job_description }}
+          dangerouslySetInnerHTML={{ __html: sanitizeJobHtml(jobData?.job_description) }}
           className="text-sm text-grayColor1 leading-relaxed line-clamp-2 mt-3.5"
         ></p>
       </div>

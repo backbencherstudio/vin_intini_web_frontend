@@ -33,6 +33,11 @@ import {
 } from "@/public/demoData/RealData";
 import { addDays, format, isBefore, startOfDay } from "date-fns";
 import {
+  getSafeExternalUrl,
+  isValidWebUrl,
+  sanitizeJobHtml,
+} from "@/lib/jobSecurityHelpers";
+import {
   ArrowLeft,
   ArrowRight,
   Briefcase,
@@ -145,6 +150,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     watch,
     reset,
     setValue,
+    setError,
     trigger,
     clearErrors,
     formState: { errors, isSubmitting },
@@ -370,8 +376,10 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       salary_min: showSalaryRange ? parseNumber(data.salary_min) : null,
       salary_max: showSalaryRange ? parseNumber(data.salary_max) : null,
       salary_type: data.salary_type || undefined,
-      website: data.website?.trim() || undefined,
-      job_description: data.job_description || undefined,
+      website: data.website?.trim()
+        ? (getSafeExternalUrl(data.website) || undefined)
+        : undefined,
+      job_description: data.job_description ? sanitizeJobHtml(data.job_description) : undefined,
       start_date: finalStartDate,
       end_date: finalEndDate,
       tags: data.tags?.trim() || undefined,
@@ -454,6 +462,10 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     if (showSalaryRange) {
       const minVal = parseNumber(watch("salary_min"));
       const maxVal = parseNumber(watch("salary_max"));
+      if ((minVal !== undefined && minVal < 0) || (maxVal !== undefined && maxVal < 0)) {
+        toast.error("Salary amounts cannot be negative.");
+        return false;
+      }
       if (minVal !== undefined && maxVal !== undefined && minVal > maxVal) {
         toast.error("Maximum salary cannot be less than minimum salary.");
         return false;
@@ -471,6 +483,16 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       "email",
       "phone_number",
     ]);
+
+    const websiteVal = watch("website");
+    if (websiteVal && !isValidWebUrl(websiteVal)) {
+      setError("website", {
+        type: "manual",
+        message: "Please enter a valid website URL (e.g. https://example.com)",
+      });
+      return false;
+    }
+
     return valid;
   };
 
@@ -1243,10 +1265,14 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   <ReusableInput
                     id="website"
                     label="Website"
-                    placeholder="e.g., www.companywebsite.com"
+                    placeholder="e.g., https://companywebsite.com"
                     className="rounded-lg border-borderColor text-sm text-headerColor"
                     error={errors.website?.message}
-                    {...register("website")}
+                    {...register("website", {
+                      onChange: () => {
+                        if (errors.website) clearErrors("website");
+                      },
+                    })}
                   />
                 </div>
               </div>

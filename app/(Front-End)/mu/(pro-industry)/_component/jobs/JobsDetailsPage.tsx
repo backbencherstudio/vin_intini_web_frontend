@@ -18,11 +18,12 @@ import {
 import Link from "next/link";
 import DetailsSkeleton from "./JobsSIngleSkleton";
 import {
+  differenceInCalendarDays,
   format,
   isBefore,
   startOfDay,
-  differenceInCalendarDays,
 } from "date-fns";
+import { getSafeExternalUrl, sanitizeJobHtml } from "@/lib/jobSecurityHelpers";
 import { getEffectiveJobStatus } from "@/lib/jobStatusHelper";
 import { getStatusStyle } from "@/components/reusable/CommonStatusDropdown";
 
@@ -191,7 +192,7 @@ function JobsDetailsPage({ id }: { id: string }) {
           <div
             dangerouslySetInnerHTML={{
               __html:
-                job.job_description ||
+                sanitizeJobHtml(job.job_description) ||
                 "<p class='text-gray-400 italic text-sm'>No job description provided yet (Draft position).</p>",
             }}
             className="whitespace-pre-line text-sm leading-relaxed text-descriptionColor"
@@ -346,7 +347,7 @@ function JobsDetailsPage({ id }: { id: string }) {
                   icon={<GlobalIcon className="h-5 w-5" />}
                   label="Website"
                   value={job.website}
-                  href={job.website}
+                  href={getSafeExternalUrl(job.website) || undefined}
                 />
               ) : null}
               {!job.email && !job.phone_number && !job.website && (

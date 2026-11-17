@@ -1,6 +1,7 @@
 "use client";
 
 import { formatNumberIntoK } from "@/lib/utils";
+import { sanitizeJobHtml } from "@/lib/jobSecurityHelpers";
 import { MessageSquare } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -116,7 +117,7 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
           </h4>
           {job?.job_description ? (
             <div
-              dangerouslySetInnerHTML={{ __html: job.job_description }}
+              dangerouslySetInnerHTML={{ __html: sanitizeJobHtml(job.job_description) }}
               className="text-xs sm:text-sm leading-relaxed text-descriptionColor whitespace-pre-line"
             />
           ) : (
