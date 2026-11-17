@@ -360,7 +360,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       work_mode: data.work_mode || undefined,
       employment_type: data.employment_type || undefined,
       level: data.level || undefined,
-      experience: data.experience?.trim() || undefined,
+      experience: data.experience?.trim() || null,
       state_id:
         parseId(data.state_id) ??
         (selectedStateObj?.id ? Number(selectedStateObj.id) : undefined),
@@ -442,7 +442,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       "work_mode",
       "employment_type",
       "level",
-      "experience",
       "salary_type",
     ];
 
@@ -1050,13 +1049,10 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                 <ReusableInput
                   id="experience"
                   label="Experience"
-                  required
                   placeholder="e.g., 1 year"
                   className="rounded-lg border-borderColor text-sm text-headerColor"
                   error={errors.experience?.message}
-                  {...register("experience", {
-                    required: "Experience is required",
-                  })}
+                  {...register("experience")}
                 />
 
                 {/* Salary Type */}
