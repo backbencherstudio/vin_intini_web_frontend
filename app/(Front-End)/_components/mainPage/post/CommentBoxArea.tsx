@@ -22,13 +22,25 @@ type SubmitPayload = {
 function CommentBoxArea({
   postId,
   parentId,
+  replyToUserId,
+  replyToReplyId,
   replyingToUserName,
+  placeholder,
+  autoFocus,
+  isInline,
   onCancelReply,
+  onSuccess,
 }: {
   postId?: number;
   parentId?: number | null;
+  replyToUserId?: number | null;
+  replyToReplyId?: number | null;
   replyingToUserName?: string | null;
+  placeholder?: string;
+  autoFocus?: boolean;
+  isInline?: boolean;
   onCancelReply?: () => void;
+  onSuccess?: () => void;
 }) {
   const [commentText, setCommentText] = useState("");
   const [commentPostById, { isLoading , isError}] = useCommentPostByIdMutation();
@@ -41,10 +53,10 @@ function CommentBoxArea({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const pathName = usePathname()
   useEffect(() => {
-    if (replyingToUserName && textareaRef.current) {
+    if ((autoFocus || replyingToUserName) && textareaRef.current) {
       textareaRef.current.focus();
     }
-  }, [replyingToUserName]);
+  }, [autoFocus, replyingToUserName]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -175,6 +187,12 @@ function CommentBoxArea({
     if (parentId) {
       formData.append("parent_id", parentId.toString());
     }
+    if (replyToUserId) {
+      formData.append("reply_to_user_id", replyToUserId.toString());
+    }
+    if (replyToReplyId) {
+      formData.append("reply_to_reply_id", replyToReplyId.toString());
+    }
 
     try {
       const response = await commentPostById({
@@ -187,6 +205,7 @@ function CommentBoxArea({
       setPreviewUrl(null);
       setIsEmojiOpen(false);
       onCancelReply?.();
+      onSuccess?.();
     } catch (error) {
       toast.error(error?.data?.message || "Failed to post comment");
     }
@@ -202,17 +221,17 @@ function CommentBoxArea({
         onChange={handleImagesChange}
       />
 
-      <div className={`w-full rounded-xl border border-headerColor/40 bg-bgLightColor p-2 md:p-3 ${isError ? "border-redColor" : ""}`}>
+      <div className={`w-full rounded-xl border border-headerColor/40 bg-bgLightColor ${isInline ? "p-2" : "p-2 md:p-3"} ${isError ? "border-redColor" : ""}`}>
         {replyingToUserName && (
-          <div className="mb-1 flex items-center justify-between bg-blue-50 rounded-lg p-1 px-3">
+          <div className="mb-2 flex items-center justify-between bg-primaryColor/10 border border-primaryColor/20 rounded-lg py-1 px-3">
             <span className="text-[13px] text-headerColor">
               Replying to{" "}
-              <span className="font-semibold">{replyingToUserName}</span>
+              <span className="font-semibold text-primaryColor">@{replyingToUserName}</span>
             </span>
             <button
               type="button"
               onClick={onCancelReply}
-              className="text-[13px] bg-red-100 cursor-pointer px-0.75 rounded-full text-descriptionColor hover:text-headerColor"
+              className="text-[13px] p-0.5 rounded-full text-descriptionColor hover:text-redColor cursor-pointer transition-colors"
               aria-label="Cancel reply"
             >
               ✕
@@ -221,7 +240,7 @@ function CommentBoxArea({
         )}
         <textarea
           ref={textareaRef}
-          placeholder="type..."
+          placeholder={placeholder || (replyingToUserName ? `Write a reply to ${replyingToUserName}...` : "Write a comment...")}
           value={commentText}
           onChange={(event) => setCommentText(event.target.value)}
           className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
@@ -271,7 +290,7 @@ function CommentBoxArea({
           </div>
 
           <ButtonReuseable
-            title="Comment"
+            title={parentId || replyingToUserName ? "Reply" : "Comment"}
             type="button"
             onClick={handleSubmit}
             loading={isLoading}

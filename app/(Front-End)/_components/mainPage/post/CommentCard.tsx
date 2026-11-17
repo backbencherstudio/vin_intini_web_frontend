@@ -7,7 +7,7 @@ import emptyImage from "@/public/empty_user.jpg";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CommentDeleteDialog from "./CommentDeleteDialog";
 import CommentReplyDeleteDialog from "./CommentReplyDelete";
@@ -17,17 +17,32 @@ export default function CommentRow({
   depth = 0,
   showReply = false,
   item,
+  parentCommentId,
   onReply,
   onToggleReplies,
   isRepliesOpen,
+  isHighlighted = false,
+  highlightLabel,
 }: {
   depth?: number;
   showReply?: boolean;
   item: any;
-  onReply?: (commentId: number, userName: string) => void;
+  parentCommentId?: number;
+  onReply?: (
+    commentId: number,
+    userName: string,
+    targetUserId?: number,
+    targetReplyId?: number,
+  ) => void;
   onToggleReplies?: (commentId: number) => void;
   isRepliesOpen?: boolean;
+  isHighlighted?: boolean;
+  highlightLabel?: string;
 }) {
+  const [highlightActive, setHighlightActive] = useState(isHighlighted);
+  const [imgSrc, setImgSrc] = useState<any>(
+    item?.user?.profile_image || emptyImage,
+  );
   const [commentLikePost] = useCommentLikePostMutation();
   const [likeListOpen, setLikeListOpen] = useState(false);
   const [commentDeleteOpen, setCommentDeleteOpen] = useState(false);
@@ -40,6 +55,20 @@ export default function CommentRow({
     0,
     (item?.like_count || 0) + (isLiked === likedByMe ? 0 : isLiked ? 1 : -1),
   );
+
+  useEffect(() => {
+    setImgSrc(item?.user?.profile_image || emptyImage);
+  }, [item?.user?.profile_image]);
+
+  useEffect(() => {
+    if (isHighlighted) {
+      setHighlightActive(true);
+      const timer = setTimeout(() => {
+        setHighlightActive(false);
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [isHighlighted]);
   const handleLikeComment = async () => {
     const newLikedStatus = !isLiked;
     setIsLiked(newLikedStatus);
@@ -71,36 +100,95 @@ export default function CommentRow({
     }
   };
 
+  const renderCommentContent = () => {
+    const rawText = (item?.comment || item?.reply || "").trim();
+    const replyToUser = item?.reply_to_user;
+
+    // Check if raw text starts with @[Some Name]
+    const mentionMatch = rawText.match(/^(@[^\s]+(?:\s+[^\s]+)?)\s*(.*)$/);
+
+    if (mentionMatch) {
+      const mention = mentionMatch[1];
+      const remainingText = mentionMatch[2];
+      const targetIdentifier = replyToUser?.username || replyToUser?.id;
+      const profileHref = targetIdentifier
+        ? `/mu/profile/${targetIdentifier}`
+        : "#";
+
+      return (
+        <>
+          <Link
+            href={profileHref}
+            className="inline-block font-semibold text-primaryColor mr-1.5"
+          >
+            {mention}
+          </Link>
+          {remainingText}
+        </>
+      );
+    }
+
+    if (replyToUser?.name) {
+      const targetIdentifier = replyToUser?.username || replyToUser?.id;
+      return (
+        <>
+          <Link
+            href={`/mu/profile/${targetIdentifier}`}
+            className="inline-block font-semibold text-primaryColor mr-1.5"
+          >
+            @{replyToUser.name}
+          </Link>
+          {rawText}
+        </>
+      );
+    }
+
+    return rawText;
+  };
+
+  const userProfileHref = item?.industry_id
+    ? `/mu/industry/${item?.industry_id}`
+    : `/mu/profile/${item?.user?.username || item?.user?.id}`;
+
   return (
-    <div className={`${depth > 0 ? "ml-6  pl-5" : " "} relative`}>
+    <div
+      id={depth > 0 ? `reply-${item?.id}` : `comment-${item?.id}`}
+      className={`${
+        depth > 0 ? "ml-6 pl-5" : ""
+      } relative -mx-2 px-2 py-1.5 rounded-xl transition-colors duration-1000 ease-out ${
+        highlightActive ? "bg-primaryColor/12" : "bg-transparent"
+      }`}
+    >
       {depth > 0 && (
         <div className="pointer-events-none absolute -left-2.5 -top-4 h-9 w-7 rounded-bl-2xl border-l border-b border-borderColor" />
       )}
-      <div className="flex items-start  gap-2.5">
-        <div className="h-8 w-8 border  overflow-hidden rounded-full">
+      <div className="flex items-start gap-2.5">
+        <Link
+          href={userProfileHref}
+          className="h-8 w-8 border border-borderColor/60 overflow-hidden rounded-full shrink-0 bg-slate-100 block"
+        >
           <Image
-            src={item?.user?.profile_image || emptyImage}
+            src={imgSrc}
             alt="Profile"
             width={32}
             height={32}
+            unoptimized
+            onError={() => setImgSrc("/empty_user.jpg")}
             className="h-full w-full object-cover"
           />
-        </div>
+        </Link>
 
         <div className="min-w-0 flex-1">
-          <Link
-            href={
-              item?.industry_id
-                ? `/mu/industry/${item?.industry_id}`
-                : `/mu/profile/${item?.user?.id}`
-            }
-            className="text-sm lg:text-[15px] leading-[140%] font-semibold text-headerColor"
-          >
-            {item?.user?.name || "Profile Name"}
-          </Link>
-          <p className=" line-clamp-1 text-[13px] wf font-normal text-descriptionColor">
-            {item?.user?.title ||
-              "Title (whether its a concise or long title, all the text will be in single line. Truncate the sentence i...)"}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href={userProfileHref}
+              className="text-sm lg:text-[15px] leading-[140%] font-semibold text-headerColor"
+            >
+              {item?.user?.name || "Profile Name"}
+            </Link>
+          </div>
+          <p className="line-clamp-1 text-[13px] wf font-normal text-descriptionColor">
+            {item?.user?.title || ""}
           </p>
         </div>
         <p className="ml-auto shrink-0 font-semibold w-fit text-[14px] leading-5 text-descriptionColor">
@@ -109,32 +197,33 @@ export default function CommentRow({
           )}
         </p>
       </div>
+
       <div className="mt-4 pl-10">
-        <p className=" text-base font-normal leading-[150%] text-descriptionColor">
-          {item?.comment || item?.reply}
+        <p className="text-base font-normal leading-[150%] text-descriptionColor break-words whitespace-pre-line">
+          {renderCommentContent()}
         </p>
         {item?.image_url && (
-          <div className="h-50 w-50 border  overflow-hidden rounded-sm">
+          <div className="mt-2 h-50 w-50 border overflow-hidden rounded-sm">
             <Image
               src={item?.image_url || emptyImage}
-              alt="Profile"
+              alt="Attachment"
               width={132}
               height={132}
               priority
               unoptimized
-              className="h-full w-full object-cover "
+              className="h-full w-full object-cover"
             />
           </div>
         )}
       </div>
 
-      {depth == 0 ? (
+      {depth === 0 ? (
         <div className="mt-4 pl-10 flex items-center gap-3 text-[14px] font-semibold text-descriptionColor">
-          <div className=" text-descriptionColor  gap-1 flex items-center">
+          <div className="text-descriptionColor gap-1 flex items-center">
             <button
               type="button"
               onClick={handleLikeComment}
-              className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer hover:opacity-80`}
+              className={`${isLiked ? "text-primaryColor" : ""} cursor-pointer hover:opacity-80`}
             >
               Like •
             </button>
@@ -146,53 +235,95 @@ export default function CommentRow({
             </button>
           </div>
 
-          <>
-            <span className="text-headerColor/45">|</span>
+          <span className="text-headerColor/45">|</span>
 
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
-              onClick={() => onReply?.(item?.id, item?.user?.name)}
-              aria-expanded={isRepliesOpen}
+              onClick={() => {
+                onReply?.(item?.id, item?.user?.name, item?.user?.id);
+              }}
               className="cursor-pointer text-descriptionColor hover:opacity-80"
             >
-              Reply • {item?.replies_count || 0}
+              Reply
             </button>
-          </>
+            {Boolean(item?.replies_count && item.replies_count > 0) && (
+              <>
+                <span className="text-headerColor/30">•</span>
+                <button
+                  type="button"
+                  onClick={() => onToggleReplies?.(item?.id)}
+                  aria-expanded={isRepliesOpen}
+                  className={`cursor-pointer hover:underline flex items-center gap-1 ${
+                    isRepliesOpen
+                      ? "text-primaryColor font-semibold"
+                      : "text-descriptionColor hover:text-primaryColor"
+                  }`}
+                >
+                  {isRepliesOpen
+                    ? "Hide replies"
+                    : `${item.replies_count} ${item.replies_count === 1 ? "reply" : "replies"}`}
+                </button>
+              </>
+            )}
+          </div>
           {item?.can_delete && (
             <>
               <span className="text-headerColor/45">|</span>
               <button
-                className="cursor-pointer "
+                className="cursor-pointer"
                 onClick={() => setCommentDeleteOpen(true)}
+                aria-label="Delete comment"
               >
-                <DeleteIcon className="text-redColor w-4 h-4 " />
+                <DeleteIcon className="text-redColor w-4 h-4" />
               </button>
             </>
           )}
         </div>
       ) : (
-        <div className=" text-descriptionColor  gap-1 flex items-center mt-4 ">
+        <div className="text-descriptionColor flex items-center gap-3 text-sm font-semibold mt-4 pl-10">
+          <div className="gap-1 flex items-center">
+            <button
+              type="button"
+              onClick={handleReplyLikeComment}
+              className={`${isLiked ? "text-primaryColor" : ""} cursor-pointer hover:opacity-80`}
+            >
+              Like •
+            </button>
+            <button
+              onClick={() => setReplyLikeListOpen(true)}
+              className="cursor-pointer"
+            >
+              {likesCount || 0}
+            </button>
+          </div>
+
+          <span className="text-headerColor/45">|</span>
+
           <button
             type="button"
-            onClick={handleReplyLikeComment}
-            className={`${isLiked ? " text-primaryColor" : ""} cursor-pointer text-descriptionColor font-semibold text-sm pl-10 hover:opacity-80`}
+            onClick={() =>
+              onReply?.(
+                parentCommentId || item?.comment_id || item?.id,
+                item?.user?.name,
+                item?.user?.id,
+                item?.id,
+              )
+            }
+            className="cursor-pointer text-descriptionColor hover:opacity-80"
           >
-            Like •
+            Reply
           </button>
-          <button
-            onClick={() => setReplyLikeListOpen(true)}
-            className="cursor-pointer"
-          >
-            {likesCount || 0}
-          </button>
+
           {item?.can_delete && (
             <>
               <span className="text-headerColor/45">|</span>
               <button
-                className="cursor-pointer "
+                className="cursor-pointer"
                 onClick={() => setCommentReplyDeleteOpen(true)}
+                aria-label="Delete reply"
               >
-                <DeleteIcon className="text-redColor w-4 h-4 " />
+                <DeleteIcon className="text-redColor w-4 h-4" />
               </button>
             </>
           )}

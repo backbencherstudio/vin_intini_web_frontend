@@ -4,9 +4,14 @@ import PostCardSkleton from "./PostCardSkleton";
 import { useGetSinglePostQuery } from "@/feature/slice/post/postSlice";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import PostCard from "./PostCard";
 
 export default function SinglePostView({ id }: { id: string }) {
+  const searchParams = useSearchParams();
+  const targetCommentId = searchParams.get("comment_id");
+  const targetReplyId = searchParams.get("reply_id");
+
   const { data, isLoading, isError } = useGetSinglePostQuery(id);
   const post = data?.data || data?.post || data;
 
@@ -71,7 +76,12 @@ export default function SinglePostView({ id }: { id: string }) {
         </Link>
       </div>
 
-      <PostCard post={post} priority={true} />
+      <PostCard
+        post={post}
+        priority={true}
+        targetCommentId={targetCommentId}
+        targetReplyId={targetReplyId}
+      />
     </div>
   );
 }

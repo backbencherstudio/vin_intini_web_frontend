@@ -14,11 +14,28 @@ export const commentApi = baseApiSlice.injectEndpoints({
     }),
 
     getReplyListByCommentId: builder.query({
-      query: (commentId) => ({
-        url: `/reply-list/${commentId}`,
-        method: "GET",
-      }),
+      query: (arg) => {
+        if (typeof arg === "object" && arg !== null) {
+          const { commentId, targetReplyId } = arg;
+          const queryParam = targetReplyId ? `?target_reply_id=${targetReplyId}` : "";
+          return {
+            url: `/reply-list/${commentId}${queryParam}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: `/reply-list/${arg}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Comment"],
+    }),
+    checkCommentTarget: builder.query({
+      query: (params) => ({
+        url: `/comment-target-status`,
+        method: "GET",
+        params,
+      }),
     }),
     getMyCommentList: builder.query({
       query: () => ({
@@ -59,6 +76,7 @@ export const {
   useGetAllCommentListByPostIdQuery,
   useGetMyCommentListQuery,
   useGetReplyListByCommentIdQuery,
+  useCheckCommentTargetQuery,
   useCommentPostByIdMutation,
   useDeleteCommentMutation,
   useDeleteReplyMutation,

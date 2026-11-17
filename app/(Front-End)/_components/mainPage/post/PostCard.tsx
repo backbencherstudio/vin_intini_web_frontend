@@ -16,15 +16,31 @@ type PostCardProps = {
   post?: PostFeedType;
   meta?: any; // Adjust the type as needed
   priority?: boolean;
+  targetCommentId?: string | number | null;
+  targetReplyId?: string | number | null;
 };
 
-function PostCard({ post, meta, priority = false }: PostCardProps) {
+function PostCard({
+  post,
+  meta,
+  priority = false,
+  targetCommentId,
+  targetReplyId,
+}: PostCardProps) {
   const { user, media, group, industry } = post || {};
 
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
-  const [isCommented, setIsCommented] = useState(false);
+  const [isCommented, setIsCommented] = useState(
+    Boolean(targetCommentId || targetReplyId)
+  );
   const [likeList, setLikeList] = useState(false);
+
+  useEffect(() => {
+    if (targetCommentId || targetReplyId) {
+      setIsCommented(true);
+    }
+  }, [targetCommentId, targetReplyId]);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [shouldShowButton, setShouldShowButton] = useState(false);
@@ -250,8 +266,11 @@ function PostCard({ post, meta, priority = false }: PostCardProps) {
       </div>
       {isCommented && (
         <div className="mt-2 -mx-2.5 md:-mx-3">
-          {" "}
-          <PostComment post={post} />
+          <PostComment
+            post={post}
+            targetCommentId={targetCommentId}
+            targetReplyId={targetReplyId}
+          />
         </div>
       )}
       {likeList && (
