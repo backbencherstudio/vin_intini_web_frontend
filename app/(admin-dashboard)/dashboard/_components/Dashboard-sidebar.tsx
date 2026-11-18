@@ -101,8 +101,21 @@ export const SidebarData: SidebarItem[] = [
   {
     id: "advertise",
     name: "Advertise Management",
-    href: "/dashboard/advertisement",
     icon: AdvertizementIcon,
+    children: [
+      {
+        id: "advertise-overview",
+        name: "Overview",
+        href: "/dashboard/advertisement/overview",
+        icon: LuChartNoAxesColumn,
+      },
+      {
+        id: "advertise-package-pricing",
+        name: "Package and Pricing",
+        href: "/dashboard/advertisement/package-pricing",
+        icon: SubPlanIcon,
+      },
+    ],
   },
 
   {

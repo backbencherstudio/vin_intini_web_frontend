@@ -9,7 +9,7 @@ import {
   PlanConfig,
 } from "@/types/boosting";
 import { Check, Loader2, PackageOpen } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 interface BoostingPlansStepProps {
@@ -29,18 +29,30 @@ export default function BoostingPlansStep({
   initialPlanConfig,
   onNext,
 }: BoostingPlansStepProps) {
-  // Sort plans ascending by duration
+  // Respect admin-defined sort_order first, falling back to duration_days
   const packagesToDisplay = useMemo(() => {
     if (Array.isArray(presetPackages) && presetPackages.length > 0) {
-      return [...presetPackages].sort(
-        (a, b) => (a.duration_days || 0) - (b.duration_days || 0),
-      );
+      return [...presetPackages].sort((a, b) => {
+        const orderA =
+          typeof a.sort_order === "number" && a.sort_order > 0
+            ? a.sort_order
+            : Number.MAX_SAFE_INTEGER;
+        const orderB =
+          typeof b.sort_order === "number" && b.sort_order > 0
+            ? b.sort_order
+            : Number.MAX_SAFE_INTEGER;
+        if (orderA !== orderB) return orderA - orderB;
+        return (a.duration_days || 0) - (b.duration_days || 0);
+      });
     }
     return [];
   }, [presetPackages]);
 
+  const isCustomSliderEnabled = customSlider?.enabled !== false;
+
   const [isCustom, setIsCustom] = useState(
-    initialPlanConfig?.isCustom ?? packagesToDisplay.length === 0,
+    isCustomSliderEnabled &&
+      (initialPlanConfig?.isCustom ?? packagesToDisplay.length === 0),
   );
   const [customDays, setCustomDays] = useState(
     initialPlanConfig?.customDays ?? 20,
@@ -49,6 +61,12 @@ export default function BoostingPlansStep({
     initialPlanConfig?.pkgId ?? null,
   );
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isCustomSliderEnabled && isCustom) {
+      setIsCustom(false);
+    }
+  }, [isCustomSliderEnabled, isCustom]);
 
   const [fetchOrderSummary] = useLazyGetBoostOrderSummaryQuery();
 
@@ -188,7 +206,7 @@ export default function BoostingPlansStep({
 
                 <div>
                   {/* Plan Name */}
-                  <h3 className="text-lg font-bold text-headerColor">
+                  <h3 className="text-lg font-bold text-headerColor line-clamp-1">
                     {item.name}
                   </h3>
 
@@ -203,7 +221,7 @@ export default function BoostingPlansStep({
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-descriptionColor mt-2 min-h-8 leading-relaxed">
+                  <p className="text-sm text-descriptionColor mt-2 min-h-[46px] line-clamp-2 leading-relaxed">
                     {item.description || "Maximize your reach and engagement."}
                   </p>
 
@@ -242,7 +260,7 @@ export default function BoostingPlansStep({
                 {/* Boost Now Button */}
                 <ButtonReuseable
                   type="button"
-                  disabled={isCustom}
+                  disabled={isCustomSliderEnabled && isCustom}
                   loading={loading && selectedPkgId === item.id}
                   sendingMsg={
                     <span className="inline-flex items-center gap-1.5 justify-center">
@@ -255,8 +273,7 @@ export default function BoostingPlansStep({
                     setSelectedPkgId(item.id);
                     handleSelectPlan(item.id, null);
                   }}
-                  className="py-2! bg-primaryColor! mt-2"
-                  
+                  className="w-full h-10! shrink-0 py-2! bg-primaryColor! mt-4"
                 />
               </div>
             );
@@ -272,13 +289,15 @@ export default function BoostingPlansStep({
             No Boosting Plans Available
           </h3>
           <p className="text-xs text-descriptionColor mt-1 max-w-sm">
-            There are currently no preset boosting plans available for this
-            product. You can customize your boosting duration below.
+            {isCustomSliderEnabled
+              ? "There are currently no preset boosting plans available for this product. You can customize your boosting duration below."
+              : "There are currently no boosting plans available for this product."}
           </p>
         </div>
       )}
 
-      {/* Custom Boosting Section */}
+      {/* Custom Boosting Section (Shown only when enabled in Admin Boost Settings) */}
+      {isCustomSliderEnabled && (
       <div className="border border-borderColor bg-white rounded-2xl p-6 transition-shadow hover:shadow-xs">
         {/* Header Row with Toggle Switch */}
         <div className="flex items-center justify-between">
@@ -367,6 +386,7 @@ export default function BoostingPlansStep({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

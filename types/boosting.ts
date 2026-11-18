@@ -12,6 +12,7 @@ export interface BoostPackage {
   description?: string;
   target_entity?: string;
   promotion_highlight?: string;
+  sort_order?: number;
 }
 
 // Custom Duration Slider

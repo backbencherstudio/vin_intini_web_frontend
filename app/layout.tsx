@@ -37,7 +37,7 @@ export default function RootLayout({
           shadow="0 0 10px #04a1b7,0 0 5px #04a1b7"
           zIndex={99999}
         />
-        <Toaster />
+        <Toaster containerStyle={{ zIndex: 100000 }} />
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
