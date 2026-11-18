@@ -6,8 +6,10 @@ import {
   GetPlansResponse,
   GetSubscriptionsParams,
   GetSubscriptionsResponse,
+  GetTransactionDetailResponse,
   GetTransactionsParams,
   GetTransactionsResponse,
+  GetTransactionStatsParams,
   GetTransactionStatusResponse,
   UpdatePlanArgs,
   PlanPayload,
@@ -42,11 +44,16 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
     }),
 
     // ============   Transaction  ============
-    getTransactionStats: builder.query<GetTransactionStatusResponse, void>({
-      query: () => ({
+    getTransactionStats: builder.query<
+      GetTransactionStatusResponse,
+      GetTransactionStatsParams | void
+    >({
+      query: (params) => ({
         url: `/admin/transactions/overview`,
         method: "GET",
+        params: params ? { ...params } : undefined,
       }),
+      providesTags: ["subscription", "boosting"],
     }),
     getTransactionList: builder.query<
       GetTransactionsResponse,
@@ -57,7 +64,17 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
         method: "GET",
         params: query,
       }),
-      providesTags: ["subscription"],
+      providesTags: ["subscription", "boosting"],
+    }),
+    getTransactionDetail: builder.query<
+      GetTransactionDetailResponse,
+      number | string
+    >({
+      query: (id) => ({
+        url: `/admin/transactions/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["subscription", "boosting"],
     }),
 
     // ============   Plan and Pricing  ============
@@ -110,6 +127,7 @@ export const {
   useCancelSubscriptionMutation,
   useGetTransactionStatsQuery,
   useGetTransactionListQuery,
+  useGetTransactionDetailQuery,
   useGetPlansQuery,
   useCreatePlanMutation,
   useUpdatePlanMutation,

@@ -88,12 +88,6 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/subscription/plan-pricing",
         icon: SubPlanIcon,
       },
-      {
-        id: "transactions",
-        name: "Transactions",
-        href: "/dashboard/subscription/transactions",
-        icon: SubTranscIcon,
-      },
     ]
   },
 
@@ -109,6 +103,13 @@ export const SidebarData: SidebarItem[] = [
     name: "Advertise Management",
     href: "/dashboard/advertisement",
     icon: AdvertizementIcon,
+  },
+
+  {
+    id: "transactions",
+    name: "Transactions",
+    href: "/dashboard/transactions",
+    icon: SubTranscIcon,
   },
 
   // {
