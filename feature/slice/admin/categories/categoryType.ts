@@ -25,6 +25,7 @@ export interface CategorySummary {
   total_sections: number;
   biotechnology_sections: number;
   psychotropics_sections: number;
+  inactive_sections?: number;
   total_subcategories: number;
 }
 

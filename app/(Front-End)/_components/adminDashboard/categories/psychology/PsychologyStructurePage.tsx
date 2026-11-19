@@ -15,6 +15,7 @@ import {
     FlaskConical,
     Pill,
     Tags,
+    EyeOff,
 } from "lucide-react";
 import { CategorySection } from "../CategorySectionCard";
 import CategoryAddSectionAction from "../CategoryAddSectionAction";
@@ -166,7 +167,7 @@ export default function PsychologyStructurePage({
             {/* Page Header */}
             <div className="pb-5 border-b border-[#E0E0E0]">
                 <CustomTitleDescription
-                    title="Psychology Structure"
+                    title="Psychology Network Structure"
                     description="Manage your psychology industry sections, subcategories, and linked products."
                     action={
                         <CategoryAddSectionAction
@@ -178,8 +179,8 @@ export default function PsychologyStructurePage({
                 />
             </div>
 
-            {/* 4 Summary KPI Cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* 5 Summary KPI Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {/* Total Sections */}
                 <div
                     onClick={() => router.push(pathname)}
@@ -201,7 +202,7 @@ export default function PsychologyStructurePage({
                                     summary.total_sections.toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">All psychology sections</p>
+                            <p className="mt-1 text-xs text-gray-500">Psychology Network</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-[#04A1B7]">
                             <Layers className="h-6 w-6" />
@@ -230,7 +231,7 @@ export default function PsychologyStructurePage({
                                     summary.biotechnology_sections.toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">Diagnostic & lab equipment</p>
+                            <p className="mt-1 text-xs text-gray-500">Section</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-[#04A1B7]">
                             <FlaskConical className="h-6 w-6" />
@@ -259,10 +260,39 @@ export default function PsychologyStructurePage({
                                     summary.psychotropics_sections.toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">Compounds & therapeutics</p>
+                            <p className="mt-1 text-xs text-gray-500">Section</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                             <Pill className="h-6 w-6" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Hidden or Inactive Section */}
+                <div
+                    onClick={() => router.push(activeTab === "hidden" ? pathname : `${pathname}?tab=hidden`)}
+                    className={`cursor-pointer rounded-xl border p-5 shadow-xs transition-all hover:shadow-md ${
+                        activeTab === "hidden"
+                            ? "border-rose-400 bg-rose-50/40 ring-2 ring-rose-300"
+                            : "border-gray-200 bg-white"
+                    }`}
+                >
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium tracking-wider text-gray-500 uppercase">
+                                Inactive Sections
+                            </p>
+                            <p className="mt-2 text-2xl font-bold text-rose-600">
+                                {isLoading ? (
+                                    <span className="inline-block h-8 w-12 animate-pulse rounded bg-gray-200" />
+                                ) : (
+                                    (summary.inactive_sections ?? sections.filter((s) => s.is_active === false).length).toLocaleString()
+                                )}
+                            </p>
+                            <p className="mt-1 text-xs text-gray-500">Hidden or Inactive section</p>
+                        </div>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+                            <EyeOff className="h-6 w-6" />
                         </div>
                     </div>
                 </div>

@@ -37,6 +37,8 @@ export default function CategorySectionList({
     const visibleSections =
         activeTab === "all"
             ? sections
+            : activeTab === "hidden"
+            ? sections.filter((section) => section.is_active === false)
             : sections.filter((section) => section.category === activeTab);
 
     const [selectedSectionId, setSelectedSectionId] = useState<string | number | null>(null);
