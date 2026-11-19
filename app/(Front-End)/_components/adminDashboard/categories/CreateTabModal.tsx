@@ -9,6 +9,7 @@ interface CreateTabModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     initialValue?: string;
+    sectionTitle?: string;
     onSubmit?: (tabName: string) => void;
 }
 
@@ -16,6 +17,7 @@ export default function CreateTabModal({
     open,
     onOpenChange,
     initialValue = "",
+    sectionTitle,
     onSubmit,
 }: CreateTabModalProps) {
     const [tabName, setTabName] = useState(initialValue);
@@ -40,7 +42,7 @@ export default function CreateTabModal({
         event.preventDefault();
 
         if (!tabName.trim()) {
-            setError("Subcategories / Section is required");
+            setError("Subcategory name is required");
             return;
         }
 
@@ -52,17 +54,22 @@ export default function CreateTabModal({
         <CustomModal
             open={open}
             onOpenChange={handleOpenChange}
-            title={initialValue ? "Edit Tab" : "Create New Tab"}
+            title={initialValue ? "Edit Subcategory" : "Add New Subcategory"}
             size="md"
-            className="gap-4 px-5 py-5 md:px-6 md:py-6"
         >
-            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
-                <div className="border-t border-[#E0E0E0] pt-4">
+            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4 pt-2">
+                {sectionTitle && (
+                    <p className="text-xs text-gray-500">
+                        Adding subcategory under: <strong className="text-gray-800">{sectionTitle}</strong>
+                    </p>
+                )}
+
+                <div>
                     <CustomInput
-                        label="Subcategories / Section"
+                        label="Subcategory Name"
                         required
                         name="tabName"
-                        placeholder="e.g. Stimulus Generation Tools"
+                        placeholder="e.g. Brain Scanners, Cognitive Assessments"
                         value={tabName}
                         onChange={(event) => {
                             setTabName(event.target.value);
@@ -72,16 +79,16 @@ export default function CreateTabModal({
                     />
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-2">
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
                     <CustomButton
+                        type="button"
                         variant="ghost"
-                        className="rounded-full border border-[#D1D5DB] px-5 text-[#1D1F2C] hover:bg-gray-50"
                         onClick={() => handleOpenChange(false)}
                     >
                         Cancel
                     </CustomButton>
-                    <CustomButton type="submit" className="rounded-full px-5">
-                        {initialValue ? "Save Changes" : "Save Tab"}
+                    <CustomButton type="submit">
+                        {initialValue ? "Save Changes" : "Add Subcategory"}
                     </CustomButton>
                 </div>
             </form>

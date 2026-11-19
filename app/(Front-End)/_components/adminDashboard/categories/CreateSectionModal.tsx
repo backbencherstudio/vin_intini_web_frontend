@@ -14,6 +14,7 @@ const defaultIndustryOptions = [
 interface CreateSectionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    activeTab?: string;
     industryOptions?: { label: string; value: string }[];
     initialValues?: { industryType: string; sectionHeading: string };
     onSubmit?: (data: { industryType: string; sectionHeading: string }) => void;
@@ -22,16 +23,24 @@ interface CreateSectionModalProps {
 export default function CreateSectionModal({
     open,
     onOpenChange,
+    activeTab,
     industryOptions = defaultIndustryOptions,
     initialValues,
     onSubmit,
 }: CreateSectionModalProps) {
-    const emptyForm = {
-        industryType: initialValues?.industryType || industryOptions[0]?.value || "",
-        sectionHeading: initialValues?.sectionHeading || "",
+    const getInitialIndustry = () => {
+        if (initialValues?.industryType) return initialValues.industryType;
+        if (activeTab && activeTab !== "all") {
+            const match = industryOptions.find((opt) => opt.value === activeTab);
+            if (match) return match.value;
+        }
+        return industryOptions[0]?.value || "";
     };
 
-    const [form, setForm] = useState(emptyForm);
+    const [form, setForm] = useState({
+        industryType: getInitialIndustry(),
+        sectionHeading: initialValues?.sectionHeading || "",
+    });
     const [errors, setErrors] = useState<{
         industryType?: string;
         sectionHeading?: string;
@@ -40,15 +49,18 @@ export default function CreateSectionModal({
     useEffect(() => {
         if (open) {
             setForm({
-                industryType: initialValues?.industryType || industryOptions[0]?.value || "",
+                industryType: getInitialIndustry(),
                 sectionHeading: initialValues?.sectionHeading || "",
             });
             setErrors({});
         }
-    }, [open, initialValues, industryOptions]);
+    }, [open, initialValues, activeTab, industryOptions]);
 
     const resetForm = () => {
-        setForm(emptyForm);
+        setForm({
+            industryType: getInitialIndustry(),
+            sectionHeading: "",
+        });
         setErrors({});
     };
 
@@ -63,7 +75,7 @@ export default function CreateSectionModal({
         const nextErrors: typeof errors = {};
         if (!form.industryType) nextErrors.industryType = "Industry type is required";
         if (!form.sectionHeading.trim()) {
-            nextErrors.sectionHeading = "Section heading is required";
+            nextErrors.sectionHeading = "Section title is required";
         }
 
         if (Object.keys(nextErrors).length > 0) {
@@ -84,10 +96,9 @@ export default function CreateSectionModal({
             onOpenChange={handleOpenChange}
             title={initialValues ? "Edit Section" : "Create New Section"}
             size="md"
-            className="gap-4 px-5 py-5 md:px-6 md:py-6"
         >
-            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
-                <div className="border-t border-[#E0E0E0] pt-4">
+            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4 pt-2">
+                <div>
                     <CustomSelect
                         label="Industry Type"
                         required
@@ -102,32 +113,34 @@ export default function CreateSectionModal({
                     />
                 </div>
 
-                <CustomInput
-                    label="Section Heading"
-                    required
-                    name="sectionHeading"
-                    placeholder="e.g. Diagnostic Imaging"
-                    value={form.sectionHeading}
-                    onChange={(event) => {
-                        setForm((prev) => ({
-                            ...prev,
-                            sectionHeading: event.target.value,
-                        }));
-                        setErrors((prev) => ({ ...prev, sectionHeading: undefined }));
-                    }}
-                    error={errors.sectionHeading}
-                />
+                <div>
+                    <CustomInput
+                        label="Section Title / Heading"
+                        required
+                        name="sectionHeading"
+                        placeholder="e.g. Diagnostic Brain Imaging"
+                        value={form.sectionHeading}
+                        onChange={(event) => {
+                            setForm((prev) => ({
+                                ...prev,
+                                sectionHeading: event.target.value,
+                            }));
+                            setErrors((prev) => ({ ...prev, sectionHeading: undefined }));
+                        }}
+                        error={errors.sectionHeading}
+                    />
+                </div>
 
-                <div className="flex items-center justify-end gap-3 pt-2">
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
                     <CustomButton
+                        type="button"
                         variant="ghost"
-                        className="rounded-full border border-[#D1D5DB] px-5 text-[#1D1F2C] hover:bg-gray-50"
                         onClick={() => handleOpenChange(false)}
                     >
                         Cancel
                     </CustomButton>
-                    <CustomButton type="submit" className="rounded-full px-5">
-                        {initialValues ? "Save Changes" : "Save Section Information"}
+                    <CustomButton type="submit">
+                        {initialValues ? "Save Changes" : "Create Section"}
                     </CustomButton>
                 </div>
             </form>

@@ -117,6 +117,32 @@ const categorySlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["category", "psychology", "neuroscience"],
     }),
 
+    // Endpoint: POST /admin/categories/section/reorder
+    reorderCategorySections: builder.mutation<
+      { success: boolean; message: string },
+      { section_ids: (number | string)[] }
+    >({
+      query: (body) => ({
+        url: "/admin/categories/section/reorder",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["category", "psychology", "neuroscience"],
+    }),
+
+    // Endpoint: PATCH /admin/categories/section/toggle-status/:id
+    toggleCategorySectionStatus: builder.mutation<
+      { success: boolean; message: string; data?: { id: number; is_active: boolean } },
+      { id: number | string; is_active?: boolean }
+    >({
+      query: ({ id, is_active }) => ({
+        url: `/admin/categories/section/toggle-status/${id}`,
+        method: "PATCH",
+        body: is_active !== undefined ? { is_active } : undefined,
+      }),
+      invalidatesTags: ["category", "psychology", "neuroscience"],
+    }),
+
     // ============ Subcategory Tab CRUD ============
     // Endpoint: POST /admin/categories/sub-category/create
     createCategoryTab: builder.mutation<
@@ -171,6 +197,32 @@ const categorySlice = baseApiSlice.injectEndpoints({
       },
       invalidatesTags: ["category", "psychology", "neuroscience"],
     }),
+
+    // Endpoint: POST /admin/categories/sub-category/reorder
+    reorderCategoryTabs: builder.mutation<
+      { success: boolean; message: string },
+      { category_ids: (number | string)[] }
+    >({
+      query: (body) => ({
+        url: "/admin/categories/sub-category/reorder",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["category", "psychology", "neuroscience"],
+    }),
+
+    // Endpoint: PATCH /admin/categories/sub-category/toggle-status/:id
+    toggleCategoryTabStatus: builder.mutation<
+      { success: boolean; message: string; data?: { id: number; is_active: boolean } },
+      { id: number | string; is_active?: boolean }
+    >({
+      query: ({ id, is_active }) => ({
+        url: `/admin/categories/sub-category/toggle-status/${id}`,
+        method: "PATCH",
+        body: is_active !== undefined ? { is_active } : undefined,
+      }),
+      invalidatesTags: ["category", "psychology", "neuroscience"],
+    }),
   }),
 });
 
@@ -187,11 +239,15 @@ export const {
 
   // delete section hooks
   useDeleteCategorySectionMutation,
+  useReorderCategorySectionsMutation,
+  useToggleCategorySectionStatusMutation,
 
   // tab hooks
   useCreateCategoryTabMutation,
   useUpdateCategoryTabMutation,
   useDeleteCategoryTabMutation,
+  useReorderCategoryTabsMutation,
+  useToggleCategoryTabStatusMutation,
 } = categorySlice;
 
 export default categorySlice;

@@ -20,11 +20,18 @@ const routeNames: Record<string, string> = {
   settings: "Settings",
   cities: "Cities & Locations",
   "contact-messages": "Contact Messages",
+  categories: "Categories",
   analytics: "Analytics",
   subscription: "Subscription",
 };
 
-const nonClickableRoutes = ["user-management", "academia", "psychology", "neuroscience"];
+const nonClickableRoutes = [
+  "user-management",
+  "academia",
+  "categories",
+  "psychology",
+  "neuroscience",
+];
 
 export default function Breadcrumb() {
   const pathname = usePathname();
