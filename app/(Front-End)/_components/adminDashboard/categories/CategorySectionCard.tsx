@@ -193,10 +193,10 @@ export default function CategorySectionCard({
 
     return (
         <article
-            className={`flex min-h-[340px] flex-col rounded-2xl border p-5 shadow-xs transition-all hover:shadow-md ${
+            className={`flex min-h-[340px] flex-col rounded-2xl border border-gray-200 p-5 shadow-xs transition-all hover:shadow-md ${
                 !isSectionActive
-                    ? "border-dashed border-gray-300 bg-gray-50/70 opacity-90"
-                    : "border-gray-200 bg-white"
+                    ? "bg-gray-50/60 opacity-90"
+                    : "bg-white"
             }`}
         >
             <div className="flex items-start justify-between gap-3">
@@ -226,18 +226,11 @@ export default function CategorySectionCard({
                         <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-medium text-blue-700 border border-blue-200/60">
                             {section.products_count ?? 0} {section.products_count === 1 ? "product" : "products"}
                         </span>
-
-                        {/* 4. Hidden indicator if inactive */}
-                        {!isSectionActive && (
-                            <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-600 border border-rose-200">
-                                Hidden
-                            </span>
-                        )}
                     </div>
 
                     <h3
                         className={`mt-2.5 text-base font-bold leading-snug line-clamp-2 transition-colors ${
-                            !isSectionActive ? "text-gray-500 line-through decoration-gray-400" : "text-gray-900"
+                            !isSectionActive ? "text-gray-500" : "text-gray-900"
                         }`}
                         title={section.title}
                     >

@@ -114,7 +114,7 @@ function SortableSectionRow({
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                     <span
                         className={`truncate font-semibold text-sm ${
-                            isActive ? "text-gray-900" : "text-gray-500 line-through decoration-gray-400"
+                            isActive ? "text-gray-900" : "text-gray-500"
                         }`}
                         title={section.title}
                     >
