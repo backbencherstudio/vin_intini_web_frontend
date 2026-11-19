@@ -231,7 +231,7 @@ export default function NeuroscienceStructurePage({
                                     summary.biotechnology_sections.toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">Section</p>
+                            <p className="mt-1 text-xs text-gray-500">Sections</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-50 text-[#04A1B7]">
                             <FlaskConical className="h-6 w-6" />
@@ -260,7 +260,7 @@ export default function NeuroscienceStructurePage({
                                     summary.psychotropics_sections.toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">Section</p>
+                            <p className="mt-1 text-xs text-gray-500">Sections</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                             <Pill className="h-6 w-6" />
@@ -289,7 +289,7 @@ export default function NeuroscienceStructurePage({
                                     (summary.inactive_sections ?? sections.filter((s) => s.is_active === false).length).toLocaleString()
                                 )}
                             </p>
-                            <p className="mt-1 text-xs text-gray-500">Hidden or Inactive section</p>
+                            <p className="mt-1 text-xs text-gray-500">Hidden or Inactive sections</p>
                         </div>
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
                             <EyeOff className="h-6 w-6" />
