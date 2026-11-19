@@ -171,6 +171,8 @@ export default function PsychologyStructurePage({
                     description="Manage your psychology industry sections, subcategories, and linked products."
                     action={
                         <CategoryAddSectionAction
+                            network="psychology"
+                            networkLabel="Psychology Network"
                             activeTab={activeTab}
                             industryOptions={industryOptions}
                             onSubmit={handleCreateSection}
@@ -403,6 +405,8 @@ export default function PsychologyStructurePage({
             ) : (
                 <>
                     <CategorySectionList
+                        network="psychology"
+                        networkLabel="Psychology Network"
                         sections={sections}
                         activeTab={activeTab}
                         onEditSection={handleUpdateSection}

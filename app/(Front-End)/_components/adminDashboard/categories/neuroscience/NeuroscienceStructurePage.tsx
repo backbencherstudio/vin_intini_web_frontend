@@ -171,6 +171,8 @@ export default function NeuroscienceStructurePage({
                     description="Manage your neuroscience industry sections, subcategories, and linked products."
                     action={
                         <CategoryAddSectionAction
+                            network="neuroscience"
+                            networkLabel="Neuroscience Network"
                             activeTab={activeTab}
                             industryOptions={industryOptions}
                             onSubmit={handleCreateSection}
@@ -403,6 +405,8 @@ export default function NeuroscienceStructurePage({
             ) : (
                 <>
                     <CategorySectionList
+                        network="neuroscience"
+                        networkLabel="Neuroscience Network"
                         sections={sections}
                         activeTab={activeTab}
                         onEditSection={handleUpdateSection}

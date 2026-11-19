@@ -22,6 +22,8 @@ import {
 } from "@/feature/slice/admin/categories";
 
 interface CategorySectionListProps {
+    network?: string;
+    networkLabel?: string;
     sections: CategorySection[];
     activeTab?: string;
     onEditSection?: (section: CategorySection, data: { industryType: string; sectionHeading: string }) => void;
@@ -29,6 +31,8 @@ interface CategorySectionListProps {
 }
 
 export default function CategorySectionList({
+    network,
+    networkLabel,
     sections,
     activeTab = "all",
     onEditSection,
@@ -358,12 +362,16 @@ export default function CategorySectionList({
             <CreateSectionModal
                 open={editSectionModalOpen}
                 onOpenChange={setEditSectionModalOpen}
+                network={editingSection?.network || network}
+                networkLabel={editingSection?.networkLabel || networkLabel}
                 industryOptions={industryOptions}
                 initialValues={
                     editingSection
                         ? {
                               industryType: editingSection.category,
                               sectionHeading: editingSection.title,
+                              network: editingSection.network,
+                              networkLabel: editingSection.networkLabel,
                           }
                         : undefined
                 }
