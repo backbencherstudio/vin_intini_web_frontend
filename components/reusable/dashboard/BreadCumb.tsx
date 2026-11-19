@@ -19,6 +19,7 @@ const routeNames: Record<string, string> = {
 
   settings: "Settings",
   cities: "Cities & Locations",
+  "contact-messages": "Contact Messages",
   analytics: "Analytics",
   subscription: "Subscription",
 };
