@@ -11,6 +11,7 @@ import {
   FlaskConical,
   Pill,
   Briefcase,
+  MapPin,
 } from "lucide-react";
 import { LuChartNoAxesColumn } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -283,6 +284,12 @@ export const SidebarData: SidebarItem[] = [
         name: "Content Pages",
         href: "/dashboard/settings/content-pages",
         icon: List,
+      },
+      {
+        id: "city-management",
+        name: "Cities & Locations",
+        href: "/dashboard/settings/cities",
+        icon: MapPin,
       },
       {
         id: "security-settings",

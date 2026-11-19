@@ -18,6 +18,7 @@ const routeNames: Record<string, string> = {
   "danger-request": "Danger Request",
 
   settings: "Settings",
+  cities: "Cities & Locations",
   analytics: "Analytics",
   subscription: "Subscription",
 };

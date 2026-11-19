@@ -65,6 +65,7 @@ export const baseApiSlice = createApi({
     "adminJobs",
     "adminJobApplicants",
     "JobPreference",
+    "city",
   ],
 });
 
