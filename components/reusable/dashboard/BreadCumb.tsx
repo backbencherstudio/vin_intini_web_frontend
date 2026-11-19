@@ -9,6 +9,7 @@ const routeNames: Record<string, string> = {
   dashboard: "Dashboard",
 
   "user-management": "User Management",
+  overview: "Overview",
   "basic-user": "Basic Users",
 
   "cleaner-request": "Cleaner Request",

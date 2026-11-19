@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 const PAGE_SIZE = 15;
 
 const tierLabels: Record<string, string> = {
+  all: "All Users",
   basic: "Basic Users",
   premium: "Premium Users",
   pro_industry: "Pro Industry Users",
@@ -62,7 +63,7 @@ function downloadCsv(users: User[], tier: UserTier) {
 export default function UserManagementTable({
   tier,
 }: {
-  tier: Exclude<UserTier, "all">;
+  tier: UserTier;
 }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -139,6 +140,31 @@ export default function UserManagementTable({
       accessor: "email",
       cell: (user) => <span className="whitespace-nowrap">{user.email}</span>,
     },
+    ...(tier === "all"
+      ? [{
+          header: "Tier",
+          cell: (user: User) => {
+            const t = user.tier || "basic";
+            const badgeClasses =
+              t === "pro_industry" || t === "industry"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : t === "premium"
+                ? "bg-purple-50 text-purple-700 border-purple-200"
+                : "bg-sky-50 text-sky-700 border-sky-200";
+            const label =
+              t === "pro_industry" || t === "industry"
+                ? "Pro Industry"
+                : t === "premium"
+                ? "Premium"
+                : "Basic";
+            return (
+              <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${badgeClasses}`}>
+                {label}
+              </span>
+            );
+          },
+        } satisfies Column<User>]
+      : []),
     {
       header: "Profession",
       cell: (user) => (
@@ -149,7 +175,7 @@ export default function UserManagementTable({
         </span>
       ),
     },
-    ...(tier === "pro_industry"
+    ...(tier === "pro_industry" || tier === "all"
       ? [{
           header: "Company",
           cell: (user: User) => user.company?.name || "—",
@@ -157,7 +183,7 @@ export default function UserManagementTable({
       : []),
     {
       header: "Subscription",
-      cell: (user) => user.plan?.name || (tier === "basic" ? "Basic" : "—"),
+      cell: (user) => user.plan?.name || (user.tier === "premium" ? "Premium" : "Basic"),
     },
     {
       header: "Status",

@@ -183,12 +183,30 @@ export interface AdminUserDetailsResponse {
   data: AdminUserDetails;
 }
 
+export interface UserManagementSummary {
+  total_users: number;
+  basic_users: number;
+  premium_users: number;
+  pro_industry_users: number;
+  active_users: number;
+  suspended_users: number;
+  pending_leaves: number;
+  new_this_month?: number;
+}
+
 export interface GetUsersResponse {
   success: boolean;
   tier?: string;
   total_users?: number;
+  summary?: UserManagementSummary;
   data: User[];
   pagination: Pagination;
+}
+
+export interface GetUserOverviewResponse {
+  success: boolean;
+  summary: UserManagementSummary;
+  recent_users: User[];
 }
 
 export interface GetUsersParams {

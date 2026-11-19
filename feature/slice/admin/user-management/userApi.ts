@@ -3,6 +3,7 @@ import {
   AdminUserDetailsResponse,
   GetLeaveRequestsParams,
   GetLeaveRequestsResponse,
+  GetUserOverviewResponse,
   GetUsersParams,
   GetUsersResponse,
   ToggleUserSuspendResponse,
@@ -11,6 +12,13 @@ import {
 const userApi = baseApiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
+    getUserManagementOverview: builder.query<GetUserOverviewResponse, void>({
+      query: () => ({
+        url: "/admin/user-manage/overview",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
     getUsers: builder.query<GetUsersResponse, GetUsersParams | void>({
       query: (params) => ({
         url: "/admin/user-manage/users",
@@ -54,6 +62,7 @@ const userApi = baseApiSlice.injectEndpoints({
 });
 
 export const {
+  useGetUserManagementOverviewQuery,
   useGetUsersQuery,
   useGetAdminUserDetailsQuery,
   useToggleUserSuspendMutation,

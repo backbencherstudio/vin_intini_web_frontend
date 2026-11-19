@@ -45,6 +45,12 @@ export const SidebarData: SidebarItem[] = [
     icon: UserManagementIcon,
     children: [
       {
+        id: "users-overview",
+        name: "Overview",
+        href: "/dashboard/user-management/overview",
+        icon: LuChartNoAxesColumn,
+      },
+      {
         id: "basic-users",
         name: "Basic Users",
         href: "/dashboard/user-management/basic-user",
