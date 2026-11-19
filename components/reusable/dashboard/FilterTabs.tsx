@@ -47,14 +47,11 @@ export default function FilterTabs({
           <Link
             key={tab.id}
             href={href}
-            className={`
-              px-8 py-2 rounded-full text-sm font-medium transition-all
-              ${
-                isActive
-                  ? "bg-gray-900 text-white shadow-sm"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"
-              }
-            `}
+            className={`inline-flex h-10 items-center justify-center px-5 rounded-lg text-xs font-semibold transition-all ${
+              isActive
+                ? "bg-[#04A1B7] text-white border border-[#04A1B7] shadow-xs hover:bg-[#038A9D]"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900"
+            }`}
           >
             {tab.label}
           </Link>

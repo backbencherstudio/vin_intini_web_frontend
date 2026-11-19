@@ -333,7 +333,7 @@ export default function PsychologyStructurePage({
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             placeholder="Search by section or subcategory name..."
-                            className="w-full rounded-lg border border-gray-200 bg-gray-50/50 py-2.5 pl-10 pr-9 text-xs text-gray-800 placeholder-gray-400 transition-colors focus:border-[#04A1B7] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#04A1B7]"
+                            className="w-full h-10 rounded-lg border border-gray-200 bg-gray-50/50 py-2.5 pl-10 pr-9 text-xs text-gray-800 placeholder-gray-400 transition-colors focus:border-[#04A1B7] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#04A1B7]"
                         />
                         {searchInput && (
                             <button
