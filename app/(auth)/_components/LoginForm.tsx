@@ -49,10 +49,32 @@ function LoginForm() {
         if (response?.user?.role === "admin") {
           route.push(`/dashboard`);
         } else {
-          route.push(`/mu/home`);
+          const hasCompletedOnboarding =
+            response?.is_onboarding ?? Boolean(response?.user?.profile);
+          if (!hasCompletedOnboarding) {
+            route.push(`/onboarding`);
+          } else {
+            route.push(`/mu/home`);
+          }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error?.data?.status === "unverified_email" ||
+        error?.data?.message?.includes("verify your email")
+      ) {
+        const emailToVerify = error?.data?.email || data.email;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("regEmail", emailToVerify);
+        }
+        toast.error(
+          error?.data?.message || "Please verify your email with OTP before login."
+        );
+        route.push(
+          `/sign-up/verify-email?email=${encodeURIComponent(emailToVerify)}`
+        );
+        return;
+      }
       toast.error(error?.data?.message || "Email or password is incorrect.");
     }
   };

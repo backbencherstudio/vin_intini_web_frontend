@@ -46,9 +46,9 @@ function RegistrationForm() {
         }
       }
 
-      toast.success("Registration successful!");
+      toast.success(response?.message || "Registration successful!");
       localStorage.setItem("regEmail", data.email);
-      route.push("/sign-up/verify-email");
+      route.push(`/sign-up/verify-email?email=${encodeURIComponent(data.email)}`);
     } catch (error) {
       toast.error(
         error?.data?.message || "Registration failed. Please try again.",
@@ -181,7 +181,7 @@ function RegistrationForm() {
         </div>
         <div>
           <p className="text-center text-sm md:text-base text-grayColor1">
-            Don’t have an account?{" "}
+            Already have an account?{" "}
             <Link href="/login" className="text-primaryColor hover:underline">
               Sign In
             </Link>
