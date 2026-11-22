@@ -141,6 +141,7 @@ export async function middleware(request: NextRequest) {
 
   const isValidToken = Boolean(currentToken && payload && !expired);
   const userRole = isValidToken ? payload?.role || "user" : null;
+  const isAdmin = userRole === "admin" || userRole === "super-admin";
 
   // Header propagation for downstream components
   const requestHeaders = new Headers(request.headers);
@@ -168,6 +169,19 @@ export async function middleware(request: NextRequest) {
   );
 
   // -------------------------------------------------------------
+  // ROOT / LANDING PAGE GUARD (/)
+  // -------------------------------------------------------------
+  if (pathname === "/") {
+    if (isValidToken) {
+      if (isAdmin) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
+    return createNextResponse();
+  }
+
+  // -------------------------------------------------------------
   // ADMIN ROUTES GUARD (/dashboard, /dashboard/*)
   // -------------------------------------------------------------
   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
@@ -175,7 +189,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
 
-    if (userRole !== "admin") {
+    if (!isAdmin) {
       return NextResponse.redirect(new URL("/mu/home", request.url));
     }
 
@@ -186,7 +200,7 @@ export async function middleware(request: NextRequest) {
   // ADMIN LOGIN PAGE GUARD (/admin/login)
   // -------------------------------------------------------------
   if (pathname === "/admin/login") {
-    if (isValidToken && userRole === "admin") {
+    if (isValidToken && isAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
     return createNextResponse();
@@ -197,7 +211,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------------------------------------------
   if (pathname === "/login" || pathname === "/sign-up") {
     if (isValidToken) {
-      if (userRole === "admin") {
+      if (isAdmin) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
       return NextResponse.redirect(new URL("/mu/home", request.url));
@@ -213,7 +227,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (userRole === "admin") {
+    if (isAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
