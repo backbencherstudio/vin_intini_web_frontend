@@ -70,7 +70,7 @@ export default function IntegrationsSettings() {
       // Keys such as `apple_client_id_ios` use underscores, which count as
       // word characters and do not match a trailing `\b` after "apple".
       const isAppleIntegration = /apple/i.test(sourceName);
-      const id = isAppleIntegration ? "apple-oauth" : `integration-${index}`;
+      const id = isAppleIntegration ? "apple-oauth" : section.toLowerCase().replace(/[^a-z0-9]+/g, "-");
       const title = isAppleIntegration
         ? "Apple OAuth"
         : integrationTitle(section, entries);
@@ -85,7 +85,7 @@ export default function IntegrationsSettings() {
       return groups;
     },
     [],
-  );
+  ).sort((a, b) => a.title.localeCompare(b.title));
   const activeIntegration = integrations.find(({ id }) => id === activeSection);
   const selectedEntries = activeIntegration?.entries ?? [];
   const activeTitle = activeIntegration?.title ?? "Integration";
