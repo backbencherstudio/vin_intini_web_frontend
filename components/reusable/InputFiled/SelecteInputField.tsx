@@ -195,7 +195,10 @@ export default function SelecteInputField({
   const flatOptions = options as Option[];
 
   return (
-    <Select value={value ?? ""} onValueChange={handleChange}>
+    <Select
+      value={value ? String(value) : undefined}
+      onValueChange={handleChange}
+    >
       <SelectTrigger
         id={id}
         className={cn(

@@ -106,7 +106,12 @@ export default function CreateAdvertisementForm({
     useGetAdvertisemetSectionQuery(sectionParams, {
       skip: !selectedNetworkType || !selectedIndustryType,
     });
-  const { data: editResponse } = useGetAdvertisemetEditeQuery(id, {
+  const {
+    data: editResponse,
+    isLoading: isEditLoading,
+    isError: isEditError,
+    error: editError,
+  } = useGetAdvertisemetEditeQuery(id, {
     skip: !id,
   });
 
@@ -114,6 +119,12 @@ export default function CreateAdvertisementForm({
   const isRejectedAd =
     Boolean(id) &&
     String(existingAd?.status || "").toLowerCase() === "rejected";
+
+  const isLoadedRef = useRef(false);
+
+  useEffect(() => {
+    isLoadedRef.current = false;
+  }, [id]);
 
   // File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -213,6 +224,8 @@ export default function CreateAdvertisementForm({
   useEffect(() => {
     const ad = editResponse?.data || editResponse;
     if (!ad || !id) return;
+    if (isLoadedRef.current) return;
+    isLoadedRef.current = true;
 
     reset({
       product_name: ad.product_name || "",
@@ -231,13 +244,13 @@ export default function CreateAdvertisementForm({
       ),
     });
 
-    if (ad.image_url) {
+    if (ad.image_url && typeof ad.image_url === "string") {
       setImagePreview(ad.image_url);
-    } else if (ad.image) {
+    } else if (ad.image && typeof ad.image === "string") {
       setImagePreview(
         ad.image.startsWith("http")
           ? ad.image
-          : `https://vini.pixelstack.cloud/storage/${ad.image}`,
+          : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://vini.softvenceomegaforce.cloud"}/storage/${ad.image.replace(/^\/+/, "")}`,
       );
     }
   }, [editResponse, id, reset]);
@@ -381,6 +394,47 @@ export default function CreateAdvertisementForm({
       }
     }
   };
+
+  if (id && isEditLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto py-16 flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 border-3 border-primaryColor border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-descriptionColor">
+          Loading product details...
+        </p>
+      </div>
+    );
+  }
+
+  if (id && isEditError) {
+    const errorMsg =
+      (editError as any)?.data?.message ||
+      "Unable to find or edit this product. You may not have permission or it may have been deleted.";
+    return (
+      <div className="w-full max-w-xl mx-auto py-16 px-4 text-center">
+        <div className="p-6 bg-white border border-borderColor rounded-2xl shadow-xs space-y-4">
+          <div className="w-12 h-12 mx-auto rounded-full bg-red-50 text-red-500 flex items-center justify-center text-xl font-bold">
+            !
+          </div>
+          <h2 className="text-lg font-bold text-headerColor">
+            Product Not Accessible
+          </h2>
+          <p className="text-sm text-descriptionColor leading-relaxed">
+            {errorMsg}
+          </p>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => router.push("/mu/products")}
+              className="px-6 py-2.5 rounded-full bg-primaryColor text-white text-sm font-medium hover:bg-primaryColor/90 transition shadow-xs cursor-pointer"
+            >
+              Back to Products
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4">
@@ -612,7 +666,7 @@ export default function CreateAdvertisementForm({
               control={control}
               rules={{
                 validate: (value) => {
-                  const plainText = value
+                  const plainText = (value || "")
                     .replace(/<[^>]*>/g, " ")
                     .replace(/&nbsp;/g, " ")
                     .trim();
@@ -626,7 +680,7 @@ export default function CreateAdvertisementForm({
               }}
               render={({ field }) => (
                 <JoditEditor
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   placeholder="Describe the product, its purpose, benefits, and key features."
