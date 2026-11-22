@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_MAX_AGE } from "./lib/token";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api";
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://vini.softvenceomegaforce.cloud/api";
 
 const PUBLIC_PATHS = [
   "/",
