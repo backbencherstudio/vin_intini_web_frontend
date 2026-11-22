@@ -14,13 +14,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PaymentSkeleton from "./PaymentSkeleton";
-// আপনার API slice পাথ অনুযায়ী import করুন
-const stripeKey = process.env.NEXT_PUBLIC_STRIPE_KEY;
-// আপনার Stripe Publishable Key দিন
-const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
-
 // Stripe Element-এর কমন স্টাইল কনফিগ
 const elementOptions = {
   style: {
@@ -235,27 +230,38 @@ const CheckoutForm = ({ planDetails }) => {
 };
 
 export default function SubscriptionPayment({ pymentId }) {
-
-
   const {
     data: planDetails,
     isLoading,
     isError,
   } = useGetSubscriptionSinglePlansQuery(pymentId);
-  if (!stripePromise) {
-    return (
-      <div className="text-center py-10 text-red-500 font-medium">
-        Stripe Public Key is missing! Check your .env.local file.
-      </div>
-    );
-  }
+
+  const plan = planDetails?.data?.plan;
+  const stripePublicKey =
+    plan?.stripe_public_key ||
+    planDetails?.data?.stripe_public_key ||
+    process.env.NEXT_PUBLIC_STRIPE_KEY ||
+    "pk_test_51UDHbqRBaxaeUOx4iA0SJjMfYNhUCOc6eZXJIvsK0WdWZBfBULPlIwsMdNk8KoaIsd7pIE1uvt8ucm6v4KJ68OSG00UZwpRkGE";
+
+  const stripePromise = useMemo(() => {
+    return stripePublicKey ? loadStripe(stripePublicKey) : null;
+  }, [stripePublicKey]);
 
   if (isLoading) {
     return <PaymentSkeleton />;
   }
+
+  if (!stripePromise) {
+    return (
+      <div className="text-center py-10 text-red-500 font-medium">
+        Stripe Public Key is missing! Check your configuration.
+      </div>
+    );
+  }
+
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm planDetails={planDetails?.data?.plan} />
+      <CheckoutForm planDetails={plan} />
     </Elements>
   );
 }
