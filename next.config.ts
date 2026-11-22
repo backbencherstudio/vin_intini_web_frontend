@@ -2,10 +2,22 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  allowedDevOrigins: ["192.168.7.154", "backend.mindunite.com"],
+  allowedDevOrigins: [
+    "192.168.7.154",
+    "backend.mindunite.com",
+    "vini.softvenceomegaforce.cloud",
+  ],
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "vini.softvenceomegaforce.cloud",
+      },
+      {
+        protocol: "http",
+        hostname: "vini.softvenceomegaforce.cloud",
+      },
       {
         protocol: "https",
         hostname: "maps.googleapis.com",
