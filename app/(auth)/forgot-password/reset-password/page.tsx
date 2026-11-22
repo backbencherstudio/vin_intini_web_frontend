@@ -47,10 +47,16 @@ export default function Page() {
       }).unwrap();
 
       toast.success(response?.message || "Password reset successfully.");
+      const origin = localStorage.getItem("passwordResetOrigin");
       localStorage.removeItem("resetEmail");
       localStorage.removeItem("resetToken");
       localStorage.removeItem("resetOtp");
-      router.push("/login");
+      localStorage.removeItem("passwordResetOrigin");
+      if (origin === "admin") {
+        router.push("/admin/login");
+      } else {
+        router.push("/login");
+      }
     } catch (error: any) {
       toast.error(
         error?.data?.message || "An error occurred. Please try again.",

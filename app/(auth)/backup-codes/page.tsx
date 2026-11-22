@@ -12,20 +12,20 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-
-
 export default function Page() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState(searchParams.get("email") || "");
-  const [challengeToken, setChallengeToken] = useState(searchParams.get("challenge_token") || "");
+  const [email] = useState(searchParams.get("email") || "");
+  const [challengeToken] = useState(searchParams.get("challenge_token") || "");
+  const redirectParam = searchParams.get("redirect") || "";
   const [errorRecovery, setErrorRecovery] = useState("");
   const route = useRouter();
   const [twoFactorEmailCode, { isLoading }] =
     useTwoFactorEmailCodeVerifyMutation();
   const [twoFactorRecoveryEmail, { isLoading: isRecoveryLoading }] =
     useTwoFactorRecoveryEmailMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -38,25 +38,34 @@ export default function Page() {
       }
       const response = await twoFactorEmailCode(payload).unwrap();
       toast.success("2FA verification successful!");
-      await setToken(response?.token || response.data.token);
-      route.push(`/mu/home`);
-    } catch (error: any) {
-      setError(error?.data?.message || "Invalid code. Please try again.");
+      const token = response?.token || response?.data?.token;
+      if (token) {
+        await setToken(token);
+      }
+      const userRole = response?.user?.role || response?.data?.user?.role;
+      const target = redirectParam || (userRole === "admin" ? "/dashboard" : "/mu/home");
+      route.push(target);
+    } catch (err: unknown) {
+      const errorObj = err as { data?: { message?: string } };
+      setError(errorObj?.data?.message || "Invalid code. Please try again.");
       setErrorRecovery("");
     }
   };
+
   const handleEmailRecovery = async () => {
     try {
       const payload = {
         email: email,
       };
       const response = await twoFactorRecoveryEmail(payload).unwrap();
-      ;
-      
-      route.push(`/recovery-email?email=${email}`);
-    } catch (error) {
+
+      route.push(
+        `/recovery-email?email=${encodeURIComponent(email)}&recovery=${encodeURIComponent(response?.masked_email || "")}${redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : ""}`,
+      );
+    } catch (err: unknown) {
+      const errorObj = err as { data?: { message?: string } };
       setErrorRecovery(
-        error?.data?.message ||
+        errorObj?.data?.message ||
           "Failed to send recovery email. Please try again.",
       );
       setError("");
@@ -66,7 +75,7 @@ export default function Page() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 px-3">
       <h4 className="text-xl md:text-2xl font-semibold text-headerColor text-center">
-        Enter the secrect code that you backed up before
+        Enter the backup code that you saved before
       </h4>
 
       <CustomInput
@@ -80,11 +89,7 @@ export default function Page() {
         className={`text-center tracking-widest text-lg ${error ? "border-red-500" : "border-gray-300"}`}
       />
 
-      {/* <button type="button" className="text-sm font-medium text-primaryColor">
-        Resend Code
-      </button> */}
-
-      <div className="flex flex-col  gap-3 pt-2">
+      <div className="flex flex-col gap-3 pt-2">
         <button
           type="submit"
           disabled={isLoading}
@@ -95,7 +100,7 @@ export default function Page() {
         <div className="text-center">
           Use{" "}
           <Link
-            href={`/two-factor?email=${encodeURIComponent(email)}${challengeToken ? `&challenge_token=${encodeURIComponent(challengeToken)}` : ""}`}
+            href={`/two-factor?email=${encodeURIComponent(email)}${challengeToken ? `&challenge_token=${encodeURIComponent(challengeToken)}` : ""}${redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : ""}`}
             className="text-primaryColor"
           >
             Authentication App
@@ -104,7 +109,8 @@ export default function Page() {
         <div className="text-grayColor1 text-center">
           Don’t have access device? Send code to{" "}
           <button
-            className="text-primaryColor cursor-pointer "
+            type="button"
+            className="text-primaryColor cursor-pointer"
             onClick={handleEmailRecovery}
             disabled={isRecoveryLoading}
           >

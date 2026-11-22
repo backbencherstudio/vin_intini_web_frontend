@@ -9,6 +9,13 @@ const authSlice = baseApiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    adminLogin: builder.mutation({
+      query: (credentials) => ({
+        url: "/admin/login",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     logout: builder.mutation<unknown, void>({
       query: () => ({
         url: "/logout",
@@ -107,6 +114,7 @@ const authSlice = baseApiSlice.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useAdminLoginMutation,
   useLogoutMutation,
   useRefreshTokenMutation,
   useForgotPasswordMutation,

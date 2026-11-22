@@ -6,6 +6,8 @@ import { IoMdNotifications } from "react-icons/io";
 import { Menu, X } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useGetMyProfileQuery } from "@/feature/slice/user/userSlice";
+import { useLogoutMutation } from "@/feature/slice/auth/authSlice";
+import { clearToken } from "@/lib/token";
 import adminProfile from "@/public/images/admin/profile.png";
 import Cookies from "js-cookie";
 import Link from "next/link";
@@ -35,11 +37,20 @@ export default function TopHeader() {
     [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
     "Administrator";
 
-  const handleLogout = () => {
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
-    Cookies.remove("token");
-    window.location.href = "/login";
+  const [logoutApi] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap();
+    } catch {
+      // fallback
+    } finally {
+      await clearToken();
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      Cookies.remove("token");
+      window.location.href = "/admin/login";
+    }
   };
 
   return (

@@ -12,6 +12,12 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Hide native Edge / IE password reveal and clear icons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
 /* Keep layout stable and background fixed when Radix/RemoveScroll locks scroll on modals/dialogs. */
 html body[data-scroll-locked] {
   overflow: hidden !important;

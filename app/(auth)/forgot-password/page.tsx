@@ -1,7 +1,9 @@
 "use client";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import { useForgotPasswordMutation } from "@/feature/slice/auth/authSlice";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -10,11 +12,22 @@ export default function Page() {
     handleSubmit,
     formState: { errors },
     register,
-  } = useForm();
-  const [forgotPassword, { isLoading, isError }] = useForgotPasswordMutation();
+  } = useForm<{ email: string }>();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const router = useRouter();
-  const onSubmit = async (data: any) => {
+  const searchParams = useSearchParams();
+  const fromAdmin = searchParams.get("from") === "admin";
+
+  useEffect(() => {
+    if (fromAdmin) {
+      localStorage.setItem("passwordResetOrigin", "admin");
+    } else if (!localStorage.getItem("passwordResetOrigin")) {
+      localStorage.removeItem("passwordResetOrigin");
+    }
+  }, [fromAdmin]);
+
+  const onSubmit = async (data: { email: string }) => {
     try {
       const response = await forgotPassword(data.email).unwrap();
       toast.success(
@@ -22,17 +35,21 @@ export default function Page() {
       );
       localStorage.setItem("resetEmail", data.email);
       router.push("/forgot-password/otp-verification");
-    } catch (error) {
+    } catch {
       toast.error("An error occurred. Please try again.");
     }
   };
+
   return (
-    <div className=" ">
-      <div className="w-full  ">
-        <div className=" items-center text-center">
-          <h3 className=" text-lg md:text-xl lg:text-2xl font-semibold text-headerColor">
-            Reset your password
+    <div>
+      <div className="w-full">
+        <div className="items-center text-center">
+          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-headerColor">
+            {fromAdmin ? "Admin Password Recovery" : "Reset your password"}
           </h3>
+          <p className="mt-1 text-xs text-descriptionColor">
+            Enter your registered {fromAdmin ? "administrator" : "account"} email to receive a verification OTP.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-7 space-y-4">
@@ -41,9 +58,9 @@ export default function Page() {
               label="Email"
               id="email"
               type="email"
-              placeholder="johndoe@example.com"
+              placeholder={fromAdmin ? "admin@mindunite.com" : "johndoe@example.com"}
               error={errors.email ? "Please enter a valid email address." : ""}
-              className=" rounded-lg "
+              className="rounded-lg"
               {...register("email", { required: true })}
             />
           </div>
@@ -56,6 +73,15 @@ export default function Page() {
             {isLoading ? "Sending..." : "Next"}
           </button>
         </form>
+
+        <div className="mt-5 text-center">
+          <Link
+            href={fromAdmin ? "/admin/login" : "/login"}
+            className="text-xs font-medium text-primaryColor hover:underline transition"
+          >
+            ← Back to {fromAdmin ? "Admin Sign In" : "Login"}
+          </Link>
+        </div>
       </div>
     </div>
   );

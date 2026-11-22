@@ -20,10 +20,31 @@ export default function DashboardLayout({
   useEffect(() => {
     const token = Cookies.get("accessToken") || Cookies.get("token");
     if (!token) {
-      router.push("/login");
-    } else {
-      setChecked(true);
+      router.push("/admin/login");
+      return;
     }
+
+    try {
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(
+          atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))
+        );
+        if (payload?.exp && payload.exp * 1000 <= Date.now()) {
+          Cookies.remove("accessToken");
+          router.push("/admin/login?expired=1");
+          return;
+        }
+        if (payload?.role && payload.role !== "admin") {
+          router.push("/mu/home");
+          return;
+        }
+      }
+    } catch {
+      // fallback
+    }
+
+    setChecked(true);
   }, [router]);
 
   if (!checked) return null;

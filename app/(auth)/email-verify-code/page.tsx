@@ -16,6 +16,7 @@ export default function Page() {
   const [otp, setOtp] = useState<string[]>(Array(otpLength).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect") || "";
   const [verifyMail, setVerifyMail] = useState<string>(
     searchParams.get("email") || "",
   );
@@ -141,8 +142,13 @@ export default function Page() {
 
       toast.success(response?.message || "OTP verified successfully.");
 
-      await setToken(response?.token || response.data.token);
-      router.push(`/mu/home`);
+      const token = response?.token || response?.data?.token;
+      if (token) {
+        await setToken(token);
+      }
+      const userRole = response?.user?.role || response?.data?.user?.role;
+      const target = redirectParam || (userRole === "admin" ? "/dashboard" : "/mu/home");
+      router.push(target);
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");
     }

@@ -12,14 +12,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-
 export default function Page() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [errorRecovery, setErrorRecovery] = useState("");
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState(searchParams.get("email") || "");
-  const [challengeToken, setChallengeToken] = useState(searchParams.get("challenge_token") || "");
+  const [email] = useState(searchParams.get("email") || "");
+  const [challengeToken] = useState(searchParams.get("challenge_token") || "");
+  const redirectParam = searchParams.get("redirect") || "";
   const route = useRouter();
   const [twoFactorEmailCode, { isLoading }] =
     useTwoFactorEmailCodeVerifyMutation();
@@ -38,26 +38,34 @@ export default function Page() {
       }
       const response = await twoFactorEmailCode(payload).unwrap();
       toast.success("2FA verification successful!");
-      await setToken(response?.token || response.data.token);
-      route.push(`/mu/home`);
-    } catch (error: any) {
-      setError(error?.data?.message || "Invalid code. Please try again.");
+      const token = response?.token || response?.data?.token;
+      if (token) {
+        await setToken(token);
+      }
+      const userRole = response?.user?.role || response?.data?.user?.role;
+      const target = redirectParam || (userRole === "admin" ? "/dashboard" : "/mu/home");
+      route.push(target);
+    } catch (err: unknown) {
+      const errorObj = err as { data?: { message?: string } };
+      setError(errorObj?.data?.message || "Invalid code. Please try again.");
       setErrorRecovery("");
     }
   };
+
   const handleEmailRecovery = async () => {
     try {
       const payload = {
         email: email,
       };
       const response = await twoFactorRecoveryEmail(payload).unwrap();
-     
+
       route.push(
-        `/recovery-email?email=${email}&recovery=${response?.masked_email}`,
+        `/recovery-email?email=${encodeURIComponent(email)}&recovery=${encodeURIComponent(response?.masked_email || "")}${redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : ""}`,
       );
-    } catch (error) {
+    } catch (err: unknown) {
+      const errorObj = err as { data?: { message?: string } };
       setErrorRecovery(
-        error?.data?.message ||
+        errorObj?.data?.message ||
           "Failed to send recovery email. Please try again.",
       );
       setError("");
@@ -81,11 +89,7 @@ export default function Page() {
         className={`text-center tracking-widest text-lg ${error ? "border-red-500" : "border-gray-300"}`}
       />
 
-      {/* <button type="button" className="text-sm font-medium text-primaryColor">
-        Resend Code
-      </button> */}
-
-      <div className="flex flex-col text-center  gap-3 pt-2">
+      <div className="flex flex-col text-center gap-3 pt-2">
         <button
           type="submit"
           disabled={isLoading}
@@ -96,7 +100,7 @@ export default function Page() {
         <div className="text-center">
           Use{" "}
           <Link
-            href={`/backup-codes?email=${encodeURIComponent(email)}${challengeToken ? `&challenge_token=${encodeURIComponent(challengeToken)}` : ""}`}
+            href={`/backup-codes?email=${encodeURIComponent(email)}${challengeToken ? `&challenge_token=${encodeURIComponent(challengeToken)}` : ""}${redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : ""}`}
             className="text-primaryColor"
           >
             Backup codes
@@ -105,7 +109,8 @@ export default function Page() {
         <div className="text-grayColor1">
           Don’t have access device? Send code to{" "}
           <button
-            className="text-primaryColor  cursor-pointer "
+            type="button"
+            className="text-primaryColor cursor-pointer"
             onClick={handleEmailRecovery}
             disabled={isRecoveryLoading}
           >

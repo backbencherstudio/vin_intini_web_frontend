@@ -1,9 +1,15 @@
-import { getToken } from "@/lib/token";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { clearToken, getToken, setToken } from "@/lib/token";
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://vini.pixelstack.cloud/api",
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api",
   credentials: "include",
   prepareHeaders: async (headers) => {
     const token = await getToken();
@@ -14,9 +20,56 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await rawBaseQuery(args, api, extraOptions);
+
+  const endpointUrl = typeof args === "string" ? args : args.url;
+  const isAuthExempt =
+    endpointUrl.includes("/login") ||
+    endpointUrl.includes("/register") ||
+    endpointUrl.includes("/refresh");
+
+  if (result.error && result.error.status === 401 && !isAuthExempt) {
+    try {
+      const refreshResult = await rawBaseQuery(
+        {
+          url: "/refresh",
+          method: "POST",
+        },
+        api,
+        extraOptions
+      );
+
+      if (refreshResult.data) {
+        const data = refreshResult.data as {
+          token?: string;
+          data?: { token?: string };
+        };
+        const newToken = data.token || data.data?.token;
+
+        if (newToken) {
+          await setToken(newToken);
+          // Retry the original query with the refreshed token
+          result = await rawBaseQuery(args, api, extraOptions);
+        }
+      } else {
+        await clearToken();
+      }
+    } catch {
+      await clearToken();
+    }
+  }
+
+  return result;
+};
+
 export const baseApiSlice = createApi({
   reducerPath: "api",
-  baseQuery: rawBaseQuery,
+  baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
   tagTypes: [
     "User",

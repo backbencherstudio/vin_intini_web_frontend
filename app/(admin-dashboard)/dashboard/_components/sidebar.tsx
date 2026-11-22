@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
+import { useLogoutMutation } from "@/feature/slice/auth/authSlice";
+import { clearToken } from "@/lib/token";
 import {
   ChevronDown,
   LogOut,
@@ -49,10 +51,20 @@ export default function DashboardSidebar() {
     setOpenMenus((prev) => (prev.includes(id) ? [] : [id]));
   };
 
-  const logout = () => {
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
-    window.location.href = "/login";
+  const [logoutApi] = useLogoutMutation();
+
+  const logout = async () => {
+    try {
+      await logoutApi().unwrap();
+    } catch {
+      // fallback
+    } finally {
+      await clearToken();
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      Cookies.remove("token");
+      window.location.href = "/admin/login";
+    }
   };
 
   return (

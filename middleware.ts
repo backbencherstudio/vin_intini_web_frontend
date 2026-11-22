@@ -1,0 +1,239 @@
+import { NextRequest, NextResponse } from "next/server";
+import { COOKIE_MAX_AGE } from "./lib/token";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api";
+
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/admin/login",
+  "/sign-up",
+  "/forgot-password",
+  "/privacy-policy",
+  "/terms-conditions",
+  "/two-factor",
+  "/backup-codes",
+  "/recovery-email",
+  "/email-verify-code",
+  "/account-recovery",
+];
+
+interface JwtPayload {
+  sub?: number | string;
+  role?: string;
+  is_verified?: boolean;
+  exp?: number;
+  jti?: string;
+  [key: string]: unknown;
+}
+
+function parseJwtPayload(token: string): JwtPayload | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload) as JwtPayload;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(payload: JwtPayload | null): boolean {
+  if (!payload || typeof payload.exp !== "number") return false;
+  return payload.exp * 1000 <= Date.now();
+}
+
+function setAuthCookie(response: NextResponse, token: string) {
+  response.cookies.set("accessToken", token, {
+    path: "/",
+    maxAge: COOKIE_MAX_AGE,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  return response;
+}
+
+function clearAuthCookie(response: NextResponse) {
+  response.cookies.delete("accessToken");
+  return response;
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Ignore static assets, public files, and Next internal endpoints
+  if (
+    pathname === "/favicon.ico" ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/static") ||
+    pathname.startsWith("/public") ||
+    pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|css|js|woff|woff2|ttf|eot)$/i)
+  ) {
+    return NextResponse.next();
+  }
+
+  // 1. Support ?auth= query param token (e.g. social login callback)
+  const cookieToken = request.cookies.get("accessToken")?.value || null;
+  const tokenQuery = request.nextUrl.searchParams.get("auth");
+  let currentToken = cookieToken;
+  let tokenFromQuery: string | null = null;
+
+  if (tokenQuery) {
+    try {
+      const decoded = JSON.parse(atob(tokenQuery));
+      if (decoded?.token) {
+        currentToken = decoded.token;
+        tokenFromQuery = decoded.token;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  let payload = currentToken ? parseJwtPayload(currentToken) : null;
+  let expired = isTokenExpired(payload);
+
+  // 2. Silent Refresh: If token expired, attempt server refresh before failing
+  if (currentToken && expired) {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        const newToken = refreshData?.token || refreshData?.data?.token;
+        if (newToken) {
+          currentToken = newToken;
+          tokenFromQuery = newToken;
+          payload = parseJwtPayload(newToken);
+          expired = false;
+        }
+      }
+    } catch {
+      // Network error or backend down
+    }
+  }
+
+  const isValidToken = Boolean(currentToken && payload && !expired);
+  const userRole = isValidToken ? payload?.role || "user" : null;
+
+  // Header propagation for downstream components
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-current-path", pathname);
+  const segments = pathname.split("/").filter(Boolean);
+  const lastParam = segments.length > 0 ? segments[segments.length - 1] : "";
+  requestHeaders.set("x-current-params", lastParam);
+
+  const createNextResponse = () => {
+    let response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+    if (tokenFromQuery && currentToken) {
+      response = setAuthCookie(response, currentToken);
+    }
+    return response;
+  };
+
+  const isPublicPath = PUBLIC_PATHS.some((path) =>
+    path === "/"
+      ? pathname === "/"
+      : pathname === path || pathname.startsWith(`${path}/`)
+  );
+
+  // -------------------------------------------------------------
+  // ADMIN ROUTES GUARD (/dashboard, /dashboard/*)
+  // -------------------------------------------------------------
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
+    if (!isValidToken) {
+      const response = NextResponse.redirect(
+        new URL("/admin/login", request.url)
+      );
+      if (cookieToken) {
+        clearAuthCookie(response);
+      }
+      return response;
+    }
+
+    if (userRole !== "admin") {
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
+
+    return createNextResponse();
+  }
+
+  // -------------------------------------------------------------
+  // ADMIN LOGIN PAGE GUARD (/admin/login)
+  // -------------------------------------------------------------
+  if (pathname === "/admin/login") {
+    if (isValidToken && userRole === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    return createNextResponse();
+  }
+
+  // -------------------------------------------------------------
+  // PUBLIC AUTH ROUTES (/login, /sign-up)
+  // -------------------------------------------------------------
+  if (pathname === "/login" || pathname === "/sign-up") {
+    if (isValidToken) {
+      if (userRole === "admin") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+      return NextResponse.redirect(new URL("/mu/home", request.url));
+    }
+    return createNextResponse();
+  }
+
+  // -------------------------------------------------------------
+  // USER PROTECTED ROUTES (/mu/*)
+  // -------------------------------------------------------------
+  if (pathname.startsWith("/mu/")) {
+    if (!isValidToken) {
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      if (cookieToken) {
+        clearAuthCookie(response);
+      }
+      return response;
+    }
+
+    if (userRole === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    return createNextResponse();
+  }
+
+  if (!isValidToken && !isPublicPath && !pathname.startsWith("/onboarding")) {
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    if (cookieToken) {
+      clearAuthCookie(response);
+    }
+    return response;
+  }
+
+  return createNextResponse();
+}
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
+};
