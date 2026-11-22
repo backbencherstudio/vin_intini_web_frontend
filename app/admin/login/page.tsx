@@ -84,7 +84,11 @@ export default function AdminLoginPage() {
       await setToken(token);
       store.dispatch(baseApiSlice.util.resetApiState());
       toast.success("Welcome back, Administrator!");
-      router.push("/dashboard");
+      if (typeof window !== "undefined") {
+        window.location.href = "/dashboard";
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       const errorObj = err as { data?: { message?: string } };
       toast.error(
@@ -122,7 +126,11 @@ export default function AdminLoginPage() {
       await setToken(token);
       store.dispatch(baseApiSlice.util.resetApiState());
       toast.success("Two-Factor Authentication verified. Welcome, Administrator!");
-      router.push("/dashboard");
+      if (typeof window !== "undefined") {
+        window.location.href = "/dashboard";
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       const errorObj = err as { data?: { message?: string } };
       setTwoFactorError(

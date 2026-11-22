@@ -55,18 +55,18 @@ function isTokenExpired(payload: JwtPayload | null): boolean {
   return payload.exp * 1000 <= Date.now();
 }
 
-function setAuthCookie(response: NextResponse, token: string) {
+function setAuthCookie(response: NextResponse, token: string, isHttps = true) {
   response.cookies.set("accessToken", token, {
     path: "/",
     maxAge: COOKIE_MAX_AGE,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
   });
   response.cookies.set("accessTokenIssuedAt", Date.now().toString(), {
     path: "/",
     maxAge: COOKIE_MAX_AGE,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
   });
   return response;
 }
@@ -79,6 +79,7 @@ function clearAuthCookie(response: NextResponse) {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isHttps = request.nextUrl.protocol === "https:";
 
   // Static files and internal routes bypass
   if (
@@ -155,7 +156,7 @@ export async function middleware(request: NextRequest) {
       },
     });
     if (tokenFromQuery && currentToken) {
-      response = setAuthCookie(response, currentToken);
+      response = setAuthCookie(response, currentToken, isHttps);
     }
     return response;
   };
@@ -171,13 +172,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------------------------------------------
   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
     if (!isValidToken) {
-      const response = NextResponse.redirect(
-        new URL("/admin/login", request.url)
-      );
-      if (cookieToken) {
-        clearAuthCookie(response);
-      }
-      return response;
+      return NextResponse.redirect(new URL("/admin/login", request.url));
     }
 
     if (userRole !== "admin") {
@@ -215,11 +210,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------------------------------------------
   if (pathname.startsWith("/mu/")) {
     if (!isValidToken) {
-      const response = NextResponse.redirect(new URL("/login", request.url));
-      if (cookieToken) {
-        clearAuthCookie(response);
-      }
-      return response;
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
     if (userRole === "admin") {
@@ -233,11 +224,7 @@ export async function middleware(request: NextRequest) {
   // CATCH-ALL UNPROTECTED PRIVATE ROUTES
   // -------------------------------------------------------------
   if (!isValidToken && !isPublicPath && !pathname.startsWith("/onboarding")) {
-    const response = NextResponse.redirect(new URL("/login", request.url));
-    if (cookieToken) {
-      clearAuthCookie(response);
-    }
-    return response;
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return createNextResponse();

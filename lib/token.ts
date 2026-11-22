@@ -10,11 +10,16 @@ const ACCESS_TOKEN_ISSUED_AT_KEY = "accessTokenIssuedAt";
 export async function setToken(token: string) {
   const now = Date.now().toString();
 
+  const isHttps =
+    typeof window !== "undefined"
+      ? window.location.protocol === "https:"
+      : process.env.NODE_ENV === "production";
+
   const cookieOptions = {
     path: "/",
     maxAge: COOKIE_MAX_AGE,
     sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
   };
 
   if (typeof window === "undefined") {

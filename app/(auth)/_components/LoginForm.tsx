@@ -54,16 +54,18 @@ function LoginForm() {
         toast.success("Login successful!");
         await setToken(response?.token || response.data.token);
         store.dispatch(baseApiSlice.util.resetApiState());
-        if (response?.user?.role === "admin") {
-          route.push(`/dashboard`);
+
+        const targetUrl =
+          response?.user?.role === "admin"
+            ? "/dashboard"
+            : !(response?.is_onboarding ?? Boolean(response?.user?.profile))
+            ? "/onboarding"
+            : "/mu/home";
+
+        if (typeof window !== "undefined") {
+          window.location.href = targetUrl;
         } else {
-          const hasCompletedOnboarding =
-            response?.is_onboarding ?? Boolean(response?.user?.profile);
-          if (!hasCompletedOnboarding) {
-            route.push(`/onboarding`);
-          } else {
-            route.push(`/mu/home`);
-          }
+          route.push(targetUrl);
         }
       }
     } catch (error: any) {
