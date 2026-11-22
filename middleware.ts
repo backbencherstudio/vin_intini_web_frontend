@@ -60,22 +60,28 @@ function setAuthCookie(response: NextResponse, token: string) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   });
+  response.cookies.set("accessTokenIssuedAt", Date.now().toString(), {
+    path: "/",
+    maxAge: COOKIE_MAX_AGE,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
   return response;
 }
 
 function clearAuthCookie(response: NextResponse) {
   response.cookies.delete("accessToken");
+  response.cookies.delete("accessTokenIssuedAt");
   return response;
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Ignore static assets, public files, and Next internal endpoints
+  // Static files and internal routes bypass
   if (
-    pathname === "/favicon.ico" ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/") ||
+    pathname.startsWith("/api") ||
     pathname.startsWith("/static") ||
     pathname.startsWith("/public") ||
     pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|css|js|woff|woff2|ttf|eot)$/i)
@@ -221,6 +227,9 @@ export async function middleware(request: NextRequest) {
     return createNextResponse();
   }
 
+  // -------------------------------------------------------------
+  // CATCH-ALL UNPROTECTED PRIVATE ROUTES
+  // -------------------------------------------------------------
   if (!isValidToken && !isPublicPath && !pathname.startsWith("/onboarding")) {
     const response = NextResponse.redirect(new URL("/login", request.url));
     if (cookieToken) {
