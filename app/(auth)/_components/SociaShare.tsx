@@ -1,33 +1,44 @@
 "use client";
-import { URL } from "@/config/app.config";
-import { AppleIcon, FacebookIcon, GoogleIcon } from "@/public/svgIcons/Icons";
+
+import { AppleIcon, GoogleIcon } from "@/public/svgIcons/Icons";
 import { useGetGoogleQuery } from "@/feature/slice/socialLogin/socialLoginSlice";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 function SocialShare() {
+  const { data, isLoading, isError, refetch } =
+    useGetGoogleQuery("googleLogin");
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-    const { data, isLoading, error } = useGetGoogleQuery("googleLogin");
-    const router = useRouter();
+  const handleGoogleSignIn = () => {
+    if (data?.url) {
+      setIsRedirecting(true);
+      window.location.href = data.url;
+      return;
+    }
+
+    if (isError) {
+      toast.error("Unable to connect to Google service. Retrying...");
+      refetch();
+    }
+  };
 
   return (
     <div>
-      <div className="text-blackColor flex flex-col gap-3 text-sm  ">
+      <div className="text-blackColor flex flex-col gap-3 text-sm">
         <button
-          onClick={()=>{
-            if(data?.url){
-              router.push(data.url);
-            }
-          }}
-          className="flex justify-center active:scale-95 cursor-pointer font-semibold items-center gap-2  w-full border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full"
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading || isRedirecting}
+          className="flex justify-center active:scale-95 cursor-pointer font-semibold items-center gap-2 w-full border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <GoogleIcon />
-          Sign in with Google
+          {isRedirecting ? "Connecting to Google..." : "Sign in with Google"}
         </button>
-        {/* <button className="flex active:scale-95 justify-center text-[#1877F2] cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
-          <FacebookIcon />
-          Sign in with Facebook
-        </button> */}
-        <button className="flex active:scale-95 justify-center cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full">
+        <button
+          type="button"
+          className="flex active:scale-95 justify-center cursor-pointer font-semibold w-full items-center gap-2 border border-borderColor hover:shadow-sm duration-200 transition-all px-4 py-3 rounded-full"
+        >
           <AppleIcon />
           Sign in with Apple
         </button>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginForm from "../_components/LoginForm";
 
 function Page() {
@@ -6,7 +7,9 @@ function Page() {
       <h4 className="text-lg md:text-xl lg:text-2xl font-semibold text-headerColor text-center max-w-93.75 mx-auto">
         Connecting the minds shaping Psychology and Neuroscience.
       </h4>
-      <LoginForm />
+      <Suspense fallback={<div className="py-8 text-center text-sm text-grayColor1">Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

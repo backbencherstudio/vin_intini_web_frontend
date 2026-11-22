@@ -8,8 +8,8 @@ import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { FiEyeOff } from "react-icons/fi";
@@ -30,6 +30,14 @@ function LoginForm() {
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   const route = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      toast.error(errorParam);
+    }
+  }, [searchParams]);
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await login(data).unwrap();
