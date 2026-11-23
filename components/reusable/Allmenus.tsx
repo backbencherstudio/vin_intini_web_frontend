@@ -125,10 +125,10 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
-    { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
+    { label: "Job Listings", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Products", slug: "/mu/products", icon: LuShoppingBag },
     {
-      label: "Advertisement",
+      label: "Advertisements",
       slug: "/mu/advertisment",
       icon: AdvertisementIcon,
     },
@@ -139,7 +139,7 @@ export function getProIndustryMenuItems(
     },
 
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
-    { label: "Message", slug: "/mu/industry-message", icon: MessageIcon },
+    { label: "Messages", slug: "/mu/industry-message", icon: MessageIcon },
     {
       label: "Post a job position",
       slug: "/mu/post-job-position",
