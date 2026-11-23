@@ -1251,7 +1251,7 @@ export default function ContentPages() {
 
     return (
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs transition sm:p-7">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
+        <div className="sticky top-0 z-10 -mx-5 -mt-5 mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-white px-5 py-3.5 rounded-t-2xl sm:-mx-7 sm:-mt-7 sm:px-7 sm:py-4 shadow-2xs">
           <div>
             <h2 className="text-base font-bold text-gray-900 sm:text-lg">
               {cfg.title}
@@ -1604,9 +1604,12 @@ export default function ContentPages() {
   };
 
   return (
-    <form onSubmit={save} className="space-y-6 pb-8">
+    <form
+      onSubmit={save}
+      className="flex flex-col gap-4 lg:gap-5 lg:h-[calc(100vh-8.5rem)] lg:overflow-hidden pb-8 lg:pb-0"
+    >
       {/* Page Header */}
-      <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white px-6 py-4 shadow-xs">
+      <header className="shrink-0 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white px-6 py-3.5 shadow-xs sticky top-16 lg:static z-20">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
@@ -1623,7 +1626,7 @@ export default function ContentPages() {
         <button
           type="submit"
           disabled={isSaving || isLoading || isError}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primaryColor px-6 text-sm font-semibold text-white shadow-xs transition hover:bg-primaryColor/90 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primaryColor px-6 text-sm font-semibold text-white shadow-xs transition hover:bg-primaryColor/90 focus:outline-none focus:ring-2 focus:ring-primaryColor/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
         >
           {isSaving ? (
             <>
@@ -1640,9 +1643,9 @@ export default function ContentPages() {
       </header>
 
       {/* Main Grid: Sidebar + Content */}
-      <div className="grid min-h-[620px] gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="flex-1 min-h-0 grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:overflow-hidden">
         {/* Navigation Sidebar */}
-        <aside className="h-fit rounded-2xl border border-gray-100 bg-white p-3 shadow-xs">
+        <aside className="h-fit lg:h-full rounded-2xl border border-gray-100 bg-white p-3 shadow-xs lg:overflow-y-auto custom-scrollbar shrink-0">
           <h2 className="px-0 pb-2 text-xs font-semibold text-gray-500">
             Pages
           </h2>
@@ -1782,7 +1785,7 @@ export default function ContentPages() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="min-w-0">
+        <main className="min-w-0 lg:h-full lg:overflow-y-auto lg:pr-2.5 pb-8 lg:pb-6 space-y-5 custom-scrollbar">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
               <div className="flex items-center gap-2 text-sm text-gray-500">
