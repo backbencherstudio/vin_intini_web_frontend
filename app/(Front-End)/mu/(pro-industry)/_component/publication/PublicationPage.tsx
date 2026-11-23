@@ -157,7 +157,7 @@ export default function PublicationPage() {
                   <Zap className="w-3 h-3 fill-purple-600 text-purple-600" />
                   <span>{boostText}</span>
                 </span>
-              ) : row.is_new_release ? (
+              ) : (row.is_new_release || row.badge === "New Release") ? (
                 <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-700 whitespace-nowrap">
                   New Release
                 </span>

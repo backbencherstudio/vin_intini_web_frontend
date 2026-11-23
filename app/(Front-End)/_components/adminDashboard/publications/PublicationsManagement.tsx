@@ -28,6 +28,7 @@ import {
   Users,
   XCircle,
   Zap,
+  Sparkles,
 } from "lucide-react";
 
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
@@ -290,12 +291,17 @@ export default function PublicationsManagement({
             >
               {row.network_type}
             </span>
-            {(row.is_sponsored || row.is_boosted) && (
+            {(row.is_sponsored || row.is_boosted) ? (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
                 <Zap className="h-3 w-3 text-amber-600" />
                 Sponsored
               </span>
-            )}
+            ) : (row.is_new_release || row.badge === "New Release") ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 border border-amber-500/30">
+                <Sparkles className="h-3 w-3 text-amber-600" />
+                New Release
+              </span>
+            ) : null}
           </div>
         </div>
       ),

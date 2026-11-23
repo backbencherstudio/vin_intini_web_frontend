@@ -53,6 +53,9 @@ export interface PublicationItem {
   likes_count: number;
   is_boosted?: boolean;
   is_sponsored?: boolean;
+  is_new_release?: boolean;
+  new_release_expires_at?: string;
+  badge?: string | null;
   boost_expires_at?: string;
   created_at: string;
   created_at_iso?: string;

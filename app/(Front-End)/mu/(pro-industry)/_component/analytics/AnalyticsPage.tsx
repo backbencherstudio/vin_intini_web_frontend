@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from "react";
 
 const GRAPH_SERIES: GraphSeriesItem[] = [
-  { dataKey: "total_applicants", name: "Total Applicant", color: "#0CAF60" },
+  { dataKey: "total_applicants", name: "Applicants", color: "#0CAF60" },
   { dataKey: "job_views", name: "Job Views", color: "#FFC837" },
   { dataKey: "active_positions", name: "Active Positions", color: "#EB3D4D" },
 ];
@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
     },
     {
       id: "total_applicants",
-      title: "Total Applicant",
+      title: "Applicants",
       total: cards?.total_applicants?.total ?? 0,
       growthPercentage: cards?.total_applicants?.growth_percentage,
       badgeText: cards?.total_applicants?.growth
