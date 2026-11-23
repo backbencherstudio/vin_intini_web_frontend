@@ -12,6 +12,7 @@ import {
   LogOut,
   Settings,
   BarChart3,
+  X,
 } from "lucide-react";
 
 import {
@@ -20,6 +21,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -68,23 +70,35 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-[#E5E7EB] pt-16">
+    <Sidebar collapsible="icon" className="border-r border-[#E5E7EB]">
+
+      {/* ================= HEADER (FIXED LOGO) ================= */}
+      <SidebarHeader className="h-16 shrink-0 border-b border-[#E5E7EB] bg-white px-4 flex flex-row items-center justify-between md:justify-center">
+        <Link href="/dashboard" className="flex items-center justify-center">
+          <Image
+            src={logo}
+            alt="MindUnite Logo"
+            width={180}
+            height={50}
+            className="h-10 w-auto object-contain transition-all"
+            priority
+          />
+        </Link>
+        {isMobile && (
+          <button
+            type="button"
+            onClick={() => setOpenMobile(false)}
+            className="inline-flex items-center justify-center rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 md:hidden"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+      </SidebarHeader>
 
       {/* ================= CONTENT ================= */}
       <SidebarContent className="bg-white">
-        <SidebarGroup className="px-3 py-4">
-
-          {/* Logo */}
-          <div className="mb-5 flex justify-center border-b pb-5">
-            <Image
-              src={logo}
-              alt="Logo"
-              width={250}
-              height={84}
-              className="md:max-w-59.5 max-w-40 w-full h-auto"
-              priority
-            />
-          </div>
+        <SidebarGroup className="px-3 py-3">
 
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
@@ -194,7 +208,7 @@ export default function DashboardSidebar() {
       </SidebarContent>
 
       {/* ================= FOOTER ================= */}
-      <SidebarFooter className="bg-white px-3 pb-4">
+      <SidebarFooter className="bg-white px-3 pb-4 border-t border-[#F3F4F6]">
         <SidebarMenu className="space-y-1">
           {/* Logout */}
           <SidebarMenuItem>

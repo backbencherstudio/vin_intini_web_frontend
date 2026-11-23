@@ -51,21 +51,18 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
-      {/* 1st Bar: Top Header — fixed at top always */}
-      <TopHeader />
+      {/* Sidebar with fixed SidebarHeader containing MindUnite Logo at top: 0 */}
+      <DashboardSidebar />
 
-      {/* Content area below the fixed 64px TopHeader */}
-      <div className="flex min-h-screen w-full pt-16">
-        {/* Sidebar */}
-        <DashboardSidebar />
+      {/* Main Content Area beside Sidebar */}
+      <div className="flex flex-1 flex-col min-w-0 min-h-screen">
+        {/* Top Header pinned at top of content area */}
+        <TopHeader />
 
-        <div className="flex flex-1 flex-col min-w-0">
-          {/* Page Content */}
-          <main className="flex-1 w-full overflow-auto px-4 py-6 md:px-6 md:py-8">
-           
-            <div className="admin-dashboard-content w-full">{children}</div>
-          </main>
-        </div>
+        {/* Page Content */}
+        <main className="flex-1 w-full overflow-auto px-4 py-6 md:px-6 md:py-8">
+          <div className="admin-dashboard-content w-full">{children}</div>
+        </main>
       </div>
     </SidebarProvider>
   );
