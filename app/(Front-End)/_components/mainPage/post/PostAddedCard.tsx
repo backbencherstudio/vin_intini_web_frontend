@@ -4,6 +4,7 @@ import {
   useFollowIndustryMutation,
   useLikebyIndustryProductMutation,
 } from "@/feature/slice/jobs/industrySlice";
+import { useLikeSinglePublicationMutation } from "@/feature/slice/jobs/publicationSlice";
 import {
   useAdvertisementsClickMutation,
   useAdvertisementsImpressionMutation,
@@ -11,7 +12,7 @@ import {
 import emptyImage from "@/public/empty_user.jpg";
 import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import fallbackProductImage from "@/public/xray.jpg";
-import { ExternalLink, Globe2, Tag } from "lucide-react";
+import { ExternalLink, FileText, Globe2, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -19,8 +20,10 @@ import { useEffect, useRef, useState } from "react";
 type SponsoredAd = {
   id: string | number;
   ad_campaign_id: number;
+  ad_type?: string;
   badge?: string;
   product_id?: number;
+  publication_id?: string | number;
   product_code?: string;
   product_name?: string;
   title?: string;
@@ -69,6 +72,7 @@ function PostAddedCard({
   const [sendClick] = useAdvertisementsClickMutation();
   const [sendImpression] = useAdvertisementsImpressionMutation();
   const [likeIndustryProduct] = useLikebyIndustryProductMutation();
+  const [likeSinglePublication] = useLikeSinglePublicationMutation();
   const [followIndustry, { isLoading: isFollowingIndustry }] =
     useFollowIndustryMutation();
   const [isFollowing, setIsFollowing] = useState(
@@ -203,11 +207,17 @@ function PostAddedCard({
     );
 
     try {
-      await likeIndustryProduct(ad.product_id).unwrap();
+      if (ad.ad_type === "publication" || Boolean(ad.publication_id)) {
+        await likeSinglePublication(
+          ad.product_id || (ad.publication_id as any),
+        ).unwrap();
+      } else {
+        await likeIndustryProduct(ad.product_id).unwrap();
+      }
     } catch (error) {
       setIsLiked(previousLiked);
       setLikesCount(previousCount);
-      console.error("Failed to like sponsored product:", error);
+      console.error("Failed to like sponsored item:", error);
     }
   };
 
@@ -286,29 +296,50 @@ function PostAddedCard({
         )}
       </div>
 
-      <button type="button" onClick={openDestination} className="block w-full">
-        <Image
-          src={productImage}
-          alt={ad.product_name || ad.title || "Sponsored product"}
-          width={1200}
-          height={628}
-          priority={priority}
-          loading={priority ? "eager" : "lazy"}
-          sizes="(max-width: 768px) 100vw, 600px"
-          className="h-auto aspect-[1.91/1] w-full object-cover"
-          unoptimized
-          onError={() => setProductImage(fallbackProductImage)}
-        />
+      <button
+        type="button"
+        onClick={openDestination}
+        className="block w-full text-left cursor-pointer"
+      >
+        {ad.image_url && !ad.image_url.toLowerCase().endsWith(".pdf") ? (
+          <Image
+            src={productImage}
+            alt={ad.product_name || ad.title || "Sponsored item"}
+            width={1200}
+            height={628}
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="h-auto aspect-[1.91/1] w-full object-cover"
+            unoptimized
+            onError={() => setProductImage(fallbackProductImage)}
+          />
+        ) : (
+          <div className="w-full aspect-[2.4/1] bg-gradient-to-r from-teal-500/10 via-teal-500/5 to-cyan-500/10 border-y border-borderColor p-6 flex flex-col justify-center items-center text-center">
+            <div className="w-12 h-12 rounded-xl bg-white shadow-xs border border-borderColor flex items-center justify-center text-primaryColor mb-2.5">
+              <FileText className="w-6 h-6 text-primaryColor" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-primaryColor bg-primaryColor/10 px-2.5 py-0.5 rounded-full mb-1">
+              Research Publication
+            </span>
+            <h3 className="font-bold text-headerColor text-base sm:text-lg max-w-lg line-clamp-2 px-4">
+              {ad.product_name || ad.title}
+            </h3>
+          </div>
+        )}
       </button>
 
       <div className="border-t bg-slate-50 p-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="truncate text-xs text-slate-500">
-              {ad.destination_domain || "Product"}{" "}
-              {ad.product_code && (
+              {ad.destination_domain ||
+                (ad.ad_type === "publication"
+                  ? "Research Publication"
+                  : "Product")}{" "}
+              {(ad.product_code || ad.publication_id) && (
                 <span className="ml-1 rounded bg-slate-200 px-1.5 py-0.5">
-                  ID: #{ad.product_code}
+                  ID: #{ad.product_code || ad.publication_id}
                 </span>
               )}
               {ad.is_new_release && (
@@ -318,7 +349,7 @@ function PostAddedCard({
             <button
               type="button"
               onClick={openDestination}
-              className="mt-1 text-left text-base font-bold text-slate-900 hover:text-primaryColor"
+              className="mt-1 text-left text-base font-bold text-slate-900 hover:text-primaryColor cursor-pointer"
             >
               {ad.product_name || ad.title}
             </button>
@@ -333,9 +364,12 @@ function PostAddedCard({
           <button
             type="button"
             onClick={openDestination}
-            className="flex shrink-0 items-center gap-1 rounded-md bg-primaryColor px-3 py-2 text-xs font-semibold text-white"
+            className="flex shrink-0 items-center gap-1 rounded-md bg-primaryColor px-3 py-2 text-xs font-semibold text-white cursor-pointer hover:bg-primaryColor/90 transition shadow-xs"
           >
-            {ad.cta_text || "View Product"}{" "}
+            {ad.cta_text ||
+              (ad.ad_type === "publication"
+                ? "View Publication"
+                : "View Product")}{" "}
             <ExternalLink className="h-3.5 w-3.5" />
           </button>
         </div>

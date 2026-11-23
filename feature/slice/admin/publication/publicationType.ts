@@ -17,6 +17,8 @@ export interface PublicationCreator {
   is_verified?: boolean;
   is_suspended?: boolean;
   status?: string;
+  is_admin?: boolean;
+  roles?: string[];
 }
 
 export interface PublicationIndustry {
@@ -49,12 +51,18 @@ export interface PublicationItem {
   information_confirmed: boolean;
   views_count: number;
   likes_count: number;
+  is_boosted?: boolean;
+  is_sponsored?: boolean;
+  boost_expires_at?: string;
   created_at: string;
   created_at_iso?: string;
   updated_at?: string;
   updated_at_iso?: string;
   deleted_at?: string | null;
   is_deleted?: boolean;
+  industry_id?: number | null;
+  creator_id?: number | null;
+  is_admin_publication?: boolean;
   creator?: PublicationCreator | null;
   industry?: PublicationIndustry | null;
 }
@@ -64,6 +72,10 @@ export interface PublicationStatistics {
   active_publications: number;
   inactive_publications: number;
   draft_publications: number;
+  industry_publications?: number;
+  premium_user_publications?: number;
+  admin_publications?: number;
+  boosted_publications?: number;
 }
 
 export interface Pagination {

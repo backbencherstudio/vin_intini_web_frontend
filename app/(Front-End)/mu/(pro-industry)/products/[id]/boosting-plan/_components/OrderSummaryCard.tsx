@@ -1,15 +1,42 @@
 "use client";
 
 import { OrderSummary } from "@/types/boosting";
+import { FileText } from "lucide-react";
 import Image from "next/image";
 
 interface OrderSummaryCardProps {
   orderSummary: OrderSummary;
+  entityType?: "products" | "publications";
 }
 
 export default function OrderSummaryCard({
   orderSummary,
+  entityType = "products",
 }: OrderSummaryCardProps) {
+  const isPublication =
+    entityType === "publications" ||
+    orderSummary.target_type === "publication" ||
+    Boolean(orderSummary.publication_id);
+
+  const displayName =
+    orderSummary.product_name ||
+    orderSummary.title ||
+    (isPublication ? "Publication" : "Product");
+
+  const displayId =
+    (isPublication ? orderSummary.publication_id : null) ||
+    orderSummary.product_id ||
+    orderSummary.publication_id ||
+    "";
+
+  const idLabel =
+    orderSummary.identifier_label ||
+    (isPublication ? "Publication ID" : "Product ID");
+
+  const isPdf =
+    orderSummary.product_image &&
+    orderSummary.product_image.toLowerCase().endsWith(".pdf");
+
   return (
     <div className="bg-gray-50/70 border border-borderColor rounded-xl p-4 md:p-6 space-y-6">
       <div>
@@ -19,29 +46,36 @@ export default function OrderSummaryCard({
         <div className="w-full h-px bg-borderColor" />
       </div>
 
-      {/* Product Information */}
+      {/* Item Information */}
       <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-lg border border-borderColor/80 shadow-xs">
         <div className="w-14 h-12 rounded-lg bg-bgColor overflow-hidden shrink-0 flex items-center justify-center border border-borderColor/60">
-          {orderSummary.product_image ? (
+          {orderSummary.product_image && !isPdf ? (
             <Image
               src={orderSummary.product_image}
-              alt={orderSummary.product_name}
+              alt={displayName}
               width={56}
               height={48}
               className="w-full h-full object-cover"
             />
+          ) : isPublication ? (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-teal-50 text-primaryColor">
+              <FileText className="w-6 h-6 text-primaryColor" />
+            </div>
           ) : (
             <span className="text-sm font-bold text-primaryColor">
-              {(orderSummary.product_name || "P").charAt(0)}
+              {(displayName || "P").charAt(0)}
             </span>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-sm text-headerColor truncate">
-            {orderSummary.product_name}
+          <p
+            className="font-semibold text-sm text-headerColor truncate"
+            title={displayName}
+          >
+            {displayName}
           </p>
           <p className="text-xs text-descriptionColor font-medium mt-0.5">
-            Product ID: {orderSummary.product_id}
+            {idLabel}: {displayId}
           </p>
         </div>
       </div>

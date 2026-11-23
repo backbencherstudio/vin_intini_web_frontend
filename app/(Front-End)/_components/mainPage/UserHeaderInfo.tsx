@@ -124,8 +124,16 @@ function UserHeaderInfo() {
   };
   const isMessagePage = patheName.startsWith("/mu/message");
 
-  const isPremium = userProfileData?.subscription?.plan_type === "premium";
-  const isIndustry = userProfileData?.subscription?.plan_type === "industry";
+  const hasCompany = Boolean(
+    userProfileData?.industry?.has_company ||
+      userProfileData?.industry?.company?.id
+  );
+  const isIndustry =
+    userProfileData?.subscription?.plan_type === "industry" || hasCompany;
+  const isPremium =
+    !isIndustry &&
+    (userProfileData?.subscription?.plan_type === "premium" ||
+      Boolean(userProfileData?.subscription?.is_subscribed));
   const planName = userProfileData?.subscription?.plan_name || "basic_user";
 
   return (
@@ -287,34 +295,32 @@ function UserHeaderInfo() {
                     </DropdownMenuItem>
                   )}
 
-                  {userProfileData?.industry?.has_company &&
-                    userProfileData?.subscription?.plan_type !== "premium" && (
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/mu/industry-profile/${userProfileData?.industry?.company?.id}`}
-                          className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
-                        >
-                          <DashboardIcon className="h-5 w-5 text-grayColor1" />
-                          Industry Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                  {!userProfileData?.industry?.has_company &&
-                    userProfileData?.subscription?.plan_type !== "premium" && (
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={
-                            planName == "basic_user"
-                              ? `/mu/subscription?billing=monthly&plan_type=industry`
-                              : `/mu/create-company-page/`
-                          }
-                          className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
-                        >
-                          <CompanyIcon className="h-5 w-5 text-grayColor1" />
-                          Create a Company Page
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
+                  {hasCompany && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/mu/industry-profile/${userProfileData?.industry?.company?.id}`}
+                        className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
+                      >
+                        <DashboardIcon className="h-5 w-5 text-grayColor1" />
+                        Industry Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {!hasCompany && !isPremium && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={
+                          planName == "basic_user"
+                            ? `/mu/subscription?billing=monthly&plan_type=industry`
+                            : `/mu/create-company-page/`
+                        }
+                        className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
+                      >
+                        <CompanyIcon className="h-5 w-5 text-grayColor1" />
+                        Create a Company Page
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                 </div>
                 <div className="border-t border-gray-200 pt-2">
                   <button

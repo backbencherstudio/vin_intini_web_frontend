@@ -40,6 +40,7 @@ interface PlanConfig {
 
 interface PaymentCheckoutStepProps {
   productId: string | number;
+  entityType?: "products" | "publications";
   orderSummary: OrderSummary;
   planConfig: PlanConfig;
   onBack: () => void;
@@ -48,6 +49,7 @@ interface PaymentCheckoutStepProps {
 
 export default function PaymentCheckoutStep({
   productId,
+  entityType = "products",
   orderSummary,
   planConfig,
   onBack,
@@ -95,6 +97,7 @@ export default function PaymentCheckoutStep({
 
       const response = await sendBoostOtp({
         productId,
+        entityType,
         ...payload,
       }).unwrap();
 
@@ -204,7 +207,10 @@ export default function PaymentCheckoutStep({
 
         {/* Right Side: Order Summary */}
         <div className="md:col-span-5 sticky top-28">
-          <OrderSummaryCard orderSummary={orderSummary} />
+          <OrderSummaryCard
+            orderSummary={orderSummary}
+            entityType={entityType}
+          />
         </div>
       </div>
     </div>

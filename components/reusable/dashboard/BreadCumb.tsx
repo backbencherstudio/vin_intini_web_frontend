@@ -22,6 +22,7 @@ const routeNames: Record<string, string> = {
   cities: "Cities & Locations",
   "contact-messages": "Contact Messages",
   categories: "Categories",
+  publications: "Publications",
   analytics: "Analytics",
   subscription: "Subscription",
 };

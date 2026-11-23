@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 
 interface BoostingPlansStepProps {
   productId: string | number;
+  entityType?: "products" | "publications";
   presetPackages: BoostPackage[];
   customSlider?: CustomSliderConfig;
   product?: any;
@@ -23,6 +24,7 @@ interface BoostingPlansStepProps {
 
 export default function BoostingPlansStep({
   productId,
+  entityType = "products",
   presetPackages = [],
   customSlider,
   product,
@@ -125,6 +127,7 @@ export default function BoostingPlansStep({
 
       const res = await fetchOrderSummary({
         productId,
+        entityType,
         ...params,
       }).unwrap();
 
@@ -139,9 +142,34 @@ export default function BoostingPlansStep({
           : Number(chosenPkg?.price || 0);
 
         summary = {
-          product_id: String(product?.product_id || product?.id || productId),
-          product_name: product?.product_name || "Product",
-          product_image: product?.image_url || product?.image || null,
+          product_id: String(
+            product?.publication_id ||
+              product?.product_id ||
+              product?.id ||
+              productId
+          ),
+          publication_id: String(
+            product?.publication_id ||
+              product?.id ||
+              productId
+          ),
+          product_name:
+            product?.title ||
+            product?.product_name ||
+            (entityType === "publications" ? "Publication" : "Product"),
+          title:
+            product?.title ||
+            product?.product_name ||
+            (entityType === "publications" ? "Publication" : "Product"),
+          product_image:
+            product?.attachment_url ||
+            product?.image_url ||
+            product?.image ||
+            null,
+          target_type:
+            entityType === "publications" ? "publication" : "product",
+          identifier_label:
+            entityType === "publications" ? "Publication ID" : "Product ID",
           plan_title: chosenPkg
             ? `${chosenPkg.name} Boosting`
             : `Custom Boosting (${activeDays} Days)`,

@@ -12,6 +12,7 @@ import {
   Pill,
   Briefcase,
   MapPin,
+  FileText,
 } from "lucide-react";
 import { LuChartNoAxesColumn } from "react-icons/lu";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -222,6 +223,12 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/psychology/psychotropics",
         icon: Pill,
       },
+      {
+        id: "psychology-publications",
+        name: "Publications",
+        href: "/dashboard/psychology/publications",
+        icon: FileText,
+      },
     ],
   },
   {
@@ -241,6 +248,12 @@ export const SidebarData: SidebarItem[] = [
         href: "/dashboard/neuroscience/psychotropics",
         icon: Pill,
       },
+      {
+        id: "neuroscience-publications",
+        name: "Publications",
+        href: "/dashboard/neuroscience/publications",
+        icon: FileText,
+      },
     ],
   },
 
@@ -255,12 +268,6 @@ export const SidebarData: SidebarItem[] = [
     name: "Partners",
     href: "/dashboard/partners",
     icon: PartnerIcon,
-  },
-  {
-    id: "publications",
-    name: "Publications",
-    href: "/dashboard/publications",
-    icon: List,
   },
   {
     id: "institution-reports",

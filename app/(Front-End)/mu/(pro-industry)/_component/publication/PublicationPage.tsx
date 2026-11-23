@@ -15,22 +15,24 @@ import {
   PublicationsMenueIcon,
 } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
-import { ArrowUpRight, Calendar1, Plus } from "lucide-react";
+import { ArrowUpRight, Calendar1, FileText, Plus, Zap } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import PublicationAction from "./PublicationAction";
 import PublicationStatusUpdate from "./PublicationStatusUpdate";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 export default function PublicationPage() {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchQuery = searchParams?.get("search") || "";
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const { data: userProfileData } = useGetUserProfileQuery("user");
-  const isPremium = userProfileData?.subscription?.plan_type === "premium";
+  const isPremiumPlan = userProfileData?.subscription?.plan_type === "premium";
+  const isPremiumView = Boolean(isPremiumPlan || pathname?.includes("/premium"));
 
   useEffect(() => {
     setCurrentPage(1);
@@ -52,7 +54,7 @@ export default function PublicationPage() {
   const pagination = myPublicationsResponse?.pagination;
   const insightCards = myPublicationsResponse?.cards;
 
-  // Top 3 Stat Cards configuration matching screenshot
+  // Top Stat Cards configuration
   const stateCards: CommonStateCardProps[] = [
     {
       title: "All Publications",
@@ -84,15 +86,28 @@ export default function PublicationPage() {
       iconBg: "bg-[#E6F8F6]",
       iconColor: "text-primaryColor",
     },
+    {
+      title: "Boost Impressions",
+      total:
+        insightCards?.boost_impressions?.total ??
+        insightCards?.total_impressions?.total ??
+        0,
+      badgeText: insightCards?.boost_impressions?.growth ?? "Active",
+      isPositive: true,
+
+      icon: Zap,
+      iconBg: "bg-purple-50",
+      iconColor: "text-purple-600",
+    },
   ];
 
-  // Table Columns Definition matching the exact screenshot design
+  // Table Columns Definition matching senior UI/UX standard
   const columns = [
     {
       label: "No.",
       accessor: "no",
       position: "justify-center",
-      width: "60px",
+      width: "55px",
       formatter: (_: any, __: any, index: number) => (
         <span className="text-sm font-semibold text-headerColor text-center block px-2">
           {(currentPage - 1) * perPage + index + 1}
@@ -100,38 +115,63 @@ export default function PublicationPage() {
       ),
     },
     {
-      label: " Article Title & Summary",
+      label: "Publication",
       accessor: "title",
+      position: "justify-start",
+      width: "320px",
+      formatter: (_: any, row: any) => {
+        const isBoosted = Boolean(
+          row.is_boosted || (row.boost_days_left && row.boost_days_left > 0)
+        );
+        const boostText =
+          row.boost_remaining_text ||
+          (row.boost_days_left ? `${row.boost_days_left} days left` : "Boosted");
 
-      formatter: (_: any, row: any) => (
-        <div className="py-2.5 px-3 w-50">
-          <h4
-            title={row.title}
-            className="text-left text-wrap font-semibold text-sm text-headerColor hover:text-primaryColor transition-colors line-clamp-1  cursor-pointer"
-          >
-            {row.title || "Untitled Publication"}
-          </h4>
-          <p className="text-xs text-descriptionColor line-clamp-1 mt-1 leading-relaxed">
-            {row.short_abstract ||
-              row.abstract ||
-              "No summary or abstract provided for this article."}
-          </p>
-        </div>
-      ),
-    },
-    {
-      label: "Publish Date",
-      accessor: "created_at",
-      formatter: (val: string) => (
-        <div className="flex items-center gap-1.5 px-3 text-sm leading-[140%] font-medium text-descriptionColor whitespace-nowrap">
-          <Calendar1 className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-          <span>{val ? dayjs(val).format("DD MMM YYYY") : "05 Feb 2026"}</span>
-        </div>
-      ),
+        return (
+          <div className="flex items-center gap-3 py-2.5 px-3">
+            {/* Visual Icon / Document Thumbnail */}
+            <div className="w-10 h-10 rounded-xl bg-primaryColor/10 border border-primaryColor/20 text-primaryColor flex items-center justify-center shrink-0 shadow-xs">
+              <FileText className="w-5 h-5 text-primaryColor" />
+            </div>
+
+            <div className="min-w-0 flex items-center gap-2 flex-wrap">
+              <h4
+                title={row.title}
+                className="font-semibold text-sm text-headerColor hover:text-primaryColor transition-colors truncate max-w-[220px] sm:max-w-[280px] cursor-pointer"
+              >
+                {row.title || "Untitled Publication"}
+              </h4>
+              {row.website_url && (
+                <a
+                  href={row.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open external article source"
+                  className="text-gray-400 hover:text-primaryColor transition-colors shrink-0"
+                >
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {isBoosted ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 whitespace-nowrap">
+                  <Zap className="w-3 h-3 fill-purple-600 text-purple-600" />
+                  <span>{boostText}</span>
+                </span>
+              ) : row.is_new_release ? (
+                <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-700 whitespace-nowrap">
+                  New Release
+                </span>
+              ) : null}
+            </div>
+          </div>
+        );
+      },
     },
     {
       label: "Network",
       accessor: "network_type",
+      position: "justify-start",
+      width: "130px",
       formatter: (val: string) => {
         const network = String(val || "psychology").toLowerCase();
         const isPsychology = network === "psychology";
@@ -140,7 +180,7 @@ export default function PublicationPage() {
         return (
           <div className="px-3">
             <span
-              className={`inline-block text-sm leading-[140%] font-medium px-3 py-0.5 rounded-full capitalize whitespace-nowrap ${
+              className={`inline-block text-xs leading-[140%] font-semibold px-2.5 py-0.5 rounded-full capitalize whitespace-nowrap ${
                 isPsychology
                   ? "bg-orengeColor/10 text-orengeColor border border-orengeColor/30"
                   : isNeuroscience
@@ -155,68 +195,80 @@ export default function PublicationPage() {
       },
     },
     {
-      label: "Reference",
-      accessor: "website_url",
-      formatter: (_: any, row: any) => {
-        const link = row.website_url || row.attachment_url;
+      label: "Publish Date",
+      accessor: "created_at",
+      position: "justify-start",
+      width: "140px",
+      formatter: (val: string) => (
+        <div className="flex items-center gap-1.5 px-3 text-xs leading-[140%] font-medium text-descriptionColor whitespace-nowrap">
+          <Calendar1 className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+          <span>{val ? dayjs(val).format("DD MMM YYYY") : "—"}</span>
+        </div>
+      ),
+    },
+    {
+      label: "Views",
+      accessor: "views_count",
+      position: "justify-center",
+      width: "90px",
+      formatter: (val: any, row: any) => {
+        const isBoosted = Boolean(row.is_boosted || row.is_sponsored);
         return (
-          <div className="px-3">
-            {link ? (
-              <Link
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-blueColor  hover:underline transition-colors whitespace-nowrap cursor-pointer"
-              >
-                <ArrowUpRight className="w-4 h-4 text-blueColor" />
-                <span>View Article</span>
-              </Link>
-            ) : (
-              <span className="text-xs text-gray-400">N/A</span>
-            )}
+          <div
+            className="flex items-center justify-center gap-1.5 px-3 text-sm font-semibold text-headerColor whitespace-nowrap cursor-default"
+            title={
+              isBoosted
+                ? `${(row.impressions_count ?? 0).toLocaleString()} impressions • ${(row.clicks_count ?? 0).toLocaleString()} clicks`
+                : `${(val ?? 0).toLocaleString()} total views`
+            }
+          >
+            <OpenEyeIcon className="w-3.5 h-3.5 text-primaryColor shrink-0" />
+            <span>{(val ?? 0).toLocaleString()}</span>
           </div>
         );
       },
     },
     {
-      label: "Total View",
-      accessor: "views_count",
-      formatter: (val: number) => (
-        <span className="text-sm font-medium text-descriptionColor px-3 block whitespace-nowrap">
-          {(val ?? 0).toLocaleString()}
-        </span>
-      ),
-    },
-    {
       label: "Status",
       accessor: "status",
       position: "justify-center",
+      width: "120px",
       formatter: (_: string, row: any) => <PublicationStatusUpdate row={row} />,
     },
     {
       label: "Action",
       accessor: "actions",
       position: "justify-end",
-      formatter: (_: any, row: any) => <PublicationAction ispremium={isPremium} row={row} />,
+      width: "160px",
+      formatter: (_: any, row: any) => (
+        <PublicationAction ispremium={isPremiumView} row={row} />
+      ),
     },
   ];
-
 
   return (
     <div className="w-full space-y-7 pb-10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-headerColor">
-            Pro Industry Publication
+            {isPremiumView
+              ? "Research Publications"
+              : "Pro Industry Publication"}
           </h1>
           <p className="text-sm sm:text-base text-descriptionColor mt-1">
-            Add your publications in Health Industry
+            {isPremiumView
+              ? "Submit, manage, and track your clinical and academic research publications."
+              : "Add your publications in Health Industry"}
           </p>
         </div>
 
         <div className="shrink-0 self-start sm:self-auto">
           <Link
-            href={isPremium ? `/mu/premium/publications/create` : `/mu/publications/create`}
+            href={
+              isPremiumView
+                ? `/mu/premium/publications/create`
+                : `/mu/publications/create`
+            }
             className="h-10 inline-flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-98"
           >
             <Plus className="w-4 h-4" />
@@ -225,11 +277,11 @@ export default function PublicationPage() {
         </div>
       </div>
 
-      {/* Top 3 Stat Cards using CommonStateCard (layout="split") */}
+      {/* Top Stat Cards using CommonStateCard (layout="split") */}
       {isMyPublicationsLoading && !publicationsList.length ? (
         <StateCardSkleton />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {stateCards.map((card) => (
             <CommonStateCard key={card.title} {...card} />
           ))}
@@ -265,11 +317,11 @@ export default function PublicationPage() {
         </div>
 
         {/* Dynamic Table */}
-        <div className="bg-white rounded-2xl border border-borderColor/80 overflow-hidden ">
+        <div className="bg-white rounded-2xl border border-borderColor/80 overflow-hidden shadow-xs">
           <DynamicTable
             columns={columns}
             data={publicationsList}
-            tableMinWidth="900px"
+            tableMinWidth="1000px"
             header={{
               bg: "#F9FAFB",
               padding: "14px 16px",

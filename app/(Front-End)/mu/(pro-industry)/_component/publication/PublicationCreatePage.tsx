@@ -628,7 +628,13 @@ export default function PublicationCreatePage({
         <div className="flex items-center justify-center gap-4 pt-4 pb-2">
           <button
             type="button"
-            onClick={() => router.push("/mu/publications")}
+            onClick={() =>
+              router.push(
+                isPremium
+                  ? "/mu/premium/publications"
+                  : "/mu/publications"
+              )
+            }
             className="px-8 py-2.5 rounded-full border border-primaryColor text-primaryColor font-medium text-sm hover:bg-primaryColor/5 transition-colors cursor-pointer"
           >
             Cancel

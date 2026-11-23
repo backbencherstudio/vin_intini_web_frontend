@@ -21,6 +21,7 @@ interface PlanConfig {
 
 interface OtpVerificationStepProps {
   productId: string | number;
+  entityType?: "products" | "publications";
   orderSummary: OrderSummary;
   planConfig: PlanConfig;
   paymentMethodId: string;
@@ -31,6 +32,7 @@ interface OtpVerificationStepProps {
 
 export default function OtpVerificationStep({
   productId,
+  entityType = "products",
   orderSummary,
   planConfig,
   paymentMethodId,
@@ -124,6 +126,7 @@ export default function OtpVerificationStep({
 
       const res = await resendBoostOtp({
         productId,
+        entityType,
         ...payload,
       }).unwrap();
 
@@ -168,6 +171,7 @@ export default function OtpVerificationStep({
 
       const res = await purchaseBoost({
         productId,
+        entityType,
         ...payload,
       }).unwrap();
 
@@ -185,6 +189,7 @@ export default function OtpVerificationStep({
 
         await confirmBoost({
           productId,
+          entityType,
           payment_intent_id: paymentIntent.id,
         }).unwrap();
       }
@@ -303,7 +308,10 @@ export default function OtpVerificationStep({
 
         {/* Right Side: Order Summary */}
         <div className="md:col-span-5 sticky top-28">
-          <OrderSummaryCard orderSummary={orderSummary} />
+          <OrderSummaryCard
+            orderSummary={orderSummary}
+            entityType={entityType}
+          />
         </div>
       </div>
     </div>

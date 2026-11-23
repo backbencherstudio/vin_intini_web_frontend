@@ -20,7 +20,7 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { BoostCampaignItem } from "@/types/boosting";
 import dayjs from "dayjs";
-import { CircleDot, Clock, Loader2, Pause, Play, Zap } from "lucide-react";
+import { CircleDot, Clock, FileText, Loader2, Pause, Play, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -162,7 +162,7 @@ function AddCampaignContent() {
       },
     },
     {
-      label: "Products",
+      label: "Item",
       accessor: "product_name",
       position: "justify-start",
       width: "210px",
@@ -171,23 +171,32 @@ function AddCampaignContent() {
           item.is_active ||
           item.status === "active" ||
           item.status === "paused";
+        const isPublication =
+          item.ad_type === "publication" ||
+          item.boostable_type?.includes("Publication");
+        const displayName =
+          item.boostable?.product_name ||
+          (item.boostable as any)?.title ||
+          "Item";
         const imageUrl = item.boostable?.image_url;
 
         return (
           <div className="flex items-center gap-3 py-3.5 px-2 ">
-            {/* Product Image */}
+            {/* Image / Icon */}
             <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-borderColor bg-slate-100 shrink-0 flex items-center justify-center">
-              {imageUrl ? (
+              {imageUrl && !imageUrl.toLowerCase().endsWith(".pdf") ? (
                 <Image
                   src={imageUrl}
-                  alt={item.boostable?.product_name || "Product image"}
+                  alt={displayName}
                   width={56}
                   height={56}
                   className="w-full h-full object-cover"
                 />
+              ) : isPublication ? (
+                <FileText className="w-6 h-6 text-primaryColor" />
               ) : (
                 <span className="text-sm font-bold text-primaryColor">
-                  {(item.boostable?.product_name || "P").charAt(0)}
+                  {displayName.charAt(0)}
                 </span>
               )}
             </div>
@@ -196,18 +205,25 @@ function AddCampaignContent() {
             <div className=" text-start">
               <h4
                 className="text-sm font-bold text-headerColor line-clamp-1"
-                title={item.boostable?.product_name}
+                title={displayName}
               >
-                {item.boostable?.product_name || "BioPac MP160"}
+                {displayName}
               </h4>
 
-              {/* Badge below title */}
-              {isItemActive && (
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-bold bg-[#F5F3FF] border border-[#DDD6FE] text-LiteBlueColor">
-                  <Zap className="w-3 h-3 fill-LiteBlueColor" />
-                  <span>{item.boost_remaining_text}</span>
-                </div>
-              )}
+              {/* Publication / Product Type indicator */}
+              <div className="flex items-center gap-1.5 mt-0.5">
+                {isPublication && (
+                  <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
+                    Publication
+                  </span>
+                )}
+                {isItemActive && (
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#F5F3FF] border border-[#DDD6FE] text-LiteBlueColor">
+                    <Zap className="w-3 h-3 fill-LiteBlueColor" />
+                    <span>{item.boost_remaining_text}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         );
@@ -328,7 +344,11 @@ function AddCampaignContent() {
               </button>
             ) : (
               <Link
-                href={`/mu/products/${item.boostable_id}/boosting-plan`}
+                href={
+                  item.ad_type === "publication" || item.boostable_type?.includes("Publication")
+                    ? `/mu/publications/${item.boostable_id}/boosting-plan`
+                    : `/mu/products/${item.boostable_id}/boosting-plan`
+                }
                 className="px-2.5 py-1.5 rounded-lg border border-LiteBlueColor/80 bg-white text-LiteBlueColor hover:bg-[#F5F3FF] text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5 fill-LiteBlueColor" />

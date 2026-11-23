@@ -8,6 +8,7 @@ import {
   ArrowDownToLine,
   ArrowUpDown,
   BookOpen,
+  Building2,
   Calendar,
   CheckCircle2,
   Clock,
@@ -17,10 +18,16 @@ import {
   FileText,
   Heart,
   Layers,
+  Pencil,
+  Plus,
   SearchIcon,
+  ShieldCheck,
   Trash2,
+  UserCheck,
   UserRound,
+  Users,
   XCircle,
+  Zap,
 } from "lucide-react";
 
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
@@ -46,6 +53,7 @@ import {
   useTogglePublicationStatusMutation,
 } from "@/feature/slice/admin/publication";
 import { PublicationItem } from "@/feature/slice/admin/publication/publicationType";
+import CreatePublicationModal from "./CreatePublicationModal";
 import userIcon from "@/public/images/admin/parterner.png";
 
 const PAGE_SIZE = 15;
@@ -115,6 +123,9 @@ export default function PublicationsManagement({
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [publicationToDelete, setPublicationToDelete] =
+    useState<PublicationItem | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editingPublication, setEditingPublication] =
     useState<PublicationItem | null>(null);
 
   // RTK Query endpoints
@@ -279,6 +290,12 @@ export default function PublicationsManagement({
             >
               {row.network_type}
             </span>
+            {(row.is_sponsored || row.is_boosted) && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                <Zap className="h-3 w-3 text-amber-600" />
+                Sponsored
+              </span>
+            )}
           </div>
         </div>
       ),
@@ -310,41 +327,80 @@ export default function PublicationsManagement({
       },
     },
     {
-      header: "Industry",
+      header: "Publisher / Industry",
       cell: (row) => {
         const ind = row.industry;
-        if (!ind)
-          return <span className="text-sm italic text-gray-400">None</span>;
+        if (ind) {
+          return (
+            <div
+              className="flex items-center gap-2 max-w-[170px]"
+              title={`Pro Industry: ${ind.name}`}
+            >
+              {ind.logo_url ? (
+                <Image
+                  src={ind.logo_url}
+                  alt={ind.name}
+                  width={22}
+                  height={22}
+                  className="h-5.5 w-5.5 shrink-0 rounded-md object-cover border border-gray-100"
+                />
+              ) : (
+                <div className="h-5.5 w-5.5 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <Building2 className="w-3.5 h-3.5" />
+                </div>
+              )}
+              <div className="flex flex-col min-w-0">
+                <span className="truncate text-sm font-medium text-gray-900">
+                  {ind.name}
+                </span>
+                <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">
+                  Pro Industry
+                </span>
+              </div>
+            </div>
+          );
+        }
+
+        const isAdmin =
+          row.is_admin_publication ||
+          row.creator?.is_admin ||
+          row.creator?.roles?.includes("admin") ||
+          row.creator?.email === "admin@gmail.com" ||
+          (row.creator?.name || "").toLowerCase().includes("admin") ||
+          (row.creator?.username || "").toLowerCase().includes("admin");
+
+        if (isAdmin) {
+          return (
+            <div
+              className="flex items-center gap-1.5"
+              title="Official Platform / MindUnite Admin Publication"
+            >
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md bg-teal-50 text-primaryColor border border-teal-200 whitespace-nowrap">
+                <ShieldCheck className="w-3.5 h-3.5 text-primaryColor" />
+                <span>MindUnite Admin</span>
+              </span>
+            </div>
+          );
+        }
+
+        // For Premium Users
         return (
-          <div className="flex items-center gap-1.5 max-w-[150px]">
-            {ind.logo_url && (
-              <Image
-                src={ind.logo_url}
-                alt={ind.name}
-                width={20}
-                height={20}
-                className="h-5 w-5 shrink-0 rounded object-cover"
-              />
-            )}
-            <span className="truncate text-sm font-medium text-gray-800">
-              {ind.name}
+          <div className="flex items-center gap-1.5" title="Individual Premium Researcher">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
+              <UserCheck className="w-3.5 h-3.5 text-purple-600" />
+              <span>Premium User</span>
             </span>
           </div>
         );
       },
     },
     {
-      header: "Engagement",
+      header: "Views",
+      accessor: "views_count",
       cell: (row) => (
-        <div className="flex items-center gap-3 text-sm text-gray-600">
-          <span className="inline-flex items-center gap-1" title="Views">
-            <Eye className="h-3.5 w-3.5 text-blue-500" />
-            {row.views_count ?? 0}
-          </span>
-          <span className="inline-flex items-center gap-1" title="Likes">
-            <Heart className="h-3.5 w-3.5 text-red-500" />
-            {row.likes_count ?? 0}
-          </span>
+        <div className="flex items-center gap-1.5 text-sm text-gray-700">
+          <Eye className="h-3.5 w-3.5 text-blue-500" />
+          <span className="font-medium">{row.views_count ?? 0}</span>
         </div>
       ),
     },
@@ -378,6 +434,19 @@ export default function PublicationsManagement({
       header: "Actions",
       cell: (row) => (
         <div className="flex items-center gap-1.5">
+          {/* Edit */}
+          <button
+            type="button"
+            title="Edit Publication"
+            onClick={() => {
+              setEditingPublication(row);
+              setCreateModalOpen(true);
+            }}
+            className="p-1.5 rounded-md text-gray-500 hover:text-primaryColor hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+
           {/* View Details */}
           <button
             type="button"
@@ -386,7 +455,7 @@ export default function PublicationsManagement({
               setSelectedPublication(row);
               setViewModalOpen(true);
             }}
-            className="p-1.5 rounded-md text-gray-500 hover:text-primaryColor hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-md text-gray-500 hover:text-primaryColor hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <Eye className="h-4 w-4" />
           </button>
@@ -399,7 +468,7 @@ export default function PublicationsManagement({
               setPublicationToDelete(row);
               setDeleteModalOpen(true);
             }}
-            className="p-1.5 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+            className="p-1.5 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -428,12 +497,42 @@ export default function PublicationsManagement({
           <span className="text-xs text-gray-400">All recorded articles</span>
         </div>
 
-        {/* Active Publications */}
+        {/* Pro Industry Publications */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-gray-500">
-              Active Publications
+              Pro Industry
             </span>
+            <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
+              <Building2 className="h-4 w-4" />
+            </div>
+          </div>
+          <p className="mt-2 text-2xl font-bold text-blue-600">
+            {statistics?.industry_publications ?? 0}
+          </p>
+          <span className="text-xs text-gray-400">Verified company articles</span>
+        </div>
+
+        {/* Premium Users */}
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-gray-500">
+              Premium Users
+            </span>
+            <div className="rounded-lg bg-purple-50 p-2 text-purple-600">
+              <Users className="h-4 w-4" />
+            </div>
+          </div>
+          <p className="mt-2 text-2xl font-bold text-purple-600">
+            {statistics?.premium_user_publications ?? 0}
+          </p>
+          <span className="text-xs text-gray-400">Independent researchers</span>
+        </div>
+
+        {/* Active & Live Status */}
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-gray-500">Active & Live</span>
             <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600">
               <CheckCircle2 className="h-4 w-4" />
             </div>
@@ -441,37 +540,11 @@ export default function PublicationsManagement({
           <p className="mt-2 text-2xl font-bold text-emerald-600">
             {statistics?.active_publications ?? 0}
           </p>
-          <span className="text-xs text-gray-400">Currently live on site</span>
-        </div>
-
-        {/* Inactive Publications */}
-        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-500">
-              Inactive Publications
-            </span>
-            <div className="rounded-lg bg-rose-50 p-2 text-rose-600">
-              <XCircle className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="mt-2 text-2xl font-bold text-rose-600">
-            {statistics?.inactive_publications ?? 0}
-          </p>
-          <span className="text-xs text-gray-400">Hidden / Suspended</span>
-        </div>
-
-        {/* Draft Publications */}
-        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-500">Drafts</span>
-            <div className="rounded-lg bg-amber-50 p-2 text-amber-600">
-              <Clock className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="mt-2 text-2xl font-bold text-amber-600">
-            {statistics?.draft_publications ?? 0}
-          </p>
-          <span className="text-xs text-gray-400">Unpublished submissions</span>
+          <span className="text-xs text-gray-400">
+            {(statistics?.boosted_publications ?? 0) > 0
+              ? `${statistics?.boosted_publications} boosted • live on site`
+              : "Currently live on site"}
+          </span>
         </div>
       </div>
 
@@ -481,6 +554,17 @@ export default function PublicationsManagement({
         description="Manage research publications, articles, peer reviews, and creator submissions."
         action={
           <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-nowrap">
+            <button
+              type="button"
+              onClick={() => {
+                setEditingPublication(null);
+                setCreateModalOpen(true);
+              }}
+              className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-[#04A1B7] px-4 py-2 text-sm font-medium text-white shadow-xs transition-opacity hover:opacity-90 active:scale-98"
+            >
+              <Plus className="h-4 w-4" />
+              Add Publication
+            </button>
             <button
               type="button"
               onClick={handleExportCSV}
@@ -697,13 +781,6 @@ export default function PublicationsManagement({
                 </p>
               </div>
 
-              <div>
-                <span className="text-xs font-medium text-gray-400">Likes</span>
-                <p className="font-medium text-gray-800 flex items-center gap-1">
-                  <Heart className="h-3.5 w-3.5 text-red-500" />
-                  {selectedPublication.likes_count ?? 0}
-                </p>
-              </div>
 
               <div>
                 <span className="text-xs font-medium text-gray-400">
@@ -832,6 +909,18 @@ export default function PublicationsManagement({
         }"? This action cannot be undone.`}
         confirmText="Delete Now"
         cancelText="Cancel"
+      />
+
+      {/* Create / Edit Publication Modal */}
+      <CreatePublicationModal
+        open={createModalOpen}
+        onOpenChange={(open) => {
+          setCreateModalOpen(open);
+          if (!open) setEditingPublication(null);
+        }}
+        defaultNetwork={initialNetwork}
+        editingPublication={editingPublication}
+        onSuccess={() => refetch()}
       />
     </div>
   );

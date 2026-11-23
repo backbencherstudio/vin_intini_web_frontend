@@ -262,7 +262,27 @@ export interface PublicationDataType {
   };
   views_count: number;
   likes_count: number;
+  impressions_count?: number;
+  clicks_count?: number;
   is_liked: boolean;
+  is_boosted?: boolean;
+  is_sponsored?: boolean;
+  is_new_release?: boolean;
+  badge?: string | null;
+  new_release_expires_at?: string | null;
+  boost_status?: string;
+  boost_days_left?: number | null;
+  boost_remaining_text?: string | null;
+  ad_campaign_id?: number | null;
+  campaign?: {
+    id: number;
+    status: string;
+    total_impressions: number;
+    total_clicks: number;
+    amount_paid: number;
+    starts_at?: string | null;
+    ends_at?: string | null;
+  } | null;
   status: string;
   created_at: string;
   updated_at: string;

@@ -38,9 +38,13 @@ export interface BoostPackagesResponse {
 
 // Order Summary (Screen 3 & Screen 4)
 export interface OrderSummary {
-  product_id: string; // e.g. "10XEYC"
-  product_name: string; // e.g. "BioPac MP160"
-  product_image: string | null;
+  product_id?: string; // e.g. "10XEYC"
+  publication_id?: string; // e.g. "PB10D2UPK"
+  product_name?: string; // e.g. "BioPac MP160"
+  title?: string;
+  product_image?: string | null;
+  target_type?: "product" | "publication";
+  identifier_label?: string; // e.g. "Product ID" or "Publication ID"
   plan_title: string; // e.g. "Basic Free Boosting" or "Custom Boosting (20 Days)"
   duration_days: number; // e.g. 7
   duration_text: string; // e.g. "7 Days"
@@ -51,7 +55,7 @@ export interface OrderSummary {
   vat_formatted: string; // e.g. "$0.00"
   total: number; // e.g. 19.99
   total_formatted: string; // e.g. "$19.99"
-  currency: string; // "USD"
+  currency?: string; // "USD"
 }
 
 // Order Summary API Response
