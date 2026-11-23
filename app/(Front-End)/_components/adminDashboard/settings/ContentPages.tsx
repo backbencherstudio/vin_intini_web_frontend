@@ -32,6 +32,7 @@ import {
 import {
   CircleHelp,
   Clapperboard,
+  ChevronDown,
   ArrowDown,
   ArrowUp,
   Compass,
@@ -357,6 +358,7 @@ function SortableCard({
 export default function ContentPages() {
   const [slug, setSlug] = useState<AdminPageSlug>("about-us");
   const [activeSection, setActiveSection] = useState("who");
+  const [isAboutExpanded, setIsAboutExpanded] = useState(true);
   const { currentData, isLoading, isError } = useGetAdminPageQuery(slug);
   const [updatePage, { isLoading: isSaving }] = useUpdateAdminPageMutation();
   const [title, setTitle] = useState("");
@@ -1152,76 +1154,136 @@ export default function ContentPages() {
           <nav aria-label="Content pages" className="space-y-1">
             {pages.map((page) => {
               const Icon = page.icon;
-              const active = slug === page.slug;
+              const isAboutUs = page.slug === "about-us";
+              const isPageActive = slug === page.slug;
+
               return (
-                <button
-                  key={page.slug}
-                  type="button"
-                  onClick={() => {
-                    setSlug(page.slug);
-                    setActiveSection("who");
-                  }}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition ${
-                    active
-                      ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-xs"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  <Icon className={`h-4 w-4 shrink-0 ${active ? "text-primaryColor" : "text-gray-400"}`} />
-                  <span>{page.label}</span>
-                </button>
+                <div key={page.slug} className="space-y-1">
+                  <div
+                    className={`group flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] font-medium transition ${
+                      isPageActive
+                        ? isAboutUs
+                          ? "bg-gray-50/90 text-gray-900 font-semibold border border-gray-200/80 shadow-2xs"
+                          : "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-xs"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSlug(page.slug);
+                        if (isAboutUs) {
+                          setIsAboutExpanded(true);
+                          if (slug !== "about-us") {
+                            setActiveSection("who");
+                          }
+                        }
+                      }}
+                      className="flex min-w-0 flex-1 items-center gap-2.5 text-left cursor-pointer"
+                      aria-current={isPageActive ? "page" : undefined}
+                    >
+                      <Icon
+                        className={`h-4 w-4 shrink-0 transition ${
+                          isPageActive
+                            ? "text-primaryColor"
+                            : "text-gray-400 group-hover:text-gray-600"
+                        }`}
+                      />
+                      <span className="truncate">{page.label}</span>
+                    </button>
+
+                    {isAboutUs && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (slug !== "about-us") {
+                            setSlug("about-us");
+                            setIsAboutExpanded(true);
+                            setActiveSection("who");
+                          } else {
+                            setIsAboutExpanded((prev) => !prev);
+                          }
+                        }}
+                        aria-label={
+                          isAboutExpanded
+                            ? "Collapse About Us sections"
+                            : "Expand About Us sections"
+                        }
+                        title={
+                          isAboutExpanded
+                            ? "Collapse sections"
+                            : "Expand sections"
+                        }
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-gray-400 hover:bg-gray-200/60 hover:text-gray-700 transition cursor-pointer"
+                      >
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                            isAboutExpanded && isPageActive
+                              ? "rotate-0 text-primaryColor"
+                              : "-rotate-90 text-gray-400"
+                          }`}
+                        />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Nested Sub-menu for About Us sections */}
+                  {isAboutUs && isPageActive && isAboutExpanded && (
+                    <div
+                      aria-label="About Us sections"
+                      className="ml-4 pl-2.5 border-l-2 border-primaryColor/25 space-y-1 py-1"
+                    >
+                      {aboutSections.map((section) => {
+                        const SectionIcon = section.icon;
+                        const count =
+                          "key" in section
+                            ? getArrayLength(structuredContent[section.key])
+                            : null;
+                        const isSectionActive = activeSection === section.id;
+
+                        return (
+                          <button
+                            key={section.id}
+                            type="button"
+                            onClick={() => setActiveSection(section.id)}
+                            aria-current={isSectionActive ? "page" : undefined}
+                            className={`flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-left text-[12.5px] font-medium transition cursor-pointer ${
+                              isSectionActive
+                                ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/25 shadow-xs"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent"
+                            }`}
+                          >
+                            <span className="flex min-w-0 items-center gap-2">
+                              <SectionIcon
+                                className={`h-3.5 w-3.5 shrink-0 ${
+                                  isSectionActive
+                                    ? "text-primaryColor"
+                                    : "text-gray-400"
+                                }`}
+                              />
+                              <span className="truncate">{section.label}</span>
+                            </span>
+                            {count !== null && (
+                              <span
+                                className={`flex h-4.5 min-w-4.5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition ${
+                                  isSectionActive
+                                    ? "bg-primaryColor text-white"
+                                    : "bg-gray-100 text-gray-500"
+                                }`}
+                              >
+                                {count}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>
-
-          {slug === "about-us" && (
-            <>
-              <div className="my-3 border-t border-gray-100" />
-              <h2 className="px-0 pb-2 text-xs font-semibold text-gray-500">
-                About Us Sections
-              </h2>
-              <nav aria-label="About Us sections" className="space-y-1">
-                {aboutSections.map((section) => {
-                  const Icon = section.icon;
-                  const count =
-                    "key" in section
-                      ? getArrayLength(structuredContent[section.key])
-                      : null;
-                  const active = activeSection === section.id;
-                  return (
-                    <button
-                      key={section.id}
-                      type="button"
-                      onClick={() => setActiveSection(section.id)}
-                      aria-current={active ? "page" : undefined}
-                      className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition ${
-                        active
-                          ? "bg-primaryColor/10 text-primaryColor font-semibold border border-primaryColor/20 shadow-xs"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                      }`}
-                    >
-                      <span className="flex min-w-0 items-center gap-2.5">
-                        <Icon className={`h-4 w-4 shrink-0 ${active ? "text-primaryColor" : "text-gray-400"}`} />
-                        <span className="truncate">{section.label}</span>
-                      </span>
-                      {count !== null && (
-                        <span
-                          className={`flex h-4.5 min-w-4.5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition ${
-                            active
-                              ? "bg-primaryColor text-white"
-                              : "bg-gray-100 text-gray-500"
-                          }`}
-                        >
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </nav>
-            </>
-          )}
         </aside>
 
         {/* Main Content Area */}
