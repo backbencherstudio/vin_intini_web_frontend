@@ -1,7 +1,7 @@
 "use client";
 
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
-import AdminSelect from "@/components/reusable/dashboard/AdminSelect";
+import CustomSwitch from "@/components/reusable/dashboard/CustomSwitch";
 import CustomTextArea from "@/components/reusable/dashboard/CustomTextArea";
 import JoditEditor from "@/components/reusable/InputFiled/JoditEditor";
 import Image from "next/image";
@@ -19,6 +19,7 @@ import {
 import {
   SortableContext,
   arrayMove,
+  rectSortingStrategy,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -30,25 +31,28 @@ import {
   type AdminPageSlug,
 } from "@/feature/slice/admin/settings/adminPagesApi";
 import {
+  Camera,
+  ChevronDown,
   CircleHelp,
   Clapperboard,
-  ChevronDown,
-  ArrowDown,
-  ArrowUp,
   Compass,
   Eye,
   FileText,
+  FolderOpen,
   GripVertical,
+  Info,
   Landmark,
   Lightbulb,
   Loader2,
+  Play,
   Plus,
   Save,
   ShieldCheck,
   Target,
-  Trash2,
   Upload,
   UsersRound,
+  X,
+  Youtube,
 } from "lucide-react";
 import {
   useEffect,
@@ -104,8 +108,33 @@ const defaultRowFields: Record<StructuredKey, string[]> = {
   team: ["name", "title", "bio", "photo_url"],
   videos: ["title", "url", "thumbnail_url", "source"],
   faqs: ["question", "answer"],
-  leading_institutions: ["name", "website", "description", "logo_url"],
+  leading_institutions: [
+    "name",
+    "website",
+    "description",
+    "logo_url",
+    "is_active",
+  ],
 };
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "VI";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function getEmbedUrl(url: string): string {
+  if (!url) return "";
+  if (url.includes("/embed/")) return url;
+  const ytMatch = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/,
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+  }
+  return url;
+}
 
 function toEditableRows(value: unknown, defaults: string[]): EditableRow[] {
   if (!Array.isArray(value)) return [];
@@ -146,6 +175,11 @@ function toInstitutionEditableRows(value: unknown): EditableRow[] {
   return toEditableRows(value, defaultRowFields.leading_institutions).map((row) => {
     const fields = { ...row.fields };
     delete fields.logo;
+    const rawIsActive = row.original.is_active;
+    fields.is_active =
+      rawIsActive === false || rawIsActive === "0" || rawIsActive === "false"
+        ? "false"
+        : "true";
     return { ...row, fields };
   });
 }
@@ -230,30 +264,22 @@ function SectionHeading({
   );
 }
 
-function SortableCard({
-  id,
+function SortableTeamItem({
+  item,
   index,
-  title,
-  subtitle,
-  children,
-  isDropTarget,
-  onMoveUp,
-  onMoveDown,
+  photoUrl,
+  onPhotoChange,
+  onUpdateField,
   onDelete,
-  isFirst,
-  isLast,
+  isDropTarget,
 }: {
-  id: string;
+  item: EditableRow;
   index: number;
-  title?: string;
-  subtitle?: string;
-  children: ReactNode;
-  isDropTarget: boolean;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
+  photoUrl: string;
+  onPhotoChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onUpdateField: (field: string, value: string) => void;
   onDelete: () => void;
-  isFirst: boolean;
-  isLast: boolean;
+  isDropTarget: boolean;
 }) {
   const {
     attributes,
@@ -263,95 +289,581 @@ function SortableCard({
     transition,
     isDragging,
   } = useSortable({
-    id,
+    id: item.id,
     transition: {
-      duration: 240,
+      duration: 200,
       easing: "cubic-bezier(0.22, 1, 0.36, 1)",
     },
   });
 
+  const photoInputId = `team-photo-${item.id}`;
+
   return (
-    <article
+    <div
       ref={setNodeRef}
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
         zIndex: isDragging ? 2 : undefined,
       }}
-      className={`group rounded-2xl border bg-white p-5 shadow-xs transition-all duration-200 ${
+      className={`rounded-xl border p-3.5 transition-all duration-200 ${
         isDragging
-          ? "border-primaryColor opacity-40 shadow-xl"
+          ? "border-sky-500 bg-sky-50/20 opacity-40 shadow-xl"
           : isDropTarget
-            ? "border-primaryColor bg-emerald-50/30 ring-2 ring-primaryColor/20 shadow-md"
-            : "border-gray-200/90 hover:border-gray-300 hover:shadow-xs"
+            ? "border-sky-500 bg-sky-50/30 ring-2 ring-sky-500/20 shadow-md"
+            : "border-gray-200 bg-gray-50/70 hover:border-gray-300 hover:bg-white hover:shadow-2xs"
       }`}
     >
-      {/* Card Header Bar */}
-      <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+        {/* Col 1: Drag handle + Serial */}
+        <div className="flex sm:flex-col items-center justify-center gap-1 sm:w-12 shrink-0 sm:border-r sm:border-gray-200 sm:pr-3">
           <button
             type="button"
             {...attributes}
             {...listeners}
-            aria-label={`Drag to reorder entry ${index + 1}`}
-            title="Drag to reorder"
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-grab active:cursor-grabbing transition"
+            aria-label={`Drag to reorder member ${index + 1}`}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-200/70 hover:text-gray-700 cursor-grab active:cursor-grabbing transition"
           >
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-5 w-5" />
           </button>
-          <span className="flex h-6 items-center px-2 rounded-md bg-gray-100 font-bold text-xs text-gray-700">
+          <span className="text-xs font-bold text-gray-500 sm:mt-0.5">
             #{index + 1}
           </span>
-          <div className="min-w-0 truncate">
-            <span className="font-semibold text-sm text-gray-900 truncate block">
-              {title || `Entry #${index + 1}`}
-            </span>
-            {subtitle && (
-              <span className="text-[11px] text-gray-400 truncate block">
-                {subtitle}
-              </span>
-            )}
-          </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50/50 p-0.5">
-            <button
-              type="button"
-              onClick={onMoveUp}
-              disabled={isFirst}
-              aria-label={`Move ${index + 1} up`}
-              title="Move up"
-              className="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-white hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent transition"
-            >
-              <ArrowUp className="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={onMoveDown}
-              disabled={isLast}
-              aria-label={`Move ${index + 1} down`}
-              title="Move down"
-              className="flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:bg-white hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent transition"
-            >
-              <ArrowDown className="h-3.5 w-3.5" />
-            </button>
-          </div>
+        {/* Col 2: Circular 80px Photo */}
+        <div className="flex items-center justify-center shrink-0 sm:w-24 sm:border-r sm:border-gray-200 sm:pr-3">
+          <label
+            htmlFor={photoInputId}
+            className="group relative h-20 w-20 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-xs bg-gray-100 transition hover:shadow-md shrink-0 flex items-center justify-center"
+            title="Click to change photo"
+          >
+            {photoUrl ? (
+              <Image
+                src={photoUrl}
+                alt={item.fields.name || "Member photo"}
+                fill
+                unoptimized
+                sizes="80px"
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gray-200/80 text-xl font-bold text-gray-600">
+                {getInitials(item.fields.name || "")}
+              </div>
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+              <Camera className="h-5 w-5 text-white" />
+            </div>
+            <input
+              id={photoInputId}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={onPhotoChange}
+            />
+          </label>
+        </div>
+
+        {/* Col 3: Full Name + Designation */}
+        <div className="flex flex-col gap-2 flex-1 sm:max-w-xs w-full">
+          <input
+            type="text"
+            value={item.fields.name || ""}
+            placeholder="Full Name"
+            onChange={(e) => onUpdateField("name", e.target.value)}
+            className="w-full h-9.5 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+          />
+          <input
+            type="text"
+            value={item.fields.title || ""}
+            placeholder="Designation"
+            onChange={(e) => onUpdateField("title", e.target.value)}
+            className="w-full h-9.5 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+          />
+        </div>
+
+        {/* Col 4: Bio */}
+        <div className="flex-1 w-full min-w-0">
+          <textarea
+            rows={3}
+            value={item.fields.bio || ""}
+            placeholder="Bio..."
+            onChange={(e) => onUpdateField("bio", e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition resize-y"
+          />
+        </div>
+
+        {/* Col 5: Red Delete Button */}
+        <div className="flex items-center justify-end shrink-0 sm:pl-2">
           <button
             type="button"
             onClick={onDelete}
-            aria-label={`Remove entry ${index + 1}`}
-            title="Delete entry"
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 transition"
+            aria-label={`Delete member ${index + 1}`}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition shadow-xs cursor-pointer"
           >
-            <Trash2 className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Card Content */}
-      {children}
-    </article>
+function SortableVideoCard({
+  item,
+  index: _index,
+  thumbUrl,
+  uploadedFile,
+  onThumbChange,
+  onVideoFileChange,
+  onUpdateField,
+  onDelete,
+  onPreview,
+  isDropTarget,
+}: {
+  item: EditableRow;
+  index: number;
+  thumbUrl: string;
+  uploadedFile?: File;
+  onThumbChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onVideoFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onUpdateField: (field: string, value: string) => void;
+  onDelete: () => void;
+  onPreview: (preview: { title: string; url: string; isLocal: boolean }) => void;
+  isDropTarget: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: item.id,
+    transition: {
+      duration: 200,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+    },
+  });
+
+  const thumbInputId = `video-thumb-${item.id}`;
+  const videoFileInputId = `video-file-${item.id}`;
+  const source = item.fields.source || "url";
+  const hasLocalVideo = Boolean(uploadedFile || item.fields.file_url);
+  const hasYoutubeVideo = Boolean(source === "url" && item.fields.url);
+
+  const handlePreviewClick = () => {
+    if (source === "url" && item.fields.url) {
+      onPreview({
+        title: item.fields.title || "Video Preview",
+        url: item.fields.url,
+        isLocal: false,
+      });
+    } else if (source === "file") {
+      const url = uploadedFile
+        ? URL.createObjectURL(uploadedFile)
+        : item.fields.file_url || "";
+      if (url) {
+        onPreview({
+          title: item.fields.title || "Video Preview",
+          url,
+          isLocal: true,
+        });
+      }
+    }
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 2 : undefined,
+      }}
+      className={`flex flex-col rounded-xl border bg-white shadow-xs overflow-hidden transition-all duration-200 ${
+        isDragging
+          ? "border-sky-500 opacity-40 shadow-xl"
+          : isDropTarget
+            ? "border-sky-500 ring-2 ring-sky-500/20 shadow-md"
+            : "border-gray-200 hover:border-gray-300 hover:shadow-md"
+      }`}
+    >
+      {/* 16:9 Thumbnail Area */}
+      <div className="relative aspect-video w-full bg-gray-900 group overflow-hidden">
+        {/* Floating Drag Handle top-left */}
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          aria-label="Drag video card"
+          className="absolute top-0 left-0 z-10 flex h-7 w-7 items-center justify-center rounded-br-lg bg-black/60 text-white hover:bg-black/80 cursor-grab active:cursor-grabbing transition"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+
+        <label
+          htmlFor={thumbInputId}
+          className="relative block h-full w-full cursor-pointer"
+          title="Click to change thumbnail"
+        >
+          {thumbUrl ? (
+            <Image
+              src={thumbUrl}
+              alt={item.fields.title || "Video thumbnail"}
+              fill
+              unoptimized
+              sizes="420px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gray-800 text-gray-500 text-xs font-semibold">
+              No Thumbnail
+            </div>
+          )}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Camera className="h-7 w-7 text-white" />
+          </div>
+          <input
+            id={thumbInputId}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onThumbChange}
+          />
+        </label>
+      </div>
+
+      {/* Card Body */}
+      <div className="p-3.5 flex flex-col flex-1 bg-gray-50/60 gap-2.5">
+        {/* Title */}
+        <input
+          type="text"
+          value={item.fields.title || ""}
+          placeholder="Video Title"
+          onChange={(e) => onUpdateField("title", e.target.value)}
+          className="w-full h-9 px-3 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+        />
+
+        {/* Video Source */}
+        <div>
+          <label className="text-[11px] font-bold text-gray-500 block mb-1">
+            Video Source:
+          </label>
+          <select
+            value={source}
+            onChange={(e) => onUpdateField("source", e.target.value)}
+            className="w-full h-8.5 px-2.5 rounded-lg border border-gray-300 bg-white text-xs font-medium text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+          >
+            <option value="url">YouTube Embed URL</option>
+            <option value="file">Local File Upload</option>
+          </select>
+        </div>
+
+        {/* Source Inputs */}
+        {source === "url" ? (
+          <div>
+            <input
+              type="text"
+              value={item.fields.url || ""}
+              placeholder="Paste youtube embed link here"
+              onChange={(e) => onUpdateField("url", e.target.value)}
+              className="w-full h-8.5 px-2.5 rounded-lg border border-gray-300 bg-white text-xs text-gray-700 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+            />
+          </div>
+        ) : (
+          <div>
+            <div className="flex h-8.5 items-center overflow-hidden rounded-lg border border-gray-300 bg-white text-xs">
+              <label
+                htmlFor={videoFileInputId}
+                className="inline-flex h-full shrink-0 cursor-pointer items-center border-r border-gray-300 bg-gray-100 px-3 font-medium text-gray-700 hover:bg-gray-200 transition"
+              >
+                Choose file
+              </label>
+              <span className="truncate px-2 text-gray-500">
+                {uploadedFile?.name || (item.fields.file_url ? "Current video file" : "No file chosen")}
+              </span>
+            </div>
+            <input
+              id={videoFileInputId}
+              type="file"
+              accept=".mp4,.mov,.avi,.wmv,video/*"
+              className="hidden"
+              onChange={onVideoFileChange}
+            />
+          </div>
+        )}
+
+        {/* Card Footer */}
+        <div className="mt-auto pt-2.5 border-t border-gray-200 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={onDelete}
+            className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 transition cursor-pointer"
+          >
+            <X className="h-3.5 w-3.5" /> Remove
+          </button>
+
+          <div className="flex items-center">
+            {source === "url" && item.fields.url && (
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-red-600">
+                <Youtube className="h-3.5 w-3.5" /> YouTube
+              </span>
+            )}
+            {source === "file" && (uploadedFile || item.fields.file_url) && (
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600">
+                <FolderOpen className="h-3.5 w-3.5" /> Local
+              </span>
+            )}
+          </div>
+
+          {(hasYoutubeVideo || hasLocalVideo) && (
+            <button
+              type="button"
+              onClick={handlePreviewClick}
+              className="inline-flex items-center gap-1 rounded-full bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 text-xs font-bold shadow-xs transition cursor-pointer"
+            >
+              <Play className="h-3 w-3 fill-white" /> View
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SortableFaqItem({
+  item,
+  index,
+  onUpdateField,
+  onDelete,
+  isDropTarget,
+}: {
+  item: EditableRow;
+  index: number;
+  onUpdateField: (field: string, value: string) => void;
+  onDelete: () => void;
+  isDropTarget: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: item.id,
+    transition: {
+      duration: 200,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+    },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 2 : undefined,
+      }}
+      className={`rounded-xl border p-3.5 sm:p-4 transition-all duration-200 ${
+        isDragging
+          ? "border-sky-500 opacity-40 shadow-xl"
+          : isDropTarget
+            ? "border-sky-500 bg-sky-50/30 ring-2 ring-sky-500/20 shadow-md"
+            : "border-gray-200 bg-gray-50/70 hover:border-gray-300 hover:bg-white hover:shadow-2xs"
+      }`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            aria-label={`Drag to reorder FAQ ${index + 1}`}
+            className="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-200/70 hover:text-gray-700 cursor-grab active:cursor-grabbing transition"
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+          <span className="text-sm font-bold text-sky-600">
+            Question #{index + 1}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label={`Delete question ${index + 1}`}
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition shadow-xs cursor-pointer"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      {/* Body Inputs */}
+      <div className="space-y-2.5">
+        <input
+          type="text"
+          value={item.fields.question || ""}
+          placeholder="Enter Question"
+          onChange={(e) => onUpdateField("question", e.target.value)}
+          className="w-full h-9.5 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+        />
+        <textarea
+          rows={3}
+          value={item.fields.answer || ""}
+          placeholder="Enter Answer"
+          onChange={(e) => onUpdateField("answer", e.target.value)}
+          className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition resize-y"
+        />
+      </div>
+    </div>
+  );
+}
+
+function SortableInstitutionItem({
+  item,
+  index,
+  logoUrl,
+  onLogoChange,
+  onUpdateField,
+  onDelete,
+  isDropTarget,
+}: {
+  item: EditableRow;
+  index: number;
+  logoUrl: string;
+  onLogoChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onUpdateField: (field: string, value: string) => void;
+  onDelete: () => void;
+  isDropTarget: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: item.id,
+    transition: {
+      duration: 200,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+    },
+  });
+
+  const logoInputId = `institution-logo-${item.id}`;
+  const isActive = item.fields.is_active !== "false";
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 2 : undefined,
+      }}
+      className={`rounded-xl border p-3 sm:p-3.5 transition-all duration-200 ${
+        isDragging
+          ? "border-sky-500 opacity-40 shadow-xl"
+          : isDropTarget
+            ? "border-sky-500 bg-sky-50/30 ring-2 ring-sky-500/20 shadow-md"
+            : "border-gray-200 bg-gray-50/70 hover:border-gray-300 hover:bg-white hover:shadow-2xs"
+      }`}
+    >
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+        {/* Col 1: Drag handle + Circle Serial Badge */}
+        <div className="flex items-center justify-between sm:justify-center gap-3 sm:w-20 shrink-0 sm:border-r sm:border-gray-200 sm:pr-3">
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            aria-label={`Drag to reorder institution ${index + 1}`}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-200/70 hover:text-gray-700 cursor-grab active:cursor-grabbing transition"
+          >
+            <GripVertical className="h-5 w-5" />
+          </button>
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white font-bold text-xs shrink-0 shadow-xs">
+            {index + 1}
+          </div>
+        </div>
+
+        {/* Col 2: Square 60px Logo Box */}
+        <div className="flex items-center justify-center shrink-0 sm:w-20 sm:border-r sm:border-gray-200 sm:pr-3">
+          <label
+            htmlFor={logoInputId}
+            className="group relative h-15 w-15 cursor-pointer overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-xs transition hover:shadow-md shrink-0 flex items-center justify-center"
+            title="Click to change logo"
+          >
+            {logoUrl ? (
+              <Image
+                src={logoUrl}
+                alt={item.fields.name || "Institution logo"}
+                fill
+                unoptimized
+                sizes="60px"
+                className="object-contain p-1"
+              />
+            ) : (
+              <Landmark className="h-6 w-6 text-gray-400" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+              <Camera className="h-4 w-4 text-white" />
+            </div>
+            <input
+              id={logoInputId}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={onLogoChange}
+            />
+          </label>
+        </div>
+
+        {/* Col 3: Institution Name */}
+        <div className="flex-1 w-full min-w-0">
+          <label className="text-[11px] font-bold text-gray-500 block mb-1">
+            Institution Name
+          </label>
+          <input
+            type="text"
+            value={item.fields.name || ""}
+            placeholder="e.g. Stanford University"
+            onChange={(e) => onUpdateField("name", e.target.value)}
+            className="w-full h-9.5 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition"
+          />
+        </div>
+
+        {/* Col 4: Status Toggle */}
+        <div className="flex sm:flex-col items-center justify-between sm:justify-center shrink-0 px-1 sm:px-3">
+          <label className="text-[11px] font-bold text-gray-500 block mb-1">
+            Status
+          </label>
+          <CustomSwitch
+            checked={isActive}
+            onChange={(checked) => onUpdateField("is_active", String(checked))}
+          />
+        </div>
+
+        {/* Col 5: Red Delete Button */}
+        <div className="flex items-center justify-end shrink-0 sm:pl-2">
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label={`Delete institution ${index + 1}`}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600 transition shadow-xs cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -375,6 +887,11 @@ export default function ContentPages() {
     Record<string, { file: File; preview: string }>
   >({});
   const [rowVideoUploads, setRowVideoUploads] = useState<Record<string, File>>({});
+  const [previewVideo, setPreviewVideo] = useState<{
+    title: string;
+    url: string;
+    isLocal: boolean;
+  } | null>(null);
   const [draggedRow, setDraggedRow] = useState<{
     key: StructuredKey;
     id: string;
@@ -569,7 +1086,10 @@ export default function ContentPages() {
           uploadedIds("leading_institutions"),
         ).map((institution) => {
           const { logo_url: _logoUrl, ...payload } = institution;
-          return payload;
+          return {
+            ...payload,
+            is_active: payload.is_active !== "false" && payload.is_active !== false,
+          };
         });
       }
 
@@ -619,13 +1139,61 @@ export default function ContentPages() {
   };
 
   const currentPage = pages.find((page) => page.slug === slug)!;
+  const sectionConfig: Record<
+    StructuredKey,
+    {
+      title: string;
+      subtitle: string;
+      hasInfoIcon: boolean;
+      addButtonText: string;
+      emptyText: string;
+      icon: typeof UsersRound;
+    }
+  > = {
+    team: {
+      title: "3. Team Management",
+      subtitle: "Member photo size must be less than 5MB",
+      hasInfoIcon: true,
+      addButtonText: "+ Add Member",
+      emptyText: "No team members added yet",
+      icon: UsersRound,
+    },
+    videos: {
+      title: "4. Tutorial Videos",
+      subtitle: "Uploaded video size must be less than 100MB",
+      hasInfoIcon: true,
+      addButtonText: "+ Add Video Card",
+      emptyText: "No videos added yet",
+      icon: Clapperboard,
+    },
+    faqs: {
+      title: "5. Frequently Asked Questions",
+      subtitle: "Manage the FAQ section for this page.",
+      hasInfoIcon: false,
+      addButtonText: "+ Add FAQ",
+      emptyText: "No FAQ questions added yet",
+      icon: CircleHelp,
+    },
+    leading_institutions: {
+      title: "6. Leading Institutions Management",
+      subtitle: "Drag items using the grip icon to change their display order.",
+      hasInfoIcon: false,
+      addButtonText: "+ Add New Institution",
+      emptyText: "No institutions added yet",
+      icon: Landmark,
+    },
+  };
+
   const renderStructuredEditor = (
     key: StructuredKey,
-    label: string,
-    description: string,
-    number: string,
+    _label?: string,
+    _description?: string,
+    _number?: string,
   ) => {
+    const cfg = sectionConfig[key];
     const items = structuredContent[key];
+    const IconComponent = cfg.icon;
+
     const updateField = (index: number, field: string, value: string) => {
       setStructuredContent((current) => ({
         ...current,
@@ -636,90 +1204,92 @@ export default function ContentPages() {
         ),
       }));
     };
-    const imageField = (item: EditableRow) =>
-      Object.keys(item.fields).find((field) =>
-        /(photo_url|logo_url|thumbnail_url|photo|image|avatar|logo|thumbnail)/i.test(field),
-      );
 
-    const isInstitution = key === "leading_institutions";
-    const isTeam = key === "team";
+    const handleAddItem = () => {
+      setStructuredContent((current) => ({
+        ...current,
+        [key]: [
+          ...current[key],
+          {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            original: {},
+            fields: Object.fromEntries(
+              defaultRowFields[key].map((field) => [
+                field,
+                key === "videos" && field === "source"
+                  ? "url"
+                  : key === "leading_institutions" && field === "is_active"
+                    ? "true"
+                    : "",
+              ]),
+            ),
+          },
+        ],
+      }));
+    };
+
+    const handleDeleteRow = (index: number, rowId: string) => {
+      const rowUploads = Object.entries(rowImageUploads).filter(([uk]) =>
+        uk.startsWith(`${rowId}:`),
+      );
+      rowUploads.forEach(([, upload]) => URL.revokeObjectURL(upload.preview));
+      setRowImageUploads((current) => {
+        const next = { ...current };
+        rowUploads.forEach(([uk]) => delete next[uk]);
+        return next;
+      });
+      setRowVideoUploads((current) => {
+        const next = { ...current };
+        delete next[`${rowId}:file`];
+        return next;
+      });
+      setStructuredContent((current) => ({
+        ...current,
+        [key]: current[key].filter((_, itemIndex) => itemIndex !== index),
+      }));
+    };
 
     return (
-      <SectionHeading
-        number={number}
-        title={label}
-        description={description}
-        badge={`${items.length} ${items.length === 1 ? "entry" : "entries"}`}
-        actions={
+      <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs transition sm:p-7">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
+          <div>
+            <h2 className="text-base font-bold text-gray-900 sm:text-lg">
+              {cfg.title}
+            </h2>
+            <p className="mt-1 flex items-center text-xs text-gray-500">
+              {cfg.hasInfoIcon && (
+                <Info className="mr-1 h-3.5 w-3.5 text-sky-500 shrink-0" />
+              )}
+              {cfg.subtitle}
+            </p>
+          </div>
           <button
             type="button"
-            onClick={() =>
-              setStructuredContent((current) => ({
-                ...current,
-                [key]: [
-                  ...current[key],
-                  {
-                    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-                    original: {},
-                    fields: Object.fromEntries(
-                      defaultRowFields[key].map((field) => [
-                        field,
-                        key === "videos" && field === "source" ? "url" : "",
-                      ]),
-                    ),
-                  },
-                ],
-              }))
-            }
-            className="inline-flex items-center gap-1.5 rounded-xl bg-primaryColor px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-primaryColor/90 focus:ring-2 focus:ring-primaryColor/20"
+            onClick={handleAddItem}
+            className="inline-flex items-center gap-1.5 rounded-full border border-sky-500 px-4 py-1.5 text-xs font-bold text-sky-600 hover:bg-sky-50 transition cursor-pointer"
           >
-            <Plus className="h-4 w-4" />
-            Add {isTeam ? "Member" : key === "faqs" ? "Question" : isInstitution ? "Institution" : "Entry"}
+            <Plus className="h-3.5 w-3.5" />
+            {cfg.addButtonText.replace(/^\+\s*/, "")}
           </button>
-        }
-      >
-        <div className="space-y-4">
+        </div>
+
+        <div>
           {items.length === 0 ? (
             <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 px-6 py-12 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-gray-200 text-gray-400 shadow-xs">
-                {isInstitution ? (
-                  <Landmark className="h-6 w-6 text-primaryColor" />
-                ) : isTeam ? (
-                  <UsersRound className="h-6 w-6 text-primaryColor" />
-                ) : key === "videos" ? (
-                  <Clapperboard className="h-6 w-6 text-primaryColor" />
-                ) : (
-                  <CircleHelp className="h-6 w-6 text-primaryColor" />
-                )}
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white border border-gray-200 text-sky-600 shadow-xs">
+                <IconComponent className="h-6 w-6" />
               </div>
-              <p className="mt-3 text-sm font-bold text-gray-800">No {label.toLowerCase()} added yet</p>
+              <p className="mt-3 text-sm font-bold text-gray-800">{cfg.emptyText}</p>
               <p className="mt-1 text-xs text-gray-500 max-w-sm mx-auto">
                 Add your first entry to display this section on the public About Us page.
               </p>
               <button
                 type="button"
-                onClick={() =>
-                  setStructuredContent((current) => ({
-                    ...current,
-                    [key]: [
-                      ...current[key],
-                      {
-                        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-                        original: {},
-                        fields: Object.fromEntries(
-                          defaultRowFields[key].map((field) => [
-                            field,
-                            key === "videos" && field === "source" ? "url" : "",
-                          ]),
-                        ),
-                      },
-                    ],
-                  }))
-                }
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-primaryColor/30 bg-primaryColor/5 px-4 py-2 text-xs font-semibold text-primaryColor hover:bg-primaryColor hover:text-white transition"
+                onClick={handleAddItem}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-sky-500 bg-sky-50/50 px-4 py-1.5 text-xs font-bold text-sky-600 hover:bg-sky-500 hover:text-white transition cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Add Entry
+                {cfg.addButtonText.replace(/^\+\s*/, "")}
               </button>
             </div>
           ) : (
@@ -752,278 +1322,129 @@ export default function ContentPages() {
                 setDragOverRow(null);
               }}
             >
-              <SortableContext
-                items={items.map((item) => item.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="space-y-4">
-                  {items.map((item, index) => {
-                    const photoField = imageField(item);
-                    const uploadKey = photoField ? `${item.id}:${photoField}` : "";
-                    const photoUrl = photoField
-                      ? rowImageUploads[uploadKey]?.preview || item.fields[photoField]
-                      : "";
-                    const fields = Object.entries(item.fields).filter(
-                      ([field]) =>
-                        field !== photoField &&
-                        !(key === "videos" && ["source", "url", "file_url", "type"].includes(field)),
-                    );
-
-                    const itemTitle =
-                      item.fields.name ||
-                      item.fields.title ||
-                      item.fields.question ||
-                      `${isInstitution ? "Institution" : isTeam ? "Member" : "Entry"} #${index + 1}`;
-                    const itemSubtitle = isInstitution
-                      ? item.fields.website
-                      : isTeam
-                        ? item.fields.title
-                        : undefined;
-
-                    const handleDeleteRow = () => {
-                      const rowUploads = Object.entries(rowImageUploads).filter(([uk]) =>
-                        uk.startsWith(`${item.id}:`),
+              {key === "videos" ? (
+                <SortableContext
+                  items={items.map((item) => item.id)}
+                  strategy={rectSortingStrategy}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {items.map((item, index) => {
+                      const thumbUploadKey = `${item.id}:thumbnail_url`;
+                      const thumbUrl =
+                        rowImageUploads[thumbUploadKey]?.preview ||
+                        item.fields.thumbnail_url ||
+                        "";
+                      const uploadedVideo = rowVideoUploads[`${item.id}:file`];
+                      return (
+                        <SortableVideoCard
+                          key={item.id}
+                          item={item}
+                          index={index}
+                          thumbUrl={thumbUrl}
+                          uploadedFile={uploadedVideo}
+                          onThumbChange={(e) =>
+                            handleRowImageChange(e, item.id, "thumbnail_url")
+                          }
+                          onVideoFileChange={(e) => handleVideoFileChange(e, item.id)}
+                          onUpdateField={(field, val) =>
+                            updateField(index, field, val)
+                          }
+                          onDelete={() => handleDeleteRow(index, item.id)}
+                          onPreview={(preview) => setPreviewVideo(preview)}
+                          isDropTarget={
+                            dragOverRow?.key === key && dragOverRow.id === item.id
+                          }
+                        />
                       );
-                      rowUploads.forEach(([, upload]) => URL.revokeObjectURL(upload.preview));
-                      setRowImageUploads((current) => {
-                        const next = { ...current };
-                        rowUploads.forEach(([uk]) => delete next[uk]);
-                        return next;
-                      });
-                      setRowVideoUploads((current) => {
-                        const next = { ...current };
-                        delete next[`${item.id}:file`];
-                        return next;
-                      });
-                      setStructuredContent((current) => ({
-                        ...current,
-                        [key]: current[key].filter((_, itemIndex) => itemIndex !== index),
-                      }));
-                    };
+                    })}
+                  </div>
+                </SortableContext>
+              ) : (
+                <SortableContext
+                  items={items.map((item) => item.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-3">
+                    {items.map((item, index) => {
+                      if (key === "team") {
+                        const uploadKey = `${item.id}:photo_url`;
+                        const photoUrl =
+                          rowImageUploads[uploadKey]?.preview ||
+                          item.fields.photo_url ||
+                          "";
+                        return (
+                          <SortableTeamItem
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            photoUrl={photoUrl}
+                            onPhotoChange={(e) =>
+                              handleRowImageChange(e, item.id, "photo_url")
+                            }
+                            onUpdateField={(field, val) =>
+                              updateField(index, field, val)
+                            }
+                            onDelete={() => handleDeleteRow(index, item.id)}
+                            isDropTarget={
+                              dragOverRow?.key === key &&
+                              dragOverRow.id === item.id
+                            }
+                          />
+                        );
+                      }
 
-                    return (
-                      <SortableCard
-                        key={item.id}
-                        id={item.id}
-                        index={index}
-                        title={itemTitle}
-                        subtitle={itemSubtitle}
-                        isDropTarget={dragOverRow?.key === key && dragOverRow.id === item.id}
-                        onMoveUp={() => moveRow(key, index, index - 1)}
-                        onMoveDown={() => moveRow(key, index, index + 1)}
-                        onDelete={handleDeleteRow}
-                        isFirst={index === 0}
-                        isLast={index === items.length - 1}
-                      >
-                        {photoField ? (
-                          <div className="flex flex-col gap-5 sm:flex-row sm:items-start pt-1">
-                            {/* Image / Logo Upload Box */}
-                            <div className="flex flex-col items-center sm:items-start shrink-0">
-                              <div
-                                className={`relative h-24 w-24 overflow-hidden border border-gray-200 bg-gray-50/80 shadow-xs ${
-                                  isTeam ? "rounded-full" : "rounded-2xl p-2"
-                                }`}
-                              >
-                                {photoUrl ? (
-                                  <Image
-                                    src={photoUrl}
-                                    alt={`${item.fields.name || label} image`}
-                                    fill
-                                    unoptimized
-                                    sizes="96px"
-                                    className={isTeam ? "object-cover" : "object-contain p-1.5"}
-                                  />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center bg-gray-100 text-xl font-bold text-gray-400">
-                                    {(item.fields.name || "?").slice(0, 1).toUpperCase()}
-                                  </div>
-                                )}
-                              </div>
-                              <label
-                                htmlFor={`row-image-${item.id}`}
-                                className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-primaryColor hover:underline"
-                              >
-                                <Upload className="h-3.5 w-3.5" />
-                                {photoUrl
-                                  ? isInstitution
-                                    ? "Change logo"
-                                    : "Change photo"
-                                  : isInstitution
-                                    ? "Upload logo"
-                                    : "Upload photo"}
-                              </label>
-                              <span className="mt-0.5 text-[11px] text-gray-400">
-                                JPG, PNG, WEBP (max 5MB)
-                              </span>
-                              <CustomInput
-                                id={`row-image-${item.id}`}
-                                type="file"
-                                accept="image/*"
-                                containerClassName="hidden"
-                                onChange={(event) =>
-                                  handleRowImageChange(event, item.id, photoField)
-                                }
-                              />
-                            </div>
+                      if (key === "faqs") {
+                        return (
+                          <SortableFaqItem
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            onUpdateField={(field, val) =>
+                              updateField(index, field, val)
+                            }
+                            onDelete={() => handleDeleteRow(index, item.id)}
+                            isDropTarget={
+                              dragOverRow?.key === key &&
+                              dragOverRow.id === item.id
+                            }
+                          />
+                        );
+                      }
 
-                            {/* Form Inputs Grid */}
-                            <div className="grid flex-1 min-w-0 gap-3 md:grid-cols-2">
-                              {fields.map(([field, value]) => {
-                                const fieldLabel = field
-                                  .replace(/_/g, " ")
-                                  .replace(/\b\w/g, (letter) => letter.toUpperCase());
-                                const longText = /(bio|description|answer|content)/i.test(field);
-                                return longText ? (
-                                  <CustomTextArea
-                                    key={field}
-                                    label={fieldLabel}
-                                    rows={3}
-                                    value={value}
-                                    placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
-                                    onChange={(event) =>
-                                      updateField(index, field, event.target.value)
-                                    }
-                                    containerClassName="md:col-span-2"
-                                  />
-                                ) : (
-                                  <CustomInput
-                                    key={field}
-                                    label={fieldLabel}
-                                    value={value}
-                                    placeholder={
-                                      field === "website"
-                                        ? "https://..."
-                                        : `Enter ${fieldLabel.toLowerCase()}...`
-                                    }
-                                    onChange={(event) =>
-                                      updateField(index, field, event.target.value)
-                                    }
-                                    containerClassName={
-                                      fields.length === 1 ? "md:col-span-2" : ""
-                                    }
-                                  />
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="grid min-w-0 gap-3 md:grid-cols-2 pt-1">
-                            {fields.map(([field, value]) => {
-                              const fieldLabel = field
-                                .replace(/_/g, " ")
-                                .replace(/\b\w/g, (letter) => letter.toUpperCase());
-                              const longText = /(bio|description|answer|content)/i.test(field);
-                              return longText ? (
-                                <CustomTextArea
-                                  key={field}
-                                  label={fieldLabel}
-                                  rows={3}
-                                  value={value}
-                                  placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
-                                  onChange={(event) =>
-                                    updateField(index, field, event.target.value)
-                                  }
-                                  containerClassName="md:col-span-2"
-                                />
-                              ) : (
-                                <CustomInput
-                                  key={field}
-                                  label={fieldLabel}
-                                  value={value}
-                                  placeholder={`Enter ${fieldLabel.toLowerCase()}...`}
-                                  onChange={(event) =>
-                                    updateField(index, field, event.target.value)
-                                  }
-                                  containerClassName={
-                                    fields.length === 1 || key === "faqs" ? "md:col-span-2" : ""
-                                  }
-                                />
-                              );
-                            })}
+                      // leading_institutions
+                      const logoUploadKey = `${item.id}:logo_url`;
+                      const logoUrl =
+                        rowImageUploads[logoUploadKey]?.preview ||
+                        item.fields.logo_url ||
+                        "";
+                      return (
+                        <SortableInstitutionItem
+                          key={item.id}
+                          item={item}
+                          index={index}
+                          logoUrl={logoUrl}
+                          onLogoChange={(e) =>
+                            handleRowImageChange(e, item.id, "logo_url")
+                          }
+                          onUpdateField={(field, val) =>
+                            updateField(index, field, val)
+                          }
+                          onDelete={() => handleDeleteRow(index, item.id)}
+                          isDropTarget={
+                            dragOverRow?.key === key &&
+                            dragOverRow.id === item.id
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+                </SortableContext>
+              )}
 
-                            {key === "videos" && (
-                              <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
-                                <AdminSelect
-                                  id={`video-source-${item.id}`}
-                                  label="Video Source"
-                                  value={item.fields.source || "url"}
-                                  onChange={(event) => {
-                                    updateField(index, "source", event.target.value);
-                                    if (event.target.value === "url") {
-                                      setRowVideoUploads((current) => {
-                                        const next = { ...current };
-                                        delete next[`${item.id}:file`];
-                                        return next;
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <option value="url">YouTube Embed URL</option>
-                                  <option value="file">Local File Upload</option>
-                                </AdminSelect>
-                                {item.fields.source === "url" || !item.fields.source ? (
-                                  <CustomInput
-                                    label="YouTube URL"
-                                    value={item.fields.url || ""}
-                                    placeholder="https://www.youtube.com/embed/..."
-                                    onChange={(event) =>
-                                      updateField(index, "url", event.target.value)
-                                    }
-                                  />
-                                ) : (
-                                  <div>
-                                    <label
-                                      htmlFor={`video-file-${item.id}`}
-                                      className="mb-1.5 block text-sm font-medium text-[#4A4C56]"
-                                    >
-                                      Video File
-                                    </label>
-                                    <div className="flex h-10 min-w-0 items-center overflow-hidden rounded-lg border border-gray-300 bg-white text-sm focus-within:border-primaryColor focus-within:ring-2 focus-within:ring-primaryColor/15">
-                                      <label
-                                        htmlFor={`video-file-${item.id}`}
-                                        className="inline-flex h-full shrink-0 cursor-pointer items-center gap-2 border-r border-gray-300 bg-gray-50 px-3 font-medium text-gray-700 transition hover:bg-gray-100"
-                                      >
-                                        <Upload className="h-4 w-4 text-primaryColor" />
-                                        Choose file
-                                      </label>
-                                      <span className="truncate px-3 text-gray-600">
-                                        {rowVideoUploads[`${item.id}:file`]?.name ||
-                                          "No file selected"}
-                                      </span>
-                                    </div>
-                                    <CustomInput
-                                      id={`video-file-${item.id}`}
-                                      type="file"
-                                      accept=".mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv"
-                                      onChange={(event) =>
-                                        handleVideoFileChange(event, item.id)
-                                      }
-                                      containerClassName="sr-only"
-                                      className="sr-only"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </SortableCard>
-                    );
-                  })}
-                  <div
-                    className={`h-3 rounded-lg border-2 border-dashed transition-colors ${
-                      dragOverRow?.key === key && dragOverRow.id === "__end__"
-                        ? "border-primaryColor bg-primaryColor/5"
-                        : "border-transparent"
-                    }`}
-                    aria-hidden="true"
-                  />
-                </div>
-              </SortableContext>
               <DragOverlay
                 adjustScale={false}
                 dropAnimation={{
-                  duration: 260,
+                  duration: 200,
                   easing: "cubic-bezier(0.22, 1, 0.36, 1)",
                   sideEffects: defaultDropAnimationSideEffects({
                     styles: { active: { opacity: "0" } },
@@ -1033,68 +1454,142 @@ export default function ContentPages() {
                 {draggedRow?.key === key && (() => {
                   const item = items.find((row) => row.id === draggedRow.id);
                   if (!item) return null;
-                  const photoField = imageField(item);
-                  const photoUrl = photoField
-                    ? rowImageUploads[`${item.id}:${photoField}`]?.preview || item.fields[photoField]
-                    : "";
                   const itemIndex = items.findIndex((row) => row.id === item.id);
-                  return (
-                    <div
-                      style={{
-                        width: draggedRow.width || undefined,
-                        boxSizing: "border-box",
-                      }}
-                      className="w-[min(1100px,calc(100vw-2rem))] rounded-2xl border-2 border-primaryColor bg-white p-5 shadow-2xl ring-4 ring-primaryColor/10"
-                      aria-hidden="true"
-                    >
-                      <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-3">
-                        <div className="flex items-center gap-2.5">
-                          <GripVertical className="h-4 w-4 text-primaryColor" />
-                          <span className="flex h-6 items-center px-2 rounded-md bg-primaryColor/10 font-bold text-xs text-primaryColor">
-                            #{itemIndex + 1}
-                          </span>
-                          <span className="font-semibold text-sm text-gray-900 truncate">
-                            {item.fields.name || item.fields.title || item.fields.question || `Entry #${itemIndex + 1}`}
-                          </span>
-                        </div>
-                      </div>
-                      <div className={photoField ? "flex gap-4 items-center" : ""}>
-                        {photoField && (
-                          <div
-                            className={`relative h-14 w-14 shrink-0 overflow-hidden border border-gray-200 bg-gray-50 ${
-                              isTeam ? "rounded-full" : "rounded-xl p-1"
-                            }`}
-                          >
+
+                  if (key === "team") {
+                    const uploadKey = `${item.id}:photo_url`;
+                    const photoUrl =
+                      rowImageUploads[uploadKey]?.preview ||
+                      item.fields.photo_url ||
+                      "";
+                    return (
+                      <div
+                        style={{ width: draggedRow.width || undefined }}
+                        className="rounded-xl border-2 border-sky-500 bg-white p-3.5 shadow-2xl ring-4 ring-sky-500/10 pointer-events-none"
+                      >
+                        <div className="flex items-center gap-3.5">
+                          <div className="flex flex-col items-center justify-center gap-1 w-12 shrink-0 border-r border-gray-200 pr-3">
+                            <GripVertical className="h-5 w-5 text-sky-500" />
+                            <span className="text-xs font-bold text-gray-500">
+                              #{itemIndex + 1}
+                            </span>
+                          </div>
+                          <div className="relative h-16 w-16 rounded-full overflow-hidden border border-gray-200 bg-gray-100 shrink-0">
                             {photoUrl ? (
                               <Image
                                 src={photoUrl}
                                 alt=""
                                 fill
                                 unoptimized
-                                sizes="56px"
-                                className={isTeam ? "object-cover" : "object-contain"}
+                                sizes="64px"
+                                className="object-cover"
                               />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center bg-gray-100 text-sm font-bold text-gray-400">
-                                {(item.fields.name || "?").slice(0, 1).toUpperCase()}
+                              <div className="flex h-full w-full items-center justify-center font-bold text-gray-500">
+                                {getInitials(item.fields.name || "")}
                               </div>
                             )}
                           </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-800">
-                            {item.fields.name || item.fields.title || item.fields.question}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-gray-900 truncate">
+                              {item.fields.name || `Member #${itemIndex + 1}`}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              {item.fields.title || "No designation"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (key === "videos") {
+                    const thumbUploadKey = `${item.id}:thumbnail_url`;
+                    const thumbUrl =
+                      rowImageUploads[thumbUploadKey]?.preview ||
+                      item.fields.thumbnail_url ||
+                      "";
+                    return (
+                      <div
+                        style={{ width: draggedRow.width || 320 }}
+                        className="rounded-xl border-2 border-sky-500 bg-white overflow-hidden shadow-2xl ring-4 ring-sky-500/10 pointer-events-none"
+                      >
+                        <div className="relative aspect-video w-full bg-gray-900">
+                          {thumbUrl && (
+                            <Image
+                              src={thumbUrl}
+                              alt=""
+                              fill
+                              unoptimized
+                              sizes="320px"
+                              className="object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="p-3 bg-white">
+                          <p className="text-sm font-bold text-gray-900 truncate">
+                            {item.fields.title || `Video #${itemIndex + 1}`}
                           </p>
-                          {item.fields.description && (
-                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-                              {item.fields.description}
-                            </p>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (key === "faqs") {
+                    return (
+                      <div
+                        style={{ width: draggedRow.width || undefined }}
+                        className="rounded-xl border-2 border-sky-500 bg-white p-4 shadow-2xl ring-4 ring-sky-500/10 pointer-events-none"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <GripVertical className="h-4 w-4 text-sky-500" />
+                          <span className="text-sm font-bold text-sky-600">
+                            Question #{itemIndex + 1}
+                          </span>
+                        </div>
+                        <p className="text-sm font-semibold text-gray-800 truncate">
+                          {item.fields.question || "Empty Question"}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  // leading_institutions
+                  const logoUploadKey = `${item.id}:logo_url`;
+                  const logoUrl =
+                    rowImageUploads[logoUploadKey]?.preview ||
+                    item.fields.logo_url ||
+                    "";
+                  return (
+                    <div
+                      style={{ width: draggedRow.width || undefined }}
+                      className="rounded-xl border-2 border-sky-500 bg-white p-3 shadow-2xl ring-4 ring-sky-500/10 pointer-events-none"
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className="flex items-center gap-2 border-r border-gray-200 pr-3">
+                          <GripVertical className="h-5 w-5 text-sky-500" />
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white font-bold text-xs">
+                            {itemIndex + 1}
+                          </div>
+                        </div>
+                        <div className="relative h-12 w-12 rounded-lg border border-gray-200 bg-white p-1 shrink-0 flex items-center justify-center">
+                          {logoUrl ? (
+                            <Image
+                              src={logoUrl}
+                              alt=""
+                              fill
+                              unoptimized
+                              sizes="48px"
+                              className="object-contain p-1"
+                            />
+                          ) : (
+                            <Landmark className="h-5 w-5 text-gray-400" />
                           )}
-                          {item.fields.bio && (
-                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-                              {item.fields.bio}
-                            </p>
-                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-gray-900 truncate">
+                            {item.fields.name || `Institution #${itemIndex + 1}`}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -1104,7 +1599,7 @@ export default function ContentPages() {
             </DndContext>
           )}
         </div>
-      </SectionHeading>
+      </div>
     );
   };
 
@@ -1540,6 +2035,51 @@ export default function ContentPages() {
           )}
         </main>
       </div>
+
+      {/* Video Preview Modal */}
+      {previewVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-xs"
+          onClick={() => setPreviewVideo(null)}
+        >
+          <div
+            className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-black shadow-2xl border border-gray-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between bg-sky-600 px-4 py-2.5 text-white">
+              <h4 className="text-sm font-bold truncate">
+                {previewVideo.title || "Video Preview"}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setPreviewVideo(null)}
+                aria-label="Close video preview"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-white/80 hover:bg-white/20 hover:text-white transition cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="relative aspect-video w-full bg-black flex items-center justify-center">
+              {previewVideo.isLocal ? (
+                <video
+                  src={previewVideo.url}
+                  controls
+                  autoPlay
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <iframe
+                  src={getEmbedUrl(previewVideo.url)}
+                  title={previewVideo.title || "Video Preview"}
+                  className="h-full w-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
