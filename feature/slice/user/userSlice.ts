@@ -14,6 +14,7 @@ const userSlice = baseApiSlice.injectEndpoints({
         url: "/me",
         method: "GET",
       }),
+      serializeQueryArgs: () => "userProfile",
       providesTags: ["User"],
     }),
     getInstitution: builder.query({

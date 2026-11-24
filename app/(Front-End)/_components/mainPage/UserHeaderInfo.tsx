@@ -114,6 +114,11 @@ function UserHeaderInfo() {
     } catch (error) {
       console.error("Error occurred while logging out:", error);
     } finally {
+      try {
+        localStorage.removeItem("mu_user_tier");
+      } catch {
+        // ignore
+      }
       await clearToken();
       router.replace("/login");
       dispatch(baseApiSlice.util.resetApiState());
@@ -124,17 +129,73 @@ function UserHeaderInfo() {
   };
   const isMessagePage = patheName.startsWith("/mu/message");
 
+  // Track cached tier from localStorage to eliminate any flash during page transition / loading
+  const [cachedTier, setCachedTier] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return localStorage.getItem("mu_user_tier");
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  const hasLoaded = Boolean(userProfileData?.user || userProfileData?.success);
+
   const hasCompany = Boolean(
     userProfileData?.industry?.has_company ||
       userProfileData?.industry?.company?.id
   );
-  const isIndustry =
-    userProfileData?.subscription?.plan_type === "industry" || hasCompany;
-  const isPremium =
-    !isIndustry &&
-    (userProfileData?.subscription?.plan_type === "premium" ||
-      Boolean(userProfileData?.subscription?.is_subscribed));
+  const isIndustry = hasLoaded
+    ? userProfileData?.subscription?.plan_type === "industry" || hasCompany
+    : cachedTier === "industry";
+  const isPremium = hasLoaded
+    ? !isIndustry &&
+      (userProfileData?.subscription?.plan_type === "premium" ||
+        Boolean(userProfileData?.subscription?.is_subscribed))
+    : cachedTier === "premium";
   const planName = userProfileData?.subscription?.plan_name || "basic_user";
+
+  useEffect(() => {
+    if (hasLoaded) {
+      const activeTier = isIndustry
+        ? "industry"
+        : isPremium
+          ? "premium"
+          : "basic";
+      try {
+        localStorage.setItem("mu_user_tier", activeTier);
+      } catch {
+        // ignore
+      }
+      setCachedTier(activeTier);
+    }
+  }, [hasLoaded, isIndustry, isPremium]);
+
+  const userTierConfig = isIndustry
+    ? {
+        label: "Industry Pro",
+        borderClass: "border-emerald-500",
+        badgeClass: "bg-emerald-50 border border-emerald-200 text-emerald-700",
+        iconColor: "text-emerald-600",
+        isCrown: true,
+      }
+    : isPremium
+    ? {
+        label: "Premium User",
+        borderClass: "border-purple-600",
+        badgeClass: "bg-purple-50 border border-purple-200 text-purple-700",
+        iconColor: "text-purple-600",
+        isCrown: true,
+      }
+    : {
+        label: "Basic User",
+        borderClass: "border-[#1BAABE]",
+        badgeClass: "bg-[#1BAABE]/10 border border-[#1BAABE]/30 text-[#1BAABE]",
+        iconColor: "text-[#1BAABE]",
+        isCrown: false,
+      };
 
   return (
     <div>
@@ -199,7 +260,7 @@ function UserHeaderInfo() {
                 <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-primaryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-8 h-8 lg:w-12 lg:h-12 border-[3.5px] lg:border-[4px] ${userTierConfig.borderClass} rounded-full overflow-hidden shadow-xs`}
                     >
                       <Image
                         src={
@@ -227,7 +288,7 @@ function UserHeaderInfo() {
                 <div className="">
                   <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                     <div
-                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-primaryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
+                      className={`h-13 w-13 shrink-0 overflow-hidden rounded-full border-[4px] ${userTierConfig.borderClass} shadow-xs`}
                     >
                       <Image
                         src={
@@ -246,19 +307,17 @@ function UserHeaderInfo() {
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <div
-                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-primaryColor/10 text-primaryColor" : isPremium ? "bg-lightGreenColor text-primaryColor" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
+                        className={`inline-flex items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold capitalize tracking-wide ${userTierConfig.badgeClass}`}
                       >
-                        {isIndustry || isPremium ? (
+                        {userTierConfig.isCrown ? (
                           <FaCrown
-                            size={16}
-                            className={`${isIndustry ? "text-primaryColor" : isPremium ? "text-primaryColor" : "text-[#3EA1D6]"}`}
+                            size={14}
+                            className={userTierConfig.iconColor}
                           />
                         ) : (
-                          <SingleUserIcon className="h-4 w-4 text-[#3EA1D6]" />
+                          <SingleUserIcon className={`h-3.5 w-3.5 ${userTierConfig.iconColor}`} />
                         )}
-                        <span className="text-sm capitalize tracking-wide">
-                          {planName.split("_").join(" ")}
-                        </span>
+                        <span>{userTierConfig.label}</span>
                       </div>
                     </div>
                   </div>

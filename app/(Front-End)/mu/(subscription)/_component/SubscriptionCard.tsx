@@ -33,10 +33,10 @@ function SubscriptionCard() {
 
   if (isIndustry) {
     return (
-      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-primaryColor/20 bg-white text-sm shadow-sm transition-shadow hover:border-primaryColor/40 hover:shadow-md">
+      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-emerald-200 bg-white text-sm shadow-sm transition-shadow hover:border-emerald-300 hover:shadow-md">
         <div className="p-3">
           <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-primaryColor/5 ring-2 ring-primaryColor/70 ring-offset-2 ring-offset-white">
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-emerald-50 ring-[3px] ring-emerald-500 ring-offset-2 ring-offset-white">
               {company?.logo || industry?.logo ? (
                 <Image
                   src={company?.logo || industry?.logo}
@@ -46,7 +46,7 @@ function SubscriptionCard() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center font-semibold text-primaryColor">
+                <div className="flex h-full w-full items-center justify-center font-semibold text-emerald-600">
                   {companyName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -60,12 +60,12 @@ function SubscriptionCard() {
               </h3>
             </div>
           </div>
-          <div className="mt-3 border-t border-primaryColor/15 pt-2.5">
+          <div className="mt-3 border-t border-emerald-100 pt-2.5">
             <div className="flex items-center justify-between gap-2">
               {hasCompany && (
                 <div className="flex items-center gap-1.5 text-grayColor1">
-                  <HiOutlineUsers className="h-4 w-4 text-primaryColor" />
-                  <span className="font-semibold text-headerColor">
+                  <HiOutlineUsers className="h-4 w-4 text-emerald-600" />
+                  <span className="font-semibold text-emerald-700">
                     {Number(
                       industry?.total_followers ?? industry?.followers_count ?? 0,
                     ).toLocaleString()}
@@ -75,7 +75,7 @@ function SubscriptionCard() {
               )}
               <Link
                 href={canCreateCompany ? "/mu/create-company-page/" : "/mu/recruiter-dashboard"}
-                className={`rounded-md px-3 py-1.5 text-center text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor focus-visible:ring-offset-2 ${canCreateCompany ? "w-full bg-primaryColor text-white shadow-sm hover:bg-primaryColor/90" : "bg-primaryColor/8 text-primaryColor hover:bg-primaryColor/15"}`}
+                className={`rounded-md px-3 py-1.5 text-center text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${canCreateCompany ? "w-full bg-emerald-600 text-white shadow-sm hover:bg-emerald-700" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"}`}
               >
                 {canCreateCompany ? "Create Company" : "Dashboard"}
               </Link>
@@ -107,10 +107,10 @@ function SubscriptionCard() {
     const avatarUrl = user?.profile_image_url;
 
     return (
-      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-primaryColor/20 bg-white text-sm shadow-sm transition-shadow hover:border-primaryColor/40 hover:shadow-md">
+      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-purple-200 bg-white text-sm shadow-sm transition-shadow hover:border-purple-300 hover:shadow-md">
         <div className="p-3">
           <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-primaryColor/5 ring-2 ring-primaryColor/70 ring-offset-2 ring-offset-white">
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-purple-50 ring-[3px] ring-purple-500 ring-offset-2 ring-offset-white">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
@@ -120,7 +120,7 @@ function SubscriptionCard() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center font-semibold text-primaryColor">
+                <div className="flex h-full w-full items-center justify-center font-semibold text-purple-600">
                   {fullName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -134,17 +134,17 @@ function SubscriptionCard() {
               </h3>
             </div>
           </div>
-          <div className="mt-3 border-t border-primaryColor/15 pt-2.5">
+          <div className="mt-3 border-t border-purple-100 pt-2.5">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 text-grayColor1">
-                <FaCrown className="h-4 w-4 text-primaryColor" />
-                <span className="font-semibold text-headerColor">
-                  {planName || "Premium"}
+                <FaCrown className="h-4 w-4 text-purple-600" />
+                <span className="font-semibold text-purple-700">
+                  Premium User
                 </span>
               </div>
               <Link
                 href="/mu/profile"
-                className="rounded-md bg-primaryColor/8 px-3 py-1.5 text-center text-sm font-semibold text-primaryColor transition-colors hover:bg-primaryColor/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor focus-visible:ring-offset-2"
+                className="rounded-md bg-purple-50 px-3 py-1.5 text-center text-sm font-semibold text-purple-700 transition-colors hover:bg-purple-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
               >
                 Profile
               </Link>
@@ -156,7 +156,7 @@ function SubscriptionCard() {
   }
 
   return (
-    <div className="flex flex-col justify-center gap-1 rounded-xl border border-[#87D5FF] bg-[#87D5FF]/15 p-3 text-center text-sm shadow-sm md:p-4">
+    <div className="flex flex-col justify-center gap-1 rounded-xl border border-[#1BAABE]/30 bg-[#1BAABE]/10 p-3 text-center text-sm shadow-sm md:p-4">
       <div>
         <h3 className="text-lg font-semibold text-headerColor">
           Subscription{" "}
@@ -169,7 +169,7 @@ function SubscriptionCard() {
       {!data?.subscription?.is_subscribed && (
         <Link
           href="/mu/subscription?billing=monthly"
-          className="mt-2 rounded-md bg-[#3EA1D6] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#3EA1D6]/90"
+          className="mt-2 rounded-md bg-[#1BAABE] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#1BAABE]/90"
         >
           {"Upgrade Now"}
         </Link>
