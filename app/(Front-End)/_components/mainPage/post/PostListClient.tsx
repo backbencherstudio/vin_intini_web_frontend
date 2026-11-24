@@ -56,6 +56,9 @@ export default function PostListClient({
       cursor,
       setCursor,
       resetKey: initialUrl,
+      observerOptions: {
+        rootMargin: "1200px",
+      },
     });
 
   useEffect(() => {
