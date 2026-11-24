@@ -47,222 +47,134 @@ export default function PostUploadDock() {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
-  // Minimized Floating Pill View
-  if (isMinimized) {
-    return (
-      <aside
-        aria-label="Upload status dock"
-        className="fixed bottom-5 right-5 z-[99999] flex items-center gap-2.5 rounded-full border border-borderColor bg-white/95 px-4 py-2.5 shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-[1.02]"
-      >
-        {stage === "uploading" && (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin text-primaryColor" />
-            <span className="text-xs font-semibold text-headerColor">
-              Uploading {progress}%
-            </span>
-          </>
-        )}
-
-        {stage === "processing" && (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
-            <span className="text-xs font-semibold text-amber-600">
-              Processing video...
-            </span>
-          </>
-        )}
-
-        {stage === "success" && (
-          <>
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            <span className="text-xs font-semibold text-emerald-600">
-              Post published!
-            </span>
-          </>
-        )}
-
-        {stage === "error" && (
-          <>
-            <AlertCircle className="h-4 w-4 text-rose-500" />
-            <span className="text-xs font-semibold text-rose-600">
-              Upload failed
-            </span>
-          </>
-        )}
-
-        <button
-          type="button"
-          onClick={() => dispatch(toggleMinimize())}
-          className="ml-1 cursor-pointer rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-headerColor"
-          title="Expand"
-        >
-          <ChevronUp className="h-3.5 w-3.5" />
-        </button>
-
-        {(stage === "success" || stage === "error") && (
-          <button
-            type="button"
-            onClick={() => dispatch(dismissUpload())}
-            className="cursor-pointer rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-            title="Dismiss"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
-      </aside>
-    );
-  }
-
-  // Expanded Dock Card View
   return (
     <aside
-      aria-label="Background upload manager"
-      className="fixed bottom-5 right-5 z-[99999] w-[330px] sm:w-[380px] overflow-hidden rounded-xl border border-borderColor bg-white shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
+      aria-label="Upload manager"
+      className="fixed bottom-4 right-4 z-[99999] w-[320px] sm:w-[360px] overflow-hidden rounded-lg border border-borderColor bg-white shadow-xl"
     >
-      {/* Top Header */}
-      <div className="flex items-center justify-between border-b border-borderColor bg-gray-50/80 px-4 py-3">
-        <div className="flex items-center gap-2.5">
+      {/* Header bar (always visible, fixed height) */}
+      <div className="flex h-11 items-center justify-between border-b border-borderColor bg-gray-50/90 px-3.5">
+        <div className="flex items-center gap-2 overflow-hidden">
           {stage === "uploading" && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primaryColor/10 text-primaryColor">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            </div>
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primaryColor" />
           )}
           {stage === "processing" && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            </div>
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-amber-500" />
           )}
           {stage === "success" && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-            </div>
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
           )}
           {stage === "error" && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-500/10 text-rose-600">
-              <AlertCircle className="h-3.5 w-3.5" />
-            </div>
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
           )}
 
-          <div>
-            <h4 className="text-xs font-semibold text-headerColor">
-              {stage === "uploading" && "Publishing your post..."}
-              {stage === "processing" && "Processing & optimizing video..."}
-              {stage === "success" && (successMessage || "Post published successfully!")}
-              {stage === "error" && "Post upload failed"}
-            </h4>
-            <p className="text-[11px] text-gray-500">
-              {stage === "uploading" && "Uploading media to server"}
-              {stage === "processing" && "Encoding video for fast playback"}
-              {stage === "success" && "Now visible on your newsfeed"}
-              {stage === "error" && "An error occurred during submission"}
-            </p>
+          <div className="truncate text-xs font-semibold text-headerColor">
+            {stage === "uploading" && `Uploading post (${progress}%)`}
+            {stage === "processing" && "Processing video..."}
+            {stage === "success" && (successMessage || "Post published successfully")}
+            {stage === "error" && "Upload failed"}
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 shrink-0">
           <button
             type="button"
             onClick={() => dispatch(toggleMinimize())}
-            className="cursor-pointer rounded-md p-1.5 text-gray-500 hover:bg-gray-200/70 hover:text-gray-800 transition-colors"
-            title="Minimize"
+            className="cursor-pointer rounded p-1 text-gray-500 hover:bg-gray-200/70 hover:text-gray-800 transition-colors"
+            title={isMinimized ? "Expand" : "Collapse"}
           >
-            <ChevronDown className="h-4 w-4" />
+            {isMinimized ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
           </button>
           <button
             type="button"
             onClick={() => cancelBackgroundPostUpload()}
-            className="cursor-pointer rounded-md p-1.5 text-gray-500 hover:bg-gray-200/70 hover:text-gray-800 transition-colors"
+            className="cursor-pointer rounded p-1 text-gray-400 hover:bg-gray-200/70 hover:text-gray-700 transition-colors"
             title={stage === "uploading" ? "Cancel upload" : "Close"}
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Body Content */}
-      <div className="p-4 space-y-3">
-        {/* File / Excerpt Badge */}
-        {(fileName || postExcerpt) && (
-          <div className="flex items-center gap-2 rounded-lg border border-borderColor bg-[#F8FAFC] p-2.5 text-xs text-headerColor">
-            {isVideo ? (
-              <Video className="h-4 w-4 shrink-0 text-primaryColor" />
-            ) : (
-              <span className="text-base leading-none">✍️</span>
-            )}
-            <span className="truncate font-medium">
-              {fileName || postExcerpt}
-            </span>
-            {fileSize && (
-              <span className="shrink-0 text-gray-400 font-mono text-[11px]">
-                ({fileSize})
+      {/* Expandable Body */}
+      {!isMinimized && (
+        <div className="p-3.5 space-y-3">
+          {/* File summary */}
+          {(fileName || postExcerpt) && (
+            <div className="flex items-center gap-2 rounded-md border border-gray-100 bg-[#F8FAFC] px-2.5 py-2 text-xs text-headerColor">
+              {isVideo && <Video className="h-3.5 w-3.5 shrink-0 text-primaryColor" />}
+              <span className="truncate font-medium">
+                {fileName || postExcerpt}
               </span>
-            )}
-          </div>
-        )}
-
-        {/* Progress Bar */}
-        <div className="space-y-1.5">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all duration-300",
-                stage === "uploading" && "bg-gradient-to-r from-primaryColor to-[#00c4cc]",
-                stage === "processing" && "w-full bg-amber-500 animate-pulse",
-                stage === "success" && "w-full bg-emerald-500",
-                stage === "error" && "w-full bg-rose-500",
+              {fileSize && (
+                <span className="shrink-0 text-gray-400 font-mono text-[11px]">
+                  ({fileSize})
+                </span>
               )}
-              style={
-                stage === "uploading"
-                  ? { width: `${Math.max(5, progress)}%` }
-                  : undefined
-              }
-            />
-          </div>
+            </div>
+          )}
 
-          <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
-            <span>
-              {stage === "uploading" && `Uploading... ${progress}%`}
-              {stage === "processing" && "Almost ready..."}
-              {stage === "success" && "100% complete"}
-              {stage === "error" && "Failed"}
-            </span>
+          {/* Progress bar */}
+          <div className="space-y-1.5">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+              <div
+                className={cn(
+                  "h-full rounded-full transition-all duration-200",
+                  stage === "uploading" && "bg-primaryColor",
+                  stage === "processing" && "w-full bg-amber-500 animate-pulse",
+                  stage === "success" && "w-full bg-emerald-500",
+                  stage === "error" && "w-full bg-rose-500",
+                )}
+                style={
+                  stage === "uploading"
+                    ? { width: `${Math.max(4, progress)}%` }
+                    : undefined
+                }
+              />
+            </div>
 
-            {stage === "uploading" && totalBytes > 0 && (
-              <span className="font-mono text-gray-400">
-                {formatMb(loadedBytes)} / {formatMb(totalBytes)}
+            <div className="flex items-center justify-between text-[11px] text-gray-500">
+              <span>
+                {stage === "uploading" && `Uploading... ${progress}%`}
+                {stage === "processing" && "Optimizing video on server..."}
+                {stage === "success" && "Complete"}
+                {stage === "error" && (error || "Upload failed")}
               </span>
-            )}
+
+              {stage === "uploading" && totalBytes > 0 && (
+                <span className="font-mono text-gray-400">
+                  {formatMb(loadedBytes)} / {formatMb(totalBytes)}
+                </span>
+              )}
+            </div>
           </div>
+
+          {/* Action buttons on error */}
+          {stage === "error" && (
+            <div className="pt-1 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => cancelBackgroundPostUpload()}
+                className="cursor-pointer rounded border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition"
+              >
+                Dismiss
+              </button>
+              <button
+                type="button"
+                onClick={() => retryBackgroundPostUpload()}
+                className="flex items-center gap-1 cursor-pointer rounded bg-primaryColor px-2.5 py-1 text-xs font-semibold text-white hover:bg-primaryColor/90 transition"
+              >
+                <RefreshCw className="h-3 w-3" />
+                Retry
+              </button>
+            </div>
+          )}
         </div>
-
-        {/* Action button if error */}
-        {stage === "error" && (
-          <div className="pt-1 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => cancelBackgroundPostUpload()}
-              className="cursor-pointer rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition"
-            >
-              Dismiss
-            </button>
-            <button
-              type="button"
-              onClick={() => retryBackgroundPostUpload()}
-              className="flex items-center gap-1.5 cursor-pointer rounded-md bg-primaryColor px-3 py-1.5 text-xs font-semibold text-white hover:bg-primaryColor/90 transition"
-            >
-              <RefreshCw className="h-3 w-3" />
-              Retry Upload
-            </button>
-          </div>
-        )}
-
-        {/* Subtext info */}
-        {stage !== "error" && (
-          <p className="text-[11px] text-gray-400 leading-tight">
-            💡 You can freely navigate, browse the feed, or close modals — your post will keep publishing smoothly in the background.
-          </p>
-        )}
-      </div>
+      )}
     </aside>
   );
 }
