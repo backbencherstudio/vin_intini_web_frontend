@@ -42,8 +42,8 @@ export default function PremiumLayout({
       return;
     }
 
-    // Rule 1: Pro Industry users MUST NOT access /mu/premium/* routes.
-    // Redirect them to their corresponding Pro Industry publications dashboard.
+    // Rule 1: Industry Pro users MUST NOT access /mu/premium/* routes.
+    // Redirect them to their corresponding Industry Pro publications dashboard.
     if (isIndustryUser) {
       if (pathname.startsWith("/mu/premium/publications")) {
         if (pathname.includes("/boosting-plan")) {
@@ -95,7 +95,7 @@ export default function PremiumLayout({
     );
   }
 
-  // Prevent flash of unauthorized content for Pro Industry users
+  // Prevent flash of unauthorized content for Industry Pro users
   if (isIndustryUser || (!isPremium && !isAdmin)) {
     return null;
   }

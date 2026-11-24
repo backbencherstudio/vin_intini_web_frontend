@@ -45,7 +45,7 @@ const TIER_TABS: { key: UserTier; label: string }[] = [
   { key: "all", label: "All Users" },
   { key: "basic", label: "Basic Users" },
   { key: "premium", label: "Premium Users" },
-  { key: "pro_industry", label: "Pro Industry" },
+  { key: "pro_industry", label: "Industry Pro" },
 ];
 
 function downloadCsv(users: User[], tab: string) {
@@ -57,7 +57,7 @@ function downloadCsv(users: User[], tab: string) {
       user.id,
       user.full_name,
       user.email,
-      user.tier === "pro_industry" ? "Pro Industry" : user.tier === "premium" ? "Premium" : "Basic",
+      user.tier === "pro_industry" ? "Industry Pro" : user.tier === "premium" ? "Premium" : "Basic",
       Array.isArray(user.profession) ? user.profession.join(", ") : user.profession || "",
       user.company?.name || "",
       user.plan?.name || (user.tier === "premium" ? "Premium" : "Basic"),
@@ -196,7 +196,7 @@ export default function UserManagementOverview() {
         if (tier === "pro_industry" || tier === "industry") {
           return (
             <span className="inline-flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-              Pro Industry
+              Industry Pro
             </span>
           );
         }
@@ -394,7 +394,7 @@ export default function UserManagementOverview() {
           <span className="text-[11px] font-medium text-purple-600">{premiumPct}% subscribed</span>
         </button>
 
-        {/* Card 4: Pro Industry */}
+        {/* Card 4: Industry Pro */}
         <button
           type="button"
           onClick={() => handleTabChange("pro_industry")}
@@ -405,7 +405,7 @@ export default function UserManagementOverview() {
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-500">Pro Industry</span>
+            <span className="text-xs font-medium text-gray-500">Industry Pro</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
               <Building2 className="h-4 w-4" />
             </div>
@@ -495,7 +495,7 @@ export default function UserManagementOverview() {
             </span>
             <span className="flex items-center gap-1.5 font-medium text-gray-700">
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-              Pro Industry ({proCount} · {proPct}%)
+              Industry Pro ({proCount} · {proPct}%)
             </span>
           </div>
         </div>
@@ -515,7 +515,7 @@ export default function UserManagementOverview() {
           <div
             style={{ width: `${proPct}%` }}
             className="h-full bg-emerald-500"
-            title={`Pro Industry: ${proCount} (${proPct}%)`}
+            title={`Industry Pro: ${proCount} (${proPct}%)`}
           />
         </div>
       </div>

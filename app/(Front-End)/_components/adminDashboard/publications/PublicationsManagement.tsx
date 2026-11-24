@@ -340,7 +340,7 @@ export default function PublicationsManagement({
           return (
             <div
               className="flex items-center gap-2 max-w-[170px]"
-              title={`Pro Industry: ${ind.name}`}
+              title={`Industry Pro: ${ind.name}`}
             >
               {ind.logo_url ? (
                 <Image
@@ -360,7 +360,7 @@ export default function PublicationsManagement({
                   {ind.name}
                 </span>
                 <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">
-                  Pro Industry
+                  Industry Pro
                 </span>
               </div>
             </div>
@@ -503,11 +503,11 @@ export default function PublicationsManagement({
           <span className="text-xs text-gray-400">All recorded articles</span>
         </div>
 
-        {/* Pro Industry Publications */}
+        {/* Industry Pro Publications */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-gray-500">
-              Pro Industry
+              Industry Pro
             </span>
             <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
               <Building2 className="h-4 w-4" />

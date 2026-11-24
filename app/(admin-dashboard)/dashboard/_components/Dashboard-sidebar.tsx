@@ -65,7 +65,7 @@ export const SidebarData: SidebarItem[] = [
       },
       {
         id: "pro-users",
-        name: "Pro Industry Users",
+        name: "Industry Pro Users",
         href: "/dashboard/user-management/pro-users",
         icon: ProUserIcon,
       },

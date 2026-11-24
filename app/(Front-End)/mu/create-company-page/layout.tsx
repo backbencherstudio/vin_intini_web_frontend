@@ -40,7 +40,7 @@ export default function CreateCompanyLayout({
     // Rule: Premium users cannot access company creation route
     if (isPremium) {
       toast.error(
-        "Access restricted: Premium users cannot create a company page. Pro Industry account required."
+        "Access restricted: Premium users cannot create a company page. Industry Pro account required."
       );
       router.replace("/mu/premium/publications");
     }

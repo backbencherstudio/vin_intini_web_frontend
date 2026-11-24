@@ -67,7 +67,7 @@ export default function PublicationPage() {
       iconColor: "text-primaryColor",
     },
     {
-      title: "Active Publication",
+      title: "Active Publications",
       total: insightCards?.active_publications?.total ?? 0,
       badgeText: insightCards?.active_publications?.growth ?? "Stable",
       isPositive: insightCards?.active_publications?.is_positive,
@@ -115,7 +115,7 @@ export default function PublicationPage() {
       ),
     },
     {
-      label: "Publication",
+      label: "Publications",
       accessor: "title",
       position: "justify-start",
       width: "320px",
@@ -253,7 +253,7 @@ export default function PublicationPage() {
           <h1 className="text-xl sm:text-2xl font-bold text-headerColor">
             {isPremiumView
               ? "Research Publications"
-              : "Pro Industry Publication"}
+              : "Industry Pro Publication"}
           </h1>
           <p className="text-sm sm:text-base text-descriptionColor mt-1">
             {isPremiumView

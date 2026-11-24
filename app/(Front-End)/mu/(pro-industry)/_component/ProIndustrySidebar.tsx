@@ -32,7 +32,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
       {/* Top Navigation */}
       <div>
         <h3 className="text-lg border-b py-3 border-[#D2D2D5] font-semibold text-headerColor">
-          Pro Industry Dashboard
+          Industry Pro Dashboard
         </h3>
 
         <div className="mt-4 space-y-1">

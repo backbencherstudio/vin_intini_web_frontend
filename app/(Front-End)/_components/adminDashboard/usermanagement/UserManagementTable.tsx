@@ -32,7 +32,7 @@ const tierLabels: Record<string, string> = {
   all: "All Users",
   basic: "Basic Users",
   premium: "Premium Users",
-  pro_industry: "Pro Industry Users",
+  pro_industry: "Industry Pro Users",
 };
 
 function downloadCsv(users: User[], tier: UserTier) {
@@ -153,7 +153,7 @@ export default function UserManagementTable({
                 : "bg-sky-50 text-sky-700 border-sky-200";
             const label =
               t === "pro_industry" || t === "industry"
-                ? "Pro Industry"
+                ? "Industry Pro"
                 : t === "premium"
                 ? "Premium"
                 : "Basic";

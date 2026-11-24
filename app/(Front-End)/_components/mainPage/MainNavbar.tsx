@@ -353,7 +353,7 @@ export default function MainNavbar() {
           )}
           {isIndustry &&
             renderMobileSection(
-              "Pro Industry",
+              "Industry Pro",
               "mobile-pro-industry",
               sectionMenuIcons.proIndustry,
               proIndustryMenuItems,

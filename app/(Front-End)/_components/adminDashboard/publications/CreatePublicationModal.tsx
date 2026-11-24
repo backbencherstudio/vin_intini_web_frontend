@@ -372,7 +372,7 @@ export default function CreatePublicationModal({
           </div>
         </div>
 
-        {/* 1. Publication Owner Selection (Pro Industry vs Premium User vs Official) */}
+        {/* 1. Publication Owner Selection (Industry Pro vs Premium User vs Official) */}
         <div className="rounded-xl border border-gray-200 bg-gray-50/70 p-3.5 space-y-3">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             Publish On Behalf Of *
@@ -397,7 +397,7 @@ export default function CreatePublicationModal({
                 className="text-primaryColor focus:ring-primaryColor"
               />
               <Building2 className="w-4 h-4 shrink-0" />
-              <span className="text-xs">Pro Industry</span>
+              <span className="text-xs">Industry Pro</span>
             </label>
 
             <label
@@ -446,7 +446,7 @@ export default function CreatePublicationModal({
             </label>
           </div>
 
-          {/* Conditional Select for Pro Industry */}
+          {/* Conditional Select for Industry Pro */}
           {ownerType === "industry" && (
             <div className="pt-1.5">
               <CustomSelect

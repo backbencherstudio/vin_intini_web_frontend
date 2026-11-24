@@ -426,7 +426,7 @@ export default function TransactionTable({
                 : "cyan"
               : row.planOrPackage === "Premium"
                 ? "orange"
-                : row.planOrPackage === "Pro Industry"
+                : row.planOrPackage === "Pro Industry" || row.planOrPackage === "Industry Pro"
                   ? "blue"
                   : row.planOrPackage === "Basic"
                     ? "purple"

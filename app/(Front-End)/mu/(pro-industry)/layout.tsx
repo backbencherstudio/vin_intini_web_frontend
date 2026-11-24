@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { data, isLoading, isError } = useGetUserProfileQuery("Profile");
 
-  // Determine user authorization for Pro Industry dashboard
+  // Determine user authorization for Industry Pro dashboard
   const hasCompany = Boolean(
     data?.industry?.has_company ||
       data?.industry?.company?.id ||
@@ -72,14 +72,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           }
           return;
         } else {
-          toast.error("Pro Industry access required.");
+          toast.error("Industry Pro access required.");
           router.replace("/mu/home");
           return;
         }
       }
 
-      // Any other Pro Industry dashboard route (/mu/products, /mu/advertisment, /mu/industry-profile, etc.)
-      toast.error("Access restricted: Pro Industry account required.");
+      // Any other Industry Pro dashboard route (/mu/products, /mu/advertisment, /mu/industry-profile, etc.)
+      toast.error("Access restricted: Industry Pro account required.");
       router.replace("/mu/home");
     }
   }, [isLoading, isError, data, isIndustryUser, isPremium, pathname, router]);
@@ -90,7 +90,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-primaryColor" />
         <span className="text-sm text-descriptionColor font-medium">
-          Verifying Pro Industry access...
+          Verifying Industry Pro access...
         </span>
       </div>
     );
