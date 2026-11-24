@@ -1,16 +1,39 @@
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
-import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
+import {
+  useGetSentConnectionsQuery,
+  useSendRequestMutation,
+} from "@/feature/slice/connect/connectSlice";
 import emptyImage from "@/public/empty_user.jpg";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 function ProfileUserConnectCard({ profile }: any) {
   const { user, mutual_connections_count } = profile;
   const [sendRequest, { isLoading }] = useSendRequestMutation();
-  const [requestSentId, setRequestSentId] = useState();
+  const [requestSentId, setRequestSentId] = useState<any>();
+  const { data: sentConnectionsData } = useGetSentConnectionsQuery({});
 
-  const handleConnect = async (id) => {
+  const isPendingInSent = Boolean(
+    sentConnectionsData?.data?.some(
+      (item: any) =>
+        item?.user?.id === user?.id ||
+        (user?.username && item?.user?.username === user?.username)
+    )
+  );
+
+  useEffect(() => {
+    if (sentConnectionsData && !isPendingInSent && requestSentId) {
+      setRequestSentId(null);
+    }
+  }, [sentConnectionsData, isPendingInSent, requestSentId]);
+
+  const isCurrentlyPending = sentConnectionsData
+    ? isPendingInSent
+    : requestSentId === user?.id;
+
+  const handleConnect = async (id: any) => {
     const payload = {
       user_id: user.id,
     };
@@ -74,13 +97,13 @@ function ProfileUserConnectCard({ profile }: any) {
         <div className="flex justify-end w-full ">
           <button
             type="button"
-            disabled={isLoading}
+            disabled={isLoading || isCurrentlyPending}
             onClick={() => handleConnect(user?.id)}
             className={`${BUTTON_STYLES.primary} disabled:bg-bgColor disabled:text-grayColor1 disabled:border-borderColor disabled:cursor-not-allowed mt-1`}
           >
             {isLoading
               ? "Sending..."
-              : requestSentId === user?.id
+              : isCurrentlyPending
                 ? "Request Sent"
                 : "Connect"}
           </button>

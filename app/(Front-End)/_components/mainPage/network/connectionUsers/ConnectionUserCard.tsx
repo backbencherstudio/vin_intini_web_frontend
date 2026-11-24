@@ -1,17 +1,40 @@
-import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
+import {
+  useGetSentConnectionsQuery,
+  useSendRequestMutation,
+} from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import emptyImage from "@/public/empty_user.jpg";
 import coverImage from "@/public/images/feature-img.jpg";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
   const { user, mutual_connections_count, is_connectable, action_label } =
     profile;
 
   const [requestSent, setRequestSent] = useState<any>();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
+  const { data: sentConnectionsData } = useGetSentConnectionsQuery({});
+
+  const isPendingInSent = Boolean(
+    sentConnectionsData?.data?.some(
+      (item: any) =>
+        item?.user?.id === user?.id ||
+        (user?.username && item?.user?.username === user?.username)
+    )
+  );
+
+  useEffect(() => {
+    if (sentConnectionsData && !isPendingInSent && requestSent) {
+      setRequestSent(null);
+    }
+  }, [sentConnectionsData, isPendingInSent, requestSent]);
+
+  const isCurrentlyPending = sentConnectionsData
+    ? isPendingInSent
+    : requestSent?.status === "pending";
 
   const handleConnect = async () => {
     const payload = {
@@ -90,15 +113,15 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
               onClick={handleConnect}
               disabled={
                 isLoading ||
-                !is_connectable ||
-                (requestSent && requestSent?.status === "pending")
+                (!is_connectable && !isCurrentlyPending) ||
+                isCurrentlyPending
               }
               className="mt-3 px-4 py-1 disabled:bg-bgColor disabled:border-borderColor disabled:text-grayColor1 disabled:shadow-transparent disabled:cursor-not-allowed  rounded-lg leading-[140%] border border-lightGreenColor hover:border-primaryColor cursor-pointer hover:shadow-lg shadow-primaryColor/50 text-[14px] text-primaryColor hover:bg-primaryColor font-semibold hover:text-whiteColor transition-colors duration-200 "
             >
-              {!is_connectable
-                ? action_label
-                : requestSent?.status === "pending"
-                  ? " Request Send"
+              {isCurrentlyPending
+                ? "Request Send"
+                : !is_connectable
+                  ? action_label
                   : isLoading
                     ? "Sending..."
                     : "Connect"}
