@@ -33,10 +33,10 @@ function SubscriptionCard() {
 
   if (isIndustry) {
     return (
-      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-emerald-200 bg-white text-sm shadow-sm transition-shadow hover:border-emerald-300 hover:shadow-md">
+      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-[#FACC15]/40 bg-white text-sm shadow-sm transition-shadow hover:border-[#FACC15]/60 hover:shadow-md">
         <div className="p-3">
           <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-emerald-50 ring-[3px] ring-emerald-500 ring-offset-2 ring-offset-white">
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-[#FACC15]/10 ring-[3px] ring-[#FACC15] ring-offset-2 ring-offset-white">
               {company?.logo || industry?.logo ? (
                 <Image
                   src={company?.logo || industry?.logo}
@@ -46,7 +46,7 @@ function SubscriptionCard() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center font-semibold text-emerald-600">
+                <div className="flex h-full w-full items-center justify-center font-semibold text-[#CA8A04]">
                   {companyName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -60,12 +60,12 @@ function SubscriptionCard() {
               </h3>
             </div>
           </div>
-          <div className="mt-3 border-t border-emerald-100 pt-2.5">
+          <div className="mt-3 border-t border-[#FACC15]/20 pt-2.5">
             <div className="flex items-center justify-between gap-2">
               {hasCompany && (
                 <div className="flex items-center gap-1.5 text-grayColor1">
-                  <HiOutlineUsers className="h-4 w-4 text-emerald-600" />
-                  <span className="font-semibold text-emerald-700">
+                  <HiOutlineUsers className="h-4 w-4 text-[#CA8A04]" />
+                  <span className="font-semibold text-[#854D0E]">
                     {Number(
                       industry?.total_followers ?? industry?.followers_count ?? 0,
                     ).toLocaleString()}
@@ -75,7 +75,7 @@ function SubscriptionCard() {
               )}
               <Link
                 href={canCreateCompany ? "/mu/create-company-page/" : "/mu/recruiter-dashboard"}
-                className={`rounded-md px-3 py-1.5 text-center text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${canCreateCompany ? "w-full bg-emerald-600 text-white shadow-sm hover:bg-emerald-700" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"}`}
+                className={`rounded-md px-3 py-1.5 text-center text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FACC15] focus-visible:ring-offset-2 ${canCreateCompany ? "w-full bg-[#FACC15] text-[#713F12] shadow-sm hover:bg-[#FACC15]/90" : "bg-[#FACC15]/20 text-[#854D0E] hover:bg-[#FACC15]/30"}`}
               >
                 {canCreateCompany ? "Create Company" : "Dashboard"}
               </Link>

@@ -176,15 +176,17 @@ function UserHeaderInfo() {
   const userTierConfig = isIndustry
     ? {
         label: "Industry Pro",
-        borderClass: "border-emerald-500",
-        badgeClass: "bg-emerald-50 border border-emerald-200 text-emerald-700",
-        iconColor: "text-emerald-600",
+        borderClass: "border-[#FACC15]",
+        ringGradient: null,
+        badgeClass: "bg-[#FACC15]/20 border border-[#FACC15]/50 text-[#854D0E] font-semibold",
+        iconColor: "text-[#CA8A04]",
         isCrown: true,
       }
     : isPremium
     ? {
         label: "Premium User",
         borderClass: "border-purple-600",
+        ringGradient: null,
         badgeClass: "bg-purple-50 border border-purple-200 text-purple-700",
         iconColor: "text-purple-600",
         isCrown: true,
@@ -192,6 +194,7 @@ function UserHeaderInfo() {
     : {
         label: "Basic User",
         borderClass: "border-[#1BAABE]",
+        ringGradient: null,
         badgeClass: "bg-[#1BAABE]/10 border border-[#1BAABE]/30 text-[#1BAABE]",
         iconColor: "text-[#1BAABE]",
         isCrown: false,
@@ -259,20 +262,40 @@ function UserHeaderInfo() {
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
-                    <div
-                      className={`w-8 h-8 lg:w-12 lg:h-12 border-[3.5px] lg:border-[4px] ${userTierConfig.borderClass} rounded-full overflow-hidden shadow-xs`}
-                    >
-                      <Image
-                        src={
-                          userProfileData?.user?.profile_image_url || emptyImage
-                        }
-                        alt="Admin Avatar"
-                        width={150}
-                        height={150}
-                        unoptimized
-                        className="rounded-full w-full object-cover  h-full"
-                      />
-                    </div>
+                    {userTierConfig.ringGradient ? (
+                      <div
+                        className="w-8 h-8 lg:w-12 lg:h-12 rounded-full p-[3px] lg:p-[3.5px] shadow-xs flex items-center justify-center shrink-0"
+                        style={{ background: userTierConfig.ringGradient }}
+                      >
+                        <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                          <Image
+                            src={
+                              userProfileData?.user?.profile_image_url || emptyImage
+                            }
+                            alt="Admin Avatar"
+                            width={150}
+                            height={150}
+                            unoptimized
+                            className="rounded-full w-full object-cover h-full"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        className={`w-8 h-8 lg:w-12 lg:h-12 border-[3.5px] lg:border-[4px] ${userTierConfig.borderClass} rounded-full overflow-hidden shadow-xs`}
+                      >
+                        <Image
+                          src={
+                            userProfileData?.user?.profile_image_url || emptyImage
+                          }
+                          alt="Admin Avatar"
+                          width={150}
+                          height={150}
+                          unoptimized
+                          className="rounded-full w-full object-cover  h-full"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <button className=" cursor-pointer">
@@ -287,19 +310,38 @@ function UserHeaderInfo() {
               >
                 <div className="">
                   <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
-                    <div
-                      className={`h-13 w-13 shrink-0 overflow-hidden rounded-full border-[4px] ${userTierConfig.borderClass} shadow-xs`}
-                    >
-                      <Image
-                        src={
-                          userProfileData?.user?.profile_image_url || emptyImage
-                        }
-                        alt="Admin Avatar"
-                        width={150}
-                        height={150}
-                        className="rounded-full object-cover w-full h-full"
-                      />
-                    </div>
+                    {userTierConfig.ringGradient ? (
+                      <div
+                        className="h-13 w-13 shrink-0 rounded-full p-[3.5px] shadow-xs flex items-center justify-center"
+                        style={{ background: userTierConfig.ringGradient }}
+                      >
+                        <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                          <Image
+                            src={
+                              userProfileData?.user?.profile_image_url || emptyImage
+                            }
+                            alt="Admin Avatar"
+                            width={150}
+                            height={150}
+                            className="rounded-full object-cover w-full h-full"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        className={`h-13 w-13 shrink-0 overflow-hidden rounded-full border-[4px] ${userTierConfig.borderClass} shadow-xs`}
+                      >
+                        <Image
+                          src={
+                            userProfileData?.user?.profile_image_url || emptyImage
+                          }
+                          alt="Admin Avatar"
+                          width={150}
+                          height={150}
+                          className="rounded-full object-cover w-full h-full"
+                        />
+                      </div>
+                    )}
                     <div>
                       <p className="mb-1 pl-1 text-base font-semibold text-gray-900">
                         {userProfileData?.user?.first_name +
