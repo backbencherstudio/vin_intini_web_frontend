@@ -30,7 +30,7 @@ function CreatePostDialog({
 
   return (
     <div>
-      <RootDialog open={isOpen} setOpen={handleClose}>
+      <RootDialog open={isOpen} setOpen={handleClose} className="overflow-visible">
         <div className={postType !== "Post_write" ? "hidden" : ""}>
           <PostModal setOpen={setIsOpen} setPostType={handleSetPostType} />
         </div>

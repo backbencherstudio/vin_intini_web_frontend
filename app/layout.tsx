@@ -24,7 +24,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${segoeUi.className} ${segoeUi.variable}`} suppressHydrationWarning>
+      <body
+        className={`${segoeUi.className} ${segoeUi.variable}`}
+        style={{
+          fontFamily:
+            '"Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif',
+        }}
+        suppressHydrationWarning
+      >
         <NextTopLoader
           color="#04a1b7"
           initialPosition={0.08}

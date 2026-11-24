@@ -137,7 +137,7 @@ function PostModal({
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "auto";
-    const nextH = Math.max(120, Math.min(el.scrollHeight, 280));
+    const nextH = Math.max(160, Math.min(el.scrollHeight, 280));
     el.style.height = `${nextH}px`;
   }, [postText]);
 
@@ -146,14 +146,22 @@ function PostModal({
     updateSelection();
   };
 
-  // Insert emoji at the exact cursor position
+  // Insert emoji at the exact cursor position smartly
   const handleEmojiSelect = (emoji: string) => {
     const currentText = postText || "";
-    const start = selectionRangeRef.current.start ?? currentText.length;
-    const end = selectionRangeRef.current.end ?? currentText.length;
+    let start = selectionRangeRef.current.start;
+    let end = selectionRangeRef.current.end;
 
-    const safeStart = Math.max(0, Math.min(start, currentText.length));
-    const safeEnd = Math.max(safeStart, Math.min(end, currentText.length));
+    // If selection was never set or is at 0 while text exists, append to end
+    if (start === 0 && end === 0 && currentText.length > 0) {
+      if (document.activeElement !== textareaRef.current) {
+        start = currentText.length;
+        end = currentText.length;
+      }
+    }
+
+    const safeStart = Math.max(0, Math.min(start ?? currentText.length, currentText.length));
+    const safeEnd = Math.max(safeStart, Math.min(end ?? currentText.length, currentText.length));
 
     const newText =
       currentText.slice(0, safeStart) + emoji + currentText.slice(safeEnd);
@@ -175,14 +183,43 @@ function PostModal({
   };
 
   const handleMediaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []).filter(
-      (file) =>
-        file.type.startsWith("image/") || file.type.startsWith("video/"),
-    );
+    const rawFiles = Array.from(event.target.files || []);
+    const validFiles: File[] = [];
 
-    if (files.length === 0) return;
+    for (const file of rawFiles) {
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
 
-    const nextMedia = files.map((file) => ({
+      if (!isImage && !isVideo) {
+        toast.error(`"${file.name}" is not a valid image or video.`);
+        continue;
+      }
+
+      // Max size: 15MB for images, 60MB for videos
+      const maxSize = isImage ? 15 * 1024 * 1024 : 60 * 1024 * 1024;
+      if (file.size > maxSize) {
+        toast.error(
+          `"${file.name}" exceeds the size limit (${isImage ? "15MB" : "60MB"}).`,
+        );
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (validFiles.length === 0) {
+      event.target.value = "";
+      return;
+    }
+
+    // Limit maximum total media to 10
+    if (previewMedia.length + validFiles.length > 10) {
+      toast.error("You can upload a maximum of 10 media files per post.");
+      event.target.value = "";
+      return;
+    }
+
+    const nextMedia = validFiles.map((file) => ({
       source: URL.createObjectURL(file),
       type: (file.type.startsWith("video/") ? "video" : "image") as
         | "image"
@@ -215,11 +252,19 @@ function PostModal({
   };
 
   const handleCloseModal = () => {
+    previewMedia.forEach((item) => {
+      if (item.isObjectUrl) {
+        URL.revokeObjectURL(item.source);
+      }
+    });
+    setPreviewMedia([]);
     dispatch(resetPostComposeState());
     setOpen(false);
   };
 
   const handleSubmit = async () => {
+    if (isLoading || isUpdating) return;
+
     const trimmedText = postText.trim();
     if (!trimmedText && previewMedia.length === 0) {
       return;
@@ -308,7 +353,7 @@ function PostModal({
         : "Comments: Anyone";
 
   return (
-    <section className="relative flex max-h-[85vh] flex-col overflow-hidden px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
+    <section className="relative flex min-h-[440px] max-h-[85vh] flex-col overflow-visible px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
       <input
         ref={mediaInputRef}
         type="file"
@@ -375,7 +420,11 @@ function PostModal({
           onBlur={updateSelection}
           placeholder="What do you want to talk about?"
           className="w-full resize-none border-none bg-transparent p-0 text-[16px] leading-7 text-headerColor  focus:outline-none focus:ring-0"
-          style={{ minHeight: "120px", maxHeight: "280px" }}
+          style={{
+            minHeight: "160px",
+            maxHeight: "280px",
+            fontFamily: '"Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", sans-serif',
+          }}
         />
 
         {/* Media Preview Section */}
@@ -460,7 +509,10 @@ function PostModal({
             <SmartEmojiPicker
               onEmojiSelect={handleEmojiSelect}
               iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
-              height={260}
+              direction="up"
+              theme="light"
+              height={290}
+              width={310}
             />
 
             <button

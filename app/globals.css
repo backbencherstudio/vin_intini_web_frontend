@@ -44,8 +44,15 @@ html body[data-scroll-locked] .width-before-scroll-bar {
   margin: 0 auto;
 }
 
+@font-face {
+  font-family: "Twemoji Country Flags";
+  unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E0063, U+E0065, U+E0067, U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F;
+  src: url("/font/TwemojiCountryFlags.woff2") format("woff2");
+  font-display: swap;
+}
+
 @theme inline {
-  --font-sans: var(--font-segoe-ui), "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: "Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
   --color-primaryColor: #04a1b7;
   --color-secondaryColor: var(--secondaryColor);
   --color-blackColor: var(--blackColor);
@@ -106,6 +113,14 @@ html body[data-scroll-locked] .width-before-scroll-bar {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+html, body {
+  font-family: "Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+body, input, textarea, button, select, p, span, div, h1, h2, h3, h4, h5, h6 {
+  font-family: "Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
 }
 
 :root {

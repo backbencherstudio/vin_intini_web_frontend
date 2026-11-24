@@ -199,7 +199,13 @@ export default function CommentRow({
       </div>
 
       <div className="mt-4 pl-10">
-        <p className="text-base font-normal leading-[150%] text-descriptionColor break-words whitespace-pre-line">
+        <p
+          className="text-base font-normal leading-[150%] text-descriptionColor break-words whitespace-pre-line"
+          style={{
+            fontFamily:
+              '"Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", sans-serif',
+          }}
+        >
           {renderCommentContent()}
         </p>
         {item?.image_url && (

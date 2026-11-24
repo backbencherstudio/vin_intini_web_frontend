@@ -102,7 +102,7 @@ function PostCard({
   };
 
   return (
-    <article className="rounded-xl border border-borderColor p-2.5 md:p-3 overflow-hidden">
+    <article className="rounded-xl border border-borderColor p-2.5 md:p-3 overflow-visible">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           {industry ? (
@@ -215,6 +215,10 @@ function PostCard({
             className={`wrap-break-word text-[16px] leading-7 text-headerColor/85 [&_p]:min-h-6  overflow-hidden ${
               !isExpanded ? "line-clamp-3" : ""
             }`}
+            style={{
+              fontFamily:
+                '"Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", sans-serif',
+            }}
             dangerouslySetInnerHTML={{
               __html: formattedHtml,
             }}

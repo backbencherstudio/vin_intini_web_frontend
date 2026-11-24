@@ -1,13 +1,9 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import { useCommentPostByIdMutation } from "@/feature/slice/post/commentSlice";
-
-import { EmojiIcon, ImageUploadIcon } from "@/public/svgIcons/Icons";
-import EmojiPicker, {
-  Categories,
-  type EmojiClickData,
-} from "emoji-picker-react";
+import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -44,14 +40,11 @@ function CommentBoxArea({
 }) {
   const [commentText, setCommentText] = useState("");
   const [commentPostById, { isLoading , isError}] = useCommentPostByIdMutation();
-  const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
-  const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const pathName = usePathname()
+  const pathName = usePathname();
   useEffect(() => {
     if ((autoFocus || replyingToUserName) && textareaRef.current) {
       textareaRef.current.focus();
@@ -93,34 +86,25 @@ function CommentBoxArea({
     }
   }, []);
 
-  useEffect(() => {
-    if (!isEmojiOpen) return;
+  const handleEmojiSelect = (emoji: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      setCommentText((prev) => `${prev}${emoji}`);
+      return;
+    }
 
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const target = event.target as Node;
+    const start = textarea.selectionStart ?? commentText.length;
+    const end = textarea.selectionEnd ?? commentText.length;
 
-      if (emojiPickerRef.current?.contains(target)) {
-        return;
-      }
+    const newText =
+      commentText.slice(0, start) + emoji + commentText.slice(end);
+    setCommentText(newText);
 
-      if (emojiButtonRef.current?.contains(target)) {
-        return;
-      }
-
-      setIsEmojiOpen(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
-    };
-  }, [isEmojiOpen]);
-
-  const handleEmojiSelect = (emojiData: EmojiClickData) => {
-    setCommentText((previous) => `${previous}${emojiData.emoji}`);
+    const nextPos = start + emoji.length;
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(nextPos, nextPos);
+    });
   };
 
   const handleImageButtonClick = () => {
@@ -203,7 +187,6 @@ function CommentBoxArea({
       setCommentText("");
       setSelectedImage(null);
       setPreviewUrl(null);
-      setIsEmojiOpen(false);
       onCancelReply?.();
       onSuccess?.();
     } catch (error) {
@@ -244,6 +227,9 @@ function CommentBoxArea({
           value={commentText}
           onChange={(event) => setCommentText(event.target.value)}
           className="w-full resize-none bg-transparent text-[16px] leading-6 text-headerColor placeholder:text-grayColor1 focus:outline-none transition-all"
+          style={{
+            fontFamily: '"Twemoji Country Flags", var(--font-segoe-ui), "Segoe UI", sans-serif',
+          }}
         />
 
         {previewUrl && (
@@ -269,24 +255,23 @@ function CommentBoxArea({
         )}
 
         <div className="flex items-center justify-between border-t border-borderColor pt-2.5">
-          <div className="flex items-center gap-5 text-descriptionColor">
+          <div className="flex items-center gap-1.5 text-descriptionColor">
             <button
               type="button"
-              className="cursor-pointer hover:opacity-80"
+              className="p-1 rounded-full hover:bg-gray-100 cursor-pointer hover:opacity-80 transition"
               aria-label="Add image"
               onClick={handleImageButtonClick}
             >
               <ImageUploadIcon className="w-4 h-4" />
             </button>
-            <button
-              ref={emojiButtonRef}
-              type="button"
-              className="cursor-pointer hover:opacity-80"
-              aria-label="Add emoji"
-              onClick={() => setIsEmojiOpen((previous) => !previous)}
-            >
-              <EmojiIcon className="w-4 h-4" />
-            </button>
+            <SmartEmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              iconClassName="w-4 h-4"
+              direction="up"
+              theme="light"
+              height={290}
+              width={300}
+            />
           </div>
 
           <ButtonReuseable
@@ -300,63 +285,6 @@ function CommentBoxArea({
           />
         </div>
       </div>
-
-      {isEmojiOpen && (
-        <div
-          ref={emojiPickerRef}
-          className="absolute left-0 top-full z-20 mt-2"
-        >
-          <EmojiPicker
-            onEmojiClick={handleEmojiSelect}
-            lazyLoadEmojis
-            previewConfig={{ showPreview: false }}
-            className="comment-emoji-picker"
-            categories={[
-              { category: Categories.SMILEYS_PEOPLE, name: "Smileys & People" },
-              { category: Categories.ANIMALS_NATURE, name: "Animals & Nature" },
-              { category: Categories.FOOD_DRINK, name: "Food & Drink" },
-              { category: Categories.TRAVEL_PLACES, name: "Travel & Places" },
-              { category: Categories.ACTIVITIES, name: "Activities" },
-              { category: Categories.OBJECTS, name: "Objects" },
-              { category: Categories.SYMBOLS, name: "Symbols" },
-              { category: Categories.FLAGS, name: "Flags" },
-            ]}
-            style={{
-              ["--epr-emoji-size" as string]: "20px",
-              ["--epr-emoji-gap" as string]: "6px",
-              ["--epr-category-navigation-button-size" as string]: "24px",
-              ["--epr-category-icon-active-color" as string]: "#ef4444",
-            }}
-            width={260}
-            height={300}
-          />
-        </div>
-      )}
-
-      <style jsx global>{`
-        .comment-emoji-picker
-          .epr-emoji-category[aria-label="Frequently Used"] {
-          display: none !important;
-        }
-
-        .comment-emoji-picker
-          .epr-category-nav
-          button[aria-label="Frequently Used"] {
-          display: none !important;
-        }
-
-        .comment-emoji-picker .epr-category-nav .epr-btn {
-          transform: scale(0.92);
-          transition:
-            transform 0.15s ease,
-            color 0.15s ease;
-        }
-
-        .comment-emoji-picker .epr-category-nav .epr-btn.epr-active {
-          color: #ef4444 !important;
-          transform: scale(0.84);
-        }
-      `}</style>
     </div>
   );
 }
