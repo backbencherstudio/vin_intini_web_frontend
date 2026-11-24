@@ -31,7 +31,12 @@ function ConnectionUserCard({
       ? isPendingSent
       : requestSent?.status === "pending";
 
-  const handleConnect = async () => {
+  const handleConnect = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     const payload = {
       user_id: user.id,
     };
@@ -105,7 +110,7 @@ function ConnectionUserCard({
           <div className="flex justify-center">
             <button
               type="button"
-              onClick={handleConnect}
+              onClick={(e) => handleConnect(e)}
               disabled={
                 isLoading ||
                 (!is_connectable && !isCurrentlyPending) ||

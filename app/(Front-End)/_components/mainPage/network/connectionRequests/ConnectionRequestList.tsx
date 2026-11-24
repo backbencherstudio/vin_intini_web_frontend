@@ -39,21 +39,21 @@ function ConnectionRequestList({
     { skip: type !== "sent" },
   );
 
-  const { data, isFetching, isError } =
+  const { data, isFetching, isLoading, isError } =
     type === "sent" ? sentQuery : receivedQuery;
 
   const { page, setPage, combinedData, hasMore } = useLoadMore(
     data,
     isFetching,
     limit,
-    searchQuery,
+    `${type}-${searchQuery}`,
   );
 
   useEffect(() => {
     setTempPage(page);
   }, [page]);
 
-  const showInitialSkeleton = isFetching && combinedData.length === 0;
+  const showInitialSkeleton = isLoading && combinedData.length === 0;
   const showMoreLoader = isFetching && page > 1;
 
   if (isError) {
