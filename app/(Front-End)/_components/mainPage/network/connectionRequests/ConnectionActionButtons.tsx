@@ -70,7 +70,12 @@ export const ConnectionActionButtons = ({
 
   const handleCancelSent = async () => {
     try {
-      const response = await cancelRequest({ id }).unwrap();
+      const targetId = userId || id;
+      if (!targetId) {
+        toast.error("Failed to identify request to withdraw.");
+        return;
+      }
+      const response = await cancelRequest({ id: targetId }).unwrap();
       toast.success(response?.message || "Connection request withdrawn.");
     } catch (error: any) {
       toast.error(

@@ -92,7 +92,7 @@ function ConnectionRequestCard({
 
         <div className="flex w-full md:w-fit justify-end items-center">
           <ConnectionActionButtons
-            id={item?.id}
+            id={item?.id || (item as any)?.pending_request_id}
             userId={user?.id}
             status={isSent ? "sent" : item?.status}
             isFollower={item?.is_following_back}
