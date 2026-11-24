@@ -6,12 +6,12 @@ export default function FrontEndLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full h-full grid grid-rows-[auto_1fr] min-h-screen">
+    <div className="w-full min-h-screen flex flex-col">
       <Navbar />
-      <div className="w-full h-full grid overflow-y-auto min-h-0">
+      <main className="w-full flex-1">
         {children}
         <Footer />
-      </div>
+      </main>
     </div>
   );
 }
