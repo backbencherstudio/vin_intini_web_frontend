@@ -24,6 +24,7 @@ import {
   setPostText,
 } from "@/feature/slice/postCompose/postComposeSlice";
 import { htmlToPlainText, textToHtml } from "@/lib/utils";
+import { startBackgroundPostUpload } from "@/services/postUploadService";
 import { Loader, MessageSquare, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -36,6 +37,25 @@ type PreviewMedia = {
   file?: File;
   isObjectUrl?: boolean;
   id?: number;
+  fileName?: string;
+  fileSize?: string;
+  fileSizeBytes?: number;
+};
+
+const formatFileSize = (bytes: number) => {
+  if (!bytes) return "0 MB";
+  if (bytes >= 1024 * 1024 * 1024) return (bytes / (1024 * 1024 * 1024)).toFixed(1) + " GB";
+  if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  return (bytes / 1024).toFixed(0) + " KB";
+};
+
+const truncateFileName = (name: string, maxLen = 32) => {
+  if (!name || name.length <= maxLen) return name || "";
+  const lastDot = name.lastIndexOf(".");
+  if (lastDot === -1) return `${name.slice(0, maxLen - 3)}...`;
+  const ext = name.slice(lastDot);
+  const base = name.slice(0, lastDot);
+  return `${base.slice(0, Math.max(8, maxLen - ext.length - 3))}...${ext}`;
 };
 
 function PostModal({
@@ -57,7 +77,8 @@ function PostModal({
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
-  const mediaInputRef = useRef<HTMLInputElement | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectionRangeRef = useRef<{ start: number; end: number }>({
     start: 0,
@@ -178,10 +199,6 @@ function PostModal({
     });
   };
 
-  const handleMediaButtonClick = () => {
-    mediaInputRef.current?.click();
-  };
-
   const handleMediaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawFiles = Array.from(event.target.files || []);
     const validFiles: File[] = [];
@@ -191,15 +208,21 @@ function PostModal({
       const isVideo = file.type.startsWith("video/");
 
       if (!isImage && !isVideo) {
-        toast.error(`"${file.name}" is not a valid image or video.`);
+        toast.error(
+          `"${truncateFileName(file.name)}" is not a supported image or video format.`,
+        );
         continue;
       }
 
-      // Max size: 15MB for images, 60MB for videos
-      const maxSize = isImage ? 15 * 1024 * 1024 : 60 * 1024 * 1024;
+      // Max size: 25MB for images, 200MB for videos
+      const maxSize = isImage ? 25 * 1024 * 1024 : 200 * 1024 * 1024;
       if (file.size > maxSize) {
+        const friendlyName = truncateFileName(file.name);
+        const formattedSize = formatFileSize(file.size);
+        const maxLimitStr = isImage ? "25MB" : "200MB";
         toast.error(
-          `"${file.name}" exceeds the size limit (${isImage ? "15MB" : "60MB"}).`,
+          `"${friendlyName}" (${formattedSize}) exceeds the ${maxLimitStr} size limit.`,
+          { duration: 5000 },
         );
         continue;
       }
@@ -226,6 +249,9 @@ function PostModal({
         | "video",
       file,
       isObjectUrl: true,
+      fileName: truncateFileName(file.name),
+      fileSize: formatFileSize(file.size),
+      fileSizeBytes: file.size,
     }));
 
     setPreviewMedia((previous) => [...previous, ...nextMedia]);
@@ -303,6 +329,48 @@ function PostModal({
       });
     }
 
+    const newFiles = previewMedia.filter((m) => Boolean(m.file));
+    const hasMedia = newFiles.length > 0;
+    const hasVideo = newFiles.some((m) => m.type === "video");
+    const videoItem = newFiles.find((m) => m.type === "video");
+
+    const targetUrl = idustry
+      ? postData?.id
+        ? `/industry/post/update/${postData.id}`
+        : `/industry/post/create`
+      : postData?.id
+        ? `/profile/posts/${postData.id}`
+        : `/posts`;
+
+    // Industry Standard: If publishing media (especially video),
+    // dispatch background upload immediately with real-time progress dock so user can close modal safely!
+    if (hasMedia) {
+      // 1. Close modal immediately and clean compose form
+      setOpen(false);
+      dispatch(resetPostComposeState());
+      setPreviewMedia([]);
+
+      toast("Publishing post in background...", {
+        icon: hasVideo ? "🎥" : "📤",
+        duration: 3500,
+      });
+
+      // 2. Start background upload with progress dock
+      startBackgroundPostUpload({
+        url: targetUrl,
+        formData,
+        fileName: videoItem?.fileName || newFiles[0]?.fileName || "Media attachment",
+        fileSize: videoItem?.fileSize || newFiles[0]?.fileSize,
+        isVideo: hasVideo,
+        postExcerpt: trimmedText.slice(0, 70),
+      }).catch((err) => {
+        console.error("Background post upload error:", err);
+      });
+
+      return;
+    }
+
+    // Text-only posts or quick edits without media
     try {
       const response = postData?.id
         ? await updatePost({ id: postData.id, body: formData }).unwrap()
@@ -355,9 +423,17 @@ function PostModal({
   return (
     <section className="relative flex min-h-[440px] max-h-[85vh] flex-col overflow-visible px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
       <input
-        ref={mediaInputRef}
+        ref={imageInputRef}
         type="file"
-        accept="image/*,video/*"
+        accept="image/jpeg,image/png,image/webp,image/heic,image/*"
+        multiple
+        className="hidden"
+        onChange={handleMediaChange}
+      />
+      <input
+        ref={videoInputRef}
+        type="file"
+        accept="video/mp4,video/webm,video/quicktime,video/x-m4v,video/*"
         multiple
         className="hidden"
         onChange={handleMediaChange}
@@ -453,6 +529,12 @@ function PostModal({
                     controls
                     className="h-auto w-full object-cover"
                   />
+                  {media.fileSize && (
+                    <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5 rounded-full bg-black/75 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-xs pointer-events-none">
+                      <PlayIcon className="h-3 w-3 text-primaryColor" />
+                      <span>{media.fileSize}</span>
+                    </div>
+                  )}
                   {showOverlay && (
                     <div className="absolute inset-0 flex w-full items-center justify-center bg-black/60 text-center text-sm font-semibold text-white">
                       +{hiddenCount} more
@@ -519,7 +601,7 @@ function PostModal({
               type="button"
               className="p-1.5 rounded-full hover:bg-gray-100 cursor-pointer text-descriptionColor hover:opacity-80 transition"
               aria-label="Add image"
-              onClick={handleMediaButtonClick}
+              onClick={() => imageInputRef.current?.click()}
             >
               <ImageUploadIcon className="w-5 h-5 text-descriptionColor" />
             </button>
@@ -528,7 +610,7 @@ function PostModal({
               type="button"
               className="p-1.5 rounded-full hover:bg-gray-100 cursor-pointer text-descriptionColor hover:opacity-80 transition"
               aria-label="Add video"
-              onClick={handleMediaButtonClick}
+              onClick={() => videoInputRef.current?.click()}
             >
               <PlayIcon className="h-5 w-5 text-descriptionColor" />
             </button>

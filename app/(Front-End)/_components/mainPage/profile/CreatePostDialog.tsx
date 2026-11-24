@@ -22,9 +22,6 @@ function CreatePostDialog({
   };
 
   const handleClose = (open: boolean) => {
-    if (!open) {
-      dispatch(resetPostComposeState());
-    }
     setIsOpen(open);
   };
 

@@ -13,6 +13,7 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import baseApiSlice from "./slice/baseApi";
 import onboardingSlice from "./slice/onboarding/onboardingSlice";
 import postComposeSlice from "./slice/postCompose/postComposeSlice";
+import postUploadSlice from "./slice/postUpload/postUploadSlice";
 
 const createNoopStorage = () => {
   return {
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   [baseApiSlice.reducerPath]: baseApiSlice.reducer,
   onboarding: onboardingSlice,
   postCompose: postComposeSlice,
+  postUpload: postUploadSlice,
 });
 
 const persistConfig = {

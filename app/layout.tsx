@@ -1,3 +1,4 @@
+import PostUploadDock from "@/components/reusable/PostUploadDock";
 import ReduxProvider from "@/components/reusable/ReduxProvider";
 import { AppConfig } from "@/config/app.config";
 import type { Metadata } from "next";
@@ -45,7 +46,10 @@ export default function RootLayout({
           zIndex={99999}
         />
         <Toaster containerStyle={{ zIndex: 100000 }} />
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          {children}
+          <PostUploadDock />
+        </ReduxProvider>
       </body>
     </html>
   );
