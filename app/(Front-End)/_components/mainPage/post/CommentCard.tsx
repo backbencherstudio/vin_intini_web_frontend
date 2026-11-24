@@ -123,7 +123,7 @@ export default function CommentRow({
           >
             {mention}
           </Link>
-          {remainingText}
+          <span>{remainingText}</span>
         </>
       );
     }
@@ -138,12 +138,12 @@ export default function CommentRow({
           >
             @{replyToUser.name}
           </Link>
-          {rawText}
+          <span>{rawText}</span>
         </>
       );
     }
 
-    return rawText;
+    return <span>{rawText}</span>;
   };
 
   const userProfileHref = item?.industry_id

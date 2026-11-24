@@ -286,7 +286,7 @@ function PostComment({
         {isCommentLoading && page === 1 ? (
           <div className="w-full space-y-3">
             {[...Array(3)].map((_, index) => (
-              <div className="border-b " key={index}>
+              <div className="border-b " key={`skeleton-${index}`}>
                 <CommentRowSkeleton />
               </div>
             ))}

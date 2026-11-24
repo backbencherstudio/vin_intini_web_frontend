@@ -240,12 +240,14 @@ function PostCard({
 
       <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">
         <button onClick={() => setLikeList(true)} className="cursor-pointer">
-          {`${likesCount} likes`}
+          <span>{likesCount} likes</span>
         </button>
         <button
           className=" cursor-pointer"
           onClick={() => setIsCommented((previous) => !previous)}
-        >{`${post?.total_comment} comments`}</button>
+        >
+          <span>{post?.total_comment || 0} comments</span>
+        </button>
       </div>
 
       <div className="mt-2 -mx-2.5 md:-mx-3 border-t border-borderColor pt-2 px-2.5 md:px-3 grid grid-cols-2">
