@@ -5,7 +5,7 @@ import { useAdminLoginMutation } from "@/feature/slice/auth/authSlice";
 import baseApiSlice from "@/feature/slice/baseApi";
 import { store } from "@/feature/store";
 import { setToken } from "@/lib/token";
-import blackLogo from "@/public/black_Logo.png";
+import logo from "@/public/logo.png";
 import {
   ArrowLeft,
   ArrowRight,
@@ -158,12 +158,12 @@ export default function AdminLoginPage() {
           <div className="flex justify-center mb-6">
             <Link href="/" className="inline-block transition hover:opacity-90">
               <Image
-                src={blackLogo}
+                src={logo}
                 alt="MindUnite Logo"
-                width={190}
-                height={40}
+                width={240}
+                height={34}
                 priority
-                className="h-8 w-auto object-contain"
+                className="h-9 w-auto object-contain"
               />
             </Link>
           </div>

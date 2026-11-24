@@ -127,9 +127,9 @@ export default function MainNavbar() {
           <Image
             src={mainLogo}
             alt="Logo"
-            width={250}
-            height={84}
-            className="md:max-w-56 max-w-36 w-full h-auto block"
+            width={270}
+            height={38}
+            className="md:max-w-[270px] max-w-[180px] w-full h-auto block"
             priority
           />
         </Link>

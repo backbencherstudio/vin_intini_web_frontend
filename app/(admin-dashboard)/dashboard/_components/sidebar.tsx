@@ -27,7 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import logo from "@/public/images/admin/Vector (1).png";
+import logo from "@/public/logo.png";
 
 import { SidebarData } from "./Dashboard-sidebar";
 
@@ -78,9 +78,9 @@ export default function DashboardSidebar() {
           <Image
             src={logo}
             alt="MindUnite Logo"
-            width={180}
-            height={50}
-            className="h-10 w-auto object-contain transition-all"
+            width={200}
+            height={30}
+            className="h-8 max-w-[190px] w-auto object-contain transition-all"
             priority
           />
         </Link>

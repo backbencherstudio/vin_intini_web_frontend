@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import SocialShare from "./SocialShare";
-import balckImage from "@/public/black_Logo.png";
+import mainLogo from "@/public/logo.png";
 
 function MainFooter() {
   const year = new Date().getFullYear();
@@ -15,11 +15,11 @@ function MainFooter() {
             <div className="flex items-center gap-2">
               <Link href="/">
                 <Image
-                  src={balckImage}
+                  src={mainLogo}
                   alt="Logo"
-                  width={296}
-                  height={50}
-                  className="w-full max-w-32.5 lg:max-w-60.5 h-auto "
+                  width={270}
+                  height={38}
+                  className="w-full max-w-[200px] sm:max-w-[240px] lg:max-w-[270px] h-auto block"
                   priority
                 />
               </Link>
