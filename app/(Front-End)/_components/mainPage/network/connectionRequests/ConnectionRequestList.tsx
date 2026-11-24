@@ -54,7 +54,7 @@ function ConnectionRequestList({
   }, [page]);
 
   const showInitialSkeleton = isFetching && combinedData.length === 0;
-  const showMoreLoader = isFetching && combinedData.length > 0;
+  const showMoreLoader = isFetching && page > 1;
 
   if (isError) {
     return <Error />;

@@ -184,7 +184,11 @@ export const ConnectionActionButtons = ({
             <button
               type="button"
               disabled={isCanceling}
-              onClick={handleCancelSent}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleCancelSent();
+              }}
               className={`${BUTTON_STYLES.borderBtn} disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {isCanceling ? "Withdrawing..." : "Withdraw"}

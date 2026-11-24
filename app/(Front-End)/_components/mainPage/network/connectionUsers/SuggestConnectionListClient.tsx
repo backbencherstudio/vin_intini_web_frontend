@@ -1,10 +1,11 @@
 "use client";
 
 import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
+import { useGetSentConnectionsQuery } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import { fetchWrapper } from "@/lib/fetch-wrapper";
 import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ConnectionUserCard from "./ConnectionUserCard";
 
 interface SuggestConnectionListClientProps {
@@ -23,6 +24,18 @@ export default function SuggestConnectionListClient({
   const [page, setPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(initialData.length >= limit);
+
+  const { data: sentConnectionsData } = useGetSentConnectionsQuery({
+    query: "?page=1&limit=50",
+  });
+
+  const pendingSentUserIds = useMemo(() => {
+    const ids = new Set<number>();
+    sentConnectionsData?.data?.forEach((item: any) => {
+      if (item?.user?.id) ids.add(item.user.id);
+    });
+    return ids;
+  }, [sentConnectionsData]);
 
   useEffect(() => {
     setCombinedData(initialData);
@@ -75,6 +88,7 @@ export default function SuggestConnectionListClient({
             <ConnectionUserCard
               profile={profile}
               key={profile?.id || `profile-${index}`}
+              isPendingSent={pendingSentUserIds.has(profile?.user?.id)}
             />
           ))
         ) : (

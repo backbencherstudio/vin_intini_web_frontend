@@ -1,7 +1,4 @@
-import {
-  useGetSentConnectionsQuery,
-  useSendRequestMutation,
-} from "@/feature/slice/connect/connectSlice";
+import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { ConnectionRequestType } from "@/lib/type";
 import emptyImage from "@/public/empty_user.jpg";
 import coverImage from "@/public/images/feature-img.jpg";
@@ -10,31 +7,29 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
+function ConnectionUserCard({
+  profile,
+  isPendingSent,
+}: {
+  profile: ConnectionRequestType;
+  isPendingSent?: boolean;
+}) {
   const { user, mutual_connections_count, is_connectable, action_label } =
     profile;
 
   const [requestSent, setRequestSent] = useState<any>();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
-  const { data: sentConnectionsData } = useGetSentConnectionsQuery({});
-
-  const isPendingInSent = Boolean(
-    sentConnectionsData?.data?.some(
-      (item: any) =>
-        item?.user?.id === user?.id ||
-        (user?.username && item?.user?.username === user?.username)
-    )
-  );
 
   useEffect(() => {
-    if (sentConnectionsData && !isPendingInSent && requestSent) {
+    if (isPendingSent === false && requestSent) {
       setRequestSent(null);
     }
-  }, [sentConnectionsData, isPendingInSent, requestSent]);
+  }, [isPendingSent, requestSent]);
 
-  const isCurrentlyPending = sentConnectionsData
-    ? isPendingInSent
-    : requestSent?.status === "pending";
+  const isCurrentlyPending =
+    isPendingSent !== undefined
+      ? isPendingSent
+      : requestSent?.status === "pending";
 
   const handleConnect = async () => {
     const payload = {
