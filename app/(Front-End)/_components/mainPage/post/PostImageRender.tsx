@@ -41,6 +41,26 @@ function FeedVideoPlayer({
     return () => observer.disconnect();
   }, []);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLVideoElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      video.currentTime = Math.max(0, video.currentTime - 5);
+    } else if (e.key === " " || e.key === "k") {
+      e.preventDefault();
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+  };
+
   return (
     <div
       onClick={(e) => {
@@ -57,7 +77,8 @@ function FeedVideoPlayer({
         controls
         playsInline
         preload="metadata"
-        className={`w-full ${
+        onKeyDown={handleKeyDown}
+        className={`w-full outline-hidden ${
           isSingle ? "max-h-125 object-contain" : "h-full object-cover"
         }`}
       />
