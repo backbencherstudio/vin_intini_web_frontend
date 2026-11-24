@@ -1,6 +1,11 @@
 "use client";
 import ButtonReuseable from "@/components/reusable/CustomButton";
-import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   useRemoveRequestMutation,
   useRequestAcceptMutation,
@@ -12,15 +17,20 @@ import {
 } from "@/feature/slice/connect/followSlice";
 import { useStartConversationMutation } from "@/feature/slice/message/messageSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { CrossUserIcon, FollowUserIcon, MessageIcon, PlusUserIcon, UnfollowUserIcon } from "@/public/svgIcons/Icons";
-import { icon } from "leaflet";
+import {
+  CrossUserIcon,
+  FollowUserIcon,
+  MessageIcon,
+  PlusUserIcon,
+  UnfollowUserIcon,
+} from "@/public/svgIcons/Icons";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { MdDone } from "react-icons/md";
 
-function ProfileConnectionAction({ profileData, userId }) {
-  const [selectedAction, setSelectedAction] = useState("");
+function ProfileConnectionAction({ profileData, userId }: any) {
   const { data: myProfile } = useGetUserProfileQuery("profile");
   const isProIndustry =
     myProfile?.user?.tier === "pro_industry" || Boolean(myProfile?.industry);
@@ -38,22 +48,31 @@ function ProfileConnectionAction({ profileData, userId }) {
   const [unfollowUser] = useUnfollowUserMutation();
   const [requestSentId, setRequestSentId] = useState();
 
+  // Optimistic follow status to prevent UI flickering or stale state
+  const [localIsFollowing, setLocalIsFollowing] = useState<boolean | null>(null);
+
+  const isFollowing =
+    localIsFollowing !== null
+      ? localIsFollowing
+      : Boolean(profileData?.connection_status?.is_following);
+
+  useEffect(() => {
+    if (profileData?.connection_status?.is_following !== undefined) {
+      setLocalIsFollowing(Boolean(profileData?.connection_status?.is_following));
+    }
+  }, [profileData?.connection_status?.is_following]);
+
   const connectionActions = [
-    { value: "remove", label: "Remove" ,icon : <CrossUserIcon /> },
-    { value: "follow", label: "Follow", icon : <FollowUserIcon /> },
-    { value: "unfollow", label: "Unfollow", icon : <UnfollowUserIcon /> },
+    { value: "remove", label: "Remove", icon: <CrossUserIcon /> },
+    { value: "follow", label: "Follow", icon: <FollowUserIcon /> },
+    { value: "unfollow", label: "Unfollow", icon: <UnfollowUserIcon /> },
   ];
 
   const filterFollowUnfollow = connectionActions.filter((action) =>
-    profileData?.connection_status?.is_following
-      ? action.value !== "follow"
-      : action.value !== "unfollow",
+    isFollowing ? action.value !== "follow" : action.value !== "unfollow",
   );
 
-
-  const handleConnect = async (id) => {
-
-
+  const handleConnect = async (id: any) => {
     const payload = {
       user_id: profileData?.id,
     };
@@ -78,9 +97,10 @@ function ProfileConnectionAction({ profileData, userId }) {
   };
 
   const handleConnectionAction = async (action: string) => {
+    const targetUserId = userId || profileData?.id;
     try {
       if (action === "remove") {
-        await removeConnection({ id: userId }).unwrap();
+        await removeConnection({ id: targetUserId }).unwrap();
         toast.success("Connection removed successfully!");
       } else if (action === "accept") {
         await requestAccept({
@@ -88,16 +108,17 @@ function ProfileConnectionAction({ profileData, userId }) {
         }).unwrap();
         toast.success("Connection request accepted!");
       } else if (action === "follow") {
-        await followUser({ userId }).unwrap();
+        setLocalIsFollowing(true);
+        await followUser({ userId: targetUserId }).unwrap();
         toast.success("Followed successfully!");
       } else if (action === "unfollow") {
-        await unfollowUser({ userId }).unwrap();
+        setLocalIsFollowing(false);
+        await unfollowUser({ userId: targetUserId }).unwrap();
         toast.success("Unfollowed successfully!");
       }
     } catch (error: any) {
+      setLocalIsFollowing(Boolean(profileData?.connection_status?.is_following));
       toast.error(error?.data?.message || "Action failed. Try again.");
-    } finally {
-      setSelectedAction("");
     }
   };
 
@@ -115,13 +136,32 @@ function ProfileConnectionAction({ profileData, userId }) {
                 title="Message"
                 className="cursor-pointer py-2! text-whiteColor rounded-md bg-primaryColor hover:bg-primaryColor/90 transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg disabled:opacity-70 disabled:bg-bgColor"
               />
-              <SelecteInputField
-                value={selectedAction}
-                onValueChange={handleConnectionAction}
-                options={filterFollowUnfollow}
-                placeholder="Connected"
-                className="h-10.25!  w-full"
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-10.25 items-center justify-between gap-2.5 rounded-md border border-borderColor bg-white px-3.5 py-2 text-sm font-medium text-headerColor transition-colors hover:bg-gray-50 focus:outline-hidden cursor-pointer shadow-2xs"
+                  >
+                    <span>Connected</span>
+                    <ChevronDown className="h-4 w-4 text-grayColor1 shrink-0" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-36 bg-white p-1 border border-borderColor shadow-md"
+                >
+                  {filterFollowUnfollow.map((action) => (
+                    <DropdownMenuItem
+                      key={action.value}
+                      onClick={() => handleConnectionAction(action.value)}
+                      className="flex items-center gap-2 px-2.5 py-2 text-sm text-headerColor cursor-pointer hover:bg-[#EEF2F6] rounded-sm transition-colors"
+                    >
+                      <span className="shrink-0">{action.icon}</span>
+                      <span>{action.label}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
           {profileData?.connection_status?.state === "pending_sent" && (
