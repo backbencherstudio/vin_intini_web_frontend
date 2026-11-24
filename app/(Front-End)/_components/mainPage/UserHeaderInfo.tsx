@@ -260,11 +260,11 @@ function UserHeaderInfo() {
           <div className="  relative sm:ml-0">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild className="cursor-pointer">
-                <div className="flex gap-1 h-full items-end">
-                  <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
+                <div className="flex gap-1.5 items-center">
+                  <div className="flex items-center rounded-full cursor-pointer hover:opacity-90">
                     {userTierConfig.ringGradient ? (
                       <div
-                        className="w-8 h-8 lg:w-12 lg:h-12 rounded-full p-[3px] lg:p-[3.5px] shadow-xs flex items-center justify-center shrink-0"
+                        className="w-8.5 h-8.5 lg:w-11 lg:h-11 rounded-full p-[2.5px] lg:p-[3px] shadow-xs flex items-center justify-center shrink-0"
                         style={{ background: userTierConfig.ringGradient }}
                       >
                         <div className="w-full h-full rounded-full overflow-hidden bg-white">
@@ -282,7 +282,7 @@ function UserHeaderInfo() {
                       </div>
                     ) : (
                       <div
-                        className={`w-8 h-8 lg:w-12 lg:h-12 border-[3.5px] lg:border-[4px] ${userTierConfig.borderClass} rounded-full overflow-hidden shadow-xs`}
+                        className={`w-8.5 h-8.5 lg:w-11 lg:h-11 border-[3px] lg:border-[3.5px] ${userTierConfig.borderClass} rounded-full overflow-hidden shadow-xs`}
                       >
                         <Image
                           src={
@@ -292,13 +292,13 @@ function UserHeaderInfo() {
                           width={150}
                           height={150}
                           unoptimized
-                          className="rounded-full w-full object-cover  h-full"
+                          className="rounded-full w-full object-cover h-full"
                         />
                       </div>
                     )}
                   </div>
 
-                  <button className=" cursor-pointer">
+                  <button className="cursor-pointer flex items-center">
                     <IoIosArrowDown size={16} className="text-blackColor" />
                   </button>
                 </div>

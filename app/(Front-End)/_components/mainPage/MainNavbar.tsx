@@ -121,20 +121,20 @@ export default function MainNavbar() {
   };
 
   return (
-    <header className=" md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
-      <div className="container mx-auto flex items-center justify-between">
-        <Link href="/mu/home" prefetch={false} onClick={scrollToTop}>
+    <header className="sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99 transition-all">
+      <div className="container mx-auto flex items-center justify-between py-2 sm:py-2.5 md:py-3 min-h-[64px] md:min-h-[70px]">
+        <Link href="/mu/home" prefetch={false} onClick={scrollToTop} className="flex items-center">
           <Image
             src={mainLogo}
             alt="Logo"
             width={250}
             height={84}
-            className="md:max-w-59.5 max-w-40 w-full h-auto"
+            className="md:max-w-56 max-w-36 w-full h-auto block"
             priority
           />
         </Link>
 
-        <nav className="hidden space-x-8 text-base min-[1132px]:flex">
+        <nav className="hidden space-x-8 text-base min-[1132px]:flex items-center">
           {mainMenuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
