@@ -235,7 +235,14 @@ function PostCard({
         </div>
       )}
       <div>
-        <PostImageRender mediaItems={mediaItems} priority={priority} />
+        <PostImageRender
+          mediaItems={mediaItems}
+          priority={priority}
+          post={post}
+          isLiked={isLiked}
+          likesCount={likesCount}
+          onToggleLike={handleLikeClick}
+        />
       </div>
 
       <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">

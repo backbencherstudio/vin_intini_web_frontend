@@ -9,6 +9,10 @@ type PostMediaItem = NonNullable<PostFeedType["media"]>[number];
 interface PostImageRenderProps {
   mediaItems: PostMediaItem[];
   priority?: boolean;
+  post?: PostFeedType;
+  isLiked?: boolean;
+  likesCount?: number;
+  onToggleLike?: () => void;
 }
 
 // Optimized Inline Video Component with auto-pause on scroll-out
@@ -89,6 +93,10 @@ function FeedVideoPlayer({
 function PostImageRender({
   mediaItems = [],
   priority = false,
+  post,
+  isLiked,
+  likesCount,
+  onToggleLike,
 }: PostImageRenderProps) {
   const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
@@ -313,6 +321,10 @@ function PostImageRender({
         mediaItems={mediaItems}
         activeMediaIndex={activeMediaIndex}
         setActiveMediaIndex={setActiveMediaIndex}
+        post={post}
+        isLiked={isLiked}
+        likesCount={likesCount}
+        onToggleLike={onToggleLike}
       />
     </div>
   );
