@@ -19,7 +19,7 @@ function AllConnectionFriendList() {
   const limit = 5;
   const [tempPage, setTempPage] = useState(1);
 
-  const { data, isFetching, isError } = useGetMyConnectionsQuery({
+  const { data, isFetching, isLoading, isError } = useGetMyConnectionsQuery({
     query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}${sortQuery ? `&sort=${sortQuery}` : ""}`,
   });
 
@@ -27,15 +27,15 @@ function AllConnectionFriendList() {
     data,
     isFetching,
     limit,
-    searchQuery,
+    `${searchQuery}-${sortQuery}`,
   );
 
   useEffect(() => {
     setTempPage(page);
   }, [page]);
 
-  const showInitialSkeleton = isFetching && combinedData.length === 0;
-  const showMoreLoader = isFetching && combinedData.length > 0;
+  const showInitialSkeleton = isLoading && combinedData.length === 0;
+  const showMoreLoader = isFetching && page > 1;
 
   if (isError) {
     return <Error />;

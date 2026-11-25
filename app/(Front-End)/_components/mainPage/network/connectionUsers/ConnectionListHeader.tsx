@@ -62,7 +62,7 @@ function ConnectionListHeader({ data }: any) {
               value={selectedSort}
               onValueChange={setSelectedSort}
               options={sortOptions}
-              placeholder="Sort by"
+              placeholder="Default"
               className="h-10! border-none! px-1! shadow-none! font-semibold shadow-transparent! text-[14px]"
             />
           </div>
