@@ -11,6 +11,8 @@ import {
   useGetTopJobPicksQuery,
   useSaveUserJobMutation,
 } from "@/feature/slice/jobs/userJobSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { htmlToPlainText } from "@/lib/utils";
 
 interface TopJobsRightbarProps {
   excludeId?: string | number;
@@ -27,6 +29,12 @@ export default function TopJobsRightbar({
   });
 
   const [saveUserJob, { isLoading: isSaving }] = useSaveUserJobMutation();
+  const { data: userProfile } = useGetUserProfileQuery("user");
+  const isIndustryUser = Boolean(
+    userProfile?.subscription?.plan_type === "industry" ||
+      userProfile?.industry?.company?.id ||
+      userProfile?.industry?.has_company,
+  );
 
   const rawJobs: any[] = topJobsResponse?.data || [];
   const jobs: any[] = rawJobs.filter((job) => !job.is_applied);
@@ -46,10 +54,12 @@ export default function TopJobsRightbar({
       {/* Header */}
       <div className="border-b border-borderColor pb-4 shrink-0">
         <h2 className="text-lg font-bold text-headerColor">
-          Top job picks for you
+          {isIndustryUser ? "All Jobs" : "Top job picks for you"}
         </h2>
         <p className="mt-1 text-xs text-descriptionColor leading-relaxed">
-          Based on your profile, preferences, and activity like applies, searches, and saves
+          {isIndustryUser
+            ? "Explore latest published job opportunities across the network"
+            : "Based on your profile, preferences, and activity like applies, searches, and saves"}
         </p>
       </div>
 
@@ -137,7 +147,7 @@ export default function TopJobsRightbar({
                 {/* Description */}
                 {job.job_description && (
                   <p className="text-xs text-descriptionColor line-clamp-2 leading-relaxed">
-                    {job.job_description}
+                    {htmlToPlainText(job.job_description)}
                   </p>
                 )}
 
@@ -163,7 +173,14 @@ export default function TopJobsRightbar({
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 pt-1">
-                  {isApplied ? (
+                  {isIndustryUser ? (
+                    <Link
+                      href={`/mu/jobs-details/${job.id}`}
+                      className="flex-1 rounded-full border border-primaryColor py-2 text-center text-xs font-semibold text-primaryColor transition hover:bg-primaryColor/5"
+                    >
+                      View Details
+                    </Link>
+                  ) : isApplied ? (
                     <Link
                       href={`/mu/jobs-details/${job.id}`}
                       className="flex-1 rounded-full bg-lightGreenColor2/15 py-2 text-center text-xs font-semibold text-primaryColor transition hover:bg-lightGreenColor2/25"

@@ -47,6 +47,11 @@ function SaveJobcard({
 
   const currentUserId = userProfile?.user?.id;
   const currentIndustryId = userProfile?.industry?.company?.id;
+  const isIndustryUser = Boolean(
+    userProfile?.subscription?.plan_type === "industry" ||
+      currentIndustryId ||
+      userProfile?.industry?.has_company,
+  );
   const jobIndustryId = company?.id ?? jobData?.industry_id;
   const isOwnJob = Boolean(
     jobData?.is_own_industry ||
@@ -58,6 +63,7 @@ function SaveJobcard({
         jobData?.created_by &&
         Number(currentUserId) === Number(jobData.created_by)),
   );
+  const canApply = isApply && !isIndustryUser && !isOwnJob;
 
   const workMode = jobData?.work_mode || "Remote";
   const employmentType = jobData?.employment_type || "Full-time";
@@ -237,7 +243,7 @@ function SaveJobcard({
           </div>
         </div>
       )}
-      {isApply && !isOwnJob && (
+      {canApply && (
         <div className=" flex items-center gap-2 mt-4">
           {jobData?.is_applied ? (
             <ButtonReuseable
@@ -265,7 +271,7 @@ function SaveJobcard({
         </div>
       )}
 
-      {!isOwnJob && <ApplyTypeModal open={isOpen} setOpen={setIsOpen} />}
+      {canApply && <ApplyTypeModal open={isOpen} setOpen={setIsOpen} />}
     </div>
   );
 }

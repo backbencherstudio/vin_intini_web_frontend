@@ -35,6 +35,11 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const hasApplied = Boolean(jobData.job_apply);
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
+  const isIndustryUser = Boolean(
+    planName === "industry" ||
+      data?.industry?.company?.id ||
+      data?.industry?.has_company,
+  );
   const isOwnJob = Boolean(
     jobData?.is_own_industry ||
       (data?.industry?.company?.id &&
@@ -101,7 +106,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
       );
     }
 
-    if (isOwnJob) {
+    if (isIndustryUser || isOwnJob) {
       return null;
     }
 
