@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  ImageIcon,
   Loader2,
   RefreshCw,
   Video,
@@ -70,7 +71,8 @@ export default function PostUploadDock() {
 
           <div className="truncate text-xs font-semibold text-headerColor">
             {stage === "uploading" && `Uploading post (${progress}%)`}
-            {stage === "processing" && "Processing video..."}
+            {stage === "processing" &&
+              (isVideo ? "Processing video..." : "Publishing post...")}
             {stage === "success" && (successMessage || "Post published successfully")}
             {stage === "error" && "Upload failed"}
           </div>
@@ -106,7 +108,11 @@ export default function PostUploadDock() {
           {/* File summary */}
           {(fileName || postExcerpt) && (
             <div className="flex items-center gap-2 rounded-md border border-gray-100 bg-[#F8FAFC] px-2.5 py-2 text-xs text-headerColor">
-              {isVideo && <Video className="h-3.5 w-3.5 shrink-0 text-primaryColor" />}
+              {isVideo ? (
+                <Video className="h-3.5 w-3.5 shrink-0 text-primaryColor" />
+              ) : (
+                <ImageIcon className="h-3.5 w-3.5 shrink-0 text-primaryColor" />
+              )}
               <span className="truncate font-medium">
                 {fileName || postExcerpt}
               </span>
@@ -140,7 +146,10 @@ export default function PostUploadDock() {
             <div className="flex items-center justify-between text-[11px] text-gray-500">
               <span>
                 {stage === "uploading" && `Uploading... ${progress}%`}
-                {stage === "processing" && "Optimizing video on server..."}
+                {stage === "processing" &&
+                  (isVideo
+                    ? "Optimizing video on server..."
+                    : "Optimizing image & saving post...")}
                 {stage === "success" && "Complete"}
                 {stage === "error" && (error || "Upload failed")}
               </span>

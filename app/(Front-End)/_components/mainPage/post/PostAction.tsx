@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
 import { useFollowIndustryMutation } from "@/feature/slice/jobs/industrySlice";
-import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
+import {
+  resetPostComposeState,
+  setCommentControl,
+  setPostType,
+  setPostVisibility,
+} from "@/feature/slice/postCompose/postComposeSlice";
 import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
 import { MoreVertical } from "lucide-react";
@@ -191,6 +196,18 @@ function PostAction({ post, meta }: PostCardProps) {
                   onSelect={(event) => {
                     event.preventDefault();
                     setMenuOpen(false);
+                    if (post?.visibility) {
+                      dispatch(
+                        setPostVisibility(
+                          post.visibility === "groups"
+                            ? "group"
+                            : (post.visibility as any),
+                        ),
+                      );
+                    }
+                    if (post?.who_can_comment) {
+                      dispatch(setCommentControl(post.who_can_comment as any));
+                    }
                     setIsEdited(true);
                   }}
                   className={"cursor-pointer px-1"}
@@ -230,7 +247,15 @@ function PostAction({ post, meta }: PostCardProps) {
         />
       )}
       {isEdited && (
-        <RootDialog open={isEdited} setOpen={setIsEdited}>
+        <RootDialog
+          open={isEdited}
+          setOpen={(open) => {
+            if (!open) {
+              dispatch(resetPostComposeState());
+            }
+            setIsEdited(open);
+          }}
+        >
           {postType == "Post_write" ? (
             <PostModal
               setOpen={setIsEdited}

@@ -22,6 +22,9 @@ function CreatePostDialog({
   };
 
   const handleClose = (open: boolean) => {
+    if (!open) {
+      dispatch(setPostType("Post_write"));
+    }
     setIsOpen(open);
   };
 

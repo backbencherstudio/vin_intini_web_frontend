@@ -90,6 +90,26 @@ export default function PostListClient({
     };
   }, [initialUrl, cursor, limit]);
 
+  // Refresh feed immediately when a new post is published (including background media uploads)
+  useEffect(() => {
+    const handlePostCreated = async () => {
+      try {
+        setCursor(null);
+        const res = await fetchWrapper(initialUrl);
+        if (res) {
+          setDataResponse(res);
+        }
+      } catch (err) {
+        console.error("Failed to refresh feed after post creation:", err);
+      }
+    };
+
+    window.addEventListener("post-created", handlePostCreated);
+    return () => {
+      window.removeEventListener("post-created", handlePostCreated);
+    };
+  }, [initialUrl]);
+
   // Ensure only one video plays at a time across the entire feed
   useEffect(() => {
     const handleGlobalPlay = (e: Event) => {

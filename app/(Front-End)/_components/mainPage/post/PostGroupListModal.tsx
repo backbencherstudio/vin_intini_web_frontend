@@ -2,26 +2,34 @@
 
 import GroupSkleton from "@/components/reusable/All Skleton/GroupSkleton";
 import { useGetGroupListQuery } from "@/feature/slice/post/postSlice";
-import { setSelectedGroupIds } from "@/feature/slice/postCompose/postComposeSlice";
+import {
+  setPostVisibility,
+  setSelectedGroupIds,
+} from "@/feature/slice/postCompose/postComposeSlice";
 import groupImage from "@/public/images/company-logo-1.png";
 import { GroupUserIcon } from "@/public/svgIcons/Icons";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeft, Check, ImageIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function PostGroupListModal({
   setPostType,
-  postData,
 }: {
   setPostType: (type: string) => void;
   postData?: any;
 }) {
-  const [localSelectedGroupIds, setLocalSelectedGroupIds] = useState<number[]>(
-    [],
+  const { selectedGroupIds = [] } = useSelector(
+    (state: any) => state.postCompose,
   );
+  const [localSelectedGroupIds, setLocalSelectedGroupIds] =
+    useState<number[]>(selectedGroupIds);
   const dispatch = useDispatch();
   const { data, isLoading } = useGetGroupListQuery("groupList");
+
+  useEffect(() => {
+    setLocalSelectedGroupIds(selectedGroupIds || []);
+  }, [selectedGroupIds]);
 
   const groups = data?.data || [];
   const handleToggleGroup = (id: number) => {
@@ -35,28 +43,53 @@ function PostGroupListModal({
 
   const handleSelectGroups = () => {
     dispatch(setSelectedGroupIds(localSelectedGroupIds));
+    if (localSelectedGroupIds.length === 0) {
+      dispatch(setPostVisibility("public"));
+    } else {
+      dispatch(setPostVisibility("group"));
+    }
     setPostType("Post_write");
   };
 
+  const handleBack = () => {
+    if (selectedGroupIds.length === 0) {
+      dispatch(setPostVisibility("public"));
+    }
+    setPostType("post_access");
+  };
+
   return (
-    <section className="flex flex-col max-h-[90vh] py-4 ">
-      <div className="border-b  border-borderColor px-4 pb-3">
+    <section className="flex flex-col max-h-[85dvh] py-4">
+      <div className="flex items-center gap-2 border-b border-borderColor px-4 pb-3 pr-12">
         <button
           type="button"
-          onClick={() => setPostType("post_access")}
-          className="text-lg leading-10 font-semibold text-descriptionColor"
+          onClick={handleBack}
+          aria-label="Back to post settings"
+          className="rounded-full p-1.5 text-descriptionColor hover:bg-gray-100 transition cursor-pointer"
         >
-          Select a Group
+          <ArrowLeft className="h-4.5 w-4.5" />
         </button>
+        <div>
+          <h3 className="text-base sm:text-lg font-semibold text-headerColor">
+            Select Groups
+          </h3>
+          <p className="text-xs text-grayColor1">
+            Choose one or more groups to share your post
+          </p>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto   px-4 py-4">
-        <div className="space-y-3 ">
+      <div className="flex-1 overflow-y-auto px-4 py-3">
+        <div className="space-y-2">
           {isLoading ? (
             <div>
               {Array.from({ length: 5 }).map((_, index) => (
                 <GroupSkleton key={`gorup-${index}`} />
               ))}
+            </div>
+          ) : groups.length === 0 ? (
+            <div className="py-10 text-center text-sm text-grayColor1">
+              You haven&apos;t joined any groups yet.
             </div>
           ) : (
             groups.map((group: any) => {
@@ -67,42 +100,51 @@ function PostGroupListModal({
                   key={group.id}
                   type="button"
                   onClick={() => handleToggleGroup(group.id)}
-                  className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-md py-2 text-left"
+                  className={`flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border p-2.5 text-left transition ${
+                    isSelected
+                      ? "border-primaryColor/50 bg-primaryColor/5"
+                      : "border-transparent hover:bg-gray-50"
+                  }`}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex xl:h-18 xl:w-18 w-12 h-12 lg:w-14 lg:h-14 shrink-0 items-center justify-center rounded-md bg-bgColor text-[#70757f]">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-borderColor/60 bg-bgColor text-[#70757f]">
                       {!group.logo_url ? (
-                        <ImageIcon size={30} strokeWidth={1.8} />
+                        <ImageIcon size={22} strokeWidth={1.8} />
                       ) : (
                         <Image
                           src={group.logo_url || groupImage}
-                          alt="Group placeholder"
+                          alt={group.name || "Group"}
                           width={72}
                           height={72}
-                          className="w-full h-full object-cover rounded-md"
+                          unoptimized
+                          className="h-full w-full object-cover"
                         />
                       )}
                     </div>
 
                     <div className="min-w-0">
-                      <h4 className="truncate text-lg leading-8 font-semibold text-descriptionColor">
+                      <h4 className="truncate text-sm sm:text-base font-semibold text-headerColor">
                         {group.name}
                       </h4>
-                      <div className="mt-1 flex items-center gap-2 text-descriptionColor">
-                        <GroupUserIcon className="h-4.5 w-4.5" />
-                        <span className="text-[13px]">{group.subtitle}</span>
-                      </div>
+                      {group.subtitle && (
+                        <div className="mt-0.5 flex items-center gap-1.5 text-descriptionColor">
+                          <GroupUserIcon className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate text-xs">
+                            {group.subtitle}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <span
-                    className={`ml-3 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                      isSelected ? "border-buttonColor" : "border-grayColor1"
+                    className={`ml-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition ${
+                      isSelected
+                        ? "border-primaryColor bg-primaryColor text-white"
+                        : "border-grayColor1"
                     }`}
                   >
-                    {isSelected && (
-                      <span className="h-2.5 w-2.5 rounded-full bg-buttonColor" />
-                    )}
+                    {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
                   </span>
                 </button>
               );
@@ -110,19 +152,30 @@ function PostGroupListModal({
           )}
         </div>
       </div>
-      <div className=" px-4 flex justify-end border-t pt-4 gap-4">
-        <button
-          onClick={() => setPostType("Post_write")}
-          className="rounded-md bg-bgLightColor cursor-pointer active:scale-95 px-4 py-2 text-descriptionColor hover:bg-grayColor2"
-        >
-          Back
-        </button>
-        <button
-          onClick={handleSelectGroups}
-          className="rounded-md bg-buttonColor cursor-pointer active:scale-95 px-4 py-2 text-whiteColor hover:bg-buttonHover"
-        >
-          Done
-        </button>
+
+      <div className="flex items-center justify-between border-t border-borderColor px-4 pt-3.5 gap-3">
+        <span className="text-xs font-medium text-grayColor1">
+          {localSelectedGroupIds.length > 0
+            ? `${localSelectedGroupIds.length} group${localSelectedGroupIds.length > 1 ? "s" : ""} selected`
+            : "No group selected"}
+        </span>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="rounded-full bg-bgLightColor cursor-pointer px-4 py-1.5 text-sm font-medium text-descriptionColor hover:bg-grayColor2 transition"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            disabled={localSelectedGroupIds.length === 0}
+            onClick={handleSelectGroups}
+            className="rounded-full bg-buttonColor cursor-pointer px-5 py-1.5 text-sm font-semibold text-whiteColor hover:bg-buttonHover disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 transition"
+          >
+            Done
+          </button>
+        </div>
       </div>
     </section>
   );

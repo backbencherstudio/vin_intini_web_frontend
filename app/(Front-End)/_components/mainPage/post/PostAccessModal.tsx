@@ -10,10 +10,11 @@ import {
   GroupUserIcon,
   MultiUserIcon,
 } from "@/public/svgIcons/Icons";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-type PostVisibility = "public" | "connections" | "group";
+type PostVisibility = "public" | "connections" | "followers" | "group";
 type CommentVisibility = "anyone" | "connections" | "no_one";
 
 interface postAccessType {
@@ -22,21 +23,36 @@ interface postAccessType {
   icon: string | React.ComponentType<{ className?: string }>;
 }
 
-const postVisibilityOptions: postAccessType[] = [
+const standardVisibilityOptions: postAccessType[] = [
   { value: "public", label: "Anyone", icon: GlobalIcon },
   { value: "connections", label: "Connections only", icon: MultiUserIcon },
   { value: "group", label: "Group", icon: GroupUserIcon },
 ];
 
-const commentControlOptions: Array<{
+const industryVisibilityOptions: postAccessType[] = [
+  { value: "public", label: "Anyone", icon: GlobalIcon },
+  { value: "followers", label: "Followers", icon: MultiUserIcon },
+];
+
+const standardCommentOptions: Array<{
   value: CommentVisibility;
   label: string;
   icon: postAccessType["icon"];
 }> = [
-    { value: "anyone", label: "Anyone", icon: GlobalIcon },
-    { value: "connections", label: "Connections only", icon: MultiUserIcon },
-    { value: "no_one", label: "No one", icon: BanIcon },
-  ];
+  { value: "anyone", label: "Anyone", icon: GlobalIcon },
+  { value: "connections", label: "Connections only", icon: MultiUserIcon },
+  { value: "no_one", label: "No one", icon: BanIcon },
+];
+
+const industryCommentOptions: Array<{
+  value: CommentVisibility;
+  label: string;
+  icon: postAccessType["icon"];
+}> = [
+  { value: "anyone", label: "Anyone", icon: GlobalIcon },
+  { value: "connections", label: "Followers", icon: MultiUserIcon },
+  { value: "no_one", label: "No one", icon: BanIcon },
+];
 
 function PostAccessModal({
   setPostType,
@@ -46,16 +62,35 @@ function PostAccessModal({
   postData?: any;
 }) {
   const dispatch = useDispatch();
+  const pathName = usePathname();
+  const isIndustry =
+    Boolean(postData?.industry || postData?.company_id) ||
+    pathName.includes("industry");
+  const postVisibilityOptions = isIndustry
+    ? industryVisibilityOptions
+    : standardVisibilityOptions;
+  const commentControlOptions = isIndustry
+    ? industryCommentOptions
+    : standardCommentOptions;
+
   const { postVisibility, commentControl } = useSelector(
     (state: any) => state.postCompose,
   );
 
   const resolvePostVisibility = (value?: string): PostVisibility => {
     if (value === "groups") {
-      return "group";
+      return isIndustry ? "public" : "group";
     }
 
-    if (value === "public" || value === "connections" || value === "group") {
+    if (
+      value === "public" ||
+      value === "connections" ||
+      value === "followers" ||
+      value === "group"
+    ) {
+      if (isIndustry && (value === "group" || value === "connections")) {
+        return value === "connections" ? "followers" : "public";
+      }
       return value;
     }
 
@@ -71,16 +106,22 @@ function PostAccessModal({
   };
 
   const [selectedPostVisibility, setSelectedPostVisibility] =
-    useState<PostVisibility>(() => resolvePostVisibility(postData?.visibility));
+    useState<PostVisibility>(() =>
+      resolvePostVisibility(postVisibility || postData?.visibility),
+    );
   const [selectedCommentControl, setSelectedCommentControl] =
     useState<CommentVisibility>(() =>
-      resolveCommentControl(postData?.who_can_comment),
+      resolveCommentControl(commentControl || postData?.who_can_comment),
     );
 
   useEffect(() => {
-    setSelectedPostVisibility(resolvePostVisibility(postData?.visibility));
-    setSelectedCommentControl(resolveCommentControl(postData?.who_can_comment));
-  }, [postData?.visibility, postData?.who_can_comment]);
+    setSelectedPostVisibility(
+      resolvePostVisibility(postVisibility || postData?.visibility),
+    );
+    setSelectedCommentControl(
+      resolveCommentControl(commentControl || postData?.who_can_comment),
+    );
+  }, [postVisibility, commentControl, postData?.visibility, postData?.who_can_comment]);
 
   const handlePostVisibilityChange = (value: PostVisibility) => {
     setSelectedPostVisibility(value);

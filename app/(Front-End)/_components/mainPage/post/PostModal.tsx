@@ -3,11 +3,13 @@
 import SmartEmojiPicker from "@/components/reusable/SmartEmojiPicker";
 import {
   useCreatePostMutation,
+  useGetGroupListQuery,
   useUpdatePostMutation,
 } from "@/feature/slice/post/postSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   GlobalIcon,
+  GroupUserIcon,
   ImageUploadIcon,
   MenueArrowDownIcon,
   PlayIcon,
@@ -22,10 +24,12 @@ import {
 import {
   resetPostComposeState,
   setPostText,
+  setPostVisibility,
+  setSelectedGroupIds,
 } from "@/feature/slice/postCompose/postComposeSlice";
 import { htmlToPlainText, textToHtml } from "@/lib/utils";
 import { startBackgroundPostUpload } from "@/services/postUploadService";
-import { Loader, MessageSquare, X } from "lucide-react";
+import { Loader, MessageSquare, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -77,6 +81,21 @@ function PostModal({
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
+  const { data: groupListData } = useGetGroupListQuery("groupList", {
+    skip: postVisibility !== "group" && selectedGroupIds.length === 0,
+  });
+  const allGroups: any[] = groupListData?.data || [];
+  const selectedGroups = allGroups.filter((g) =>
+    selectedGroupIds.includes(g.id),
+  );
+
+  const handleRemoveGroup = (groupId: number) => {
+    const nextIds = selectedGroupIds.filter((id: number) => id !== groupId);
+    dispatch(setSelectedGroupIds(nextIds));
+    if (nextIds.length === 0) {
+      dispatch(setPostVisibility("public"));
+    }
+  };
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const videoInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -88,7 +107,9 @@ function PostModal({
   const dispatch = useDispatch();
   const router = useRouter();
   const pathName = usePathname();
-  const idustry = pathName.includes("industry");
+  const idustry =
+    Boolean(postData?.industry || postData?.company_id) ||
+    pathName.includes("industry");
 
   const [createStandardPost, standardPostState] = useCreatePostMutation();
   const [createIndustryPost, industryPostState] =
@@ -296,6 +317,12 @@ function PostModal({
       return;
     }
 
+    if (postVisibility === "group" && selectedGroupIds.length === 0) {
+      toast.error("Please select at least one group to post.");
+      setPostType?.("post_group");
+      return;
+    }
+
     const formattedHtml = textToHtml(postText);
     const formData = new FormData();
 
@@ -305,10 +332,15 @@ function PostModal({
       formData.append("description", formattedHtml);
     }
 
-    formData.append(
-      "visibility",
-      postVisibility === "group" ? "groups" : postVisibility,
-    );
+    const resolvedVisibility = idustry
+      ? postVisibility === "followers" || postVisibility === "connections"
+        ? "followers"
+        : "public"
+      : postVisibility === "group"
+        ? "groups"
+        : postVisibility;
+
+    formData.append("visibility", resolvedVisibility);
     formData.append("who_can_comment", commentControl);
 
     if (selectedGroupIds.length > 0) {
@@ -350,11 +382,6 @@ function PostModal({
       dispatch(resetPostComposeState());
       setPreviewMedia([]);
 
-      toast("Publishing post in background...", {
-        icon: hasVideo ? "🎥" : "📤",
-        duration: 3500,
-      });
-
       // 2. Start background upload with progress dock
       startBackgroundPostUpload({
         url: targetUrl,
@@ -383,6 +410,9 @@ function PostModal({
             : "Post created successfully"),
       );
       router.refresh();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("post-created"));
+      }
 
       dispatch(resetPostComposeState());
       previewMedia.forEach((item) => {
@@ -401,27 +431,48 @@ function PostModal({
     }
   };
 
-  const userDisplayName =
-    data?.user?.first_name || data?.user?.last_name
+  const industryInfo = postData?.industry || data?.industry?.company;
+  const userDisplayName = idustry
+    ? industryInfo?.name || postData?.company_name || "Company"
+    : data?.user?.first_name || data?.user?.last_name
       ? `${data?.user?.first_name || ""} ${data?.user?.last_name || ""}`.trim()
       : "Vin Intini";
+  const avatarSrc = idustry
+    ? industryInfo?.logo || postData?.logo || "/empty_user.jpg"
+    : data?.user?.profile_image_url || "/empty_user.jpg";
 
   const visibilityLabel =
-    postVisibility === "connections"
-      ? "Connections only"
-      : postVisibility === "group"
-        ? "Group"
-        : "Post to Anyone";
+    postVisibility === "followers"
+      ? "Followers"
+      : postVisibility === "connections"
+        ? idustry
+          ? "Followers"
+          : "Connections only"
+        : postVisibility === "group" && !idustry
+          ? selectedGroups.length === 1
+            ? selectedGroups[0].name
+            : selectedGroupIds.length > 1
+              ? `${selectedGroupIds.length} Groups`
+              : "Select Group"
+          : "Post to Anyone";
 
   const commentLabel =
     commentControl === "connections"
-      ? "Comments: Connections"
+      ? idustry
+        ? "Comments: Followers"
+        : "Comments: Connections"
       : commentControl === "no_one"
         ? "Comments: No one"
         : "Comments: Anyone";
 
+  const isSubmitDisabled =
+    (!postText.trim() && previewMedia.length === 0) ||
+    (!idustry && postVisibility === "group" && selectedGroupIds.length === 0) ||
+    isLoading ||
+    isUpdating;
+
   return (
-    <section className="relative flex min-h-[440px] max-h-[85vh] flex-col overflow-visible px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
+    <section className="relative flex min-h-[360px] sm:min-h-[420px] max-h-[88dvh] flex-col overflow-visible px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
       <input
         ref={imageInputRef}
         type="file"
@@ -444,10 +495,11 @@ function PostModal({
         <div className="flex items-start gap-3">
           <div className="h-12 w-12 border border-borderColor shrink-0 overflow-hidden rounded-full">
             <Image
-              src={data?.user?.profile_image_url || "/empty_user.jpg"}
+              src={avatarSrc}
               alt={userDisplayName}
               width={64}
               height={64}
+              unoptimized
               className="h-full w-full object-cover"
               priority
             />
@@ -465,8 +517,12 @@ function PostModal({
                 onClick={() => setPostType?.("post_access")}
                 className="inline-flex items-center gap-1.5 rounded-full border border-borderColor bg-gray-50/70 px-2.5 py-0.5 text-xs font-medium text-descriptionColor hover:bg-gray-100 transition-colors cursor-pointer"
               >
-                <GlobalIcon className="h-3 w-3 text-gray-500" />
-                <span>{visibilityLabel}</span>
+                {postVisibility === "group" ? (
+                  <GroupUserIcon className="h-3 w-3 text-primaryColor" />
+                ) : (
+                  <GlobalIcon className="h-3 w-3 text-gray-500" />
+                )}
+                <span className="max-w-[140px] truncate">{visibilityLabel}</span>
                 <MenueArrowDownIcon className="h-2.5 w-2.5 text-gray-500" />
               </button>
 
@@ -484,6 +540,46 @@ function PostModal({
         </div>
       </header>
 
+      {/* Selected Groups Chip Bar */}
+      {!idustry && postVisibility === "group" && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 rounded-lg border border-primaryColor/20 bg-primaryColor/5 px-3 py-2 shrink-0">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-primaryColor/80 mr-1">
+            Posting to:
+          </span>
+          {selectedGroups.length > 0 ? (
+            selectedGroups.map((group: any) => (
+              <span
+                key={group.id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-primaryColor/30 bg-white px-2.5 py-0.5 text-xs font-medium text-headerColor shadow-2xs"
+              >
+                <GroupUserIcon className="h-3 w-3 text-primaryColor shrink-0" />
+                <span className="max-w-[140px] truncate">{group.name}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveGroup(group.id)}
+                  aria-label={`Remove ${group.name}`}
+                  className="ml-0.5 rounded-full p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-pointer transition"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))
+          ) : (
+            <span className="text-xs text-rose-600 font-medium">
+              No group selected
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setPostType?.("post_group")}
+            className="inline-flex items-center gap-1 rounded-full border border-dashed border-primaryColor/40 px-2.5 py-0.5 text-xs font-medium text-primaryColor hover:bg-primaryColor/10 cursor-pointer transition"
+          >
+            <Plus className="h-3 w-3" />
+            {selectedGroups.length > 0 ? "Edit" : "Select group"}
+          </button>
+        </div>
+      )}
+
       {/* Editor Body: Native Multi-Line Textarea */}
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <textarea
@@ -493,6 +589,12 @@ function PostModal({
           onSelect={updateSelection}
           onClick={updateSelection}
           onKeyUp={updateSelection}
+          onKeyDown={(e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && !isSubmitDisabled) {
+              e.preventDefault();
+              handleSubmit();
+            }
+          }}
           onBlur={updateSelection}
           placeholder="What do you want to talk about?"
           className="w-full resize-none border-none bg-transparent p-0 text-[16px] leading-7 text-headerColor  focus:outline-none focus:ring-0"
@@ -552,7 +654,13 @@ function PostModal({
               ) : (
                 <div
                   key={media.source || `media-${index}`}
-                  className={`relative h-auto overflow-hidden rounded-xl border border-borderColor bg-gray-50 ${
+                  className={`relative overflow-hidden rounded-xl border border-borderColor bg-gray-50 ${
+                    previewMedia.length === 1
+                      ? "max-h-72 sm:max-h-80"
+                      : previewMedia.length === 2
+                        ? "h-44 sm:h-52"
+                        : "h-32 sm:h-40"
+                  } ${
                     isError || isUpdateError ? "border-redColor" : ""
                   }`}
                 >
@@ -562,7 +670,11 @@ function PostModal({
                     width={1200}
                     height={400}
                     unoptimized
-                    className="h-full w-full object-cover"
+                    className={`w-full ${
+                      previewMedia.length === 1
+                        ? "max-h-72 sm:max-h-80 h-auto object-contain"
+                        : "h-full object-cover"
+                    }`}
                   />
                   {showOverlay && (
                     <div className="absolute inset-0 flex w-full items-center justify-center bg-black/60 text-center text-sm font-semibold text-white">
@@ -617,14 +729,15 @@ function PostModal({
           </div>
 
           <div className="flex items-center gap-3">
+            {previewMedia.length > 0 && (
+              <span className="text-xs font-medium text-grayColor1">
+                {previewMedia.length}/10
+              </span>
+            )}
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={
-                (!postText.trim() && previewMedia.length === 0) ||
-                isLoading ||
-                isUpdating
-              }
+              disabled={isSubmitDisabled}
               className="flex h-9 cursor-pointer items-center gap-2 rounded-full bg-buttonColor px-5 text-[14px] font-semibold text-white hover:bg-buttonColor/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 transition"
             >
               {isLoading || isUpdating ? (
