@@ -71,7 +71,16 @@ export const fetchWrapper = async (
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
   if (response.status === 401) {
-    console.warn("Token expired or invalid. Handle logout/refresh here.");
+    if (typeof window !== "undefined") {
+      Cookies.remove("accessToken", { path: "/" });
+      Cookies.remove("accessTokenIssuedAt", { path: "/" });
+      const pathname = window.location.pathname;
+      if (pathname !== "/login" && pathname !== "/admin/login") {
+        window.location.replace(
+          pathname.startsWith("/dashboard") ? "/admin/login" : "/login",
+        );
+      }
+    }
   }
 
   if (!response.ok) {
