@@ -46,18 +46,7 @@ export const neuroscienceFields: NeuroscienceField[] = [
     bulletPoints: [
       "Neurogenetics: The study of the genetic basis of the nervous system and inherited neurological diseases.",
       "Neurolinguistics: Investigates the neural mechanisms that control language acquisition and production.",
-    ],
-  },
-  {
-    id: "5",
-    category: "Applied Fields",
-    description: "",
-    bulletPoints: [
-      "Industrial-Organizational (I-O) Psychology: Applies psychological principles to workplace issues, such as productivity and employee morale.",
-      "Forensic Psychology: Applies psychology to legal and criminal justice systems.",
-      "Health Psychology: Looks at how biological, social, and psychological factors influence health and illness.",
-      "Sports Psychology: studies how psychology influences sports, athletic performance, exercise, and physical activity, to improve focus, develop mental toughness, increase motivation, or reduce sports-related anxiety.",
-      "School Psychology: involves working in schools to help students deal with academic, emotional, and social issues, to help create a healthy learning environment.",
+      "Neurolinguistics: Investigates the neural mechanisms that control language acquisition and production.",
     ],
   },
 ];
