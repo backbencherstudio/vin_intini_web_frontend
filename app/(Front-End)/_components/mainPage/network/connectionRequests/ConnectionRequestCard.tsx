@@ -2,7 +2,6 @@
 
 import { ConnectionRequestType } from "@/lib/type";
 import emptyImage from "@/public/empty_user.jpg";
-import { Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -105,8 +104,7 @@ function ConnectionRequestCard({
 
       <div className="flex flex-row sm:flex-col w-full sm:w-auto items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0">
         {item?.status === "accepted" && item?.connected_since ? (
-          <span className="order-1 sm:order-2 inline-flex items-center gap-1 text-[11px] font-medium text-grayColor1 whitespace-nowrap">
-            <Calendar className="h-3 w-3 opacity-70" />
+          <span className="order-1 sm:order-2 text-[11px] font-medium text-grayColor1 whitespace-nowrap">
             Connected since {item.connected_since}
           </span>
         ) : (
