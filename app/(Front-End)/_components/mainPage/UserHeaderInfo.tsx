@@ -202,8 +202,50 @@ function UserHeaderInfo() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
-        <div className="flex items-center gap-4 lg:gap-5 justify-between">
+      <div className="flex items-center gap-2 lg:gap-5 justify-end w-full">
+        <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 justify-between">
+          {isIndustry && hasCompany && userProfileData?.industry?.company?.id && (
+            <>
+              <Link
+                href={`/mu/industry-profile/${userProfileData.industry.company.id}`}
+                title="Industry Dashboard"
+                aria-label="Industry Dashboard"
+                className={`flex w-fit flex-col items-center gap-1 whitespace-nowrap text-sm transition hover:text-headerColor ${
+                  patheName.startsWith("/mu/industry-profile")
+                    ? "text-headerColor"
+                    : "text-grayColor1"
+                }`}
+              >
+                <DashboardIcon className="h-4.5 w-4.5 shrink-0" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+              <span
+                className="hidden sm:block h-7 w-px bg-gray-200"
+                aria-hidden="true"
+              />
+            </>
+          )}
+          {isPremium && (
+            <>
+              <Link
+                href="/mu/premium/publications"
+                title="Publications"
+                aria-label="Publications"
+                className={`flex w-fit flex-col items-center gap-1 whitespace-nowrap text-sm transition hover:text-headerColor ${
+                  patheName.startsWith("/mu/premium/publications")
+                    ? "text-headerColor"
+                    : "text-grayColor1"
+                }`}
+              >
+                <PublicationsMenueIcon className="h-4.5 w-4.5 shrink-0" />
+                <span className="hidden sm:inline">Publications</span>
+              </Link>
+              <span
+                className="hidden sm:block h-7 w-px bg-gray-200"
+                aria-hidden="true"
+              />
+            </>
+          )}
           <Link
             href={`/mu/notification`}
             className="relative flex justify-center items-center "

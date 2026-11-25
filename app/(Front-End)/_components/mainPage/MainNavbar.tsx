@@ -127,14 +127,14 @@ export default function MainNavbar() {
           <Image
             src={mainLogo}
             alt="Logo"
-            width={270}
+            width={240}
             height={38}
-            className="md:max-w-[270px] max-w-[180px] w-full h-auto block"
+            className="max-w-[180px] min-[1132px]:max-w-[200px] xl:max-w-[240px] w-full h-auto block"
             priority
           />
         </Link>
 
-        <nav className="hidden space-x-8 text-base min-[1132px]:flex items-center">
+        <nav className="hidden space-x-4 xl:space-x-6 text-base min-[1132px]:flex items-center">
           {mainMenuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
