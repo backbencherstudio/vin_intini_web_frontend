@@ -2,6 +2,7 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { formatNumberIntoK, getApplicationStatusConfig } from "@/lib/utils";
 import { sanitizeJobHtml } from "@/lib/jobSecurityHelpers";
 import {
@@ -36,12 +37,27 @@ function SaveJobcard({
   onViewApplication,
 }: SaveJobcardProps) {
   const [saveUserJob, { isLoading: isUnsaving }] = useSaveUserJobMutation();
+  const { data: userProfile } = useGetUserProfileQuery("user");
   const jobData = job?.job ?? job;
   const [isOpen, setIsOpen] = useState(false);
   const company = jobData?.company || jobData?.industry;
   const companyName = company?.name || "Company";
   const jobTitle = jobData?.job_title || jobData?.title || "UI/UX Designer";
   const jobId = jobData?.id || job?.id;
+
+  const currentUserId = userProfile?.user?.id;
+  const currentIndustryId = userProfile?.industry?.company?.id;
+  const jobIndustryId = company?.id ?? jobData?.industry_id;
+  const isOwnJob = Boolean(
+    jobData?.is_own_industry ||
+      job?.is_own_industry ||
+      (currentIndustryId &&
+        jobIndustryId &&
+        Number(currentIndustryId) === Number(jobIndustryId)) ||
+      (currentUserId &&
+        jobData?.created_by &&
+        Number(currentUserId) === Number(jobData.created_by)),
+  );
 
   const workMode = jobData?.work_mode || "Remote";
   const employmentType = jobData?.employment_type || "Full-time";
@@ -221,7 +237,7 @@ function SaveJobcard({
           </div>
         </div>
       )}
-      {isApply && (
+      {isApply && !isOwnJob && (
         <div className=" flex items-center gap-2 mt-4">
           {jobData?.is_applied ? (
             <ButtonReuseable
@@ -249,7 +265,7 @@ function SaveJobcard({
         </div>
       )}
 
-      <ApplyTypeModal open={isOpen} setOpen={setIsOpen} />
+      {!isOwnJob && <ApplyTypeModal open={isOpen} setOpen={setIsOpen} />}
     </div>
   );
 }

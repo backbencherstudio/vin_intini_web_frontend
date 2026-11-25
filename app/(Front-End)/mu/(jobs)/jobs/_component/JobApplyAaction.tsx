@@ -35,6 +35,12 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const hasApplied = Boolean(jobData.job_apply);
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
+  const isOwnJob = Boolean(
+    jobData?.is_own_industry ||
+      (data?.industry?.company?.id &&
+        jobData?.industry_id &&
+        Number(data.industry.company.id) === Number(jobData.industry_id)),
+  );
 
   const renderApplyAction = () => {
     // 1. If candidate ALREADY applied, always show clean "Applied" confirmation
@@ -93,6 +99,10 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
           <span>{label}</span>
         </div>
       );
+    }
+
+    if (isOwnJob) {
+      return null;
     }
 
     if (isPremiumUser) {
