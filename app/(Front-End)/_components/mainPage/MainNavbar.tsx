@@ -19,10 +19,11 @@ import {
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { cn, scrollToTop } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
+import { PublicationsMenueIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ComponentType } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
 import UserHeaderInfo from "./UserHeaderInfo";
@@ -37,7 +38,15 @@ export default function MainNavbar() {
   >(null);
 
   const user = useGetUserProfileQuery("userProfile").data;
-  const isIndustry = user?.subscription?.plan_type === "industry";
+  const hasCompany = Boolean(
+    user?.industry?.has_company || user?.industry?.company?.id,
+  );
+  const isIndustry =
+    user?.subscription?.plan_type === "industry" || hasCompany;
+  const isPremium =
+    !isIndustry &&
+    (user?.subscription?.plan_type === "premium" ||
+      Boolean(user?.subscription?.is_subscribed));
 
   useRealtimeNotifications(user?.user.id);
 
@@ -51,10 +60,31 @@ export default function MainNavbar() {
   const proIndustryMenuItems = getProIndustryMenuItems(
     user?.industry?.company?.id,
   );
-  const mobileMenuItems = mainMenuItems.filter(
-    (item) =>
-      item.slug !== "/mu/my-network/my-connection" && item.slug !== "/mu/jobs",
-  );
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    if (networkMenuItems.some((item) => pathname.startsWith(item.slug))) {
+      setOpenMobileDropdownSlug("mobile-network");
+      return;
+    }
+    if (jobsMenuItems.some((item) => pathname.startsWith(item.slug))) {
+      setOpenMobileDropdownSlug("mobile-jobs");
+      return;
+    }
+    if (proIndustryMenuItems.some((item) => pathname.startsWith(item.slug))) {
+      setOpenMobileDropdownSlug("mobile-pro-industry");
+      return;
+    }
+    if (settingsMenuItems.some((item) => pathname.startsWith(item.slug))) {
+      setOpenMobileDropdownSlug("mobile-settings");
+      return;
+    }
+    const activeDropdown = mainMenuItems.find(
+      (item) => item.isDropdown && pathname.startsWith(item.slug),
+    );
+    setOpenMobileDropdownSlug(activeDropdown ? activeDropdown.slug : null);
+  }, [menuOpen, pathname, user?.industry?.company?.id]);
 
   const renderMobileSection = (
     title: string,
@@ -76,7 +106,7 @@ export default function MainNavbar() {
           }
           className={cn(
             "flex w-full items-center justify-between gap-2 rounded-sm p-2 text-base",
-            isOpen || items.some((item) => isActive(item.slug))
+            items.some((item) => isActive(item.slug))
               ? "bg-whiteColor text-primaryColor"
               : "text-white",
           )}
@@ -101,13 +131,12 @@ export default function MainNavbar() {
                 href={item.slug}
                 className={cn(
                   "flex items-center gap-2 rounded-sm p-1.5 text-sm transition hover:bg-white hover:text-primaryColor",
-                  isActive(item.slug)
+                  pathname === item.slug
                     ? "bg-whiteColor text-primaryColor"
                     : "text-white/90",
                 )}
                 onClick={() => {
                   setMenuOpen(false);
-                  setOpenMobileDropdownSlug(null);
                 }}
               >
                 <item.icon className="h-4 w-4" />
@@ -129,7 +158,7 @@ export default function MainNavbar() {
             alt="Logo"
             width={240}
             height={38}
-            className="max-w-[180px] min-[1132px]:max-w-[200px] xl:max-w-[240px] w-full h-auto block"
+            className="max-w-[140px] sm:max-w-[180px] min-[1132px]:max-w-[200px] xl:max-w-[240px] w-full h-auto block"
             priority
           />
         </Link>
@@ -237,8 +266,8 @@ export default function MainNavbar() {
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain scrollbar-hide bg-primaryColor p-4 pb-8">
-          <div className="mb-2 flex w-full items-center justify-between">
+        <div className="absolute top-0 right-0 flex flex-col h-dvh max-h-dvh max-w-[320px] w-[80%] bg-primaryColor shadow-2xl">
+          <div className="flex w-full items-center justify-between bg-white px-4 py-3.5 border-b border-borderColor shrink-0">
             <Image
               src={mainLogo}
               alt="Logo"
@@ -248,14 +277,32 @@ export default function MainNavbar() {
             />
             <button
               aria-label="close-menu"
-              className="absolute top-4  right-4 z-10 text-white"
+              className="text-headerColor hover:opacity-75 transition cursor-pointer"
               onClick={() => setMenuOpen(false)}
             >
-              <HiX className="text-2xl text-whiteColor" />
+              <HiX className="text-2xl" />
             </button>
           </div>
+          <div className="flex-1 overflow-y-auto overscroll-contain scrollbar-hide p-4 pb-8">
+          {mainMenuItems.map((item) => {
+            if (item.slug === "/mu/my-network/my-connection") {
+              return renderMobileSection(
+                "Network",
+                "mobile-network",
+                sectionMenuIcons.network,
+                networkMenuItems,
+              );
+            }
 
-          {mobileMenuItems.map((item) => {
+            if (item.slug === "/mu/jobs") {
+              return renderMobileSection(
+                "Jobs",
+                "mobile-jobs",
+                sectionMenuIcons.jobs,
+                jobsMenuItems,
+              );
+            }
+
             const isMobileDropdownOpen = openMobileDropdownSlug === item.slug;
 
             if (item.isDropdown) {
@@ -282,11 +329,10 @@ export default function MainNavbar() {
                     <MenueArrowDownIcon
                       className={cn(
                         "h-3 w-3 transition-transform duration-200",
-                        isMobileDropdownOpen
-                          ? "rotate-180 text-primaryColor"
-                          : isActive(item.slug)
-                            ? "text-primaryColor bg-whiteColor"
-                            : "text-white",
+                        isMobileDropdownOpen ? "rotate-180" : "",
+                        isActive(item.slug)
+                          ? "text-primaryColor"
+                          : "text-white",
                       )}
                     />
                   </button>
@@ -305,7 +351,6 @@ export default function MainNavbar() {
                           )}
                           onClick={() => {
                             setMenuOpen(false);
-                            setOpenMobileDropdownSlug(null);
                           }}
                         >
                           {dropdownItem.label}
@@ -330,7 +375,6 @@ export default function MainNavbar() {
                 )}
                 onClick={() => {
                   setMenuOpen(false);
-                  setOpenMobileDropdownSlug(null);
                   if (item.slug === "/mu/home") scrollToTop();
                 }}
               >
@@ -339,21 +383,26 @@ export default function MainNavbar() {
               </Link>
             );
           })}
-          {renderMobileSection(
-            "Network",
-            "mobile-network",
-            sectionMenuIcons.network,
-            networkMenuItems,
-          )}
-          {renderMobileSection(
-            "Jobs",
-            "mobile-jobs",
-            sectionMenuIcons.jobs,
-            jobsMenuItems,
+          {isPremium && (
+            <Link
+              href="/mu/premium/publications"
+              className={cn(
+                "flex items-center gap-2 p-2 rounded-sm text-base",
+                pathname.startsWith("/mu/premium/publications")
+                  ? "text-primaryColor bg-whiteColor"
+                  : "text-white",
+              )}
+              onClick={() => {
+                setMenuOpen(false);
+              }}
+            >
+              <PublicationsMenueIcon className="h-4.5 w-4.5" />
+              Publications
+            </Link>
           )}
           {isIndustry &&
             renderMobileSection(
-              "Industry Pro",
+              "Industry Pro Dashboard",
               "mobile-pro-industry",
               sectionMenuIcons.proIndustry,
               proIndustryMenuItems,
@@ -364,6 +413,7 @@ export default function MainNavbar() {
             sectionMenuIcons.settings,
             settingsMenuItems,
           )}
+          </div>
         </div>
       </div>
     </header>
