@@ -5,12 +5,123 @@ import { PostFeedType } from "@/lib/type";
 import { formatContentForDisplay, formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import PostComment from "./PostComment";
+
+function formatDuration(seconds: number): string {
+  if (!seconds || !Number.isFinite(seconds)) return "";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function TheaterVideoPlayer({
+  src,
+  isActive,
+  initialTime = 0,
+  autoPlay = false,
+}: {
+  src: string;
+  isActive: boolean;
+  initialTime?: number;
+  autoPlay?: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasStarted, setHasStarted] = useState(
+    initialTime > 0 || autoPlay,
+  );
+  const [durationLabel, setDurationLabel] = useState("");
+  const [thumbReady, setThumbReady] = useState(false);
+
+  useEffect(() => {
+    setHasStarted(initialTime > 0 || autoPlay);
+  }, [src, initialTime, autoPlay]);
+
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (!isActive && !vid.paused) {
+      vid.pause();
+    }
+  }, [isActive]);
+
+  const handleLoadedMetadata = () => {
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    if (vid.duration && Number.isFinite(vid.duration)) {
+      setDurationLabel(formatDuration(vid.duration));
+    }
+
+    if (initialTime > 0) {
+      vid.currentTime = initialTime;
+      if (autoPlay && isActive) {
+        vid.play().catch(() => {});
+      }
+      return;
+    }
+
+    if (!hasStarted && vid.currentTime === 0 && vid.duration) {
+      vid.currentTime = Math.min(1.5, Math.max(0.2, vid.duration * 0.15));
+    }
+  };
+
+  const handleStartPlayback = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    if (!hasStarted) {
+      vid.currentTime = 0;
+      setHasStarted(true);
+    }
+    vid.play().catch(() => {});
+  };
+
+  return (
+    <div className="group/theater-video relative flex h-full w-full items-center justify-center">
+      <video
+        ref={videoRef}
+        src={src}
+        controls={hasStarted}
+        playsInline
+        preload="metadata"
+        onLoadedMetadata={handleLoadedMetadata}
+        onSeeked={() => {
+          if (!hasStarted) setThumbReady(true);
+        }}
+        onPlay={() => setHasStarted(true)}
+        className={`max-h-full max-w-full w-auto h-auto object-contain transition-opacity duration-300 ${
+          thumbReady || hasStarted ? "opacity-100" : "opacity-85"
+        }`}
+      />
+
+      {!hasStarted && (
+        <button
+          type="button"
+          onClick={handleStartPlayback}
+          aria-label="Play video"
+          className="absolute inset-0 z-10 flex items-center justify-center bg-linear-to-t from-black/55 via-black/10 to-black/20 cursor-pointer transition-colors hover:bg-black/25"
+        >
+          <span className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-white/95 text-primaryColor shadow-2xl ring-4 ring-white/25 backdrop-blur-md transition-transform duration-200 group-hover/theater-video:scale-110">
+            <Play className="h-6 w-6 sm:h-7 sm:w-7 fill-current translate-x-0.5" />
+          </span>
+
+          {durationLabel && (
+            <span className="absolute bottom-3 left-3 rounded-md bg-black/75 px-2 py-0.5 text-xs font-semibold tracking-wide text-white backdrop-blur-xs">
+              {durationLabel}
+            </span>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
 
 type PostImageShowDialogProps = {
   open: boolean;
@@ -22,6 +133,8 @@ type PostImageShowDialogProps = {
   isLiked?: boolean;
   likesCount?: number;
   onToggleLike?: () => void;
+  initialVideoTime?: number;
+  autoPlayVideo?: boolean;
 };
 
 function PostImageShowDialog({
@@ -34,9 +147,12 @@ function PostImageShowDialog({
   isLiked = false,
   likesCount = 0,
   onToggleLike,
+  initialVideoTime = 0,
+  autoPlayVideo = false,
 }: PostImageShowDialogProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(true);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -44,6 +160,17 @@ function PostImageShowDialog({
       setShowComments(true);
     }
   }, [open, post?.id]);
+
+  // Pause all videos inside the dialog whenever slide changes or dialog closes
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    stage.querySelectorAll("video").forEach((video, idx) => {
+      if (!open || idx !== activeMediaIndex) {
+        if (!video.paused) video.pause();
+      }
+    });
+  }, [open, activeMediaIndex]);
 
   const isVideo = (item: any): boolean => {
     const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi", ".mkv"];
@@ -181,6 +308,7 @@ function PostImageShowDialog({
 
         {/* Left / Top Theater Media Stage */}
         <div
+          ref={stageRef}
           className={`relative bg-[#0b0d10] flex items-center justify-center overflow-hidden select-none ${
             post
               ? "h-[40dvh] sm:h-[46dvh] shrink-0 lg:h-full lg:flex-1 lg:min-w-0"
@@ -215,11 +343,15 @@ function PostImageShowDialog({
                   className="relative flex h-full min-w-full items-center justify-center p-2 sm:p-4"
                 >
                   {isVideo(item) ? (
-                    <video
-                      src={item.url || item.file_path}
-                      controls
-                      className="max-h-full max-w-full w-auto h-auto object-contain"
-                      preload="metadata"
+                    <TheaterVideoPlayer
+                      src={item.url || item.file_path || ""}
+                      isActive={open && idx === activeMediaIndex}
+                      initialTime={
+                        idx === activeMediaIndex ? initialVideoTime : 0
+                      }
+                      autoPlay={
+                        idx === activeMediaIndex ? autoPlayVideo : false
+                      }
                     />
                   ) : (
                     <Image

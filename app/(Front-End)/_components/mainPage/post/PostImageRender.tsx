@@ -1,5 +1,6 @@
 "use client";
 import { PostFeedType } from "@/lib/type";
+import { Maximize2, Play } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import PostImageShowDialog from "./PostImageShowDialog";
@@ -15,15 +16,27 @@ interface PostImageRenderProps {
   onToggleLike?: () => void;
 }
 
-// Optimized Inline Video Component with auto-pause on scroll-out
+function formatDuration(seconds: number): string {
+  if (!seconds || !Number.isFinite(seconds)) return "";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+// Senior UI/UX Feed Video Player: real video-frame thumbnail, duration pill, frosted play button, & theater expand
 function FeedVideoPlayer({
   src,
   isSingle = false,
+  onOpenTheater,
 }: {
   src: string;
   isSingle?: boolean;
+  onOpenTheater?: (currentTime: number, wasPlaying: boolean) => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [durationLabel, setDurationLabel] = useState("");
+  const [thumbReady, setThumbReady] = useState(false);
 
   // Auto-pause video when it completely scrolls out of the viewport
   useEffect(() => {
@@ -45,6 +58,39 @@ function FeedVideoPlayer({
     return () => observer.disconnect();
   }, []);
 
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.duration && Number.isFinite(video.duration)) {
+      setDurationLabel(formatDuration(video.duration));
+      // Seek to ~1.5s (or 15% of short clips) while paused to avoid black fade-in frame at 0:00
+      if (!hasStarted && video.currentTime === 0) {
+        const previewTime = Math.min(1.5, Math.max(0.2, video.duration * 0.15));
+        video.currentTime = previewTime;
+      }
+    }
+  };
+
+  const handleSeeked = () => {
+    if (!hasStarted) {
+      setThumbReady(true);
+    }
+  };
+
+  const handleStartPlayback = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (!hasStarted) {
+      video.currentTime = 0;
+      setHasStarted(true);
+    }
+    video.play().catch(() => {});
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLVideoElement>) => {
     const video = videoRef.current;
     if (!video) return;
@@ -65,27 +111,79 @@ function FeedVideoPlayer({
     }
   };
 
+  const handleExpandClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const video = videoRef.current;
+    const currentTime = hasStarted && video ? video.currentTime : 0;
+    const wasPlaying = Boolean(video && !video.paused);
+    if (video && !video.paused) {
+      video.pause();
+    }
+    onOpenTheater?.(currentTime, wasPlaying);
+  };
+
   return (
     <div
       onClick={(e) => {
-        // Prevent click from bubbling up to any modal triggers
         e.stopPropagation();
       }}
-      className={`relative w-full overflow-hidden bg-black flex items-center justify-center ${
-        isSingle ? "min-h-auto max-h-125 h-auto" : "h-full min-h-35"
+      className={`group/video relative w-full overflow-hidden bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center ${
+        isSingle
+          ? "min-h-60 max-h-[65vh] sm:max-h-125 h-auto"
+          : "h-full min-h-35"
       }`}
     >
       <video
         ref={videoRef}
         src={src}
-        controls
+        controls={hasStarted}
         playsInline
         preload="metadata"
+        onLoadedMetadata={handleLoadedMetadata}
+        onSeeked={handleSeeked}
+        onPlay={() => setHasStarted(true)}
         onKeyDown={handleKeyDown}
-        className={`w-full outline-hidden ${
-          isSingle ? "max-h-125 object-contain" : "h-full object-cover"
+        className={`w-full outline-hidden transition-opacity duration-300 ${
+          thumbReady || hasStarted ? "opacity-100" : "opacity-85"
+        } ${
+          isSingle
+            ? "max-h-[65vh] sm:max-h-125 object-contain"
+            : "h-full object-cover"
         }`}
       />
+
+      {/* Sleek Thumbnail Overlay before first play */}
+      {!hasStarted && (
+        <button
+          type="button"
+          onClick={handleStartPlayback}
+          aria-label="Play video"
+          className="absolute inset-0 z-10 flex items-center justify-center bg-linear-to-t from-black/55 via-black/10 to-black/20 cursor-pointer transition-colors hover:bg-black/25"
+        >
+          <span className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-white/95 text-primaryColor shadow-2xl ring-4 ring-white/25 backdrop-blur-md transition-transform duration-200 group-hover/video:scale-110">
+            <Play className="h-6 w-6 sm:h-7 sm:w-7 fill-current translate-x-0.5" />
+          </span>
+
+          {durationLabel && (
+            <span className="absolute bottom-3 left-3 rounded-md bg-black/75 px-2 py-0.5 text-xs font-semibold tracking-wide text-white backdrop-blur-xs">
+              {durationLabel}
+            </span>
+          )}
+        </button>
+      )}
+
+      {onOpenTheater && (
+        <button
+          type="button"
+          onClick={handleExpandClick}
+          title="Open theater view"
+          aria-label="Open video in theater view"
+          className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-xs border border-white/15 opacity-95 sm:opacity-0 sm:group-hover/video:opacity-100 transition-opacity hover:bg-black/80 cursor-pointer"
+        >
+          <Maximize2 className="h-3.5 w-3.5" />
+        </button>
+      )}
     </div>
   );
 }
@@ -100,6 +198,8 @@ function PostImageRender({
 }: PostImageRenderProps) {
   const [isMediaViewerOpen, setIsMediaViewerOpen] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const [initialVideoTime, setInitialVideoTime] = useState(0);
+  const [shouldAutoPlayVideo, setShouldAutoPlayVideo] = useState(false);
 
   // Global listener: ensure only 1 video plays at a time across the page
   useEffect(() => {
@@ -131,7 +231,17 @@ function PostImageRender({
     );
   };
 
-  const openMediaViewer = (index: number) => {
+  const openMediaViewer = (
+    index: number,
+    currentTime = 0,
+    wasPlaying = false,
+  ) => {
+    // Pause any playing feed videos before opening the theater viewer
+    document.querySelectorAll("video").forEach((video) => {
+      if (!video.paused) video.pause();
+    });
+    setInitialVideoTime(currentTime);
+    setShouldAutoPlayVideo(wasPlaying);
     setActiveMediaIndex(index);
     setIsMediaViewerOpen(true);
   };
@@ -201,14 +311,20 @@ function PostImageRender({
       );
     }
 
-    // Single video tile: play inline, no dialog popup
+    // Multi-media video tile: play inline or expand to theater viewer
     if (isVid) {
       return (
         <div
           key={item.id ?? `${item.url}-${index}`}
           className={`relative overflow-hidden flex-1 w-full bg-black ${className}`}
         >
-          <FeedVideoPlayer src={mediaUrl} isSingle={false} />
+          <FeedVideoPlayer
+            src={mediaUrl}
+            isSingle={false}
+            onOpenTheater={(time, playing) =>
+              openMediaViewer(index, time, playing)
+            }
+          />
         </div>
       );
     }
@@ -242,6 +358,9 @@ function PostImageRender({
               <FeedVideoPlayer
                 src={mediaItems[0].url || mediaItems[0].file_path || ""}
                 isSingle={true}
+                onOpenTheater={(time, playing) =>
+                  openMediaViewer(0, time, playing)
+                }
               />
             </div>
           ) : (
@@ -265,6 +384,9 @@ function PostImageRender({
                   <FeedVideoPlayer
                     src={item.url || item.file_path || ""}
                     isSingle={false}
+                    onOpenTheater={(time, playing) =>
+                      openMediaViewer(index, time, playing)
+                    }
                   />
                 </div>
               ) : (
@@ -287,6 +409,9 @@ function PostImageRender({
                 <FeedVideoPlayer
                   src={mediaItems[0].url || mediaItems[0].file_path || ""}
                   isSingle={false}
+                  onOpenTheater={(time, playing) =>
+                    openMediaViewer(0, time, playing)
+                  }
                 />
               </div>
             ) : (
@@ -325,6 +450,8 @@ function PostImageRender({
         isLiked={isLiked}
         likesCount={likesCount}
         onToggleLike={onToggleLike}
+        initialVideoTime={initialVideoTime}
+        autoPlayVideo={shouldAutoPlayVideo}
       />
     </div>
   );
