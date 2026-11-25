@@ -42,6 +42,8 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [skillsList, setSkillsList] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
 
   // 1. Fetch Job Details
   const { data: jobData, isLoading: isJobLoading } = useGetJobDetailsQuery(
@@ -117,12 +119,18 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
         setValue("aboutYourself", user.about || user.bio || "");
       }
       if (user.skills) {
-        const skillsStr = Array.isArray(user.skills)
+        const parsedSkills: string[] = Array.isArray(user.skills)
           ? user.skills
-              .map((s: any) => (typeof s === "string" ? s : s.name))
-              .join(", ")
-          : user.skills;
-        setValue("skills", skillsStr);
+              .map((s: any) =>
+                (typeof s === "string" ? s : s?.name || "").trim(),
+              )
+              .filter(Boolean)
+          : String(user.skills)
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean);
+        setSkillsList(parsedSkills);
+        setValue("skills", parsedSkills.join(", "));
       }
     }
   }, [user, setValue]);
@@ -155,8 +163,45 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
     }
   };
 
+  const addSkillTag = (raw: string) => {
+    const cleaned = raw.replace(/,/g, "").trim();
+    if (!cleaned) return;
+    setSkillsList((prev) => {
+      if (prev.some((s) => s.toLowerCase() === cleaned.toLowerCase())) {
+        return prev;
+      }
+      const next = [...prev, cleaned];
+      setValue("skills", next.join(", "));
+      return next;
+    });
+    setSkillInput("");
+  };
+
+  const removeSkillTag = (indexToRemove: number) => {
+    setSkillsList((prev) => {
+      const next = prev.filter((_, idx) => idx !== indexToRemove);
+      setValue("skills", next.join(", "));
+      return next;
+    });
+  };
+
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addSkillTag(skillInput);
+    } else if (e.key === "Backspace" && !skillInput && skillsList.length > 0) {
+      removeSkillTag(skillsList.length - 1);
+    }
+  };
+
   const onSubmit = async (values: CustomApplyFormValues) => {
     try {
+      const pendingSkill = skillInput.replace(/,/g, "").trim();
+      const finalSkills = pendingSkill &&
+        !skillsList.some((s) => s.toLowerCase() === pendingSkill.toLowerCase())
+        ? [...skillsList, pendingSkill]
+        : skillsList;
+
       const formData = new FormData();
       formData.append("application_type", "custom");
       formData.append("full_name", values.fullName || "");
@@ -170,7 +215,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
       formData.append("portfolio_url", values.portfolioUrl || "");
       formData.append("cover_letter", values.coverLetter || "");
       formData.append("about_yourself", values.aboutYourself || "");
-      formData.append("skills", values.skills || "");
+      formData.append("skills", finalSkills.join(", ") || values.skills || "");
       if (values.resume) {
         formData.append("resume", values.resume);
       }
@@ -337,10 +382,10 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
               )}
             </div>
 
-            {/* Row 7: Tell us about your self (JoditEditor) */}
+            {/* Row 7: Tell us about yourself (JoditEditor) */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-descriptionColor block">
-                Tell us about your self
+                Tell us about yourself
               </label>
               <Controller
                 name="aboutYourself"
@@ -362,14 +407,53 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
             </div>
 
             {/* Row 8: Add your skills */}
-            <ReusableInput
-              id="skills"
-              label="Add your skills"
-              placeholder="Enter your skills separated by comma (,)."
-              error={errors.skills?.message}
-              {...register("skills")}
-              className="rounded-lg h-11! md:h-12!"
-            />
+            <div className="space-y-1.5">
+              <label
+                htmlFor="skills-tag-input"
+                className="text-sm font-medium text-descriptionColor block"
+              >
+                Add your skills
+              </label>
+              <div className="flex flex-wrap items-center gap-2 min-h-[44px] md:min-h-[48px] w-full rounded-lg border border-borderColor bg-white px-3 py-2 focus-within:border-primaryColor transition-colors">
+                {skillsList.map((skill, index) => (
+                  <span
+                    key={`${skill}-${index}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-primaryColor/25 bg-primaryColor/10 px-3 py-1 text-xs font-medium text-primaryColor"
+                  >
+                    <span>{skill}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeSkillTag(index)}
+                      aria-label={`Remove ${skill}`}
+                      className="rounded-full p-0.5 text-primaryColor/80 hover:bg-primaryColor/20 hover:text-primaryColor transition cursor-pointer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  id="skills-tag-input"
+                  type="text"
+                  value={skillInput}
+                  onChange={(e) => setSkillInput(e.target.value)}
+                  onKeyDown={handleSkillKeyDown}
+                  onBlur={() => {
+                    if (skillInput.trim()) addSkillTag(skillInput);
+                  }}
+                  placeholder={
+                    skillsList.length === 0
+                      ? "Type a skill and press Enter"
+                      : "Add another skill..."
+                  }
+                  className="flex-1 min-w-[160px] bg-transparent text-sm text-headerColor placeholder:text-grayColor1 focus:outline-none"
+                />
+              </div>
+              {errors.skills && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.skills.message}
+                </p>
+              )}
+            </div>
 
             {/* Row 9: Upload Resume/Curriculum Vitae * */}
             <div className="space-y-1.5">

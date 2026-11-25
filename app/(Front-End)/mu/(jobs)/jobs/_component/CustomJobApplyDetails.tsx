@@ -10,12 +10,37 @@ interface CustomJobApplyDetailsProps {
   job: any;
 }
 
+const formatJobEnumLabel = (value: string | undefined, fallback: string) => {
+  if (!value) return fallback;
+  const normalized = value.trim().toLowerCase();
+  const knownLabels: Record<string, string> = {
+    full_time: "Full-Time",
+    part_time: "Part-Time",
+    on_site: "On-Site",
+    onsite: "On-Site",
+    remote: "Remote",
+    hybrid: "Hybrid",
+    contract: "Contract",
+    internship: "Internship",
+    freelance: "Freelance",
+  };
+  if (knownLabels[normalized]) return knownLabels[normalized];
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
   const companyName = job?.industry?.name || "Betopia Group Limited";
   const jobLocation =
     [job?.city?.name, job?.state?.name].filter(Boolean).join(", ") ||
     "Dhaka, Bangladesh";
   const jobTitle = job?.job_title || "UI/UX Designer";
+  const employmentTypeLabel = formatJobEnumLabel(
+    job?.employment_type,
+    "Full-Time",
+  );
+  const workModeLabel = formatJobEnumLabel(job?.work_mode, "On-Site");
   const isNegotiable =
     job?.salary_type?.toLowerCase() === "negotiable" ||
     (!job?.salary_min && !job?.salary_max);
@@ -56,8 +81,7 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
               {jobTitle}
             </h3>
             <p className="text-xs text-white/80">
-              {job?.employment_type || "Full-Time"} •{" "}
-              {job?.work_mode || "On-Site"}
+              {employmentTypeLabel} • {workModeLabel}
             </p>
           </div>
         </div>
@@ -98,13 +122,13 @@ function CustomJobApplyDetails({ job }: CustomJobApplyDetailsProps) {
         <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Job Type</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
-            {job?.employment_type || "Full-Time"}
+            {employmentTypeLabel}
           </p>
         </div>
         <div className="bg-bgLightColor border border-borderColor rounded-xl p-3 text-center">
           <p className="text-xs text-grayColor1">Work Type</p>
           <p className="text-sm sm:text-base font-bold text-headerColor mt-0.5">
-            {job?.work_mode || "On-Site"}
+            {workModeLabel}
           </p>
         </div>
       </div>
