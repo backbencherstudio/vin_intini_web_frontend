@@ -16,7 +16,7 @@ export default function HowWeWork() {
                             </div>
                             <p className="w-full max-w-[364px] text-[#404040] text-base font-normal leading-[150%] tracking-[0.08px]">Discover programs, connect with professionals, & grow your career in one focused platform.</p>
                         </div>
-                        <JoinButton title="Join Now It’s Free"/>
+                        <JoinButton title="Join Now It’s Free" redirectUrl="/sign-up" />
                     </div>
                     <div className="pl-6 lg:pl-0">
                         {howWeWorkSteps.map((step, index) => (

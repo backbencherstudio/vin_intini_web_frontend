@@ -24,11 +24,11 @@ export default function Hero() {
                 </p>
               </div>
               <h1 className="text-black text-[32px] sm:text-[48px] xl:text-[56px] font-semibold leading-[120%] tracking-[-0.56px]">
-                <p>Connect, Grow, &</p>
+                <p>Connect, Grow, and</p>
                 <p>
-                  <span className="thrive">Thrive</span> in Psychology
+                  <span className="thrive">Thrive</span> in the Brain
                 </p>
-                <p>& Neuroscience</p>
+                <p>Health Sciences</p>
               </h1>
               <p className="text-sm sm:text-lg text-[#404040] font-normal leading-[160%] tracking-[-0.5px]">
                 A professional networking platform designed exclusively for

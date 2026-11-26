@@ -18,7 +18,7 @@ export default function Footer() {
     >
       <div className=" text-white py-12 bg-[#ffffff7a] backdrop-blur-xs lg:bg-transparent lg:backdrop-blur-none">
         <div className="flex flex-col sm:flex-row items-start justify-between pb-4 ">
-          <Image src={logo} alt="Logo" width={270} height={38} className="h-auto w-full max-w-[260px] block" />
+          <Image src={logo} alt="Logo" width={310} height={44} className="h-auto w-full max-w-[260px] sm:max-w-[300px] block" />
           <div className="flex flex-col items-center sm:items-start space-y-2 w-80 ">
             <p className="text-center sm:text-start sm:pt-4 text-[#404040] text-lg lg:text-xl 2xl:text-2xl font-light leading-[130%] tracking-[0.12px]  w-full h-60">
               The networking platform for brain health professionals and
@@ -37,7 +37,7 @@ export default function Footer() {
             <div className="flex flex-col md:flex-row  items-center gap-1.5">
               <p className="sm:text-right text-center text-sm text-liteDescriptionColor hidden md:block">
                 {" "}
-                © {new Date().getFullYear()} Mind Unite, All right
+                © {new Date().getFullYear()} Mind Unite, All Rights
                 Reserved.{" "}
               </p>
 
@@ -46,14 +46,14 @@ export default function Footer() {
                   href="/terms-conditions"
                   className=" text-sm font-normal text-[#4A4C56]"
                 >
-                  Terms & condition
+                  Terms & Conditions
                 </Link>
                 <hr className="h-5 border-[#4A4C56] border w-0.5" />
                 <Link
                   href="/privacy-policy"
                   className=" text-sm font-normal text-[#4A4C56]"
                 >
-                  Privecy Policy
+                  Privacy Policy
                 </Link>
               </div>
             </div>

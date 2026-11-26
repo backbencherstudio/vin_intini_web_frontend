@@ -145,7 +145,7 @@ function RegistrationForm() {
                 By clicking <span className="font-medium">Join Now</span>, you
                 agree to the <span className="font-medium">MindUnite</span>{" "}
                 <Link href={"/terms-conditions"} className="text-primaryColor">
-                  Terms & Condition
+                  Terms & Conditions
                 </Link>{" "}
                 &{" "}
                 <Link href={"/privacy-policy"} className="text-primaryColor">
