@@ -268,48 +268,50 @@ export default function CreatePlan({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <CustomInput
-                label="Discount %"
-                type="number"
-                placeholder="0%"
-                value={formData.discount}
-                onChange={(e) => handleChange("discount", e.target.value)}
-              />
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-[#344054]">
-                  Badge Color
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={
-                      /^#[0-9A-Fa-f]{6}$/.test(formData.badgeColor)
-                        ? formData.badgeColor
-                        : "#04A1B7"
-                    }
-                    onChange={(e) => handleChange("badgeColor", e.target.value)}
-                    aria-label="Choose badge color"
-                    className="h-10 w-11 shrink-0 cursor-pointer rounded-lg border border-[#D0D5DD] bg-white p-1"
-                  />
-                  <CustomInput
-                    value={formData.badgeColor}
-                    onChange={(e) => handleChange("badgeColor", e.target.value)}
-                    placeholder="#04A1B7"
-                  />
+            <div className="space-y-4 rounded-xl border border-[#CBEFF4] bg-[#F2FBFD] p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <CustomInput
+                  label="Discount %"
+                  type="number"
+                  placeholder="0%"
+                  value={formData.discount}
+                  onChange={(e) => handleChange("discount", e.target.value)}
+                />
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium text-[#344054]">
+                    Badge Color
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={
+                        /^#[0-9A-Fa-f]{6}$/.test(formData.badgeColor)
+                          ? formData.badgeColor
+                          : "#04A1B7"
+                      }
+                      onChange={(e) => handleChange("badgeColor", e.target.value)}
+                      aria-label="Choose badge color"
+                      className="h-10 w-11 shrink-0 cursor-pointer rounded-lg border border-[#D0D5DD] bg-white p-1"
+                    />
+                    <CustomInput
+                      value={formData.badgeColor}
+                      onChange={(e) => handleChange("badgeColor", e.target.value)}
+                      placeholder="#04A1B7"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <DatePicker
-              label="Discount Duration"
-              date={date}
-              setDate={setDate}
-              placeholder="Select date"
-            />
-            <p className="-mt-3 text-xs text-[#777980]">
-              Note: Discounts apply to Web (Stripe) first-cycle checkout automatically. For mobile in-app purchases, update App Store / Google Play promo pricing to match.
-            </p>
+              <DatePicker
+                label="Discount Duration"
+                date={date}
+                setDate={setDate}
+                placeholder="Select date"
+              />
+              <p className="-mt-1 text-xs text-[#516770]">
+                Note: Discounts apply to Web (Stripe) first-cycle checkout automatically. For mobile in-app purchases, update App Store / Google Play promo pricing to match.
+              </p>
+            </div>
 
             <div className="space-y-5 border-t border-[#E1E4EA] pt-5">
               <CustomInput
