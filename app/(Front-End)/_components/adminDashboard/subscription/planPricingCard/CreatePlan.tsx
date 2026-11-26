@@ -206,18 +206,27 @@ export default function CreatePlan({
                 </p>
               </div>
 
-              {/* Plan Type Radio Buttons */}
-              <div className="text-right">
-                <CustomRadioButton
-                  label="Plan Type"
-                  value={planType}
-                  onChange={handlePlanTypeChange}
-                  options={[
-                    { label: "Premium", value: "premium" },
-                    { label: "Industry", value: "industry" },
-                  ]}
-                  className="justify-end"
-                />
+              {/* Plan Type Toggle */}
+              <div className="flex flex-col items-end gap-1.5">
+                <span className="text-xs font-medium text-[#4A4C56]">
+                  Plan Type
+                </span>
+                <div className="inline-flex h-9 items-center rounded-lg border border-[#E1E4EA] bg-gray-50 p-1">
+                  {(["premium", "industry"] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => handlePlanTypeChange(type)}
+                      className={`h-7 cursor-pointer rounded-md px-3 text-xs font-semibold capitalize transition ${
+                        planType === type
+                          ? "bg-primaryColor text-white shadow-xs"
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -267,20 +276,26 @@ export default function CreatePlan({
                 value={formData.discount}
                 onChange={(e) => handleChange("discount", e.target.value)}
               />
-              <div>
-                <div className="flex items-center gap-2 relative mt-">
-                  <CustomInput
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-[#344054]">
+                  Badge Color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
                     type="color"
-                    value={formData.badgeColor}
+                    value={
+                      /^#[0-9A-Fa-f]{6}$/.test(formData.badgeColor)
+                        ? formData.badgeColor
+                        : "#04A1B7"
+                    }
                     onChange={(e) => handleChange("badgeColor", e.target.value)}
                     aria-label="Choose badge color"
-                    className="absolute left-2 mt-7 h-10 w-12 cursor-pointer rounded p-1"
+                    className="h-10 w-11 shrink-0 cursor-pointer rounded-lg border border-[#D0D5DD] bg-white p-1"
                   />
                   <CustomInput
-                    label="Badge Color"
                     value={formData.badgeColor}
                     onChange={(e) => handleChange("badgeColor", e.target.value)}
-                    className="ps-16"
+                    placeholder="#04A1B7"
                   />
                 </div>
               </div>
@@ -292,6 +307,9 @@ export default function CreatePlan({
               setDate={setDate}
               placeholder="Select date"
             />
+            <p className="-mt-3 text-xs text-[#777980]">
+              Note: Discounts apply to Web (Stripe) first-cycle checkout automatically. For mobile in-app purchases, update App Store / Google Play promo pricing to match.
+            </p>
 
             <div className="space-y-5 border-t border-[#E1E4EA] pt-5">
               <CustomInput

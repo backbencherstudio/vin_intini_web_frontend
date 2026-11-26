@@ -233,50 +233,98 @@ export default function SubscriptionOtpPayment({
           <div className="w-full h-px bg-borderColor mb-6" />
 
           {/* Plan Info */}
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <p className="text-base lg:text-lg font-bold text-headerColor">
-                {planDetails?.name || "Premium Individual"}
-              </p>
-              <p className="text-sm md:text-base text-grayColor1 mt-0.5">
-                Unlimited Access
-              </p>
-            </div>
-            <span className="text-sm font-semibold text-headerColor">
-              ${planDetails?.billing_rate || "6.99"}
-            </span>
-          </div>
+          {(() => {
+            const finalPrice = Number(planDetails?.billing_rate || 0);
+            const originalPrice = Number(
+              planDetails?.original_billing_rate || finalPrice,
+            );
+            const discountPercent = Number(planDetails?.discount_percent || 0);
+            const hasDiscount =
+              discountPercent > 0 && originalPrice > finalPrice;
+            const discountAmount = hasDiscount
+              ? (originalPrice - finalPrice).toFixed(2)
+              : "0.00";
 
-          <div className="w-full h-px bg-borderColor mb-6" />
+            return (
+              <>
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <p className="text-base lg:text-lg font-bold text-headerColor">
+                      {planDetails?.name || "Premium Individual"}
+                    </p>
+                    <p className="text-sm md:text-base text-grayColor1 mt-0.5">
+                      Unlimited Access
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-semibold text-headerColor">
+                      ${planDetails?.billing_rate || "6.99"}
+                    </span>
+                    {hasDiscount && (
+                      <p className="text-xs text-gray-400 line-through">
+                        ${originalPrice.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          {/* Subtotal & VAT */}
-          <div className="space-y-3 mb-6">
-            <div className="flex justify-between text-sm">
-              <span className="font-semibold text-headerColor">Subtotal</span>
-              <span className="font-semibold text-headerColor">
-                ${planDetails?.billing_rate || "6.99"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="font-semibold text-headerColor">VAT</span>
-              <span className="font-semibold text-headerColor">$0.00</span>
-            </div>
-          </div>
+                <div className="w-full h-px bg-borderColor mb-6" />
 
-          <div className="w-full h-px bg-borderColor mb-6" />
+                {/* Subtotal, Discount & VAT */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-semibold text-headerColor">
+                      {hasDiscount ? "Regular Price" : "Subtotal"}
+                    </span>
+                    <span className="font-semibold text-headerColor">
+                      $
+                      {hasDiscount
+                        ? originalPrice.toFixed(2)
+                        : planDetails?.billing_rate || "6.99"}
+                    </span>
+                  </div>
+                  {hasDiscount && (
+                    <div className="flex justify-between text-sm">
+                      <span className="font-semibold text-emerald-600">
+                        Discount ({discountPercent}%)
+                      </span>
+                      <span className="font-semibold text-emerald-600">
+                        -${discountAmount}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm">
+                    <span className="font-semibold text-headerColor">VAT</span>
+                    <span className="font-semibold text-headerColor">$0.00</span>
+                  </div>
+                </div>
 
-          {/* Total */}
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-semibold text-headerColor">Total</p>
-              <p className="text-sm text-grayColor1 mt-0.5">
-                Including $0.00 in taxes
-              </p>
-            </div>
-            <span className="text-2xl font-bold text-headerColor">
-              ${planDetails?.billing_rate || "6.99"}
-            </span>
-          </div>
+                <div className="w-full h-px bg-borderColor mb-6" />
+
+                {/* Total */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-semibold text-headerColor">
+                      Total
+                    </p>
+                    <p className="text-sm text-grayColor1 mt-0.5">
+                      Including $0.00 in taxes
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-headerColor">
+                      ${planDetails?.billing_rate || "6.99"}
+                    </span>
+                    {hasDiscount && (
+                      <p className="text-xs font-medium text-emerald-600">
+                        You save ${discountAmount}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 

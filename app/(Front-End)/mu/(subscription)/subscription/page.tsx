@@ -18,7 +18,7 @@ async function Page({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          next: { revalidate: 3600 },
+          cache: "no-store",
         },
       );
 

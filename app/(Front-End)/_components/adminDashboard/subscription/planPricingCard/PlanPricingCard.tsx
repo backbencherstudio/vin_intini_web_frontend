@@ -143,12 +143,22 @@ export default function PlanPricingCard() {
 
   const getDiscountPercent = (plan: Plan) => Number(plan.discount_percent) || 0;
 
-  const getOriginalPrice = (plan: Plan) => {
+  const isDiscountActive = (plan: Plan) => {
     const discount = getDiscountPercent(plan);
-    const current = parseRate(plan.billing_rate);
-    if (discount <= 0 || discount >= 100 || !current) return null;
-    const original = current / (1 - discount / 100);
-    return Number.isInteger(original) ? String(original) : original.toFixed(2);
+    if (discount <= 0 || discount >= 100) return false;
+    if (!plan.discount_duration) return true;
+    const end = new Date(plan.discount_duration);
+    if (Number.isNaN(end.getTime())) return true;
+    end.setHours(23, 59, 59, 999);
+    return end.getTime() >= Date.now();
+  };
+
+  const getEffectivePrice = (plan: Plan) => {
+    const base = parseRate(plan.billing_rate);
+    if (!isDiscountActive(plan)) return formatPrice(plan.billing_rate);
+    const discount = getDiscountPercent(plan);
+    const discounted = Math.max(0, Math.round(base * (1 - discount / 100) * 100) / 100);
+    return Number.isInteger(discounted) ? String(discounted) : discounted.toFixed(2);
   };
 
   const commitOrder = async (nextCycleIds: number[]) => {
@@ -362,7 +372,11 @@ export default function PlanPricingCard() {
             <div className="grid grid-cols-1 gap-6 pt-2 md:grid-cols-2 xl:grid-cols-3">
               {visiblePlans.map((plan, index) => {
                 const discount = getDiscountPercent(plan);
-                const originalPrice = getOriginalPrice(plan);
+                const hasDiscount = isDiscountActive(plan);
+                const effectivePrice = getEffectivePrice(plan);
+                const originalPrice = hasDiscount
+                  ? formatPrice(plan.billing_rate)
+                  : null;
                 const features = plan.features ?? [];
                 const featureSet = new Set(features);
                 const includedFeatures =
@@ -427,7 +441,15 @@ export default function PlanPricingCard() {
                     } ${isDragging ? "scale-[0.98] opacity-50" : ""}`}
                   >
                     {discount > 0 && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-primaryColor px-3.5 py-0.5 text-xs font-bold leading-[160%] text-white shadow-xs">
+                      <div
+                        className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primaryColor px-3.5 py-0.5 text-xs font-bold leading-[160%] text-white shadow-xs"
+                        style={
+                          plan.badge_color &&
+                          /^#[0-9A-Fa-f]{6}$/.test(plan.badge_color)
+                            ? { backgroundColor: plan.badge_color }
+                            : undefined
+                        }
+                      >
                         Save {discount}%
                       </div>
                     )}
@@ -476,7 +498,7 @@ export default function PlanPricingCard() {
                       {/* Price */}
                       <div className="mt-3 flex items-end gap-2">
                         <span className="text-4xl font-extrabold text-[#170F49]">
-                          ${formatPrice(plan.billing_rate)}
+                          ${effectivePrice}
                         </span>
                         <span className="pb-1 text-xs font-medium text-[#A0A3BD]">
                           Per user /{" "}
@@ -486,7 +508,7 @@ export default function PlanPricingCard() {
                         </span>
                       </div>
 
-                      {discount > 0 && (
+                      {hasDiscount && (
                         <p className="mt-1 text-xs text-[#94A3B8]">
                           {originalPrice && (
                             <span className="line-through">
@@ -709,11 +731,17 @@ export default function PlanPricingCard() {
                         </span>
                       </td>
                       <td className="px-4 py-3 align-middle font-medium text-gray-800">
-                        ${formatPrice(plan.billing_rate)}
-                        <span className="text-xs font-normal text-gray-500">
-                          {" "}
-                          / {plan.billing_cycle === "yearly" ? "year" : "month"}
-                        </span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span>${getEffectivePrice(plan)}</span>
+                          {isDiscountActive(plan) && (
+                            <span className="text-xs font-normal text-gray-400 line-through">
+                              ${formatPrice(plan.billing_rate)}
+                            </span>
+                          )}
+                          <span className="text-xs font-normal text-gray-500">
+                            / {plan.billing_cycle === "yearly" ? "year" : "month"}
+                          </span>
+                        </div>
                       </td>
                       <td className="px-4 py-3 align-middle font-medium text-gray-700">
                         {plan.total_subscribers ?? plan.subscribers ?? 0}
