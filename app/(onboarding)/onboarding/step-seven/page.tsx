@@ -2,6 +2,7 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import { Switch } from "@/components/ui/switch";
+import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetSuggestionGroupsQuery } from "@/feature/slice/group/groupSlice";
 import { useProfileSetupMutation } from "@/feature/slice/user/userSlice";
 import {
@@ -15,7 +16,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import OnboardingWrapper from "../../_component/OnboardingWrapper";
 
 type ProfileImageDraft = {
@@ -96,6 +97,7 @@ const resolveProfileImageFile = async (
 
 function Page() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const stepSixData = useSelector((state: any) => state.onboarding.formData);
 
@@ -193,8 +195,9 @@ function Page() {
       }
 
       const result = await profileSetup(formData).unwrap();
+      dispatch(onboardingReset());
       toast.success(result?.message || "Profile setup completed successfully!");
-      router.push(`/mu/home`);
+      router.replace(`/mu/home`);
     } catch (error) {
       console.error("Profile setup failed:", error);
       toast.error("Failed to complete profile setup. Please try again.");

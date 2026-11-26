@@ -235,9 +235,44 @@ export async function middleware(request: NextRequest) {
   }
 
   // -------------------------------------------------------------
+  // ONBOARDING ROUTES GUARD (/onboarding, /onboarding/*)
+  // -------------------------------------------------------------
+  if (pathname === "/onboarding" || pathname.startsWith("/onboarding/")) {
+    if (!isValidToken) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    if (isAdmin) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    try {
+      const meRes = await fetch(`${API_BASE_URL}/me`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          Accept: "application/json",
+        },
+        cache: "no-store",
+      });
+
+      if (meRes.ok) {
+        const meData = await meRes.json();
+        if (meData?.is_onboarding === true) {
+          return NextResponse.redirect(new URL("/mu/home", request.url));
+        }
+      }
+    } catch {
+      // Fallback to client-side onboarding guard if /me check fails transiently
+    }
+
+    return createNextResponse();
+  }
+
+  // -------------------------------------------------------------
   // CATCH-ALL UNPROTECTED PRIVATE ROUTES
   // -------------------------------------------------------------
-  if (!isValidToken && !isPublicPath && !pathname.startsWith("/onboarding")) {
+  if (!isValidToken && !isPublicPath) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

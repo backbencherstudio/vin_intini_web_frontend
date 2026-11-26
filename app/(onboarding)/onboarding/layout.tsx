@@ -1,6 +1,7 @@
 "use client";
 
 import { goToPreviousStep } from "@/feature/slice/onboarding/onboardingSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 
@@ -35,16 +36,29 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
   const currentStep = useSelector(
     (state: any) => state.onboarding.currentStep || 1,
   );
+  const { data: userProfile, isLoading: isProfileLoading } =
+    useGetUserProfileQuery("user");
+  const isOnboarded = Boolean(userProfile?.is_onboarding);
+  const requiredStep = pathStepMap[pathname];
+  const isStepOutOfOrder = Boolean(requiredStep && requiredStep > currentStep);
 
   useEffect(() => {
-    const requiredStep = pathStepMap[pathname];
+    if (isOnboarded) {
+      router.replace("/mu/home");
+      return;
+    }
+
     if (!requiredStep) return;
 
     if (requiredStep > currentStep) {
       const fallbackPath = stepPathMap[currentStep] || "/onboarding";
       router.replace(fallbackPath);
     }
-  }, [pathname, currentStep, router]);
+  }, [isOnboarded, pathname, requiredStep, currentStep, router]);
+
+  if (isProfileLoading || isOnboarded || isStepOutOfOrder) {
+    return null;
+  }
   const handleRouteChange = () => {
     dispatch(goToPreviousStep());
   };
