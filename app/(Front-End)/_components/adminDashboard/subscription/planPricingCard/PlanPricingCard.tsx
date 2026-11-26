@@ -98,7 +98,7 @@ export default function PlanPricingCard() {
     <div className="">
       <div className="mb-8">
         <CustomTitleDescription
-          title="Plan & Pricing"
+          title="Plans & Pricing"
           description="Create and manage subscription plans, pricing, and features."
           action={
             <Link
@@ -121,7 +121,7 @@ export default function PlanPricingCard() {
                 : "text-[#170F49]"
             }`}
           >
-            Monthly billing
+            Monthly Billing
           </button>
 
           <button
@@ -132,7 +132,7 @@ export default function PlanPricingCard() {
                 : "text-[#170F49]"
             }`}
           >
-            Annually billing
+            Annual Billing
           </button>
         </div>
       </div>

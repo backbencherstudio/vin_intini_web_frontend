@@ -336,7 +336,7 @@ export default function AdvertisementTable({
         {/* Toolbar Header */}
         <div className="border-b border-[#E5E7EB] p-5">
           <CustomTitleDescription
-            title="Boost Package & Pricing"
+            title="Boost Packages & Pricing"
             description="Live preview of how advertisers see boost packages. Create, edit, or toggle availability."
             action={
               <div className="flex w-full flex-wrap items-center justify-end gap-2">

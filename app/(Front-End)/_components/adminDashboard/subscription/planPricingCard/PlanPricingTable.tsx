@@ -159,7 +159,7 @@ export default function PlanPricingTable() {
         <div>
             <div className="mb-6">
                 <CustomTitleDescription
-                    title="Plan Pricing"
+                    title="Plans & Pricing"
                     description="Manage your subscription plans and pricing."
                     action={<div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
                     <div className="relative w-full sm:w-80">

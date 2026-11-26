@@ -230,11 +230,11 @@ export default function CreatePlan({
             />
 
             <CustomTextArea
-              label="Short Description (Max 150 characters)"
+              label="Short Description (Max 250 characters)"
               placeholder="Brief description about this plan..."
               value={formData.shortDescription}
               onChange={(e) => handleChange("shortDescription", e.target.value)}
-              maxLength={150}
+              maxLength={250}
               rows={3}
             />
 

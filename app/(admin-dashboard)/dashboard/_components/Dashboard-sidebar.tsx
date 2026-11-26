@@ -92,7 +92,7 @@ export const SidebarData: SidebarItem[] = [
       },
       {
         id: "plan-pricing",
-        name: "Plan and Pricing",
+        name: "Plans & Pricing",
         href: "/dashboard/subscription/plan-pricing",
         icon: SubPlanIcon,
       },
@@ -119,7 +119,7 @@ export const SidebarData: SidebarItem[] = [
       },
       {
         id: "advertise-package-pricing",
-        name: "Package and Pricing",
+        name: "Packages & Pricing",
         href: "/dashboard/advertisement/package-pricing",
         icon: SubPlanIcon,
       },
