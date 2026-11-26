@@ -12,7 +12,7 @@ function SubscriptionFilter() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
   return (
-    <div className="my-6 flex justify-center">
+    <div className="mt-4 mb-8 flex justify-center">
       <div
         role="tablist"
         aria-label="Billing cycle"

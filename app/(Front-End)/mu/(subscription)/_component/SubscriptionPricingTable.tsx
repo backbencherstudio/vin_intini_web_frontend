@@ -45,8 +45,8 @@ export default function SubscriptionCards({ plans, billingCycle }) {
       <div
         className={
           isCentered
-            ? "flex flex-wrap justify-center gap-6"
-            : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-start"
+            ? "flex flex-wrap justify-center items-stretch gap-6"
+            : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-stretch"
         }
       >
         {plans.map((plan) => {
@@ -57,14 +57,22 @@ export default function SubscriptionCards({ plans, billingCycle }) {
               key={plan.id}
               className={
                 isCentered
-                  ? "bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col w-full sm:max-w-1/3"
+                  ? "bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col w-full sm:max-w-[400px]"
                   : "bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col"
               }
             >
-              <div className="p-6 text-center border-b border-borderColor">
-                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-headerColor mb-3">
-                  {plan.name}
-                </h3>
+              <div className="p-6 text-center border-b border-borderColor flex flex-col justify-between sm:min-h-[268px]">
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold text-headerColor">
+                    {plan.name}
+                  </h3>
+                  {plan.short_description && (
+                    <p className="mt-2.5 mb-4 text-xs sm:text-sm leading-relaxed text-descriptionColor">
+                      {plan.short_description}
+                    </p>
+                  )}
+                  {!plan.short_description && <div className="mb-4" />}
+                </div>
 
                 {isFree ? (
                   <button className="w-full py-2.5 px-4 border border-primaryColor text-gray-800 font-semibold rounded-lg text-sm hover:bg-teal-50 transition-colors">
