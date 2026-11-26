@@ -131,7 +131,7 @@ function FeedVideoPlayer({
       className={`group/video relative w-full overflow-hidden bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center ${
         isSingle
           ? "min-h-60 max-h-[65vh] sm:max-h-125 h-auto"
-          : "h-full min-h-35"
+          : "h-full min-h-0"
       }`}
     >
       <video
@@ -256,7 +256,7 @@ function PostImageRender({
     return (
       <div
         className={`relative w-full overflow-hidden bg-[#eff1f4] flex items-center justify-center ${
-          isSingle ? "min-h-auto max-h-150 h-auto" : "h-full min-h-35"
+          isSingle ? "min-h-auto max-h-150 h-auto" : "h-full min-h-0"
         }`}
       >
         <Image
@@ -282,30 +282,36 @@ function PostImageRender({
     item: PostMediaItem,
     index: number,
     totalCount: number,
-    className = ""
+    maxVisible: number,
+    className = "rounded-md"
   ) => {
-    const hiddenCount = totalCount - 4;
-    const showOverlay = index === 3 && hiddenCount > 0;
+    const hiddenCount = totalCount - maxVisible;
+    const showOverlay = index === maxVisible - 1 && hiddenCount > 0;
     const isVid = isVideo(item);
     const mediaUrl = item.url || item.file_path || "";
 
-    // If overlay with "+N more" is shown, clicking it opens the viewer
+    // If overlay with "+N" is shown, clicking it opens the viewer at this index
     if (showOverlay) {
       return (
         <button
           key={item.id ?? `${item.url}-${index}`}
           type="button"
           onClick={() => openMediaViewer(index)}
-          className={`relative cursor-pointer overflow-hidden flex-1 w-full ${className}`}
+          className={`relative cursor-pointer overflow-hidden h-full w-full min-h-0 min-w-0 block ${className}`}
         >
           {isVid ? (
             <FeedVideoPlayer src={mediaUrl} isSingle={false} />
           ) : (
-            renderImage(item, false)
+            renderImage(item, false, priority && index === 0)
           )}
 
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white">
-            +{hiddenCount} more
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 backdrop-blur-[1px] text-white transition-colors hover:bg-black/65">
+            <span className="text-2xl font-bold leading-none">
+              +{hiddenCount}
+            </span>
+            <span className="mt-1 text-xs font-medium text-white/90">
+              View all ({totalCount})
+            </span>
           </div>
         </button>
       );
@@ -316,7 +322,7 @@ function PostImageRender({
       return (
         <div
           key={item.id ?? `${item.url}-${index}`}
-          className={`relative overflow-hidden flex-1 w-full bg-black ${className}`}
+          className={`relative overflow-hidden h-full w-full min-h-0 min-w-0 bg-black ${className}`}
         >
           <FeedVideoPlayer
             src={mediaUrl}
@@ -335,9 +341,9 @@ function PostImageRender({
         key={item.id ?? `${item.url}-${index}`}
         type="button"
         onClick={() => openMediaViewer(index)}
-        className={`relative cursor-pointer overflow-hidden flex-1 w-full ${className}`}
+        className={`relative cursor-pointer overflow-hidden h-full w-full min-h-0 min-w-0 block bg-[#eff1f4] ${className}`}
       >
-        {renderImage(item, false)}
+        {renderImage(item, false, priority && index === 0)}
       </button>
     );
   };
@@ -374,66 +380,45 @@ function PostImageRender({
           )
         ) : /* 2 Media Items */
         mediaItems.length === 2 ? (
-          <div className="grid grid-cols-2 gap-1 bg-white p-0.5 h-80">
-            {mediaItems.slice(0, 2).map((item, index) =>
-              isVideo(item) ? (
-                <div
-                  key={item.id ?? index}
-                  className="relative h-full w-full overflow-hidden rounded-md bg-black"
-                >
-                  <FeedVideoPlayer
-                    src={item.url || item.file_path || ""}
-                    isSingle={false}
-                    onOpenTheater={(time, playing) =>
-                      openMediaViewer(index, time, playing)
-                    }
-                  />
-                </div>
-              ) : (
-                <button
-                  key={item.id ?? index}
-                  type="button"
-                  onClick={() => openMediaViewer(index)}
-                  className="relative h-full w-full overflow-hidden rounded-md bg-[#eff1f4] cursor-pointer"
-                >
-                  {renderImage(item, false, priority && index === 0)}
-                </button>
-              )
-            )}
+          <div className="grid grid-cols-2 gap-1 bg-white p-0.5 h-72 sm:h-80">
+            {mediaItems
+              .slice(0, 2)
+              .map((item, index) =>
+                renderMediaTile(item, index, mediaItems.length, 2),
+              )}
+          </div>
+        ) : /* 3 Media Items (1 large left + 2 equal stacked right) */
+        mediaItems.length === 3 ? (
+          <div className="grid grid-cols-[1.35fr_0.65fr] gap-1 bg-white p-0.5 h-80 sm:h-90">
+            {renderMediaTile(mediaItems[0], 0, 3, 3)}
+            <div className="grid grid-rows-2 gap-1 h-full min-h-0">
+              {mediaItems
+                .slice(1, 3)
+                .map((item, index) => renderMediaTile(item, index + 1, 3, 3))}
+            </div>
+          </div>
+        ) : /* 4 Media Items (Clean 2x2 Grid) */
+        mediaItems.length === 4 ? (
+          <div className="grid grid-cols-2 grid-rows-2 gap-1 bg-white p-0.5 h-84 sm:h-96">
+            {mediaItems
+              .slice(0, 4)
+              .map((item, index) => renderMediaTile(item, index, 4, 4))}
           </div>
         ) : (
-          /* 3 or More Media Items */
-          <div className="grid grid-cols-[1.3fr_0.7fr] gap-1 bg-white p-0.5 h-90">
-            {isVideo(mediaItems[0]) ? (
-              <div className="relative h-full w-full overflow-hidden rounded-md bg-black">
-                <FeedVideoPlayer
-                  src={mediaItems[0].url || mediaItems[0].file_path || ""}
-                  isSingle={false}
-                  onOpenTheater={(time, playing) =>
-                    openMediaViewer(0, time, playing)
-                  }
-                />
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => openMediaViewer(0)}
-                className="relative h-full w-full overflow-hidden rounded-md bg-[#eff1f4] cursor-pointer"
-              >
-                {renderImage(mediaItems[0], false, priority)}
-              </button>
-            )}
-
-            <div className="flex h-full flex-col gap-1">
+          /* 5 or More Media Items (2 top + 3 bottom collage with +N overlay on 5th) */
+          <div className="grid grid-rows-[1.15fr_0.85fr] gap-1 bg-white p-0.5 h-88 sm:h-104">
+            <div className="grid grid-cols-2 gap-1 min-h-0">
               {mediaItems
-                .slice(1, 4)
+                .slice(0, 2)
                 .map((item, index) =>
-                  renderMediaTile(
-                    item,
-                    index + 1,
-                    mediaItems.length,
-                    "rounded-md"
-                  )
+                  renderMediaTile(item, index, mediaItems.length, 5),
+                )}
+            </div>
+            <div className="grid grid-cols-3 gap-1 min-h-0">
+              {mediaItems
+                .slice(2, 5)
+                .map((item, index) =>
+                  renderMediaTile(item, index + 2, mediaItems.length, 5),
                 )}
             </div>
           </div>

@@ -5,7 +5,7 @@ import { PostFeedType } from "@/lib/type";
 import { formatContentForDisplay, formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Play, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -35,10 +35,11 @@ function TheaterVideoPlayer({
     initialTime > 0 || autoPlay,
   );
   const [durationLabel, setDurationLabel] = useState("");
-  const [thumbReady, setThumbReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     setHasStarted(initialTime > 0 || autoPlay);
+    setIsReady(false);
   }, [src, initialTime, autoPlay]);
 
   useEffect(() => {
@@ -84,24 +85,34 @@ function TheaterVideoPlayer({
   };
 
   return (
-    <div className="group/theater-video relative flex h-full w-full items-center justify-center">
+    <div className="group/theater-video relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg bg-[#0b0d10]">
       <video
         ref={videoRef}
         src={src}
-        controls={hasStarted}
+        controls={hasStarted && isReady}
         playsInline
-        preload="metadata"
+        preload={isActive ? "auto" : "metadata"}
         onLoadedMetadata={handleLoadedMetadata}
-        onSeeked={() => {
-          if (!hasStarted) setThumbReady(true);
-        }}
+        onLoadedData={() => setIsReady(true)}
+        onCanPlay={() => setIsReady(true)}
+        onSeeked={() => setIsReady(true)}
         onPlay={() => setHasStarted(true)}
-        className={`max-h-full max-w-full w-auto h-auto object-contain transition-opacity duration-300 ${
-          thumbReady || hasStarted ? "opacity-100" : "opacity-85"
+        className={`h-full w-full max-h-full max-w-full object-contain transition-opacity duration-300 ${
+          isReady ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {!hasStarted && (
+      {/* Sleek full-stage loading indicator while first frame buffers */}
+      {!isReady && (
+        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-white/80">
+          <Loader2 className="h-8 w-8 animate-spin text-primaryColor" />
+          <span className="text-xs font-medium text-white/60">
+            Loading video...
+          </span>
+        </div>
+      )}
+
+      {isReady && !hasStarted && (
         <button
           type="button"
           onClick={handleStartPlayback}
@@ -152,6 +163,10 @@ function PostImageShowDialog({
 }: PostImageShowDialogProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragOriginRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -160,6 +175,13 @@ function PostImageShowDialog({
       setShowComments(true);
     }
   }, [open, post?.id]);
+
+  // Reset zoom & pan when switching slides or closing dialog
+  useEffect(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+    setIsDragging(false);
+  }, [open, activeMediaIndex]);
 
   // Pause all videos inside the dialog whenever slide changes or dialog closes
   useEffect(() => {
@@ -194,6 +216,59 @@ function PostImageShowDialog({
     );
   };
 
+  const activeItem = mediaItems[activeMediaIndex];
+  const activeIsVideo = activeItem ? isVideo(activeItem) : false;
+
+  const clampZoom = (next: number) => Math.min(4, Math.max(1, Number(next.toFixed(2))));
+
+  const updateZoom = (nextZoom: number) => {
+    const clamped = clampZoom(nextZoom);
+    setZoom(clamped);
+    if (clamped <= 1) {
+      setPan({ x: 0, y: 0 });
+    }
+  };
+
+  const handleZoomIn = () => updateZoom(zoom + 0.5);
+  const handleZoomOut = () => updateZoom(zoom - 0.5);
+  const handleResetZoom = () => updateZoom(1);
+
+  const handleStageWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (activeIsVideo) return;
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.25 : -0.25;
+    updateZoom(zoom + delta);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (activeIsVideo || zoom <= 1) return;
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setIsDragging(true);
+    dragOriginRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      panX: pan.x,
+      panY: pan.y,
+    };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || !dragOriginRef.current) return;
+    const dx = e.clientX - dragOriginRef.current.x;
+    const dy = e.clientY - dragOriginRef.current.y;
+    const maxOffset = (zoom - 1) * 260;
+    setPan({
+      x: Math.max(-maxOffset, Math.min(maxOffset, dragOriginRef.current.panX + dx)),
+      y: Math.max(-maxOffset, Math.min(maxOffset, dragOriginRef.current.panY + dy)),
+    });
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    dragOriginRef.current = null;
+  };
+
   useEffect(() => {
     if (!open) return;
 
@@ -212,11 +287,20 @@ function PostImageShowDialog({
       if (event.key === "ArrowRight" && mediaItems.length > 1) {
         goToNextMedia();
       }
+      if (!activeIsVideo) {
+        if (event.key === "+" || event.key === "=") {
+          updateZoom(zoom + 0.5);
+        } else if (event.key === "-") {
+          updateZoom(zoom - 0.5);
+        } else if (event.key === "0") {
+          updateZoom(1);
+        }
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, activeMediaIndex, mediaItems.length]);
+  }, [open, activeMediaIndex, mediaItems.length, activeIsVideo, zoom]);
 
   if (!mediaItems.length) {
     return null;
@@ -316,8 +400,47 @@ function PostImageShowDialog({
           }`}
         >
           {mediaItems.length > 1 && (
-            <div className="absolute top-3 left-3 z-10 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-xs border border-white/10">
+            <div className="absolute top-3 left-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-xs border border-white/10">
               {activeMediaIndex + 1} / {mediaItems.length}
+            </div>
+          )}
+
+          {!activeIsVideo && (
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-white backdrop-blur-xs border border-white/10">
+              <button
+                type="button"
+                onClick={handleZoomOut}
+                disabled={zoom <= 1}
+                title="Zoom out (-)"
+                aria-label="Zoom out"
+                className="rounded-full p-1 transition hover:bg-white/15 disabled:opacity-40 disabled:hover:bg-transparent cursor-pointer"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </button>
+              <span className="min-w-11 text-center text-xs font-medium tabular-nums">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                type="button"
+                onClick={handleZoomIn}
+                disabled={zoom >= 4}
+                title="Zoom in (+)"
+                aria-label="Zoom in"
+                className="rounded-full p-1 transition hover:bg-white/15 disabled:opacity-40 disabled:hover:bg-transparent cursor-pointer"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </button>
+              {zoom > 1 && (
+                <button
+                  type="button"
+                  onClick={handleResetZoom}
+                  title="Reset zoom (0)"
+                  aria-label="Reset zoom"
+                  className="ml-0.5 rounded-full border-l border-white/15 pl-1.5 pr-1 py-1 transition hover:bg-white/15 cursor-pointer"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           )}
 
@@ -332,40 +455,70 @@ function PostImageShowDialog({
             </button>
           )}
 
-          <div className="relative h-full w-full overflow-hidden">
+          <div
+            className="relative h-full w-full overflow-hidden"
+            onWheel={handleStageWheel}
+          >
             <div
               className="flex h-full w-full transition-transform duration-300 ease-out"
               style={{ transform: `translateX(-${activeMediaIndex * 100}%)` }}
             >
-              {mediaItems.map((item, idx) => (
-                <div
-                  key={item.id ?? `${item.url}-${idx}`}
-                  className="relative flex h-full min-w-full items-center justify-center p-2 sm:p-4"
-                >
-                  {isVideo(item) ? (
-                    <TheaterVideoPlayer
-                      src={item.url || item.file_path || ""}
-                      isActive={open && idx === activeMediaIndex}
-                      initialTime={
-                        idx === activeMediaIndex ? initialVideoTime : 0
+              {mediaItems.map((item, idx) => {
+                const isCurrent = idx === activeMediaIndex;
+                return (
+                  <div
+                    key={item.id ?? `${item.url}-${idx}`}
+                    onDoubleClick={() => {
+                      if (!isVideo(item) && isCurrent) {
+                        updateZoom(zoom > 1 ? 1 : 2);
                       }
-                      autoPlay={
-                        idx === activeMediaIndex ? autoPlayVideo : false
-                      }
-                    />
-                  ) : (
-                    <Image
-                      src={item.url || item.file_path || "/post_placeholder.png"}
-                      alt="Post image preview"
-                      width={1400}
-                      height={1000}
-                      unoptimized
-                      sizes="(max-width: 1024px) 96vw, 65vw"
-                      className="max-h-full max-w-full w-auto h-auto object-contain"
-                    />
-                  )}
-                </div>
-              ))}
+                    }}
+                    onPointerDown={isCurrent ? handlePointerDown : undefined}
+                    onPointerMove={isCurrent ? handlePointerMove : undefined}
+                    onPointerUp={isCurrent ? handlePointerUp : undefined}
+                    onPointerCancel={isCurrent ? handlePointerUp : undefined}
+                    className={`relative flex h-full min-w-full items-center justify-center p-2 sm:p-4 overflow-hidden ${
+                      !isVideo(item) && isCurrent
+                        ? zoom > 1
+                          ? isDragging
+                            ? "cursor-grabbing"
+                            : "cursor-grab"
+                          : "cursor-zoom-in"
+                        : ""
+                    }`}
+                  >
+                    {isVideo(item) ? (
+                      <TheaterVideoPlayer
+                        src={item.url || item.file_path || ""}
+                        isActive={open && isCurrent}
+                        initialTime={isCurrent ? initialVideoTime : 0}
+                        autoPlay={isCurrent ? autoPlayVideo : false}
+                      />
+                    ) : (
+                      <Image
+                        src={item.url || item.file_path || "/post_placeholder.png"}
+                        alt="Post image preview"
+                        width={1400}
+                        height={1000}
+                        unoptimized
+                        draggable={false}
+                        sizes="(max-width: 1024px) 96vw, 65vw"
+                        style={
+                          isCurrent
+                            ? {
+                                transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})`,
+                                transition: isDragging
+                                  ? "none"
+                                  : "transform 180ms ease-out",
+                              }
+                            : undefined
+                        }
+                        className="max-h-full max-w-full w-auto h-auto object-contain select-none"
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
