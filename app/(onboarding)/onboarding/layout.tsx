@@ -1,13 +1,12 @@
 "use client";
 
-import { goToPreviousStep } from "@/feature/slice/onboarding/onboardingSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const stepPathMap: Record<number, string> = {
   1: "/onboarding",
@@ -32,7 +31,6 @@ const pathStepMap: Record<string, number> = {
 function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const dispatch = useDispatch();
   const currentStep = useSelector(
     (state: any) => state.onboarding.currentStep || 1,
   );
@@ -40,6 +38,7 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
     useGetUserProfileQuery("user");
   const isOnboarded = Boolean(userProfile?.is_onboarding);
   const requiredStep = pathStepMap[pathname];
+  const activeStep = requiredStep ?? currentStep;
   const isStepOutOfOrder = Boolean(requiredStep && requiredStep > currentStep);
 
   useEffect(() => {
@@ -59,21 +58,18 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
   if (isProfileLoading || isOnboarded || isStepOutOfOrder) {
     return null;
   }
-  const handleRouteChange = () => {
-    dispatch(goToPreviousStep());
-  };
+
   return (
     <>
       <div
-        className={`${currentStep == 4 || currentStep == 3 || currentStep == 7 || currentStep == 5 ? "max-w-159.5" : "max-w-133"} mx-auto px-4 py-8`}
+        className={`${activeStep == 4 || activeStep == 3 || activeStep == 7 || activeStep == 5 ? "max-w-159.5" : "max-w-133"} mx-auto px-4 py-8`}
       >
         <div
-          className={`flex items-center ${currentStep == 1 ? "justify-end" : "justify-between"}  mb-4`}
+          className={`flex items-center ${activeStep == 1 ? "justify-end" : "justify-between"}  mb-4`}
         >
-          {currentStep > 1 && (
+          {activeStep > 1 && (
             <Link
-              href={stepPathMap[currentStep - 1] || "/onboarding"}
-              onClick={handleRouteChange}
+              href={stepPathMap[activeStep - 1] || "/onboarding"}
               className="flex items-center text-sm font-medium text-headerColor"
             >
               <LeftArrowIcon />
@@ -81,7 +77,7 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
             </Link>
           )}
           <p className="text-sm font-medium text-headerColor">
-            Step {currentStep}/7
+            Step {activeStep}/7
           </p>
         </div>
         {children}

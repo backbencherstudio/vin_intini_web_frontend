@@ -13,6 +13,7 @@ export interface InstitutionReport {
   sl_no: number;
   id: number | string;
   institution_name: string;
+  is_verified: boolean;
   total_students: number;
   completed_programs: number;
   present_students: number;
@@ -21,6 +22,10 @@ export interface InstitutionReport {
 export interface InstitutionReportsResponse {
   success: boolean;
   data: InstitutionReport[];
+  summary?: {
+    pending_count: number;
+    verified_count: number;
+  };
   pagination: AdminPagination;
 }
 
@@ -86,8 +91,66 @@ export interface GetContactMessagesParams {
 export const adminReportApi = baseApiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getInstitutionReports: builder.query<InstitutionReportsResponse, { search?: string; page?: number } | void>({
+    getInstitutionReports: builder.query<
+      InstitutionReportsResponse,
+      { search?: string; status?: "all" | "pending" | "verified"; page?: number } | void
+    >({
       query: (params) => ({ url: "/admin/institution-report", params: params ? { ...params } : undefined }),
+      providesTags: ["institutionReports"],
+    }),
+    createInstitution: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { name: string; is_verified?: boolean }
+    >({
+      query: (body) => ({
+        url: "/admin/institution-report",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["institutionReports"],
+    }),
+    updateInstitutionStatus: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; is_verified: boolean }
+    >({
+      query: ({ id, is_verified }) => ({
+        url: `/admin/institution-report/${id}/status`,
+        method: "PATCH",
+        body: { is_verified },
+      }),
+      invalidatesTags: ["institutionReports"],
+    }),
+    renameInstitution: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; name: string; is_verified?: boolean }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/admin/institution-report/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["institutionReports"],
+    }),
+    mergeInstitution: builder.mutation<
+      { success: boolean; message: string },
+      { id: number | string; target_institution_id: number | string }
+    >({
+      query: ({ id, target_institution_id }) => ({
+        url: `/admin/institution-report/${id}/merge`,
+        method: "POST",
+        body: { target_institution_id },
+      }),
+      invalidatesTags: ["institutionReports"],
+    }),
+    deleteInstitution: builder.mutation<
+      { success: boolean; message: string },
+      number | string
+    >({
+      query: (id) => ({
+        url: `/admin/institution-report/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["institutionReports"],
     }),
     getInstitutionStudents: builder.query<InstitutionStudentsResponse, { id: number | string; search?: string; status?: "present" | "completed"; page?: number; per_page?: number }>({
       query: ({ id, ...params }) => ({ url: `/admin/institution-report/students/${id}`, params }),
@@ -134,6 +197,11 @@ export const adminReportApi = baseApiSlice.injectEndpoints({
 
 export const {
   useGetInstitutionReportsQuery,
+  useCreateInstitutionMutation,
+  useUpdateInstitutionStatusMutation,
+  useRenameInstitutionMutation,
+  useMergeInstitutionMutation,
+  useDeleteInstitutionMutation,
   useGetInstitutionStudentsQuery,
   useGetContactMessagesQuery,
   useGetContactMessageDetailsQuery,
