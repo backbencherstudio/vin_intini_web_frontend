@@ -232,8 +232,7 @@ function Page() {
                   {...field}
                   rows={5}
                   maxLength={250}
-                  placeholder="Tell us about your professional interests/experience in a brief
-profile summary."
+                  placeholder="Tell us about your professional interests/experience in a brief profile summary."
                   className="w-full placeholder:text-[13px] rounded-md border border-borderColor px-3 py-2.5 text-base text-headerColor placeholder:text-grayColor1 focus:outline-none "
                 />
               )}

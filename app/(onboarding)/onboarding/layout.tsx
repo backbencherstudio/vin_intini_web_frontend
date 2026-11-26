@@ -34,8 +34,7 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
   const currentStep = useSelector(
     (state: any) => state.onboarding.currentStep || 1,
   );
-  const { data: userProfile, isLoading: isProfileLoading } =
-    useGetUserProfileQuery("user");
+  const { data: userProfile } = useGetUserProfileQuery("user");
   const isOnboarded = Boolean(userProfile?.is_onboarding);
   const requiredStep = pathStepMap[pathname];
   const activeStep = requiredStep ?? currentStep;
@@ -55,7 +54,7 @@ function OnboardingGuardLayout({ children }: { children: React.ReactNode }) {
     }
   }, [isOnboarded, pathname, requiredStep, currentStep, router]);
 
-  if (isProfileLoading || isOnboarded || isStepOutOfOrder) {
+  if (isOnboarded || isStepOutOfOrder) {
     return null;
   }
 
