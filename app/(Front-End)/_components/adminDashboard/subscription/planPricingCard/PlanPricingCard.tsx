@@ -27,6 +27,7 @@ import {
   Table2,
   Trash2,
   Users,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -70,7 +71,6 @@ export default function PlanPricingCard() {
   const [billingType, setBillingType] = useState<"monthly" | "annually">("monthly");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [search, setSearch] = useState("");
-  const [expandedIds, setExpandedIds] = useState<number[]>([]);
   const [togglingId, setTogglingId] = useState<number | null>(null);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
@@ -222,12 +222,6 @@ export default function PlanPricingCard() {
     }
   };
 
-  const toggleExpanded = (id: number) => {
-    setExpandedIds((prev) =>
-      prev.includes(id) ? prev.filter((planId) => planId !== id) : [...prev, id],
-    );
-  };
-
   const openEdit = (plan: Plan) => {
     setSelectedPlan(plan);
     setEditOpen(true);
@@ -259,10 +253,10 @@ export default function PlanPricingCard() {
                   <button
                     type="button"
                     onClick={() => setBillingType("monthly")}
-                    className={`inline-flex h-8 items-center rounded-md px-3 text-xs font-semibold transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center rounded-md px-3 text-xs font-semibold transition ${
                       billingType === "monthly"
-                        ? "bg-white text-[#170F49] shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     Monthly Billing
@@ -270,10 +264,10 @@ export default function PlanPricingCard() {
                   <button
                     type="button"
                     onClick={() => setBillingType("annually")}
-                    className={`inline-flex h-8 items-center rounded-md px-3 text-xs font-semibold transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center rounded-md px-3 text-xs font-semibold transition ${
                       billingType === "annually"
-                        ? "bg-white text-[#170F49] shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     Annual Billing
@@ -285,10 +279,10 @@ export default function PlanPricingCard() {
                   <button
                     type="button"
                     onClick={() => setViewMode("cards")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
                       viewMode === "cards"
-                        ? "bg-white text-gray-900 shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     <LayoutGrid className="h-3.5 w-3.5" />
@@ -297,10 +291,10 @@ export default function PlanPricingCard() {
                   <button
                     type="button"
                     onClick={() => setViewMode("table")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
                       viewMode === "table"
-                        ? "bg-white text-gray-900 shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     <Table2 className="h-3.5 w-3.5" />
@@ -369,11 +363,28 @@ export default function PlanPricingCard() {
               {visiblePlans.map((plan, index) => {
                 const discount = getDiscountPercent(plan);
                 const originalPrice = getOriginalPrice(plan);
-                const isExpanded = expandedIds.includes(plan.id);
                 const features = plan.features ?? [];
-                const visibleFeatures = isExpanded
-                  ? features
-                  : features.slice(0, 6);
+                const featureSet = new Set(features);
+                const includedFeatures =
+                  featureOptions.length > 0
+                    ? featureOptions
+                        .filter(
+                          (opt) =>
+                            featureSet.has(opt.value) ||
+                            featureSet.has(opt.label),
+                        )
+                        .map((opt) => opt.label)
+                    : features.map((f) => getFeatureLabel(f));
+                const excludedFeatures =
+                  featureOptions.length > 0
+                    ? featureOptions
+                        .filter(
+                          (opt) =>
+                            !featureSet.has(opt.value) &&
+                            !featureSet.has(opt.label),
+                        )
+                        .map((opt) => opt.label)
+                    : [];
                 const isActive = plan.status === "active";
                 const isBusy = togglingId === plan.id;
                 const isDragging = draggingId === plan.id;
@@ -497,31 +508,33 @@ export default function PlanPricingCard() {
 
                       <div className="my-4 w-full border-t border-[#E1E4EA]" />
 
-                      {/* Features */}
+                      {/* Features: Included first, then Excluded with red cross */}
                       <ul className="space-y-2.5">
-                        {visibleFeatures.map((feature, idx) => (
+                        {includedFeatures.map((label, idx) => (
                           <li
-                            key={`${plan.id}-${feature}-${idx}`}
+                            key={`${plan.id}-inc-${idx}`}
                             className="flex items-center gap-2"
                           >
                             <CorrectIcon />
                             <span className="text-sm text-[#6F6C8F]">
-                              {getFeatureLabel(feature)}
+                              {label}
+                            </span>
+                          </li>
+                        ))}
+                        {excludedFeatures.map((label, idx) => (
+                          <li
+                            key={`${plan.id}-exc-${idx}`}
+                            className="flex items-center gap-2"
+                          >
+                            <span className="inline-flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-500">
+                              <X className="h-3 w-3 stroke-3" />
+                            </span>
+                            <span className="text-sm text-gray-400">
+                              {label}
                             </span>
                           </li>
                         ))}
                       </ul>
-
-                      {features.length > 6 && (
-                        <button
-                          type="button"
-                          onClick={() => toggleExpanded(plan.id)}
-                          className="mt-4 flex items-center gap-1 text-sm font-medium text-primaryColor hover:underline"
-                        >
-                          <Plus className="h-4 w-4" />
-                          {isExpanded ? "Show Less" : "Show More"}
-                        </button>
-                      )}
                     </div>
 
                     {/* Admin Meta + Reorder + Edit Footer */}

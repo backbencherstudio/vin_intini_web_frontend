@@ -344,10 +344,10 @@ export default function AdvertisementTable({
                   <button
                     type="button"
                     onClick={() => setViewMode("cards")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
                       viewMode === "cards"
-                        ? "bg-white text-gray-900 shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     <LayoutGrid className="h-3.5 w-3.5" />
@@ -356,10 +356,10 @@ export default function AdvertisementTable({
                   <button
                     type="button"
                     onClick={() => setViewMode("table")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
+                    className={`inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-3 text-xs font-medium transition ${
                       viewMode === "table"
-                        ? "bg-white text-gray-900 shadow-xs"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-primaryColor text-white shadow-xs"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     <Table2 className="h-3.5 w-3.5" />

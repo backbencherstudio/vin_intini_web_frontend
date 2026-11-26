@@ -12,58 +12,38 @@ function SubscriptionFilter() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
   return (
-    <div>
-      <div className="flex items-center justify-center gap-6 my-6">
-        {/* Monthly */}
-        <label
+    <div className="my-6 flex justify-center">
+      <div
+        role="tablist"
+        aria-label="Billing cycle"
+        className="inline-flex items-center rounded-xl border border-borderColor bg-gray-50 p-1.5 shadow-xs"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={billingCycle === "monthly"}
           onClick={() => setBillingCycle("monthly")}
-          className="flex items-center gap-2 cursor-pointer text-sm font-medium"
+          className={`cursor-pointer rounded-lg px-5 py-2 text-sm font-semibold transition-all ${
+            billingCycle === "monthly"
+              ? "bg-primaryColor text-white shadow-xs"
+              : "text-descriptionColor hover:text-headerColor"
+          }`}
         >
-          <span
-            className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-              billingCycle === "monthly"
-                ? "border-[#00a8cc]"
-                : "border-gray-300"
-            }`}
-          >
-            {billingCycle === "monthly" && (
-              <span className="w-2 h-2 rounded-full bg-[#00a8cc]" />
-            )}
-          </span>
-          <span
-            className={
-              billingCycle === "monthly"
-                ? "text-gray-900 font-medium"
-                : "text-gray-400"
-            }
-          >
-            Monthly
-          </span>
-        </label>
-        {/* Yearly */}
-        <label
+          Monthly Billing
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={billingCycle === "yearly"}
           onClick={() => setBillingCycle("yearly")}
-          className="flex items-center gap-2 cursor-pointer text-sm font-medium"
+          className={`cursor-pointer rounded-lg px-5 py-2 text-sm font-semibold transition-all ${
+            billingCycle === "yearly"
+              ? "bg-primaryColor text-white shadow-xs"
+              : "text-descriptionColor hover:text-headerColor"
+          }`}
         >
-          <span
-            className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-              billingCycle === "yearly" ? "border-[#00a8cc]" : "border-gray-300"
-            }`}
-          >
-            {billingCycle === "yearly" && (
-              <span className="w-2 h-2 rounded-full bg-[#00a8cc]" />
-            )}
-          </span>
-          <span
-            className={
-              billingCycle === "yearly"
-                ? "text-gray-900 font-medium"
-                : "text-gray-400"
-            }
-          >
-            Yearly
-          </span>
-        </label>
+          Annual Billing
+        </button>
       </div>
     </div>
   );
