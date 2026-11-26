@@ -267,11 +267,7 @@ function ProfileEducationForm({
                     rules={{ required: "Start year is required." }}
                     render={({ field }) => (
                       <CreatableSelectField
-                        value={
-                          field.value
-                            ? String(field.value)
-                            : String(new Date().getFullYear())
-                        }
+                        value={field.value ? String(field.value) : undefined}
                         onChange={(value) => {
                           field.onChange(value);
                           if (error) setError(null);
@@ -334,11 +330,9 @@ function ProfileEducationForm({
                     render={({ field }) => (
                       <CreatableSelectField
                         value={
-                          field.value
-                            ? String(field.value)
-                            : isCurrent
-                              ? undefined
-                              : String(new Date().getFullYear())
+                          isCurrent || !field.value
+                            ? undefined
+                            : String(field.value)
                         }
                         onChange={(value) => {
                           field.onChange(value);

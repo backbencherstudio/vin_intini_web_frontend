@@ -5,12 +5,15 @@ import {
   Shapes,
   Settings,
   Shield,
+  Sparkles,
   Mail,
   ClipboardCheck,
   ClipboardList,
+  Database,
   FlaskConical,
   Pill,
   Briefcase,
+  Building2,
   MapPin,
   FileText,
 } from "lucide-react";
@@ -270,28 +273,16 @@ export const SidebarData: SidebarItem[] = [
     icon: PartnerIcon,
   },
   {
-    id: "institution-reports",
-    name: "Institution Reports",
-    href: "/dashboard/institution-reports",
-    icon: ClipboardList,
-  },
-  {
     id: "contact-messages",
     name: "Contact Messages",
     href: "/dashboard/contact-messages",
     icon: Mail,
   },
   {
-    id: "settings",
-    name: "Settings",
-    icon: Settings,
+    id: "master-data",
+    name: "Master Data",
+    icon: Database,
     children: [
-      {
-        id: "integration-settings",
-        name: "Integrations",
-        href: "/dashboard/settings/integrations",
-        icon: Shapes,
-      },
       {
         id: "content-pages",
         name: "Content Pages",
@@ -303,6 +294,37 @@ export const SidebarData: SidebarItem[] = [
         name: "Cities & Locations",
         href: "/dashboard/settings/cities",
         icon: MapPin,
+      },
+      {
+        id: "institution-reports",
+        name: "Institution Reports",
+        href: "/dashboard/institution-reports",
+        icon: ClipboardList,
+      },
+      {
+        id: "experience-organizations",
+        name: "Experience Organizations",
+        href: "/dashboard/settings/organizations",
+        icon: Building2,
+      },
+      {
+        id: "master-skills",
+        name: "Skills",
+        href: "/dashboard/settings/skills",
+        icon: Sparkles,
+      },
+    ],
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    icon: Settings,
+    children: [
+      {
+        id: "integration-settings",
+        name: "Integrations",
+        href: "/dashboard/settings/integrations",
+        icon: Shapes,
       },
       {
         id: "security-settings",

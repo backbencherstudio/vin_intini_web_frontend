@@ -3,8 +3,13 @@ import ProfileHeroSkeleton from "@/components/reusable/All Skleton/ProfileHeroSk
 import RootDialog from "@/components/reusable/RootDialog";
 import { BUTTON_STYLES } from "@/components/reusable/buttonStyles";
 import {
+  useGetExperienceQuery,
+} from "@/feature/slice/user/experienceSlice";
+import { useGetStudyQuery } from "@/feature/slice/user/studySlice";
+import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
+  useProfileAboutUpdateMutation,
   useProfileImageUpdateMutation,
 } from "@/feature/slice/user/userSlice";
 import logoPreview from "@/public/empty_user.jpg";
@@ -34,9 +39,34 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   });
   const { data, isLoading } = userId ? profileQuery : myProfileQuery;
   const [profileImageUpdate] = useProfileImageUpdateMutation();
+  const [profileAboutUpdate, { isLoading: isUpdatingCurrent }] =
+    useProfileAboutUpdateMutation();
   const [openEducationForm, setOpenEducationForm] = useState(false);
   const [openExperienceForm, setOpenExperienceForm] = useState(false);
+  const [openSelectInstituteModal, setOpenSelectInstituteModal] =
+    useState(false);
+  const [openSelectExperienceModal, setOpenSelectExperienceModal] =
+    useState(false);
+  const [selectedInstituteId, setSelectedInstituteId] = useState<number | null>(
+    null,
+  );
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null,
+  );
   const profileData = data?.data || {};
+  const isOwnProfile = Boolean(profileData?.is_own_profile && !userId);
+  const { data: studyData } = useGetStudyQuery(undefined, {
+    skip: !isOwnProfile,
+  });
+  const { data: experienceData } = useGetExperienceQuery(undefined, {
+    skip: !isOwnProfile,
+  });
+  const existingStudies: any[] = Array.isArray(studyData?.data)
+    ? studyData.data
+    : [];
+  const existingExperiences: any[] = Array.isArray(experienceData?.data)
+    ? experienceData.data
+    : [];
   const [isNotify, setIsNotify] = useState(false);
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -228,7 +258,17 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setOpenExperienceForm(true)}
+                  onClick={() => {
+                    if (existingExperiences.length > 0) {
+                      const firstExp = existingExperiences[0];
+                      setSelectedCompanyId(
+                        firstExp?.company_id || firstExp?.company?.id || null,
+                      );
+                      setOpenSelectExperienceModal(true);
+                    } else {
+                      setOpenExperienceForm(true);
+                    }
+                  }}
                   className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
                 >
                   <Plus className="h-4 w-4" />
@@ -247,7 +287,19 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               ) : (
                 <button
                   type="button"
-                  onClick={() => setOpenEducationForm(true)}
+                  onClick={() => {
+                    if (existingStudies.length > 0) {
+                      const firstEdu = existingStudies[0];
+                      setSelectedInstituteId(
+                        firstEdu?.institution_id ||
+                          firstEdu?.institution?.id ||
+                          null,
+                      );
+                      setOpenSelectInstituteModal(true);
+                    } else {
+                      setOpenEducationForm(true);
+                    }
+                  }}
                   className={`${BUTTON_STYLES.primary} flex items-center gap-1 py-1.5! text-sm! px-2.5! `}
                 >
                   <Plus className="h-4 w-4" />
@@ -276,6 +328,182 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               height={400}
               className="w-full h-auto rounded-lg object-cover"
             />
+          </div>
+        </RootDialog>
+      )}
+
+      {openSelectInstituteModal && (
+        <RootDialog
+          open={openSelectInstituteModal}
+          setOpen={setOpenSelectInstituteModal}
+          ariaLabel="Select Current Institute"
+          className="sm:max-w-lg max-w-[92vw]"
+        >
+          <div className="p-6 space-y-5">
+            <div className="space-y-1 pr-6">
+              <h3 className="text-xl font-semibold text-headerColor">
+                Select Current Institute
+              </h3>
+              <p className="text-sm text-grayColor1">
+                Choose an institute from your saved education, or add a new one.
+              </p>
+            </div>
+            <div className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+              {existingStudies.map((edu: any) => {
+                const instId = edu?.institution_id || edu?.institution?.id;
+                const instName =
+                  edu?.institution?.name || edu?.institution_name || "Institute";
+                const isSelected = selectedInstituteId === instId;
+                return (
+                  <label
+                    key={edu.id}
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-colors ${
+                      isSelected
+                        ? "border-primaryColor bg-primaryColor/5"
+                        : "border-borderColor hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="currentInstituteOption"
+                      checked={isSelected}
+                      onChange={() => setSelectedInstituteId(instId)}
+                      className="mt-1 h-4 w-4 accent-primaryColor"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-headerColor truncate">
+                        {instName}
+                      </p>
+                      <p className="text-xs text-grayColor1 truncate mt-0.5">
+                        {[edu.degree, edu.field_study].filter(Boolean).join(" · ")}
+                      </p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-borderColor">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenSelectInstituteModal(false);
+                  setOpenEducationForm(true);
+                }}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                Add New Education
+              </button>
+              <button
+                type="button"
+                disabled={!selectedInstituteId || isUpdatingCurrent}
+                onClick={async () => {
+                  if (!selectedInstituteId) return;
+                  try {
+                    await profileAboutUpdate({
+                      current_institute_id: selectedInstituteId,
+                    }).unwrap();
+                    toast.success("Current institute updated!");
+                    setOpenSelectInstituteModal(false);
+                  } catch (err: any) {
+                    toast.error(
+                      err?.data?.message || "Failed to update current institute.",
+                    );
+                  }
+                }}
+                className="rounded-full bg-primaryColor px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 cursor-pointer transition-opacity"
+              >
+                {isUpdatingCurrent ? "Saving..." : "Set as Current"}
+              </button>
+            </div>
+          </div>
+        </RootDialog>
+      )}
+
+      {openSelectExperienceModal && (
+        <RootDialog
+          open={openSelectExperienceModal}
+          setOpen={setOpenSelectExperienceModal}
+          ariaLabel="Select Current Experience"
+          className="sm:max-w-lg max-w-[92vw]"
+        >
+          <div className="p-6 space-y-5">
+            <div className="space-y-1 pr-6">
+              <h3 className="text-xl font-semibold text-headerColor">
+                Select Current Experience
+              </h3>
+              <p className="text-sm text-grayColor1">
+                Choose an organization from your saved experience, or add a new one.
+              </p>
+            </div>
+            <div className="max-h-64 space-y-2.5 overflow-y-auto pr-1">
+              {existingExperiences.map((exp: any) => {
+                const compId = exp?.company_id || exp?.company?.id;
+                const compName =
+                  exp?.company?.name || exp?.company_name || "Organization";
+                const isSelected = selectedCompanyId === compId;
+                return (
+                  <label
+                    key={exp.id}
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-colors ${
+                      isSelected
+                        ? "border-primaryColor bg-primaryColor/5"
+                        : "border-borderColor hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="currentExperienceOption"
+                      checked={isSelected}
+                      onChange={() => setSelectedCompanyId(compId)}
+                      className="mt-1 h-4 w-4 accent-primaryColor"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-headerColor truncate">
+                        {compName}
+                      </p>
+                      <p className="text-xs text-grayColor1 truncate mt-0.5">
+                        {exp.title || "Role"}
+                      </p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-borderColor">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenSelectExperienceModal(false);
+                  setOpenExperienceForm(true);
+                }}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                Add New Experience
+              </button>
+              <button
+                type="button"
+                disabled={!selectedCompanyId || isUpdatingCurrent}
+                onClick={async () => {
+                  if (!selectedCompanyId) return;
+                  try {
+                    await profileAboutUpdate({
+                      current_position_id: selectedCompanyId,
+                    }).unwrap();
+                    toast.success("Current experience updated!");
+                    setOpenSelectExperienceModal(false);
+                  } catch (err: any) {
+                    toast.error(
+                      err?.data?.message || "Failed to update current experience.",
+                    );
+                  }
+                }}
+                className="rounded-full bg-primaryColor px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 cursor-pointer transition-opacity"
+              >
+                {isUpdatingCurrent ? "Saving..." : "Set as Current"}
+              </button>
+            </div>
           </div>
         </RootDialog>
       )}

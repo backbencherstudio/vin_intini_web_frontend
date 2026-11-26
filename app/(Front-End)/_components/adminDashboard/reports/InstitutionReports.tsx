@@ -3,10 +3,10 @@
 import { useMemo, useState } from "react";
 import {
   ArrowDownToLine,
-  Building2,
   CheckCircle2,
   EyeOff,
   GitMerge,
+  GraduationCap,
   Pencil,
   Plus,
   Search,
@@ -234,7 +234,7 @@ export default function InstitutionReports() {
         cell: (row) => (
           <div className="flex items-center gap-3 min-w-[220px]">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-50 text-primaryColor border border-teal-100">
-              <Building2 className="h-4 w-4" />
+              <GraduationCap className="h-4 w-4" />
             </div>
             <span className="font-medium text-gray-900 text-sm">
               {row.institution_name}
@@ -535,7 +535,7 @@ export default function InstitutionReports() {
         </div>
       ) : institutions.length === 0 ? (
         <div className="flex h-64 flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white p-6 text-center">
-          <Building2 className="h-12 w-12 text-gray-300" />
+          <GraduationCap className="h-12 w-12 text-gray-300" />
           <h3 className="mt-2 text-sm font-semibold text-gray-900">
             No institutions found
           </h3>

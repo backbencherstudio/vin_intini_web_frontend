@@ -88,6 +88,42 @@ export interface GetContactMessagesParams {
   per_page?: number;
 }
 
+export interface ExperienceCompanyItem {
+  sl_no: number;
+  id: number | string;
+  name: string;
+  is_verified: boolean;
+  total_experiences: number;
+}
+
+export interface ExperienceCompaniesResponse {
+  success: boolean;
+  data: ExperienceCompanyItem[];
+  summary?: {
+    pending_count: number;
+    verified_count: number;
+  };
+  pagination: AdminPagination;
+}
+
+export interface AdminSkillItem {
+  sl_no: number;
+  id: number | string;
+  name: string;
+  is_verified: boolean;
+  usage_count: number;
+}
+
+export interface AdminSkillsResponse {
+  success: boolean;
+  data: AdminSkillItem[];
+  summary?: {
+    pending_count: number;
+    verified_count: number;
+  };
+  pagination: AdminPagination;
+}
+
 export const adminReportApi = baseApiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -192,6 +228,134 @@ export const adminReportApi = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["contactMessages"],
     }),
+    getExperienceCompanies: builder.query<
+      ExperienceCompaniesResponse,
+      { search?: string; status?: "all" | "pending" | "verified"; page?: number } | void
+    >({
+      query: (params) => ({
+        url: "/admin/experience-companies",
+        params: params ? { ...params } : undefined,
+      }),
+      providesTags: ["experienceCompanies"],
+    }),
+    createExperienceCompany: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { name: string; is_verified?: boolean }
+    >({
+      query: (body) => ({
+        url: "/admin/experience-companies",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["experienceCompanies"],
+    }),
+    updateExperienceCompanyStatus: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; is_verified: boolean }
+    >({
+      query: ({ id, is_verified }) => ({
+        url: `/admin/experience-companies/${id}/status`,
+        method: "PATCH",
+        body: { is_verified },
+      }),
+      invalidatesTags: ["experienceCompanies"],
+    }),
+    renameExperienceCompany: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; name: string; is_verified?: boolean }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/admin/experience-companies/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["experienceCompanies"],
+    }),
+    mergeExperienceCompany: builder.mutation<
+      { success: boolean; message: string },
+      { id: number | string; target_company_id: number | string }
+    >({
+      query: ({ id, target_company_id }) => ({
+        url: `/admin/experience-companies/${id}/merge`,
+        method: "POST",
+        body: { target_company_id },
+      }),
+      invalidatesTags: ["experienceCompanies"],
+    }),
+    deleteExperienceCompany: builder.mutation<
+      { success: boolean; message: string },
+      number | string
+    >({
+      query: (id) => ({
+        url: `/admin/experience-companies/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["experienceCompanies"],
+    }),
+    getAdminSkills: builder.query<
+      AdminSkillsResponse,
+      { search?: string; status?: "all" | "pending" | "verified"; page?: number } | void
+    >({
+      query: (params) => ({
+        url: "/admin/skills",
+        params: params ? { ...params } : undefined,
+      }),
+      providesTags: ["adminSkills"],
+    }),
+    createAdminSkill: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { name: string; is_verified?: boolean }
+    >({
+      query: (body) => ({
+        url: "/admin/skills",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["adminSkills"],
+    }),
+    updateAdminSkillStatus: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; is_verified: boolean }
+    >({
+      query: ({ id, is_verified }) => ({
+        url: `/admin/skills/${id}/status`,
+        method: "PATCH",
+        body: { is_verified },
+      }),
+      invalidatesTags: ["adminSkills"],
+    }),
+    renameAdminSkill: builder.mutation<
+      { success: boolean; message: string; data: any },
+      { id: number | string; name: string; is_verified?: boolean }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/admin/skills/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["adminSkills"],
+    }),
+    mergeAdminSkill: builder.mutation<
+      { success: boolean; message: string },
+      { id: number | string; target_skill_id: number | string }
+    >({
+      query: ({ id, target_skill_id }) => ({
+        url: `/admin/skills/${id}/merge`,
+        method: "POST",
+        body: { target_skill_id },
+      }),
+      invalidatesTags: ["adminSkills"],
+    }),
+    deleteAdminSkill: builder.mutation<
+      { success: boolean; message: string },
+      number | string
+    >({
+      query: (id) => ({
+        url: `/admin/skills/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["adminSkills"],
+    }),
   }),
 });
 
@@ -203,6 +367,18 @@ export const {
   useMergeInstitutionMutation,
   useDeleteInstitutionMutation,
   useGetInstitutionStudentsQuery,
+  useGetExperienceCompaniesQuery,
+  useCreateExperienceCompanyMutation,
+  useUpdateExperienceCompanyStatusMutation,
+  useRenameExperienceCompanyMutation,
+  useMergeExperienceCompanyMutation,
+  useDeleteExperienceCompanyMutation,
+  useGetAdminSkillsQuery,
+  useCreateAdminSkillMutation,
+  useUpdateAdminSkillStatusMutation,
+  useRenameAdminSkillMutation,
+  useMergeAdminSkillMutation,
+  useDeleteAdminSkillMutation,
   useGetContactMessagesQuery,
   useGetContactMessageDetailsQuery,
   useMarkContactMessageStatusMutation,

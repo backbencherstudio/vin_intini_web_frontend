@@ -220,8 +220,8 @@ function ExpreanceAddFrom({
               label="Title"
               placeholder="Title"
               required
-              error={errors.title?.message ? "Title is required" : undefined}
-              {...register("title")}
+              error={errors.title?.message}
+              {...register("title", { required: "Title is required" })}
               className="rounded-lg border-borderColor"
             />
 
@@ -241,8 +241,7 @@ function ExpreanceAddFrom({
                       if (error) setError(null);
                     }}
                     options={employmentTypeOptions}
-                    allowCustomInput
-                    placeholder="Select Industry here..."
+                    placeholder="Select employment type"
                     className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3! [&_.ant-select-selection-placeholder]:text-descriptionColor!"
                   />
                 )}
@@ -255,11 +254,12 @@ function ExpreanceAddFrom({
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-descriptionColor">
-                Company or Organization
+                Company or Organization <span className="text-redColor">*</span>
               </label>
               <Controller
                 name="company_name"
                 control={control}
+                rules={{ required: "Company or organization is required" }}
                 render={({ field }) => (
                   <CommonSelectField
                     placeholder="Select company or organization"
@@ -277,6 +277,11 @@ function ExpreanceAddFrom({
                   />
                 )}
               />
+              {errors.company_name && (
+                <p className="mt-1 text-sm text-redColor">
+                  {errors.company_name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -297,7 +302,6 @@ function ExpreanceAddFrom({
                           if (error) setError(null);
                         }}
                         options={monthOptions}
-                        allowCustomInput
                         placeholder="Month"
                         className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                       />
@@ -313,22 +317,16 @@ function ExpreanceAddFrom({
                   <Controller
                     name="start_year"
                     control={control}
-                    defaultValue={String(new Date().getFullYear())}
                     rules={{ required: "Start year is required." }}
                     render={({ field }) => (
                       <CommonSelectField
-                        value={
-                          field.value
-                            ? String(field.value)
-                            : String(new Date().getFullYear())
-                        }
+                        value={field.value ? String(field.value) : undefined}
                         type="number"
                         onChange={(value) => {
                           field.onChange(value);
                           if (error) setError(null);
                         }}
                         options={yearOptions}
-                        allowCustomInput
                         placeholder="Year"
                         className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
                       />
@@ -363,7 +361,6 @@ function ExpreanceAddFrom({
                           if (error) setError(null);
                         }}
                         options={monthOptions}
-                        allowCustomInput
                         placeholder="Month"
                         isDisabled={isCurrent}
                         className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
@@ -387,9 +384,9 @@ function ExpreanceAddFrom({
                     render={({ field }) => (
                       <CommonSelectField
                         value={
-                          field.value
-                            ? String(field.value)
-                            : isCurrent ? undefined : String(new Date().getFullYear())
+                          isCurrent || !field.value
+                            ? undefined
+                            : String(field.value)
                         }
                         onChange={(value) => {
                           field.onChange(value);
@@ -397,7 +394,6 @@ function ExpreanceAddFrom({
                         }}
                         type="number"
                         options={yearOptions}
-                        allowCustomInput
                         placeholder="Year"
                         isDisabled={isCurrent}
                         className="h-12 w-full [&_.ant-select-selector]:h-12! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-borderColor! [&_.ant-select-selector]:px-3!"
@@ -429,10 +425,8 @@ function ExpreanceAddFrom({
               label="Location"
               placeholder="Location"
               required
-              error={
-                errors.location?.message ? "Location is required" : undefined
-              }
-              {...register("location")}
+              error={errors.location?.message}
+              {...register("location", { required: "Location is required" })}
               className="rounded-lg border-borderColor"
             />
 

@@ -146,6 +146,8 @@ export const baseApiSlice = createApi({
     "city",
     "contactMessages",
     "institutionReports",
+    "experienceCompanies",
+    "adminSkills",
   ],
 });
 
