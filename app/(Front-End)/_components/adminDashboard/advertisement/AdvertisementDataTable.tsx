@@ -179,9 +179,8 @@ export default function AdvertisementTable({
       await reorderPackages(nextIds).unwrap();
       toast.success("Package order updated");
     } catch {
-      toast.error("Could not update package order");
-    } finally {
       setOptimisticOrderIds(null);
+      toast.error("Could not update package order");
     }
   };
 
@@ -680,7 +679,7 @@ export default function AdvertisementTable({
               <thead className="border-b border-gray-200 bg-gray-50 text-sm font-medium leading-5 text-gray-600">
                 <tr>
                   {[
-                    "Order",
+                    "SL",
                     "Package",
                     "Target",
                     "Duration",
@@ -743,30 +742,6 @@ export default function AdvertisementTable({
                         <span className="w-6 text-xs font-semibold text-primaryColor">
                           #{index + 1}
                         </span>
-                        {canReorder && (
-                          <div className="inline-flex items-center rounded border border-gray-200 bg-white">
-                            <button
-                              type="button"
-                              aria-label={`Move ${item.name} up`}
-                              disabled={index === 0 || reordering}
-                              onClick={() => movePackage(item.id, -1)}
-                              className="p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-35"
-                            >
-                              <ArrowUp className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              aria-label={`Move ${item.name} down`}
-                              disabled={
-                                index === packages.length - 1 || reordering
-                              }
-                              onClick={() => movePackage(item.id, 1)}
-                              className="border-l border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-35"
-                            >
-                              <ArrowDown className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3 align-middle">
@@ -833,6 +808,32 @@ export default function AdvertisementTable({
                     </td>
                     <td className="px-4 py-3 align-middle">
                       <div className="flex items-center gap-2">
+                        {canReorder && (
+                          <div className="inline-flex items-center rounded border border-gray-200 bg-white">
+                            <button
+                              type="button"
+                              aria-label={`Move ${item.name} up`}
+                              title="Move up"
+                              disabled={index === 0 || reordering}
+                              onClick={() => movePackage(item.id, -1)}
+                              className="p-1 text-gray-500 hover:bg-gray-100 hover:text-primaryColor disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              <ArrowUp className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Move ${item.name} down`}
+                              title="Move down"
+                              disabled={
+                                index === packages.length - 1 || reordering
+                              }
+                              onClick={() => movePackage(item.id, 1)}
+                              className="border-l border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-primaryColor disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        )}
                         <button
                           type="button"
                           aria-label={`Edit ${item.name}`}

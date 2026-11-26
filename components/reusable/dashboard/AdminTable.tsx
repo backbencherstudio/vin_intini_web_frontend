@@ -16,6 +16,7 @@ type DataTableProps<T> = {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   onView?: (row: T) => void;
+  renderExtraActions?: (row: T, index: number) => React.ReactNode;
 };
 
 export default function DataTable<T extends { id: string | number }>({
@@ -24,6 +25,7 @@ export default function DataTable<T extends { id: string | number }>({
   onEdit,
   onDelete,
   onView,
+  renderExtraActions,
 }: DataTableProps<T>) {
   return (
     <div className="w-full">
@@ -41,7 +43,7 @@ export default function DataTable<T extends { id: string | number }>({
                 </th>
               ))}
 
-              {(onEdit || onDelete || onView) && (
+              {(onEdit || onDelete || onView || renderExtraActions) && (
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-medium leading-5 text-gray-600">
                   Action
                 </th>
@@ -51,7 +53,7 @@ export default function DataTable<T extends { id: string | number }>({
 
           <tbody className="divide-y divide-gray-100">
             {data.length > 0 ? (
-              data.map((row) => (
+              data.map((row, rowIndex) => (
                 <tr key={row.id} className="transition-colors hover:bg-gray-50">
                   {columns.map((col, j) => (
                     <td
@@ -68,9 +70,10 @@ export default function DataTable<T extends { id: string | number }>({
                     </td>
                   ))}
 
-                  {(onEdit || onDelete || onView) && (
+                  {(onEdit || onDelete || onView || renderExtraActions) && (
                     <td className="px-4 py-3 align-middle">
                       <div className="flex items-center justify-center gap-3">
+                        {renderExtraActions?.(row, rowIndex)}
                         {onView && (
                           <button
                             type="button"

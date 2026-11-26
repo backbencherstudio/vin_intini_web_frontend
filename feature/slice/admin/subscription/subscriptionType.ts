@@ -249,6 +249,7 @@ export interface Plan {
   discount_duration: string | null;
   badge_color: string;
   status: PlanStatus;
+  sort_order?: number;
   features: string[];
   revenuecat_store_identifier_ios?: string | null;
   revenuecat_store_identifier_android?: string | null;

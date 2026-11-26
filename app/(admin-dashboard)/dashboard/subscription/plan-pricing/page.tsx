@@ -1,15 +1,9 @@
 import PlanPricingCard from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingCard";
-import PlanPricingTable from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingTable";
 
 export default function Page() {
   return (
     <div>
-      <div>
-        <PlanPricingCard />
-      </div>
-      <div className="mt-8">
-        <PlanPricingTable />
-      </div>
+      <PlanPricingCard />
     </div>
   );
 }

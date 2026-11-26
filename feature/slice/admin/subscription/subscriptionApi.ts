@@ -110,6 +110,24 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
         invalidatesTags: ["plan"],
       },
     ),
+    deletePlan: builder.mutation<DeletePlanResponse, number | string>({
+      query: (id) => ({
+        url: `/admin/plans/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["plan"],
+    }),
+    reorderPlans: builder.mutation<
+      { success: boolean; message?: string },
+      number[]
+    >({
+      query: (ids) => ({
+        url: "/admin/plans/reorder",
+        method: "POST",
+        body: { ids },
+      }),
+      invalidatesTags: ["plan"],
+    }),
 
     // get all features
     getPlanFeatures: builder.query<GetPlanFeaturesResponse, void>({
@@ -132,5 +150,7 @@ export const {
   useCreatePlanMutation,
   useUpdatePlanMutation,
   useDeactivePlanMutation,
+  useDeletePlanMutation,
+  useReorderPlansMutation,
   useGetPlanFeaturesQuery,
 } = subscriptionSlice;
