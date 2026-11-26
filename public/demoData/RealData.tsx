@@ -378,7 +378,11 @@ export const countries = [
   { iso_code: "WF", country: "Wallis and Futuna" },
   { iso_code: "ZM", country: "Zambia" },
   { iso_code: "ZW", country: "Zimbabwe" },
-];
+].sort((a, b) => {
+  if (a.iso_code === "US") return -1;
+  if (b.iso_code === "US") return 1;
+  return a.country.localeCompare(b.country);
+});
 
 export const networkOptions = [
   { value: "psychology", label: "Psychology" },
