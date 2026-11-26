@@ -501,7 +501,7 @@ export default function PlanPricingCard() {
                           ${effectivePrice}
                         </span>
                         <span className="pb-1 text-xs font-medium text-[#A0A3BD]">
-                          Per user /{" "}
+                          /{" "}
                           {plan.billing_cycle === "monthly"
                             ? "Monthly"
                             : "Yearly"}
