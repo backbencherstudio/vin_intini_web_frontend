@@ -38,7 +38,7 @@ export default function OurImpact() {
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-6">
             <div className=" w-full pb-4 md:pb-0">
               <h3 className="text-blackColor  text-center md:text-start text-2xl md:text-xl xl:text-2xl 2xl:text-[32px] font-semibold leading-[130%]">
-                Trusted by Students/Graduates/Faculty of Leading Institutions
+                Trusted by Students/Faculty/Alum of Leading Academic Institutions
               </h3>
             </div>
             <div className=" w-full ">
