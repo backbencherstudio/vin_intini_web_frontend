@@ -55,6 +55,34 @@ function isTokenExpired(payload: JwtPayload | null): boolean {
   return payload.exp * 1000 <= Date.now();
 }
 
+async function resolveOnboardingStatus(
+  token: string,
+): Promise<{ valid: boolean; isOnboarded: boolean | null }> {
+  try {
+    const meRes = await fetch(`${API_BASE_URL}/me`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (meRes.status === 401 || meRes.status === 403) {
+      return { valid: false, isOnboarded: null };
+    }
+
+    if (meRes.ok) {
+      const meData = await meRes.json();
+      return { valid: true, isOnboarded: meData?.is_onboarding === true };
+    }
+  } catch {
+    // Transient network error: allow client layout fallback
+  }
+
+  return { valid: true, isOnboarded: null };
+}
+
 function setAuthCookie(response: NextResponse, token: string, isHttps = true) {
   response.cookies.set("accessToken", token, {
     path: "/",
@@ -203,11 +231,20 @@ export async function middleware(request: NextRequest) {
   // ROOT / LANDING PAGE GUARD (/)
   // -------------------------------------------------------------
   if (pathname === "/") {
-    if (isValidToken) {
+    if (isValidToken && currentToken) {
       if (isAdmin) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
-      return NextResponse.redirect(new URL("/mu/home", request.url));
+      const status = await resolveOnboardingStatus(currentToken);
+      if (!status.valid) {
+        return clearAuthCookie(createNextResponse());
+      }
+      return NextResponse.redirect(
+        new URL(
+          status.isOnboarded === false ? "/onboarding" : "/mu/home",
+          request.url,
+        ),
+      );
     }
     return createNextResponse();
   }
@@ -241,25 +278,47 @@ export async function middleware(request: NextRequest) {
   // PUBLIC AUTH ROUTES (/login, /sign-up)
   // -------------------------------------------------------------
   if (pathname === "/login" || pathname === "/sign-up") {
-    if (isValidToken) {
+    if (isValidToken && currentToken) {
       if (isAdmin) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
-      return NextResponse.redirect(new URL("/mu/home", request.url));
+      const status = await resolveOnboardingStatus(currentToken);
+      if (!status.valid) {
+        return clearAuthCookie(createNextResponse());
+      }
+      return NextResponse.redirect(
+        new URL(
+          status.isOnboarded === false ? "/onboarding" : "/mu/home",
+          request.url,
+        ),
+      );
     }
     return createNextResponse();
   }
 
   // -------------------------------------------------------------
-  // USER PROTECTED ROUTES (/mu/*)
+  // USER PROTECTED ROUTES (/mu, /mu/*)
   // -------------------------------------------------------------
-  if (pathname.startsWith("/mu/")) {
-    if (!isValidToken) {
+  if (pathname === "/mu" || pathname.startsWith("/mu/")) {
+    if (!isValidToken || !currentToken) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     if (isAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    const status = await resolveOnboardingStatus(currentToken);
+    if (!status.valid) {
+      return clearAuthCookie(
+        NextResponse.redirect(new URL("/login", request.url)),
+      );
+    }
+
+    if (status.isOnboarded === false) {
+      return attachCookiesToResponse(
+        NextResponse.redirect(new URL("/onboarding", request.url)),
+      );
     }
 
     return createNextResponse();
@@ -269,7 +328,7 @@ export async function middleware(request: NextRequest) {
   // ONBOARDING ROUTES GUARD (/onboarding, /onboarding/*)
   // -------------------------------------------------------------
   if (pathname === "/onboarding" || pathname.startsWith("/onboarding/")) {
-    if (!isValidToken) {
+    if (!isValidToken || !currentToken) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
@@ -277,24 +336,17 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    try {
-      const meRes = await fetch(`${API_BASE_URL}/me`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
-        cache: "no-store",
-      });
+    const status = await resolveOnboardingStatus(currentToken);
+    if (!status.valid) {
+      return clearAuthCookie(
+        NextResponse.redirect(new URL("/login", request.url)),
+      );
+    }
 
-      if (meRes.ok) {
-        const meData = await meRes.json();
-        if (meData?.is_onboarding === true) {
-          return NextResponse.redirect(new URL("/mu/home", request.url));
-        }
-      }
-    } catch {
-      // Fallback to client-side onboarding guard if /me check fails transiently
+    if (status.isOnboarded === true) {
+      return attachCookiesToResponse(
+        NextResponse.redirect(new URL("/mu/home", request.url)),
+      );
     }
 
     return createNextResponse();
@@ -303,8 +355,24 @@ export async function middleware(request: NextRequest) {
   // -------------------------------------------------------------
   // CATCH-ALL UNPROTECTED PRIVATE ROUTES
   // -------------------------------------------------------------
-  if (!isValidToken && !isPublicPath) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!isPublicPath) {
+    if (!isValidToken || !currentToken) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    if (!isAdmin) {
+      const status = await resolveOnboardingStatus(currentToken);
+      if (!status.valid) {
+        return clearAuthCookie(
+          NextResponse.redirect(new URL("/login", request.url)),
+        );
+      }
+      if (status.isOnboarded === false) {
+        return attachCookiesToResponse(
+          NextResponse.redirect(new URL("/onboarding", request.url)),
+        );
+      }
+    }
   }
 
   return createNextResponse();

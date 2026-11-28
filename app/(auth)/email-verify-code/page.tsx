@@ -147,7 +147,16 @@ export default function Page() {
         await setToken(token);
       }
       const userRole = response?.user?.role || response?.data?.user?.role;
-      const target = redirectParam || (userRole === "admin" ? "/dashboard" : "/mu/home");
+      const isOnboarded =
+        response?.is_onboarding ??
+        response?.data?.is_onboarding ??
+        Boolean(response?.user?.profile || response?.data?.user?.profile);
+      const target =
+        userRole === "admin"
+          ? redirectParam || "/dashboard"
+          : !isOnboarded
+            ? "/onboarding"
+            : redirectParam || "/mu/home";
       router.push(target);
     } catch (error) {
       toast.error("Invalid OTP. Please try again.");

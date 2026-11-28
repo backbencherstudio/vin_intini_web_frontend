@@ -93,8 +93,16 @@ export default function Page() {
         await setToken(token);
       }
       const userRole = response?.user?.role || response?.data?.user?.role;
+      const isOnboarded =
+        response?.is_onboarding ??
+        response?.data?.is_onboarding ??
+        Boolean(response?.user?.profile || response?.data?.user?.profile);
       const target =
-        redirectParam || (userRole === "admin" ? "/dashboard" : "/mu/home");
+        userRole === "admin"
+          ? redirectParam || "/dashboard"
+          : !isOnboarded
+            ? "/onboarding"
+            : redirectParam || "/mu/home";
       route.push(target);
     } catch (err: unknown) {
       const errorObj = err as { status?: number; data?: { message?: string } };

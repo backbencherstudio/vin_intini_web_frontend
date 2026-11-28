@@ -14,7 +14,11 @@ export default function RootProtectedLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { isError, error } = useGetUserProfileQuery("userProfile");
+  const { data: userProfile, isLoading, isFetching, isError, error } =
+    useGetUserProfileQuery("userProfile");
+
+  const isOnboardingIncomplete =
+    Boolean(userProfile) && userProfile?.is_onboarding === false;
 
   useEffect(() => {
     let active = true;
@@ -32,6 +36,18 @@ export default function RootProtectedLayout({
       if (isError && (error as any)?.status === 401) {
         await clearToken();
         window.location.replace("/login");
+        return;
+      }
+
+      if (
+        (!isFetching && isOnboardingIncomplete) ||
+        (isError &&
+          (error as any)?.status === 403 &&
+          String((error as any)?.data?.message || "").includes(
+            "Profile setup required",
+          ))
+      ) {
+        window.location.replace("/onboarding");
       }
     };
 
@@ -40,20 +56,26 @@ export default function RootProtectedLayout({
     return () => {
       active = false;
     };
-  }, [pathname, isError, error]);
+  }, [pathname, isError, error, isFetching, isOnboardingIncomplete]);
 
   const noContainerRoutes = ["/mu/about-us"];
 
   const shouldUseContainer = !noContainerRoutes.includes(pathname);
+
+  if (isLoading || (isFetching && isOnboardingIncomplete) || isOnboardingIncomplete) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primaryColor border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
       <MainNavbar />
 
       {shouldUseContainer ? (
-        <div className="container h-full w-full">
-          {children}
-        </div>
+        <div className="container h-full w-full">{children}</div>
       ) : (
         children
       )}
@@ -62,20 +84,3 @@ export default function RootProtectedLayout({
     </div>
   );
 }
-
-// import MainNavbar from "./mainPage/MainNavbar";
-// import MainFooter from "@/components/reusable/MainFooter";
-
-// export default function RootProtectedLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <div className=" min-h-screen">
-//       <MainNavbar />
-//       <div className="container h-full w-full ">{children}</div>
-//       <MainFooter />
-//     </div>
-//   );
-// }
