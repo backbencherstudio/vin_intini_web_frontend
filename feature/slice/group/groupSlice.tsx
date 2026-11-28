@@ -17,17 +17,35 @@ const groupSlice = baseApiSlice.injectEndpoints({
       providesTags: ["group"],
     }),
     getMyJoinedGroups: builder.query({
-      query: ({ query }) => ({
-        url: `/my-joined-groups${query}`,
-        method: "GET",
-      }),
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          return {
+            url: `/my-joined-groups${arg.query}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: "/my-joined-groups",
+          method: "GET",
+          params: arg,
+        };
+      },
       providesTags: ["group"],
     }),
     getMyCreatedGroups: builder.query({
-      query: ({ query }) => ({
-        url: `/my-created-groups${query}`,
-        method: "GET",
-      }),
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          return {
+            url: `/my-created-groups${arg.query}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: "/my-created-groups",
+          method: "GET",
+          params: arg,
+        };
+      },
       providesTags: ["group"],
     }),
     getViewByIdGroup: builder.query({
@@ -45,10 +63,19 @@ const groupSlice = baseApiSlice.injectEndpoints({
       providesTags: ["group"],
     }),
     getAllInviteGroup: builder.query({
-      query: ({ query }) => ({
-        url: `/group-invitations/requests?${query}`,
-        method: "GET",
-      }),
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          return {
+            url: `/group-invitations/requests?${arg.query}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: "/group-invitations/requests",
+          method: "GET",
+          params: arg,
+        };
+      },
       providesTags: ["group"],
     }),
     joinGroup: builder.mutation({

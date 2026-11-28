@@ -58,6 +58,7 @@ export interface ConnectionRequestType {
   can_accept: boolean;
   can_ignore: boolean;
   connected_since: string | null;
+  sent_since?: string | null;
   user: UserProfileType;
   mutual_connections_count: number;
   mutual_connections: any[];

@@ -1,61 +1,41 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
-import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import {
   useGetConnectionsQuery,
   useGetSentConnectionsQuery,
 } from "@/feature/slice/connect/connectSlice";
-import { useLoadMore } from "@/hooks/useLoadMore";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { ConnectionRequestType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ConnectionNotFound from "./ConnectionNotFound";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 
-function ConnectionRequestList({
-  isNetwork,
-  type = "received",
-}: {
+type FeedProps = {
   isNetwork?: boolean;
-  type?: "received" | "sent";
+  searchQuery: string;
+};
+
+function RequestFeedView({
+  type,
+  isNetwork,
+  items,
+  isInitialLoading,
+  isFetchingMore,
+  hasMore,
+  isError,
+  observerRef,
+}: {
+  type: "received" | "sent";
+  isNetwork?: boolean;
+  items: ConnectionRequestType[];
+  isInitialLoading: boolean;
+  isFetchingMore: boolean;
+  hasMore: boolean;
+  isError: boolean;
+  observerRef: (node: HTMLElement | null) => void;
 }) {
-  const params = useSearchParams();
-  const limit = 10;
-  const [tempPage, setTempPage] = useState(1);
-  const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
-
-  const receivedQuery = useGetConnectionsQuery(
-    {
-      query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
-    },
-    { skip: type !== "received" },
-  );
-
-  const sentQuery = useGetSentConnectionsQuery(
-    {
-      query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}`,
-    },
-    { skip: type !== "sent" },
-  );
-
-  const { data, isFetching, isLoading, isError } =
-    type === "sent" ? sentQuery : receivedQuery;
-
-  const { page, setPage, combinedData, hasMore } = useLoadMore(
-    data,
-    isFetching,
-    limit,
-    `${type}-${searchQuery}`,
-  );
-
-  useEffect(() => {
-    setTempPage(page);
-  }, [page]);
-
-  const showInitialSkeleton = isLoading && combinedData.length === 0;
-  const showMoreLoader = isFetching && page > 1;
-
   if (isError) {
     return <Error />;
   }
@@ -63,19 +43,17 @@ function ConnectionRequestList({
   return (
     <div>
       <div className="w-full">
-        {showInitialSkeleton
+        {isInitialLoading
           ? Array.from({ length: 8 }).map((_, index) => (
               <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
             ))
-          : combinedData?.length > 0
-            ? combinedData?.map((item: ConnectionRequestType) => (
-                <div key={item.id}>
-                  <ConnectionRequestCard
-                    key={item.id}
-                    item={item}
-                    isSent={type === "sent"}
-                  />
-                </div>
+          : items.length > 0
+            ? items.map((item: ConnectionRequestType) => (
+                <ConnectionRequestCard
+                  key={item.id}
+                  item={item}
+                  isSent={type === "sent"}
+                />
               ))
             : isNetwork && (
                 <ConnectionNotFound
@@ -93,15 +71,102 @@ function ConnectionRequestList({
               )}
       </div>
 
-      {showMoreLoader && (
+      {isFetchingMore && (
         <div className="mt-4">
           <ConnectionRequestSkleton />
         </div>
       )}
-      {!showMoreLoader && hasMore && (
-        <LoadMorePagination setPage={setPage} isFetching={isFetching} />
+      {hasMore && !isFetchingMore && (
+        <div ref={observerRef} className="h-4 w-full" />
       )}
     </div>
+  );
+}
+
+function ReceivedRequestsFeed({ isNetwork, searchQuery }: FeedProps) {
+  const queryParams = useMemo(
+    () => (searchQuery ? { search: searchQuery } : {}),
+    [searchQuery],
+  );
+  const {
+    items,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    isError,
+    observerRef,
+  } = useCursorQuery<ConnectionRequestType>(
+    useGetConnectionsQuery,
+    queryParams,
+    {
+      limit: 20,
+      observerOptions: { rootMargin: "1000px" },
+    },
+  );
+
+  return (
+    <RequestFeedView
+      type="received"
+      isNetwork={isNetwork}
+      items={items}
+      isInitialLoading={isInitialLoading}
+      isFetchingMore={isFetchingMore}
+      hasMore={hasMore}
+      isError={isError}
+      observerRef={observerRef}
+    />
+  );
+}
+
+function SentRequestsFeed({ isNetwork, searchQuery }: FeedProps) {
+  const queryParams = useMemo(
+    () => (searchQuery ? { search: searchQuery } : {}),
+    [searchQuery],
+  );
+  const {
+    items,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    isError,
+    observerRef,
+  } = useCursorQuery<ConnectionRequestType>(
+    useGetSentConnectionsQuery,
+    queryParams,
+    {
+      limit: 20,
+      observerOptions: { rootMargin: "1000px" },
+    },
+  );
+
+  return (
+    <RequestFeedView
+      type="sent"
+      isNetwork={isNetwork}
+      items={items}
+      isInitialLoading={isInitialLoading}
+      isFetchingMore={isFetchingMore}
+      hasMore={hasMore}
+      isError={isError}
+      observerRef={observerRef}
+    />
+  );
+}
+
+function ConnectionRequestList({
+  isNetwork,
+  type = "received",
+}: {
+  isNetwork?: boolean;
+  type?: "received" | "sent";
+}) {
+  const params = useSearchParams();
+  const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
+
+  return type === "sent" ? (
+    <SentRequestsFeed isNetwork={isNetwork} searchQuery={searchQuery} />
+  ) : (
+    <ReceivedRequestsFeed isNetwork={isNetwork} searchQuery={searchQuery} />
   );
 }
 

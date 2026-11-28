@@ -2,31 +2,75 @@
 
 import UserConnectionCardSkleton from "@/components/reusable/All Skleton/UserConnectionCardSkleton";
 import { useGetSentConnectionsQuery } from "@/feature/slice/connect/connectSlice";
-import { ConnectionRequestType } from "@/lib/type";
+import { useCursorPagination } from "@/hooks/useCursorPagination";
 import { fetchWrapper } from "@/lib/fetch-wrapper";
-import { Loader } from "lucide-react";
+import { ConnectionRequestType } from "@/lib/type";
 import { useEffect, useMemo, useState } from "react";
 import ConnectionUserCard from "./ConnectionUserCard";
 
 interface SuggestConnectionListClientProps {
-  initialData: ConnectionRequestType[];
+  initialResponse: any;
   limit: number;
   searchQuery?: string;
 }
 
 export default function SuggestConnectionListClient({
-  initialData,
+  initialResponse,
   limit,
   searchQuery,
 }: SuggestConnectionListClientProps) {
-  const [combinedData, setCombinedData] =
-    useState<ConnectionRequestType[]>(initialData);
-  const [page, setPage] = useState(1);
+  const [pagedResponse, setPagedResponse] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [hasMore, setHasMore] = useState(initialData.length >= limit);
+  const [cursor, setCursor] = useState<string | null>(null);
+
+  const activeData = cursor && pagedResponse ? pagedResponse : (initialResponse ?? { data: [] });
+
+  const { combinedData, hasMore, nextCursor, observerRef } =
+    useCursorPagination<ConnectionRequestType>({
+      data: activeData,
+      isFetching,
+      cursor,
+      setCursor,
+      resetKey: searchQuery ?? "",
+      getItemId: (item: any) => item?.user?.id ?? item?.id,
+      observerOptions: {
+        rootMargin: "1000px",
+      },
+    });
+
+  useEffect(() => {
+    if (!cursor) return;
+
+    let cancelled = false;
+
+    const fetchNextPage = async () => {
+      setIsFetching(true);
+      try {
+        const query = searchQuery || "";
+        const res = await fetchWrapper(
+          `/connections/suggestions?per_page=${limit}&cursor=${encodeURIComponent(cursor)}&search=${encodeURIComponent(query)}`,
+        );
+        if (!cancelled && res) {
+          setPagedResponse(res);
+        }
+      } catch (error) {
+        console.error("Error loading more suggestions:", error);
+      } finally {
+        if (!cancelled) {
+          setIsFetching(false);
+        }
+      }
+    };
+
+    fetchNextPage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cursor, limit, searchQuery]);
 
   const { data: sentConnectionsData } = useGetSentConnectionsQuery({
-    query: "?page=1&limit=50",
+    query: "?limit=100",
   });
 
   const pendingSentUserIds = useMemo(() => {
@@ -37,49 +81,6 @@ export default function SuggestConnectionListClient({
     return ids;
   }, [sentConnectionsData]);
 
-  useEffect(() => {
-    setCombinedData(initialData);
-    setPage(1);
-    setHasMore(initialData.length >= limit);
-  }, [initialData, limit]);
-
-  const fetchNextPage = async (nextPage: number) => {
-    setIsFetching(true);
-    try {
-      const query = searchQuery || "";
-      const response = await fetchWrapper(
-        `/connections/suggestions?page=${nextPage}&per_page=${limit}&search=${encodeURIComponent(query)}`,
-      );
-
-      const newItems = response.data || [];
-
-      if (newItems.length === 0) {
-        setHasMore(false);
-      } else {
-        setCombinedData((prev) => {
-          return [...prev, ...newItems];
-        });
-
-        if (newItems.length < limit) {
-          setHasMore(false);
-        }
-      }
-    } catch (error) {
-      console.error("Error loading more suggestions:", error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  const handleLoadMore = () => {
-    if (!isFetching && hasMore) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchNextPage(nextPage);
-    }
-  };
-
-
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -87,7 +88,7 @@ export default function SuggestConnectionListClient({
           combinedData.map((profile: ConnectionRequestType, index: number) => (
             <ConnectionUserCard
               profile={profile}
-              key={profile?.id || `profile-${index}`}
+              key={profile?.user?.id || profile?.id || `profile-${index}`}
               isPendingSent={pendingSentUserIds.has(profile?.user?.id)}
             />
           ))
@@ -97,25 +98,19 @@ export default function SuggestConnectionListClient({
           </p>
         )}
       </div>
-      <div className="grid mt-4 grid-cols-2 gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {isFetching &&
-          Array.from({ length: 5 }).map((_, index) => (
+
+      {isFetching && (
+        <div className="grid mt-4 grid-cols-2 gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, index) => (
             <div key={`skeleton-${index}`} className="mb-4">
               <UserConnectionCardSkleton />
             </div>
           ))}
-      </div>
-      {/* Load More Button */}
-      {hasMore && combinedData.length > 0 && (
-        <div className="flex justify-center w-full cursor-pointer mt-4">
-          <button
-            className="px-4 py-2 cursor-pointer disabled:bg-bgColor disabled:text-grayColor1 disabled:cursor-not-allowed bg-primaryColor text-white rounded"
-            onClick={handleLoadMore}
-            disabled={isFetching}
-          >
-            {isFetching ? <Loader className="animate-spin" /> : "Load More"}
-          </button>
         </div>
+      )}
+
+      {hasMore && nextCursor && !isFetching && (
+        <div ref={observerRef} className="h-4 w-full" />
       )}
     </div>
   );

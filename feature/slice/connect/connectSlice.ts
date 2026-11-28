@@ -3,27 +3,52 @@ import baseApiSlice from "../baseApi";
 const connectSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getConnections: builder.query({
-      query: ({ query }) => ({
-        url: `/connections/requests${query}`,
-        method: "GET",
-      }),
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          return {
+            url: `/connections/requests${arg.query}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: "/connections/requests",
+          method: "GET",
+          params: arg,
+        };
+      },
       providesTags: ["connect"],
     }),
     getSentConnections: builder.query({
-      query: (arg?: { query?: string }) => {
-        const query = arg?.query || "";
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          const query = arg.query;
+          return {
+            url: `/connections/sent-requests${query ? (query.startsWith("?") ? query : `?${query}`) : ""}`,
+            method: "GET",
+          };
+        }
         return {
-          url: `/connections/sent-requests${query ? (query.startsWith("?") ? query : `?${query}`) : ""}`,
+          url: "/connections/sent-requests",
           method: "GET",
+          params: arg,
         };
       },
       providesTags: ["connect"],
     }),
     getMyConnections: builder.query({
-      query: ({ query }) => ({
-        url: `/connections${query}`,
-        method: "GET",
-      }),
+      query: (arg: { query?: string } | Record<string, any> = {}) => {
+        if (typeof arg?.query === "string") {
+          return {
+            url: `/connections${arg.query}`,
+            method: "GET",
+          };
+        }
+        return {
+          url: "/connections",
+          method: "GET",
+          params: arg,
+        };
+      },
       providesTags: ["connect"],
     }),
     getMyConnectionSuggestions: builder.query({

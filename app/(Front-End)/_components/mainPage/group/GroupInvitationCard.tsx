@@ -11,7 +11,13 @@ function GroupInvitationCard({ item }: { item: any }) {
     <div>
       <article className="flex flex-col md:flex-row lg:gap-6 xl:gap-8 items-start justify-between gap-3 border-b border-borderColor py-3">
         <div className="flex h-full items-start flex-1 gap-3 ">
-          <div className="flex md:h-16 md:w-16  w-12 h-12 items-center justify-center overflow-hidden rounded-full bg-bgColor">
+          <Link
+            href={
+              item?.group?.id ? `/mu/my-network/group/${item.group.id}` : "#"
+            }
+            aria-label={item?.group?.name || "View group"}
+            className="flex md:h-16 md:w-16 w-12 h-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-bgColor transition-opacity hover:opacity-90"
+          >
             {item.id === 1 ? (
               <ImageIcon className="h-4 w-4 text-descriptionColor" />
             ) : (
@@ -24,24 +30,24 @@ function GroupInvitationCard({ item }: { item: any }) {
                 className="h-full w-full object-cover"
               />
             )}
-          </div>
+          </Link>
 
           <div className="flex-1">
             <div>
               <Link
                 href={`/mu/profile/${item?.inviter?.id}`}
-                className=" text-base  text-headerColor font-semibold"
+                className="text-base text-headerColor font-semibold hover:text-primaryColor hover:underline transition-colors"
               >
                 {item?.inviter?.name}
               </Link>{" "}
               <span>Invited you to the</span>{" "}
               <Link
                 href={
-                  item?.group?.type == "public"
-                    ? `/mu/my-network/group/${item?.group?.id}`
-                    : `#`
+                  item?.group?.id
+                    ? `/mu/my-network/group/${item.group.id}`
+                    : "#"
                 }
-                className=" text-base  text-headerColor font-semibold"
+                className="text-base text-headerColor font-semibold hover:text-primaryColor hover:underline transition-colors"
               >
                 {item?.group?.name}
               </Link>

@@ -1,50 +1,54 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
-import LoadMorePagination from "@/components/reusable/LoadMorePagination";
+import Error from "@/components/reusable/Error";
 import { useGetAllInviteGroupQuery } from "@/feature/slice/group/groupSlice";
-import { useEffect, useState } from "react";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 import GroupInvitationCard from "./GroupInvitationCard";
 
-interface GroupInvitetionAllListProps {
-  initialData: any;
-  limit: number;
-}
+function GroupInvitetionAllList() {
+  const params = useSearchParams();
+  const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
 
-function GroupInvitetionAllList({ initialData, limit }: GroupInvitetionAllListProps) {
-  const [initialsData, setInitialsData] = useState<any[]>(
-    initialData?.data || [],
-  );
-  const [tempPage, setTempPage] = useState(1);
-
-  const { data, isFetching } = useGetAllInviteGroupQuery(
-    { query: `page=${tempPage}&limit=${limit}` },
-    { skip: tempPage === 1 },
+  const queryParams = useMemo(
+    () => (searchQuery ? { search: searchQuery } : {}),
+    [searchQuery],
   );
 
-  useEffect(() => {
-    if (data?.data) {
-      setInitialsData((prev) => {
-        const existingIds = new Set(prev.map((item) => item.id));
-        const uniqueNewItems = data.data.filter(
-          (item: any) => !existingIds.has(item.id),
-        );
-        return [...prev, ...uniqueNewItems];
-      });
-    }
-  }, [data]);
+  const {
+    items: combinedData,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    isError,
+    observerRef,
+  } = useCursorQuery<any>(useGetAllInviteGroupQuery, queryParams, {
+    limit: 20,
+    getItemId: (item: any) =>
+      item?.invitation_id ?? item?.group?.id ?? item?.id,
+    observerOptions: {
+      rootMargin: "1500px",
+    },
+  });
 
-  const showMoreLoader = isFetching && initialsData.length > 0;
-  const hasMore =
-    tempPage === 1 ? initialsData.length === limit : data?.data?.length === limit;
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <div>
-      <div className="space-y-4">
-        {initialsData?.length > 0 ? (
-          initialsData.map((item: any, index: number) => (
-            <div key={item?.id || `invite-${index}`}>
-              <GroupInvitationCard item={item} />
-            </div>
+      <div>
+        {isInitialLoading ? (
+          Array.from({ length: 6 }).map((_, index) => (
+            <ConnectionRequestSkleton key={`invite-skeleton-${index}`} />
+          ))
+        ) : combinedData.length > 0 ? (
+          combinedData.map((item: any, index: number) => (
+            <GroupInvitationCard
+              key={item?.invitation_id || item?.id || `invite-${index}`}
+              item={item}
+            />
           ))
         ) : (
           <div className="text-center py-10 text-muted-foreground">
@@ -53,14 +57,14 @@ function GroupInvitetionAllList({ initialData, limit }: GroupInvitetionAllListPr
         )}
       </div>
 
-      {showMoreLoader && (
+      {isFetchingMore && (
         <div className="mt-4">
           <ConnectionRequestSkleton />
         </div>
       )}
 
-      {!showMoreLoader && hasMore && (
-        <LoadMorePagination setPage={setTempPage} isFetching={isFetching} />
+      {hasMore && !isFetchingMore && (
+        <div ref={observerRef} className="h-4 w-full" />
       )}
     </div>
   );

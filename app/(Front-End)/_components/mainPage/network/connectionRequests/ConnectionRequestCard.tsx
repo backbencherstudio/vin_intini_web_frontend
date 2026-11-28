@@ -107,6 +107,14 @@ function ConnectionRequestCard({
           <span className="order-1 sm:order-2 text-[11px] font-medium text-grayColor1 whitespace-nowrap">
             Connected since {item.connected_since}
           </span>
+        ) : isSent && item?.sent_since ? (
+          <span className="order-1 sm:order-2 text-[11px] font-medium text-grayColor1 whitespace-nowrap">
+            Sent on {item.sent_since}
+          </span>
+        ) : item?.sent_since ? (
+          <span className="order-1 sm:order-2 text-[11px] font-medium text-grayColor1 whitespace-nowrap">
+            Requested on {item.sent_since}
+          </span>
         ) : (
           <span className="sm:hidden" />
         )}

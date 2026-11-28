@@ -1,12 +1,11 @@
 "use client";
 import ConnectionRequestSkleton from "@/components/reusable/All Skleton/ConnectionRequestSkleton";
 import Error from "@/components/reusable/Error";
-import LoadMorePagination from "@/components/reusable/LoadMorePagination";
 import { useGetMyConnectionsQuery } from "@/feature/slice/connect/connectSlice";
-import { useLoadMore } from "@/hooks/useLoadMore";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { ConnectionRequestType } from "@/lib/type";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ConnectionNotFound from "../connectionRequests/ConnectionNotFound";
 import ConnectionRequestCard from "../connectionRequests/ConnectionRequestCard";
 import ConnectionListHeader from "./ConnectionListHeader";
@@ -16,26 +15,39 @@ function AllConnectionFriendList() {
 
   const searchQuery = (params.get("search") ?? "").trim().toLowerCase();
   const sortQuery = params.get("sort") ?? "";
-  const limit = 5;
-  const [tempPage, setTempPage] = useState(1);
 
-  const { data, isFetching, isLoading, isError } = useGetMyConnectionsQuery({
-    query: `?search=${searchQuery}&page=${tempPage}&limit=${limit}${sortQuery ? `&sort=${sortQuery}` : ""}`,
-  });
-
-  const { page, setPage, combinedData, hasMore } = useLoadMore(
-    data,
-    isFetching,
-    limit,
-    `${searchQuery}-${sortQuery}`,
+  const queryParams = useMemo(
+    () => ({
+      ...(searchQuery ? { search: searchQuery } : {}),
+      ...(sortQuery ? { sort: sortQuery } : {}),
+    }),
+    [searchQuery, sortQuery],
   );
 
-  useEffect(() => {
-    setTempPage(page);
-  }, [page]);
+  const {
+    data,
+    total,
+    items: combinedData,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    isError,
+    observerRef,
+  } = useCursorQuery<ConnectionRequestType>(
+    useGetMyConnectionsQuery,
+    queryParams,
+    {
+      limit: 20,
+      observerOptions: {
+        rootMargin: "1000px",
+      },
+    },
+  );
 
-  const showInitialSkeleton = isLoading && combinedData.length === 0;
-  const showMoreLoader = isFetching && page > 1;
+  const headerData = useMemo(
+    () => ({ ...data, total: total || data?.total || 0 }),
+    [data, total],
+  );
 
   if (isError) {
     return <Error />;
@@ -43,14 +55,14 @@ function AllConnectionFriendList() {
 
   return (
     <div>
-      <ConnectionListHeader data={data} />
-      <div className=" max-w-full">
-        {showInitialSkeleton ? (
+      <ConnectionListHeader data={headerData} />
+      <div className="max-w-full">
+        {isInitialLoading ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ConnectionRequestSkleton key={`request-skeleton-${index}`} />
           ))
-        ) : combinedData?.length > 0 ? (
-          combinedData?.map((item: ConnectionRequestType) => (
+        ) : combinedData.length > 0 ? (
+          combinedData.map((item: ConnectionRequestType) => (
             <ConnectionRequestCard key={item.id} item={item} />
           ))
         ) : (
@@ -60,13 +72,13 @@ function AllConnectionFriendList() {
           />
         )}
       </div>
-      {showMoreLoader && (
+      {isFetchingMore && (
         <div className="mt-4">
           <ConnectionRequestSkleton />
         </div>
       )}
-      {!showMoreLoader && hasMore && (
-        <LoadMorePagination setPage={setPage} isFetching={isFetching} />
+      {hasMore && !isFetchingMore && (
+        <div ref={observerRef} className="h-4 w-full" />
       )}
     </div>
   );

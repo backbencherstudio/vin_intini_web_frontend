@@ -8,23 +8,22 @@ async function SuggestConnectionList({
   searchQuery?: string;
 }) {
   const query = searchQuery || "";
-  const limit = 10;
+  const limit = 20;
 
   let suggestedConnections = { data: [] } as any;
   try {
     suggestedConnections = await fetchWrapper(
-      `/connections/suggestions?page=1&per_page=${limit}&search=${encodeURIComponent(query)}`,
+      `/connections/suggestions?per_page=${limit}&search=${encodeURIComponent(query)}`,
     );
   } catch (error) {
     console.error("SuggestConnectionList server fetch error:", error);
     return <Error />;
   }
 
-  const initialData = suggestedConnections.data || [];
-
   return (
     <SuggestConnectionListClient
-      initialData={initialData}
+      key={query}
+      initialResponse={suggestedConnections}
       limit={limit}
       searchQuery={searchQuery}
     />
