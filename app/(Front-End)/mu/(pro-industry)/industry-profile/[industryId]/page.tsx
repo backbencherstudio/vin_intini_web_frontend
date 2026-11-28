@@ -12,7 +12,7 @@ async function Page({ params }: { params: Promise<{ industryId: string }> }) {
       </div>
       <div className="mt-4">
         <PostList
-          url={`/industry/post/view/${industryId}?page=1&per_page=10`}
+          url={`/industry/post/view/${industryId}?per_page=10`}
         />
       </div>
     </div>
