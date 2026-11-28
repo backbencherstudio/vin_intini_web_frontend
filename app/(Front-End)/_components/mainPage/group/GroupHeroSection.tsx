@@ -15,10 +15,13 @@ import {
 import Error from "@/components/reusable/Error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { Globe, Loader2, Lock, Pencil } from "lucide-react";
+import { Expand, Globe, Loader2, Lock, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import ProfilePhotoViewerDialog, {
+  ProfilePhotoMode,
+} from "../profile/ProfilePhotoViewerDialog";
 import CreateGroupForm from "./GroupCreateModal";
 import GroupLeaveDialog from "./GroupLeaveDialog";
 import GroupNotifySetting from "./GroupNotifySetting";
@@ -39,6 +42,8 @@ function GroupHeroSection({
   const [positionY, setPositionY] = useState(35);
   const [positionX, setPositionX] = useState(50);
   const [isEdite, setIsEdite] = useState(false);
+  const [photoViewerMode, setPhotoViewerMode] =
+    useState<ProfilePhotoMode | null>(null);
   const { data, isLoading, isError } = useGetViewByIdGroupQuery({
     id: groupId,
   });
@@ -51,6 +56,7 @@ function GroupHeroSection({
     Boolean(data?.data?.is_current_user_admin) ||
     groupData?.creator?.id === myData?.user?.id;
   const isPrivate = groupData?.type === "private";
+  const displayName = groupData?.name || "Group Name";
 
   const handleJoinGroup = async () => {
     if (!groupId || isJoining || isPrivate) return;
@@ -74,40 +80,62 @@ function GroupHeroSection({
 
   return (
     <section>
-      <div className=" h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
+      <div className="relative h-36 sm:h-44 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
         {isLoading ? (
-          <Skeleton className="w-full h-full bg-gray-200" />
+          <Skeleton className="w-full h-full bg-gray-200 rounded-md" />
         ) : (
-          <Image
-            src={groupData?.cover_photo_url || coverPreview}
-            className="w-full h-full object-cover rounded-md"
-            alt="Cover"
-            width={1200}
-            height={400}
-            style={{
-              objectPosition: `${positionX}% ${positionY}%`,
-            }}
-          />
+          <button
+            type="button"
+            onClick={() => setPhotoViewerMode("cover")}
+            aria-label="View cover photo"
+            className="group relative block w-full h-full rounded-md overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor"
+          >
+            <Image
+              src={groupData?.cover_photo_url || coverPreview}
+              unoptimized={Boolean(groupData?.cover_photo_url)}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+              alt={`${displayName} cover photo`}
+              width={1200}
+              height={400}
+              style={{
+                objectPosition: `${positionX}% ${positionY}%`,
+              }}
+            />
+            <span className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/15" />
+            <span className="pointer-events-none absolute bottom-2.5 right-2.5 hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
+              <Expand className="h-3.5 w-3.5" />
+              View cover
+            </span>
+          </button>
         )}
 
         {/* Floating Logo Box */}
-        <div className="flex px-4 justify-between w-full">
-          <div className="-mt-11  h-20 w-20 bg-bgLightColor rounded-md flex items-center justify-center">
+        <div className="flex px-3 sm:px-4 justify-between items-start gap-2 w-full">
+          <div className="-mt-10 sm:-mt-12 relative z-10 border-2 sm:border-[3px] border-white h-20 w-20 sm:h-24 sm:w-24 bg-bgLightColor rounded-md shadow-sm flex items-center justify-center shrink-0">
             {isLoading ? (
-              <Skeleton className="w-full h-full bg-gray-200" />
+              <Skeleton className="w-full h-full bg-gray-200 rounded-md" />
             ) : (
-              <Image
-                src={groupData?.logo_url || logoPreview}
-                className="w-full h-full object-cover rounded-md"
-                alt="Logo"
-                width={80}
-                height={80}
-              />
+              <button
+                type="button"
+                onClick={() => setPhotoViewerMode("profile")}
+                aria-label="View group logo"
+                className="group relative w-full h-full rounded-md overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor"
+              >
+                <Image
+                  src={groupData?.logo_url || logoPreview}
+                  unoptimized={Boolean(groupData?.logo_url)}
+                  className="w-full h-full object-cover transition-all duration-200 group-hover:brightness-90"
+                  alt={`${displayName} logo`}
+                  width={96}
+                  height={96}
+                />
+              </button>
             )}
           </div>
           {data?.data?.is_current_user_member && (
-            <div className="flex gap-6 ">
+            <div className="flex items-center gap-4 sm:gap-6 pt-2">
               <button
+                type="button"
                 aria-label="notify-open"
                 onClick={() => setIsNotify(true)}
                 className="cursor-pointer"
@@ -116,6 +144,7 @@ function GroupHeroSection({
               </button>
               {!IsAdmin ? (
                 <button
+                  type="button"
                   aria-label="leave-group"
                   title="Leave Group"
                   onClick={() => setILeaved(true)}
@@ -125,6 +154,7 @@ function GroupHeroSection({
                 </button>
               ) : (
                 <button
+                  type="button"
                   aria-label="edit-group"
                   title="Edit Group"
                   onClick={() => setIsEdite(true)}
@@ -137,7 +167,7 @@ function GroupHeroSection({
           )}
         </div>
       </div>
-      <div className="mt-12 border-b border-borderColor pb-5">
+      <div className="mt-13 sm:mt-15 border-b border-borderColor pb-5">
         {isLoading ? (
           <div className="space-y-3">
             <Skeleton className="h-5 w-full bg-gray-200" />
@@ -238,6 +268,23 @@ function GroupHeroSection({
           </>
         )}
       </div>
+      {photoViewerMode !== null && !isLoading && (
+        <ProfilePhotoViewerDialog
+          open={photoViewerMode !== null}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setPhotoViewerMode(null);
+          }}
+          mode={photoViewerMode}
+          onModeChange={setPhotoViewerMode}
+          userName={displayName}
+          profileSrc={groupData?.logo_url || logoPreview}
+          coverSrc={groupData?.cover_photo_url || coverPreview}
+          hasCustomProfile={Boolean(groupData?.logo_url)}
+          hasCustomCover={Boolean(groupData?.cover_photo_url)}
+          profileLabel="Group Logo"
+          coverLabel="Cover Photo"
+        />
+      )}
       {isEdite && (
         <CreateGroupForm
           open={isEdite}

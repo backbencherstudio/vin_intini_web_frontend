@@ -19,7 +19,7 @@ import {
   GroupUserIcon,
   PencileIcon,
 } from "@/public/svgIcons/Icons";
-import { Plus } from "lucide-react";
+import { Expand, Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -27,6 +27,9 @@ import { MdWorkOutline } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import ProfileEducationForm from "./Education/ProfileEducationForm";
 import ProfileConnectionAction from "./ProfileConnectionAction";
+import ProfilePhotoViewerDialog, {
+  ProfilePhotoMode,
+} from "./ProfilePhotoViewerDialog";
 import ProfileUpdateForm from "./ProfileUpdateForm";
 import ExpreanceAddFrom from "./expreance/ExpreanceAddFrom";
 
@@ -72,9 +75,15 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [photoViewerMode, setPhotoViewerMode] =
+    useState<ProfilePhotoMode | null>(null);
   const coverImgRef = useRef<HTMLInputElement>(null);
   const profileImgRef = useRef<HTMLInputElement>(null);
+
+  const displayName =
+    [profileData?.first_name, profileData?.last_name]
+      .filter(Boolean)
+      .join(" ") || "MindUnite Member";
   
 
   useEffect(() => {
@@ -154,14 +163,27 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
 
   return (
     <section>
-      <div className=" relative h-40 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
-        <Image
-          src={coverImage || coverPreview}
-          className="w-full h-full object-cover rounded-md"
-          alt="Cover"
-          width={1200}
-          height={400}
-        />
+      <div className="relative h-36 sm:h-44 md:h-48 w-full bg-linear-to-r rounded-md from-cyan-100 to-blue-200">
+        <button
+          type="button"
+          onClick={() => setPhotoViewerMode("cover")}
+          aria-label="View cover photo"
+          className="group relative block w-full h-full rounded-md overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor"
+        >
+          <Image
+            src={coverImage || coverPreview}
+            unoptimized={Boolean(coverImage)}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+            alt={`${displayName} cover photo`}
+            width={1200}
+            height={400}
+          />
+          <span className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/15" />
+          <span className="pointer-events-none absolute bottom-2.5 right-2.5 hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
+            <Expand className="h-3.5 w-3.5" />
+            View cover
+          </span>
+        </button>
         <input
           type="file"
           ref={coverImgRef}
@@ -171,27 +193,34 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         />
         {profileData?.is_own_profile && (
           <button
-            onClick={() => coverImgRef.current?.click()}
-            className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-primaryColor"
+            type="button"
+            aria-label="Edit cover photo"
+            onClick={(e) => {
+              e.stopPropagation();
+              coverImgRef.current?.click();
+            }}
+            className="absolute top-2.5 right-2.5 z-10 cursor-pointer p-1.5 rounded-full bg-primaryColor shadow-sm hover:opacity-90 transition-opacity"
           >
             <EditeSquareIcon className="text-whiteColor" />
           </button>
         )}
 
         {/* Floating Logo Box */}
-        <div className="flex px-4 justify-between w-full">
-          <div className="-mt-11 relative  border-2 border-white h-20 w-20 bg-bgLightColor rounded-full flex items-center justify-center">
+        <div className="flex px-3 sm:px-4 justify-between items-start w-full">
+          <div className="-mt-10 sm:-mt-12 relative z-10 border-2 sm:border-[3px] border-white h-20 w-20 sm:h-24 sm:w-24 bg-bgLightColor rounded-full shadow-sm flex items-center justify-center">
             <button
               type="button"
-              onClick={() => setShowImagePreview(true)}
-              className="w-full h-full cursor-pointer"
+              onClick={() => setPhotoViewerMode("profile")}
+              aria-label="View profile photo"
+              className="group relative w-full h-full rounded-full overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor"
             >
               <Image
                 src={profileImage || logoPreview}
-                className="w-full rounded-full h-full object-cover"
-                alt="Logo"
-                width={80}
-                height={80}
+                unoptimized={Boolean(profileImage)}
+                className="w-full h-full object-cover transition-all duration-200 group-hover:brightness-90"
+                alt={`${displayName} profile photo`}
+                width={96}
+                height={96}
               />
             </button>
             <input
@@ -203,16 +232,22 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
             />
             {profileData?.is_own_profile && (
               <button
-                onClick={() => profileImgRef.current.click()}
-                className="absolute bottom-0 right-0 bg-primaryColor p-1 rounded-full cursor-pointer"
+                type="button"
+                aria-label="Edit profile photo"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  profileImgRef.current?.click();
+                }}
+                className="absolute bottom-0 right-0 z-10 bg-primaryColor p-1 rounded-full cursor-pointer shadow-sm hover:opacity-90 transition-opacity"
               >
                 <EditeSquareIcon className="text-whiteColor" />
               </button>
             )}
           </div>
           {profileData?.is_own_profile && (
-            <div className="flex gap-6 ">
+            <div className="flex gap-6 pt-2">
               <button
+                type="button"
                 aria-label="notify-open"
                 onClick={() => setIsNotify(true)}
                 className="cursor-pointer"
@@ -223,12 +258,11 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
           )}
         </div>
       </div>
-      <div className="mt-12 border-b border-borderColor pb-3">
+      <div className="mt-12 sm:mt-14 border-b border-borderColor pb-3">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <h4 className="text-lg font-semibold text-headerColor leading-[150%]">
-              {profileData?.first_name + " " + profileData?.last_name ||
-                "Vin Intini"}
+              {displayName}
             </h4>
             <p className="text-grayColor1 text-sm">
               {profileData?.title || "Software Engineer at Betopia Group"}
@@ -243,7 +277,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
               </p>
             </div>
           </div>
-          <div className="space-y-3 col-span-1">
+          <div className="space-y-3 md:col-span-1">
             <div className="flex items-center text-descriptionColor font-semibold gap-2">
               <MdWorkOutline size={22} />
               {!profileData?.is_own_profile &&
@@ -314,22 +348,20 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
         <ProfileConnectionAction profileData={profileData} userId={userId} />
       </div>
 
-      {showImagePreview && (
-        <RootDialog
-          open={showImagePreview}
-          setOpen={setShowImagePreview}
-          className="sm:max-w-lg overflow-hidden max-w-[90vw]"
-        >
-          <div className="p-2">
-            <Image
-              src={profileImage || logoPreview}
-              alt="Profile"
-              width={400}
-              height={400}
-              className="w-full h-auto rounded-lg object-cover"
-            />
-          </div>
-        </RootDialog>
+      {photoViewerMode !== null && (
+        <ProfilePhotoViewerDialog
+          open={photoViewerMode !== null}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setPhotoViewerMode(null);
+          }}
+          mode={photoViewerMode}
+          onModeChange={setPhotoViewerMode}
+          userName={displayName}
+          profileSrc={profileImage || logoPreview}
+          coverSrc={coverImage || coverPreview}
+          hasCustomProfile={Boolean(profileImage)}
+          hasCustomCover={Boolean(coverImage)}
+        />
       )}
 
       {openSelectInstituteModal && (
