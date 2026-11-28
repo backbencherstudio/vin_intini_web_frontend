@@ -98,7 +98,9 @@ export default function ActiveSessions() {
                     className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]
 "
                   >
-                    {session.device}
+                    {[session.device, session.browser]
+                      .filter(Boolean)
+                      .join(" • ")}
                   </p>
                 </div>
 

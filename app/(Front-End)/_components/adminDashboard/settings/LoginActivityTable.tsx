@@ -558,16 +558,18 @@ export default function LoginActivityTable() {
           )}
 
           {/* Backend Pagination */}
-          <Pagination
-            page={page}
-            pageSize={limit}
-            total={data?.total ?? 0}
-            totalPages={data?.total_page || 1}
-            onPageChange={(nextPage) => {
-              setPage(nextPage);
-              setSelectedIds([]);
-            }}
-          />
+          {(data?.total_page || 1) > 1 && (
+            <Pagination
+              page={page}
+              pageSize={limit}
+              total={data?.total ?? 0}
+              totalPages={data?.total_page || 1}
+              onPageChange={(nextPage) => {
+                setPage(nextPage);
+                setSelectedIds([]);
+              }}
+            />
+          )}
         </div>
       )}
 
