@@ -1,19 +1,15 @@
 import LoginActivityTable from "@/app/(Front-End)/_components/adminDashboard/settings/LoginActivityTable";
+import SecurityAuditLogs from "@/app/(Front-End)/_components/adminDashboard/settings/SecurityAuditLogs";
 import SecuritySettings from "@/app/(Front-End)/_components/adminDashboard/settings/SecuritySetting";
 import DeleteAccountAction from "../_component/DeleteAccountAction";
 
 function Page() {
   return (
-    <div>
-      <div>
-        <SecuritySettings />
-        <div>
-          <LoginActivityTable />
-        </div>
-        <div className="pt-4 mt-8 border-t border-borderColor">
-          <DeleteAccountAction />
-        </div>
-      </div>
+    <div className="space-y-4 pb-8">
+      <SecuritySettings />
+      <LoginActivityTable />
+      <SecurityAuditLogs />
+      <DeleteAccountAction />
     </div>
   );
 }

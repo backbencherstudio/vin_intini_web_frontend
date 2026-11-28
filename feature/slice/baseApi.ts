@@ -24,8 +24,50 @@ const rawBaseQuery = fetchBaseQuery({
 });
 
 let isRedirectingToLogin = false;
+let refreshPromise: Promise<string | null> | null = null;
 
 const AUTH_EXEMPT_ENDPOINTS = ["/login", "/admin/login", "/register", "/sign-up", "/refresh", "/logout"];
+
+async function refreshAccessTokenOnce(): Promise<string | null> {
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      try {
+        const currentToken = await getToken();
+        const headers: Record<string, string> = {
+          Accept: "application/json",
+        };
+        if (currentToken) {
+          headers.Authorization = `Bearer ${currentToken}`;
+        }
+
+        const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
+          method: "POST",
+          credentials: "include",
+          headers,
+        });
+
+        if (!refreshRes.ok) {
+          return null;
+        }
+
+        const refreshData = await refreshRes.json();
+        const newToken = refreshData?.token || refreshData?.data?.token;
+        if (typeof newToken === "string" && newToken.length > 0) {
+          await setToken(newToken);
+          return newToken;
+        }
+
+        return null;
+      } catch {
+        return null;
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+  }
+
+  return refreshPromise;
+}
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
@@ -43,30 +85,14 @@ const baseQueryWithReauth: BaseQueryFn<
     if (!isExempt) {
       const currentToken = await getToken();
 
-      // Attempt one silent token refresh if a token exists
+      // Attempt a deduplicated silent token refresh (uses HttpOnly mu_refresh_token cookie + Bearer fallback)
       if (currentToken) {
-        try {
-          const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${currentToken}`,
-              Accept: "application/json",
-            },
-          });
-
-          if (refreshRes.ok) {
-            const refreshData = await refreshRes.json();
-            const newToken = refreshData?.token || refreshData?.data?.token;
-            if (newToken) {
-              await setToken(newToken);
-              result = await rawBaseQuery(args, api, extraOptions);
-              if (!result.error || result.error.status !== 401) {
-                return result;
-              }
-            }
+        const newToken = await refreshAccessTokenOnce();
+        if (newToken) {
+          result = await rawBaseQuery(args, api, extraOptions);
+          if (!result.error || result.error.status !== 401) {
+            return result;
           }
-        } catch {
-          // Refresh failed, proceed to logout redirect
         }
       }
 

@@ -36,16 +36,16 @@ export default function Disable2FAModal({
       const response = await DesablePasswd(payload).unwrap();
 
       if (response.status) {
-        toast.success(response.message || "Password disabled successfully");
+        toast.success(response.message || "2FA has been disabled.");
         onSuccess();
         onOpenChange(false);
         setPassword("");
       } else {
-        setError(response.message || "Failed to disable password");
+        setError(response.message || "Failed to disable 2FA");
       }
     } catch (error: any) {
       setError(
-        error?.data?.message || error?.message || "Failed to disable password",
+        error?.data?.message || error?.message || "Failed to disable 2FA",
       );
     } finally {
       setLoading(false);

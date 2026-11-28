@@ -13,7 +13,6 @@ import RecoveryEmail from "./recoverymailSetup/RecoveryEmail";
 import VerifyOtp from "./recoverymailSetup/VerifyOtp";
 import Success from "./recoverymailSetup/Success";
 import RegenerateBackupCode from "./2FactorAuthentication/Enable2FactorModal/RegenerateBackupCode";
-import { divIcon } from "leaflet";
 import { MdOutlineMailLock } from "react-icons/md";
 import { BsKey } from "react-icons/bs";
 import toast from "react-hot-toast";
@@ -37,7 +36,7 @@ export default function AuthenticationMethods({
   const { data, isLoading } = useGetSecurityOverviewQuery({});
   const [resendRecoveryOtp, { isLoading: isResendingRecoveryOtp }] =
     useResendRecoveryEmailOtpMutation();
-  const securityData = data?.data || [];
+  const securityData = data?.data || {};
   const recoveryEmail = securityData?.recovery_email?.trim();
   const hasRecoveryEmail = Boolean(recoveryEmail && recoveryEmail !== "N/A");
 

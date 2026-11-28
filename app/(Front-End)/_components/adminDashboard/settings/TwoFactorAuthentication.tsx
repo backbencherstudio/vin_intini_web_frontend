@@ -33,6 +33,8 @@ export default function TwoFactorAuthentication() {
   const is2FAEnabled = data?.data?.two_factor_enabled ?? false;
   const recoveryEmailVerified = data?.data?.recovery_email_verified ?? false;
   const hasRecoveryEmail = Boolean(data?.data?.recovery_email);
+  const isCurrentSessionTrusted =
+    data?.data?.is_current_session_trusted ?? true;
 
   const handleRecoveryEmailAction = async () => {
     if (hasRecoveryEmail) {
@@ -108,14 +110,16 @@ export default function TwoFactorAuthentication() {
             {is2FAEnabled ? (
               <button
                 type="button"
+                disabled={!isCurrentSessionTrusted}
                 onClick={() => setShowDisableModal(true)}
-                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor"
+                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Disable 2FA
               </button>
             ) : (
               <button
                 type="button"
+                disabled={!isCurrentSessionTrusted}
                 onClick={() => {
                   if (!recoveryEmailVerified) {
                     setShowVerifyEmailModal(true);
@@ -124,7 +128,7 @@ export default function TwoFactorAuthentication() {
 
                   setShowEnableModal(true);
                 }}
-                className="mt-4 h-8 cursor-pointer rounded-md border border-primaryColor bg-primaryColor px-5 text-[14px] font-semibold text-white"
+                className="mt-4 h-8 cursor-pointer rounded-md border border-primaryColor bg-primaryColor px-5 text-[14px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Enable 2FA
               </button>

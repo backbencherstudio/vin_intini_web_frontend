@@ -45,9 +45,22 @@ export default function SecurityOverview({
   twoFactorEnabled,
 }: SecurityOverviewProps) {
   const { data, isLoading } = useGetSecurityOverviewQuery({});
-  const OverviewData = data?.data || [];
+  const OverviewData = data?.data || {};
 
-  console.log(OverviewData);
+  if (isLoading) {
+    return (
+      <section className="rounded-md">
+        <div className="py-6 space-y-2">
+          <div className="h-6 w-60 animate-pulse rounded bg-gray-100" />
+          <div className="h-4 w-96 max-w-full animate-pulse rounded bg-gray-100" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[328px_1fr]">
+          <div className="h-64 animate-pulse rounded-sm border bg-gray-50" />
+          <div className="h-64 animate-pulse rounded-sm border bg-gray-50" />
+        </div>
+      </section>
+    );
+  }
 
   const rating = OverviewData?.security_score?.rating?.toLowerCase();
 
@@ -79,7 +92,6 @@ export default function SecurityOverview({
 
   const percentage = OverviewData?.security_score?.percentage ?? 0;
   const progressDegree = (percentage / 100) * 360;
-  console.log(percentage, progressDegree);
 
   return (
     <section className="rounded-md  ">
@@ -150,7 +162,13 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Password Strength"
             value={OverviewData?.password_strength}
-            icon={<CorrectIcon />}
+            icon={
+              OverviewData?.has_password === false ? (
+                <DangerIcon />
+              ) : (
+                <CorrectIcon />
+              )
+            }
           />
 
           <SecurityStatus

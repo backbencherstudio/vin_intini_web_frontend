@@ -32,7 +32,7 @@ export default function Page() {
       };
       const response = await twoFactorRecoveryCodeSentEmail(payload).unwrap();
       toast.success(response?.message || "2FA verification successful!");
-      route.push(`/email-verify-code?email=${email}`);
+      route.push(`/email-verify-code?email=${encodeURIComponent(email)}`);
     } catch (error) {
       setError(error?.data?.message || "Invalid code. Please try again.");
     }
@@ -74,7 +74,7 @@ export default function Page() {
         <div className="text-center">
           Use{" "}
           <Link
-            href={`/two-factor?email=${email}`}
+            href={`/two-factor?email=${encodeURIComponent(email)}`}
             className="text-primaryColor"
           >
             Authentication App

@@ -33,6 +33,8 @@ function DeleteResoneModal({ open, setOpen }: DeleteResoneModalProps) {
 
   const { data: userProfile } = useGetUserProfileQuery("user");
   const [deleteYourAccount, { isLoading }] = useDeleteYourAccountMutation();
+  const hasPassword =
+    userProfile?.has_password ?? userProfile?.data?.has_password ?? true;
 
   const userName =
     userProfile?.data?.name ||
@@ -67,7 +69,7 @@ function DeleteResoneModal({ open, setOpen }: DeleteResoneModalProps) {
 
   const handleDeleteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password) {
+    if (hasPassword && !password) {
       setError("Please enter your password.");
       return;
     }
@@ -78,10 +80,11 @@ function DeleteResoneModal({ open, setOpen }: DeleteResoneModalProps) {
         : selectedReason;
 
     try {
-      const response: any = await deleteYourAccount({
-        reason: finalReason,
-        password,
-      }).unwrap();
+      const response: any = await deleteYourAccount(
+        hasPassword
+          ? { reason: finalReason, password }
+          : { reason: finalReason },
+      ).unwrap();
 
       toast.success(
         response?.message || "Account scheduled for deletion successfully."
@@ -187,30 +190,36 @@ function DeleteResoneModal({ open, setOpen }: DeleteResoneModalProps) {
               Close and delete account
             </h3>
             <p className="text-sm text-descriptionColor mt-1">
-              Enter your password to close this account
+              {hasPassword
+                ? "Enter your password to close this account"
+                : "Confirm closing your account"}
             </p>
           </div>
 
-          <div className="pt-2 space-y-1.5">
-            <label
-              htmlFor="delete-password"
-              className="block text-sm text-[#4A4C56] font-medium"
-            >
-              Password
-            </label>
-            <input
-              id="delete-password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (error) setError("");
-              }}
-              placeholder="*********"
-              className="w-full h-12 px-3.5 border border-borderColor rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-buttonColor placeholder:text-[#A0A3BD] transition-all"
-            />
-            {error && <p className="text-redColor text-xs mt-1">{error}</p>}
-          </div>
+          {hasPassword ? (
+            <div className="pt-2 space-y-1.5">
+              <label
+                htmlFor="delete-password"
+                className="block text-sm text-[#4A4C56] font-medium"
+              >
+                Password
+              </label>
+              <input
+                id="delete-password"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (error) setError("");
+                }}
+                placeholder="*********"
+                className="w-full h-12 px-3.5 border border-borderColor rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-buttonColor placeholder:text-[#A0A3BD] transition-all"
+              />
+              {error && <p className="text-redColor text-xs mt-1">{error}</p>}
+            </div>
+          ) : (
+            error && <p className="text-redColor text-xs mt-1">{error}</p>
+          )}
 
           <p className="text-redColor text-xs sm:text-sm leading-relaxed pt-1">
             Note: After logging out, you have only 30 days to recover your

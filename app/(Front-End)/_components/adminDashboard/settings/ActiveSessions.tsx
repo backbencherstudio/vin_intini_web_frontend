@@ -6,6 +6,7 @@ import {
   useDeletAllSessionsMutation,
   useDeleteActiveSessionsMutation,
   useGetActiveSessionsQuery,
+  useGetSecurityOverviewQuery,
 } from "@/feature/slice/admin/securitySettings";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
@@ -22,29 +23,33 @@ interface Session {
 }
 
 export default function ActiveSessions() {
-  const [sessions, setSessions] = useState([]);
   const [selectedSessionId, setSelectedSessionId] = useState<number | null>(
     null,
   );
   const [showDeleteSingleModal, setShowDeleteSingleModal] = useState(false);
+  const [showSignOutAllModal, setShowSignOutAllModal] = useState(false);
 
-  const { data, isLoading, error } = useGetActiveSessionsQuery({});
+  const { data, isLoading } = useGetActiveSessionsQuery({});
+  const { data: overviewRes } = useGetSecurityOverviewQuery({});
+  const isCurrentSessionTrusted =
+    overviewRes?.data?.is_current_session_trusted ?? true;
   const ActiveSession = data?.data || [];
-  console.log(ActiveSession);
 
-  const [DeleteActiveSessions] = useDeleteActiveSessionsMutation();
-  const [DeleteAllSessions] = useDeletAllSessionsMutation();
+  const [DeleteActiveSessions, { isLoading: isRevokingSingle }] =
+    useDeleteActiveSessionsMutation();
+  const [DeleteAllSessions, { isLoading: isSigningOutAll }] =
+    useDeletAllSessionsMutation();
 
-  const removeSession = (id: number) => {
-    DeleteActiveSessions(id);
-    setSessions((prev) => prev.filter((session) => session.id !== id));
-    toast.success("Session Terminated successfully");
-  };
-
-  const logoutAllSessions = () => {
-    DeleteAllSessions({}).unwrap();
-    toast.success("All sessions terminated successfully");
-    setSessions([]);
+  const handleConfirmSignOutAll = async () => {
+    try {
+      const res: any = await DeleteAllSessions({}).unwrap();
+      toast.success(
+        res?.message || "All other sessions have been signed out successfully.",
+      );
+      setShowSignOutAllModal(false);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to sign out other sessions.");
+    }
   };
 
   return (
@@ -62,7 +67,17 @@ export default function ActiveSessions() {
 
         <div className="mt-4 flex-1 flex flex-col justify-between">
           <div className="space-y-2 max-h-[250px] pr-4 overflow-y-auto custom-scrollbar">
-          {ActiveSession.map((session) => (
+          {isLoading ? (
+            <div className="space-y-3 py-2">
+              <div className="h-12 animate-pulse rounded-md bg-gray-100" />
+              <div className="h-12 animate-pulse rounded-md bg-gray-100" />
+            </div>
+          ) : ActiveSession.length === 0 ? (
+            <p className="py-6 text-center text-sm text-[#7B7B7B]">
+              No active sessions found.
+            </p>
+          ) : (
+            ActiveSession.map((session: any) => (
             <div
               key={session.id}
               className="flex justify-between  gap-3   pb-3 last:border-0"
@@ -113,27 +128,67 @@ export default function ActiveSessions() {
                     setSelectedSessionId(session.id);
                     setShowDeleteSingleModal(true);
                   }}
-                  disabled={session.is_current}
+                  disabled={session.is_current || !isCurrentSessionTrusted}
                   className="text-[#888] disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
                 >
                   <MoreHorizontal size={17} className="text-[#000]" />
                 </button>
               </div>
             </div>
-          ))}
+          ))
+          )}
           </div>
 
           <div className="pt-4 mt-auto">
             <button
               type="button"
-              onClick={logoutAllSessions}
-              className="h-10 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] hover:bg-[#f8c4c9] active:scale-98 cursor-pointer text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor transition flex items-center justify-center"
+              disabled={
+                !isCurrentSessionTrusted ||
+                isSigningOutAll ||
+                ActiveSession.filter((s: any) => !s.is_current).length === 0
+              }
+              onClick={() => setShowSignOutAllModal(true)}
+              className="h-10 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] hover:bg-[#f8c4c9] active:scale-98 cursor-pointer text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign out all the sessions
+              Sign out all other sessions
             </button>
           </div>
         </div>
       </section>
+
+      <CustomModal
+        open={showSignOutAllModal}
+        onOpenChange={setShowSignOutAllModal}
+        title="Sign Out Other Sessions"
+        size="xsm"
+      >
+        <div className="w-full px-3">
+          <p className="text-sm text-[#4A4C56]">
+            Are you sure you want to sign out all other active devices? Your
+            current session will remain signed in.
+          </p>
+
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setShowSignOutAllModal(false)}
+              disabled={isSigningOutAll}
+              className="rounded-md border px-4 py-2 text-sm cursor-pointer"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              disabled={isSigningOutAll}
+              onClick={() => void handleConfirmSignOutAll()}
+              className="rounded-md bg-[#EB3D4D] px-4 py-2 text-sm text-white cursor-pointer disabled:opacity-60"
+            >
+              {isSigningOutAll ? "Signing out..." : "Sign out all"}
+            </button>
+          </div>
+        </div>
+      </CustomModal>
 
       <CustomModal
         open={showDeleteSingleModal}
@@ -157,6 +212,7 @@ export default function ActiveSessions() {
 
             <button
               type="button"
+              disabled={isRevokingSingle}
               onClick={async () => {
                 if (!selectedSessionId) return;
 
@@ -171,9 +227,9 @@ export default function ActiveSessions() {
                   toast.error("Failed to terminate session");
                 }
               }}
-              className="rounded-md bg-[#EB3D4D] px-4 py-2 text-sm text-white"
+              className="rounded-md bg-[#EB3D4D] px-4 py-2 text-sm text-white cursor-pointer disabled:opacity-60"
             >
-              Terminate
+              {isRevokingSingle ? "Terminating..." : "Terminate"}
             </button>
           </div>
         </div>

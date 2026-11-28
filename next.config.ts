@@ -2,13 +2,30 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+          { key: "X-DNS-Prefetch-Control", value: "off" },
+        ],
+      },
+    ];
+  },
   allowedDevOrigins: [
     "192.168.7.154",
     "backend.mindunite.com",
     "vini.softvenceomegaforce.cloud",
   ],
   images: {
-    dangerouslyAllowLocalIP: true,
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
     remotePatterns: [
       {
         protocol: "https",

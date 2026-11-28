@@ -42,10 +42,16 @@ function LoginForm() {
     try {
       const response = await login(data).unwrap();
       if (response?.two_factor_enabled) {
-        const challengeParam = response?.challenge_token
-          ? `&challenge_token=${encodeURIComponent(response.challenge_token)}`
-          : "";
-        route.push(`/two-factor?email=${encodeURIComponent(data.email)}${challengeParam}`);
+        if (typeof window !== "undefined" && response?.challenge_token) {
+          sessionStorage.setItem(
+            "mu_2fa_challenge",
+            JSON.stringify({
+              email: data.email.toLowerCase(),
+              challenge_token: response.challenge_token,
+            }),
+          );
+        }
+        route.push(`/two-factor?email=${encodeURIComponent(data.email)}`);
       } else if (response?.status == "pending_deletion") {
         route.push(
           `/account-recovery?email=${data.email}&message=${response.message}`,

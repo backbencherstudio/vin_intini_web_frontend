@@ -112,19 +112,36 @@ export async function middleware(request: NextRequest) {
 
   let payload = currentToken ? parseJwtPayload(currentToken) : null;
   let expired = isTokenExpired(payload);
+  let refreshedSetCookies: string[] = [];
 
-  // 2. Silent Refresh: If token expired, attempt server refresh before failing
-  if (currentToken && expired) {
+  // 2. Silent Refresh: If token expired (or missing accessToken while HttpOnly refresh cookie exists), attempt server refresh
+  const hasRefreshCookie = Boolean(request.cookies.get("mu_refresh_token")?.value);
+  if ((currentToken && expired) || (!currentToken && hasRefreshCookie)) {
     try {
+      const refreshHeaders: Record<string, string> = {
+        Accept: "application/json",
+      };
+      if (currentToken) {
+        refreshHeaders.Authorization = `Bearer ${currentToken}`;
+      }
+      const cookieHeader = request.headers.get("cookie");
+      if (cookieHeader) {
+        refreshHeaders.Cookie = cookieHeader;
+      }
+
       const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-          Accept: "application/json",
-        },
+        headers: refreshHeaders,
       });
 
       if (refreshRes.ok) {
+        const getSetCookie = (
+          refreshRes.headers as Headers & { getSetCookie?: () => string[] }
+        ).getSetCookie;
+        if (typeof getSetCookie === "function") {
+          refreshedSetCookies = getSetCookie.call(refreshRes.headers);
+        }
+
         const refreshData = await refreshRes.json();
         const newToken = refreshData?.token || refreshData?.data?.token;
         if (newToken) {
@@ -150,16 +167,30 @@ export async function middleware(request: NextRequest) {
   const lastParam = segments.length > 0 ? segments[segments.length - 1] : "";
   requestHeaders.set("x-current-params", lastParam);
 
+  const attachCookiesToResponse = (response: NextResponse) => {
+    if (tokenFromQuery && currentToken) {
+      response = setAuthCookie(response, currentToken, isHttps);
+    }
+    for (const sc of refreshedSetCookies) {
+      response.headers.append("set-cookie", sc);
+    }
+    return response;
+  };
+
+  // Strip ?auth= token from URL immediately via clean redirect so JWT never stays in browser history/Referrer
+  if (tokenQuery && tokenFromQuery && currentToken) {
+    const cleanUrl = request.nextUrl.clone();
+    cleanUrl.searchParams.delete("auth");
+    return attachCookiesToResponse(NextResponse.redirect(cleanUrl));
+  }
+
   const createNextResponse = () => {
-    let response = NextResponse.next({
+    const response = NextResponse.next({
       request: {
         headers: requestHeaders,
       },
     });
-    if (tokenFromQuery && currentToken) {
-      response = setAuthCookie(response, currentToken, isHttps);
-    }
-    return response;
+    return attachCookiesToResponse(response);
   };
 
   const isPublicPath = PUBLIC_PATHS.some((path) =>

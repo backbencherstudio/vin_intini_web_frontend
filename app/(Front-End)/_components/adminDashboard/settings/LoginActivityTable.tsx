@@ -2,7 +2,6 @@
 
 import AdminPagination from "@/components/reusable/dashboard/AdminPagination";
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
-import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
@@ -12,10 +11,12 @@ import timezone from "dayjs/plugin/timezone";
 
 import Pagination from "@/components/reusable/Pagination";
 import {
+  useBulkDeleteLoginActivitiesMutation,
   useDeleteActiveSessionsMutation,
   useDeleteAllLoginActivityMutation,
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
+  useGetSecurityOverviewQuery,
   useLogoutActiveSessionsMutation,
   useSecureAccountFromLoginActivityMutation,
   useSingeleSessionTrustedMutation,
@@ -23,8 +24,17 @@ import {
 import { TikIcon } from "@/public/svgIcons/AdminIcon";
 import { LogoutIcon } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
-import { Delete, Monitor, Phone, Smartphone, Trash2 } from "lucide-react";
-import { useState } from "react";
+import {
+  ChevronDown,
+  Delete,
+  Monitor,
+  Phone,
+  ShieldAlert,
+  ShieldCheck,
+  Smartphone,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -64,6 +74,11 @@ export default function LoginActivityTable() {
     useState<SessionActionConfirmation | null>(null);
   const [isSessionActionConfirmationOpen, setIsSessionActionConfirmationOpen] =
     useState(false);
+  const [showClearAllModal, setShowClearAllModal] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [hasUserToggled, setHasUserToggled] = useState(false);
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -71,8 +86,22 @@ export default function LoginActivityTable() {
     page,
     limit,
   });
+  const { data: overviewRes } = useGetSecurityOverviewQuery({});
+  const isCurrentSessionTrusted =
+    overviewRes?.data?.is_current_session_trusted ?? true;
 
   const loginActivities: LoginActivity[] = data?.data?.items || [];
+  const hasSuspiciousAlert = Boolean(
+    overviewRes?.data?.is_suspicious ||
+      !isCurrentSessionTrusted ||
+      loginActivities.some((row) => row.is_suspicious),
+  );
+
+  useEffect(() => {
+    if (!hasUserToggled && hasSuspiciousAlert) {
+      setIsExpanded(true);
+    }
+  }, [hasSuspiciousAlert, hasUserToggled]);
   const [logoutActivity, { isLoading: logoutLoading }] =
     useLogoutActiveSessionsMutation();
 
@@ -86,6 +115,46 @@ export default function LoginActivityTable() {
 
   const [deletAllAcitivity, { isLoading: deletAllAcitivityLoading }] =
     useDeleteAllLoginActivityMutation();
+  const [bulkDeleteActivities, { isLoading: isBulkDeleting }] =
+    useBulkDeleteLoginActivitiesMutation();
+
+  const selectableRows = loginActivities.filter(
+    (row) => row.signin_status !== "Current device",
+  );
+  const allSelectableChecked =
+    selectableRows.length > 0 &&
+    selectableRows.every((row) => selectedIds.includes(row.id));
+
+  const toggleSelectAll = () => {
+    if (!isCurrentSessionTrusted) return;
+    if (allSelectableChecked) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(selectableRows.map((row) => row.id));
+    }
+  };
+
+  const toggleSelectRow = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    try {
+      const res = await bulkDeleteActivities({ ids: selectedIds }).unwrap();
+      toast.success(
+        res?.message || "Selected login activities deleted successfully.",
+      );
+      setSelectedIds([]);
+      setShowBulkDeleteModal(false);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message || "Failed to delete selected activities.",
+      );
+    }
+  };
 
   const openSessionActionConfirmation = (
     activity: LoginActivity,
@@ -143,55 +212,94 @@ export default function LoginActivityTable() {
   const handelDeleteAll = async () => {
     try {
       await deletAllAcitivity({}).unwrap();
-      toast.success("All activity deleted successfully");
-    } catch (error) {
-      console.log(error);
+      toast.success("All other login activities cleared successfully");
+      setShowClearAllModal(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to clear login activities.");
     }
   };
 
   const columns: Column<LoginActivity>[] = [
     {
-      header: "No.",
+      header: (
+        <div className="flex items-center justify-center">
+          <input
+            type="checkbox"
+            aria-label="Select all deletable login activities"
+            checked={allSelectableChecked}
+            disabled={!isCurrentSessionTrusted || selectableRows.length === 0}
+            onChange={toggleSelectAll}
+            className="h-4 w-4 rounded accent-[#287F6E] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
+          />
+        </div>
+      ),
+      className: "w-10",
+      cell: (row) => {
+        const isCurrent = row.signin_status === "Current device";
+        return (
+          <div className="flex items-center justify-center">
+            <input
+              type="checkbox"
+              aria-label={`Select login activity ${row.id}`}
+              checked={selectedIds.includes(row.id)}
+              disabled={isCurrent || !isCurrentSessionTrusted}
+              onChange={() => toggleSelectRow(row.id)}
+              className="h-4 w-4 rounded accent-[#287F6E] cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      header: "#",
+      className: "w-10",
       cell: (row) => (
-        <span className="text-[13px] font-medium text-[#4A4C56]">
+        <span className="text-xs font-medium text-[#9CA3AF]">
           {(page - 1) * limit + loginActivities.indexOf(row) + 1}
         </span>
       ),
     },
 
     {
-      header: "Device / Browser",
-      cell: (row) => (
-        <div className="flex items-center gap-2.5 whitespace-nowrap">
-          <span>
-            {row?.is_mobile === true ? (
-              <Smartphone className="h-5 w-5 stroke-headerColor" />
-            ) : (
-              <Monitor className="h-5 w-5 stroke-headerColor" />
-            )}
-          </span>
-          <div className="flex flex-col ">
-            <div className="relative w-40 group">
-              <span className="block w-40 truncate text-[13px] font-semibold text-[#0A0A0A]">
-                {row.device} • {row.browser}
-              </span>
-
-              {/* <div className="absolute bottom-full left-1/2 z-[999] mb- hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-black px-3 py-2 text-xs font-medium text-white shadow-lg group-hover:block">
-                {row.device} • {row.browser}
-              </div> */}
+      header: "Device & Location",
+      cell: (row) => {
+        const isCurrent = row.signin_status === "Current device";
+        return (
+          <div className="flex items-center gap-3 whitespace-nowrap">
+            <div
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                isCurrent
+                  ? "bg-[#EDF8F6] text-[#287F6E] ring-1 ring-[#287F6E]/20"
+                  : "bg-[#F3F4F6] text-[#4B5563]"
+              }`}
+            >
+              {row?.is_mobile === true ? (
+                <Smartphone className="h-4 w-4" />
+              ) : (
+                <Monitor className="h-4 w-4" />
+              )}
             </div>
-            <span className="whitespace-nowrap text-[13px] font-semibold text-grayColor1">
-              {row.location}
-            </span>
+            <div className="flex flex-col">
+              <div className="w-44">
+                <span className="block w-44 truncate text-[13px] font-semibold text-[#1D1F2C]">
+                  {row.device} • {row.browser}
+                </span>
+              </div>
+              <span className="whitespace-nowrap text-xs font-normal text-[#7B7B7B]">
+                {row.location && row.location !== "Unknown"
+                  ? row.location
+                  : "Location unavailable"}
+              </span>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
 
     {
       header: "IP Address",
       cell: (row) => (
-        <span className="whitespace-nowrap text-[13px] font-medium text-headerColor">
+        <span className="inline-block whitespace-nowrap rounded-md bg-[#F3F4F6] px-2 py-1 font-mono text-xs text-[#4B5563]">
           {row.ip_address}
         </span>
       ),
@@ -201,20 +309,12 @@ export default function LoginActivityTable() {
       header: "Date & Time",
       cell: (row) => (
         <div className="flex flex-col">
-          <span className="whitespace-nowrap text-[13px] font-medium text-headerColor">
-            {dayjs
-              .utc(row.login_at)
-              .tz(userTimezone)
-              .format("DD MMM YYYY")
-              .toUpperCase()}
+          <span className="whitespace-nowrap text-[13px] font-medium text-[#1D1F2C]">
+            {dayjs.utc(row.login_at).tz(userTimezone).format("DD MMM YYYY")}
           </span>
 
-          <span className="whitespace-nowrap text-[12px] text-[#A5A5AB]">
-            {dayjs
-              .utc(row.login_at)
-              .tz(userTimezone)
-              .format(" hh:mm A")
-              .toUpperCase()}
+          <span className="whitespace-nowrap text-xs text-[#8E929B]">
+            {dayjs.utc(row.login_at).tz(userTimezone).format("hh:mm A")}
           </span>
         </div>
       ),
@@ -222,36 +322,35 @@ export default function LoginActivityTable() {
 
     {
       header: "Status",
-      cell: (row) => (
-        <CustomBadge
-          color={
-            row.signin_status === "Signed in" ||
-            row.signin_status === "Current device"
-              ? "active"
-              : "logout"
-          }
-          className={
-            row.signin_status === "Signed in" ||
-            row.signin_status === "Current device"
-              ? "rounded-sm border whitespace-nowrap border-[#72DED1] bg-[#F0FFFD] px-2 py-2 text-[12px] font-semibold text-[#22CAAD] text-right leading-[132%] tracking-[0.06px] "
-              : "rounded-sm border whitespace-nowrap border-gray-400 bg-gray-100 px-2 py-2 text-[12px] font-semibold text-grayColor1"
-          }
-        >
-          {row.signin_status}
-        </CustomBadge>
-      ),
+      cell: (row) => {
+        const isSignedIn =
+          row.signin_status === "Signed in" ||
+          row.signin_status === "Current device";
+        return (
+          <CustomBadge
+            color={isSignedIn ? "active" : "logout"}
+            className={
+              isSignedIn
+                ? "inline-flex items-center whitespace-nowrap rounded-full border border-[#287F6E]/25 bg-[#EDF8F6] px-2.5 py-1 text-xs font-medium text-[#287F6E]"
+                : "inline-flex items-center whitespace-nowrap rounded-full border border-[#E5E7EB] bg-[#F3F4F6] px-2.5 py-1 text-xs font-medium text-[#6B7280]"
+            }
+          >
+            {row.signin_status}
+          </CustomBadge>
+        );
+      },
     },
 
     {
-      header: "Activity",
+      header: "Trust",
       cell: (row) => (
         <span
-          className={`rounded-sm border px-2 py-2 whitespace-nowrap text-[13px] font-medium ${
+          className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium ${
             row.activity_status === "Trusted Device"
-              ? "text-[#22CAAD] border-[#72DED1] bg-[#F0FFFD]"
+              ? "border-[#287F6E]/25 bg-[#EDF8F6] text-[#287F6E]"
               : row.activity_status === "Suspicious"
-                ? "text-[#EB3D4D] border-[#F38B94] bg-[#FEECEE]"
-                : "text-[#7B7B7B] border-[#D9D9D9] bg-[#F5F5F5]"
+                ? "border-[#F38B94] bg-[#FEECEE] text-[#EB3D4D]"
+                : "border-[#E5E7EB] bg-[#F8F9FA] text-[#6B7280]"
           }`}
         >
           {row.activity_status}
@@ -265,46 +364,55 @@ export default function LoginActivityTable() {
         const isCurrentDevice = row.signin_status === "Current device";
         const isLoggedOut = row.signin_status === "Logged out";
 
-        const isLogoutDisabled = isCurrentDevice || isLoggedOut;
-        const isDeleteDisabled = isCurrentDevice;
-        const isTrustedDisabled = isCurrentDevice || !row?.is_suspicious;
+        const isLogoutDisabled =
+          !isCurrentSessionTrusted || isCurrentDevice || isLoggedOut;
+        const isDeleteDisabled = !isCurrentSessionTrusted || isCurrentDevice;
+        const isTrustedDisabled =
+          !isCurrentSessionTrusted || isCurrentDevice || !row?.is_suspicious;
 
         return (
-          <div className="flex items-center gap-2.5 whitespace-nowrap">
-            {/* suspecious */}
-
+          <div className="flex items-center gap-2 whitespace-nowrap">
+            {/* Verify / Trust suspicious */}
             <button
+              type="button"
+              title={
+                isTrustedDisabled
+                  ? "No review needed"
+                  : "Confirm or block this login"
+              }
               onClick={() => {
                 setSecureAccountMessage(null);
                 setSelectedLoginActivity(row);
               }}
               disabled={isTrustedDisabled || singeleSessionTrustedLoading}
-              className={`flex items-center gap-1  rounded-sm bg-[#E9FAF7] p-3 text-[12px] font-medium ${
+              className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
                 isTrustedDisabled || singeleSessionTrustedLoading
-                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
-                  : "cursor-pointer"
+                  ? "cursor-not-allowed border-transparent bg-[#F4F5F7] opacity-40"
+                  : "cursor-pointer border-[#287F6E]/25 bg-[#EDF8F6] hover:bg-[#DDF3EE]"
               }`}
             >
               <TikIcon
                 className={`h-4 w-4 ${
                   isTrustedDisabled || singeleSessionTrustedLoading
-                    ? "text-[#A0A0A0]"
-                    : "text-[#1D1F2C]"
+                    ? "text-[#9CA3AF]"
+                    : "text-[#287F6E]"
                 }`}
               />
             </button>
 
-            {/* Logout */}
+            {/* Sign out */}
             <button
+              type="button"
+              title={isLogoutDisabled ? "Session not active" : "Sign out session"}
               onClick={() =>
                 !isLogoutDisabled &&
                 openSessionActionConfirmation(row, "logout")
               }
               disabled={isLogoutDisabled}
-              className={`flex items-center gap-1 rounded-sm bg-bgLightColor p-2 text-[12px] font-medium text-[#1D1F2C] ${
+              className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
                 isLogoutDisabled
-                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
-                  : "cursor-pointer"
+                  ? "cursor-not-allowed border-transparent bg-[#F4F5F7] text-[#9CA3AF] opacity-40"
+                  : "cursor-pointer border-[#E5E7EB] bg-white text-[#1D1F2C] hover:bg-[#F3F4F6]"
               }`}
             >
               <LogoutIcon className="h-4 w-4" />
@@ -312,15 +420,21 @@ export default function LoginActivityTable() {
 
             {/* Delete */}
             <button
+              type="button"
+              title={
+                isDeleteDisabled
+                  ? "Current session cannot be deleted"
+                  : "Delete login record"
+              }
               onClick={() =>
                 !isDeleteDisabled &&
                 openSessionActionConfirmation(row, "delete")
               }
               disabled={isDeleteDisabled}
-              className={`flex items-center gap-1 rounded-sm p-2 text-[12px] font-medium text-red-500 ${
+              className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
                 isDeleteDisabled
-                  ? "cursor-not-allowed bg-[#F8F8F8] opacity-40"
-                  : "cursor-pointer bg-[#FEECEE]"
+                  ? "cursor-not-allowed border-transparent bg-[#F4F5F7] text-[#9CA3AF] opacity-40"
+                  : "cursor-pointer border-[#FBD8DB] bg-[#FEECEE] text-red-500 hover:bg-[#FCD8DC]"
               }`}
             >
               <Trash2 className="h-4 w-4" />
@@ -331,24 +445,131 @@ export default function LoginActivityTable() {
     },
   ];
 
-  return (
-    <div className="w-full">
-      <div className="py-6">
-        <CustomTitleDescription
-          title="Login Activity"
-          description="Review your recent account login activity."
-          action={<div className="flex w-full justify-start sm:w-auto sm:justify-end">
-          <button
-            onClick={handelDeleteAll}
-            className="cursor-pointer border border-[#FBD8DB] rounded-sm py-1 px-3 text-[14px] font-normal leading-[140%] tracking-[0.07px] text-redColor"
-          >
-            <p>Clear all Session</p>
-          </button>
-          </div>}
-        />
-      </div>
+  const totalActivities = data?.total ?? loginActivities.length;
 
-      <DataTable columns={columns} data={loginActivities} />
+  return (
+    <section className="w-full rounded-md border border-[#E8E8E8] bg-white">
+      <button
+        type="button"
+        aria-expanded={isExpanded}
+        onClick={() => {
+          setHasUserToggled(true);
+          setIsExpanded((prev) => !prev);
+        }}
+        className="flex w-full cursor-pointer items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-[#FAFAFA] sm:p-6"
+      >
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#EDF8F6] text-[#287F6E]">
+            <Monitor className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="text-[18px] font-semibold leading-[130%] tracking-[0.1px] text-headerColor sm:text-[20px]">
+              Login Activity
+            </h2>
+            <p className="mt-1 text-sm text-[#4A4C56]">
+              Review your recent account login activity and manage devices.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2.5">
+          {hasSuspiciousAlert ? (
+            <span className="hidden items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 sm:inline-flex">
+              <ShieldAlert className="h-3.5 w-3.5" />
+              Needs review
+            </span>
+          ) : (
+            <span className="hidden items-center gap-1 rounded-full border border-[#287F6E]/30 bg-[#EDF8F6] px-2.5 py-0.5 text-xs font-medium text-[#287F6E] sm:inline-flex">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              All verified
+            </span>
+          )}
+          <span className="hidden rounded-full border border-[#E8E8E8] bg-[#F8F9FA] px-2.5 py-0.5 text-xs font-medium text-[#4A4C56] sm:inline-block">
+            {totalActivities} {totalActivities === 1 ? "record" : "records"}
+          </span>
+          <ChevronDown
+            className={`h-5 w-5 text-[#4A4C56] transition-transform duration-200 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+      </button>
+
+      {isExpanded && (
+        <div className="border-t border-[#F0F1F3] px-5 pb-6 pt-4 sm:px-6">
+          <div className="mb-3.5 flex flex-col justify-between gap-2.5 rounded-lg border border-[#ECEEF2] bg-[#F8FAFC] px-3.5 py-2.5 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-2 text-xs text-[#6B7280]">
+              {selectedIds.length > 0 ? (
+                <>
+                  <span className="inline-flex items-center rounded-full bg-[#EDF8F6] px-2.5 py-0.5 font-semibold text-[#287F6E]">
+                    {selectedIds.length} selected
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIds([])}
+                    className="cursor-pointer text-xs font-medium text-[#4B5563] underline hover:text-gray-900"
+                  >
+                    Clear selection
+                  </button>
+                </>
+              ) : (
+                <span>
+                  Select rows to bulk delete, or clear inactive history.
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {selectedIds.length > 0 && (
+                <button
+                  type="button"
+                  disabled={!isCurrentSessionTrusted || isBulkDeleting}
+                  onClick={() => setShowBulkDeleteModal(true)}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[#F38B94] bg-[#EB3D4D] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Delete Selected ({selectedIds.length})</span>
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={
+                  !isCurrentSessionTrusted ||
+                  deletAllAcitivityLoading ||
+                  loginActivities.length <= 1
+                }
+                onClick={() => setShowClearAllModal(true)}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[#FBD8DB] bg-white px-3 py-1.5 text-xs font-medium text-redColor transition-colors hover:bg-[#FEECEE]/60 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Clear Activity History</span>
+              </button>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="space-y-2.5">
+              <div className="h-14 animate-pulse rounded-lg bg-gray-100" />
+              <div className="h-14 animate-pulse rounded-lg bg-gray-100" />
+              <div className="h-14 animate-pulse rounded-lg bg-gray-100" />
+            </div>
+          ) : (
+            <DataTable columns={columns} data={loginActivities} />
+          )}
+
+          {/* Backend Pagination */}
+          <Pagination
+            page={page}
+            pageSize={limit}
+            total={data?.total ?? 0}
+            totalPages={data?.total_page || 1}
+            onPageChange={(nextPage) => {
+              setPage(nextPage);
+              setSelectedIds([]);
+            }}
+          />
+        </div>
+      )}
 
       <CustomModal
         open={isSessionActionConfirmationOpen}
@@ -478,25 +699,73 @@ export default function LoginActivityTable() {
         </div>
       </CustomModal>
 
-      {/* Backend Pagination */}
-      <Pagination
-        page={page}
-        pageSize={limit}
-        total={data?.total || 10}
-        totalPages={data?.total_page || 1}
-        onPageChange={(page) => setPage(page)}
-      />
+      {/* Bulk Delete Selected Confirmation Modal */}
+      <CustomModal
+        open={showBulkDeleteModal}
+        onOpenChange={setShowBulkDeleteModal}
+        title={`Delete ${selectedIds.length} Selected Activity?`}
+        size="xsm"
+        className="!pb-4"
+      >
+        <div className="px-3 pb-0">
+          <p className="text-sm text-[#7B7B7B]">
+            This will permanently remove the selected {selectedIds.length} login
+            activity record(s) and sign out any active sessions among them.
+          </p>
+          <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={() => setShowBulkDeleteModal(false)}
+              disabled={isBulkDeleting}
+              className="w-full rounded-sm border border-borderColor px-4 py-2 text-sm font-medium text-headerColor hover:bg-gray-50 disabled:opacity-60 sm:w-auto cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleBulkDelete()}
+              disabled={isBulkDeleting}
+              className="w-full rounded-sm bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto cursor-pointer"
+            >
+              {isBulkDeleting ? "Deleting..." : "Delete Selected"}
+            </button>
+          </div>
+        </div>
+      </CustomModal>
 
-      {/* <CustomDeletModal
-                isOpen={deleteOpen}
-                onClose={() => {
-                    setDeleteOpen(false);
-                    setSelectedLogin(null);
-                }}
-                onConfirm={handleDelete}
-                title="Do you want to delete this login activity?"
-                description="Click “Delete Now” if you want to delete otherwise press cancel."
-            /> */}
-    </div>
+      {/* Clear All Activities Confirmation Modal */}
+      <CustomModal
+        open={showClearAllModal}
+        onOpenChange={setShowClearAllModal}
+        title="Clear Activity History?"
+        size="xsm"
+        className="!pb-4"
+      >
+        <div className="px-3 pb-0">
+          <p className="text-sm text-[#7B7B7B]">
+            This will remove all other login activities and sign out those
+            sessions. Your current device will remain signed in.
+          </p>
+          <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={() => setShowClearAllModal(false)}
+              disabled={deletAllAcitivityLoading}
+              className="w-full rounded-sm border border-borderColor px-4 py-2 text-sm font-medium text-headerColor hover:bg-gray-50 disabled:opacity-60 sm:w-auto cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => void handelDeleteAll()}
+              disabled={deletAllAcitivityLoading}
+              className="w-full rounded-sm bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto cursor-pointer"
+            >
+              {deletAllAcitivityLoading ? "Clearing..." : "Clear All"}
+            </button>
+          </div>
+        </div>
+      </CustomModal>
+    </section>
   );
 }

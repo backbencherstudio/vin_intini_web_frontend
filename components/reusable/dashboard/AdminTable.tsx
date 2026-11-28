@@ -3,7 +3,7 @@
 import { DeletIcon, EditIcon, ViewIcon } from "@/public/svgIcons/AdminIcon";
 
 export type Column<T> = {
-  header: string;
+  header: string | React.ReactNode;
   accessor?: keyof T;
   cell?: (row: T) => React.ReactNode;
   className?: string;

@@ -17,6 +17,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview", "activeSessions", "loginActivities"],
     }),
     postAdminChangePassword: builder.mutation({
       query: (payload) => ({
@@ -24,6 +25,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["overview", "activeSessions", "loginActivities"],
     }),
 
     //activity-session
@@ -78,7 +80,18 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/login-activities/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["loginActivities"],
+      invalidatesTags: ["loginActivities", "activeSessions", "overview"],
+    }),
+    BulkDeleteLoginActivities: builder.mutation<
+      { success: boolean; message: string; deleted_count: number },
+      { ids: number[] }
+    >({
+      query: (body) => ({
+        url: "/security/login-activities/bulk-delete",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["loginActivities", "activeSessions", "overview"],
     }),
 
     //revoke session (sign out session)
@@ -216,7 +229,7 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         url: `/security/resolve/${id}`,
         method: "POST",
       }),
-      invalidatesTags: ["loginActivities"],
+      invalidatesTags: ["loginActivities", "overview"],
     }),
 
     SecureAccountFromLoginActivity: builder.mutation({
@@ -225,6 +238,35 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
         method: "POST",
       }),
       invalidatesTags: ["loginActivities", "activeSessions", "overview"],
+    }),
+
+    GetSecurityAuditLogs: builder.query<
+      {
+        success: boolean;
+        data: Array<{
+          id: number;
+          event: string;
+          severity: "info" | "warning" | "critical";
+          ip_address: string | null;
+          user_agent: string | null;
+          metadata: Record<string, unknown> | null;
+          created_at: string;
+        }>;
+        meta: {
+          current_page: number;
+          last_page: number;
+          total: number;
+          per_page: number;
+        };
+      },
+      { page?: number; per_page?: number }
+    >({
+      query: (params) => ({
+        url: "/security/audit-logs",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["overview"],
     }),
 
     //
@@ -239,6 +281,7 @@ export const {
   useDeleteActiveSessionsMutation,
   useDeletAllSessionsMutation,
   useDeleteLoginActivityMutation,
+  useBulkDeleteLoginActivitiesMutation,
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
   useEnablePasswordMutation,
@@ -257,6 +300,7 @@ export const {
   useResendRecoveryEmailOtpMutation,
   useSingeleSessionTrustedMutation,
   useSecureAccountFromLoginActivityMutation,
+  useGetSecurityAuditLogsQuery,
   useGetSuspiciousActivitiesQuery,
   useResolveAllActivitiesMutation,
 } = securitySettingsSlice;

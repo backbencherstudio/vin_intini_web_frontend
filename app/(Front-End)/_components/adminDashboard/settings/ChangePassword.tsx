@@ -6,6 +6,7 @@ import {
   usePostChangePasswordMutation,
 } from "@/feature/slice/admin/securitySettings";
 import { Eye, EyeOff } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -78,10 +79,13 @@ export default function ChangePassword() {
     newPassword: "",
     confirmPassword: "",
   });
-  const { data, isLoading: overViewLoading } = useGetSecurityOverviewQuery({});
+  const pathname = usePathname();
+  const isAdminDashboard = Boolean(pathname?.startsWith("/dashboard"));
+  const { data } = useGetSecurityOverviewQuery({});
   const OverviewData = data?.data;
-  console.log(OverviewData, "fingd");
 
+  const isCurrentSessionTrusted =
+    OverviewData?.is_current_session_trusted ?? true;
   const [postChangePassword, { isLoading }] = usePostChangePasswordMutation();
   const [postAdminChangePassword, { isLoading: isAdminPasswordLoading }] = usePostAdminChangePasswordMutation();
   const isPasswordLoading = isLoading || isAdminPasswordLoading;
@@ -92,6 +96,7 @@ export default function ChangePassword() {
       newPassword: "",
       confirmPassword: "",
     });
+    setMessage("");
 
     if (OverviewData?.has_password !== false && !currentPassword.trim()) {
       setErrors((prev) => ({
@@ -131,10 +136,10 @@ export default function ChangePassword() {
         new_password: newPassword,
         new_password_confirmation: confirmPassword,
       };
-      if (OverviewData?.has_password === false) {
-        await postChangePassword(payload).unwrap();
-      } else {
+      if (isAdminDashboard) {
         await postAdminChangePassword(payload).unwrap();
+      } else {
+        await postChangePassword(payload).unwrap();
       }
 
       setMessage("Password updated successfully.");
@@ -145,68 +150,26 @@ export default function ChangePassword() {
       setConfirmPassword("");
       toast.success("Password updated successfully.");
     } catch (error: any) {
+      const currentPasswordError = error?.data?.errors?.current_password?.[0];
       const newPasswordError = error?.data?.errors?.new_password?.[0];
+      const confirmPasswordError =
+        error?.data?.errors?.new_password_confirmation?.[0];
 
-      if (newPasswordError) {
-        setErrors((prev) => ({
-          ...prev,
-          newPassword: newPasswordError,
-        }));
+      if (currentPasswordError || newPasswordError || confirmPasswordError) {
+        setErrors({
+          currentPassword: currentPasswordError || "",
+          newPassword: newPasswordError || "",
+          confirmPassword: confirmPasswordError || "",
+        });
         return;
       }
 
-      setMessage(error?.data?.message || "Failed to update password.");
+      const errMsg = error?.data?.message || "Failed to update password.";
+      setMessage(errMsg);
       setMessageType("error");
+      toast.error(errMsg);
     }
   };
-
-  // const updatePassword = async () => {
-  //   setMessage("");
-  //   setMessageType("error");
-
-  //   if (OverviewData?.has_password !== false && !currentPassword.trim()) {
-  //     setMessage("Current password is required.");
-  //     return;
-  //   }
-
-  //   if (!newPassword.trim()) {
-  //     setMessage("New password is required.");
-  //     return;
-  //   }
-
-  //   if (!confirmPassword.trim()) {
-  //     setMessage("Confirm new password is required.");
-  //     return;
-  //   }
-
-  //   if (newPassword !== confirmPassword) {
-  //     setMessage("New password and confirm password do not match.");
-  //     return;
-  //   }
-
-  //   try {
-  //     await postChangePassword({
-  //       current_password: currentPassword,
-  //       new_password: newPassword,
-  //       new_password_confirmation: confirmPassword,
-  //     }).unwrap();
-
-  //     setMessage("Password updated successfully.");
-  //     setMessageType("success");
-
-  //     setCurrentPassword("");
-  //     setNewPassword("");
-  //     setConfirmPassword("");
-  //   } catch (error: any) {
-  //     const errorMessage =
-  //       error?.data?.errors?.new_password?.[0] ||
-  //       error?.data?.message ||
-  //       "Failed to update password.";
-
-  //     setMessage(errorMessage);
-  //     setMessageType("error");
-  //   }
-  // };
   return (
     <section className="h-full flex flex-col justify-between rounded-md border border-[#E8E8E8] bg-white p-6">
       <div>
@@ -257,13 +220,17 @@ export default function ChangePassword() {
           {errors.confirmPassword && (
             <p className="text-[11px] text-red-500">{errors.confirmPassword}</p>
           )}
+
+          {message && messageType === "error" && (
+            <p className="text-xs text-red-500">{message}</p>
+          )}
         </div>
 
         <div className="pt-4 mt-auto">
-          <button
+            <button
             type="button"
             onClick={updatePassword}
-            disabled={isPasswordLoading}
+            disabled={!isCurrentSessionTrusted || isPasswordLoading}
             className="h-10 w-full rounded-md border border-buttonColor bg-[#D3F4EF] hover:bg-[#c2efe7] active:scale-98 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-primaryColor transition cursor-pointer flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isPasswordLoading ? "Updating..." : "Update Password"}
