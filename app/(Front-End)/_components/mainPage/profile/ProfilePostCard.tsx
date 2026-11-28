@@ -1,3 +1,4 @@
+import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
 import { PostFeedType } from "@/lib/type";
 import { formatContentForDisplay, formatPostDate } from "@/lib/utils";
 import Image from "next/image";
@@ -15,8 +16,32 @@ type PostCardProps = {
 };
 
 function PostCard({ post, userId, meta }: PostCardProps) {
-  const { user, media, is_connected } = post || {};
+  const { user, media } = post || {};
   const mediaItems = media ?? [];
+
+  const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
+  const [postToggleLike] = usePostToggleLikeMutation();
+  const likedByMe = Boolean(post?.liked_by_me);
+  const likesCount = Math.max(
+    0,
+    (post?.total_like || 0) + (isLiked === likedByMe ? 0 : isLiked ? 1 : -1),
+  );
+
+  const handleLikeClick = async () => {
+    const newLikedStatus = !isLiked;
+    setIsLiked(newLikedStatus);
+    try {
+      await postToggleLike({
+        postId: post?.id ?? "",
+      }).unwrap();
+    } catch {
+      setIsLiked(!newLikedStatus);
+    }
+  };
+
+  const displayName =
+    [user?.first_name, user?.last_name].filter(Boolean).join(" ") ||
+    "MindUnite Member";
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [shouldShowButton, setShouldShowButton] = useState(false);
@@ -73,7 +98,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
             </div>
             <div>
               <h4 className="line-clamp-1 text-base font-semibold leading-7 text-headerColor">
-                {user?.first_name + " " + user?.last_name || "Vin Intini"}
+                {displayName}
               </h4>
               <p className="line-clamp-1 text-sm leading-5 text-descriptionColor">
                 {user?.title || "CEO & Founder, MindUnite"}
@@ -110,13 +135,19 @@ function PostCard({ post, userId, meta }: PostCardProps) {
           </div>
         )}
         <div className="mt-3">
-          <ProfileImagRender mediaItems={mediaItems} />
+          <ProfileImagRender
+            mediaItems={mediaItems}
+            post={post}
+            isLiked={isLiked}
+            likesCount={likesCount}
+            onToggleLike={handleLikeClick}
+          />
         </div>
       </div>
       <div>
         <div className="flex justify-between py-1 text-sm font-semibold text-headerColor">
-          <p>{`${post?.total_like} likes`}</p>
-          <p>{`${post?.total_comment} comments`}</p>
+          <p>{`${likesCount} likes`}</p>
+          <p>{`${post?.total_comment || 0} comments`}</p>
         </div>
         <div className="mt-2 -mx-2.5 md:-mx-3 border-t text-center text-primaryColor underline text-base font-semibold border-borderColor pt-2 px-2.5 md:px-3">
           <Link href={`/mu/profile/${userId}/posts`}>View Details</Link>

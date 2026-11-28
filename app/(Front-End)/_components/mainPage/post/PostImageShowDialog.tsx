@@ -31,14 +31,14 @@ function TheaterVideoPlayer({
   autoPlay?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasStarted, setHasStarted] = useState(
-    initialTime > 0 || autoPlay,
-  );
+  const autoPlayAttemptedRef = useRef(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const [durationLabel, setDurationLabel] = useState("");
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setHasStarted(initialTime > 0 || autoPlay);
+    autoPlayAttemptedRef.current = false;
+    setHasStarted(false);
     setIsReady(false);
   }, [src, initialTime, autoPlay]);
 
@@ -50,6 +50,36 @@ function TheaterVideoPlayer({
     }
   }, [isActive]);
 
+  const tryAutoPlayOrPreview = (vid: HTMLVideoElement) => {
+    if (autoPlay && isActive && !autoPlayAttemptedRef.current) {
+      autoPlayAttemptedRef.current = true;
+      if (initialTime > 0) {
+        vid.currentTime = initialTime;
+      }
+      const playPromise = vid.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise
+          .then(() => {
+            setHasStarted(true);
+            setIsReady(true);
+          })
+          .catch(() => {
+            setHasStarted(false);
+            if (vid.duration && Number.isFinite(vid.duration) && vid.currentTime === 0) {
+              vid.currentTime = Math.min(1.5, Math.max(0.2, vid.duration * 0.15));
+            }
+          });
+      }
+      return;
+    }
+
+    if (initialTime > 0 && vid.currentTime === 0) {
+      vid.currentTime = initialTime;
+    } else if (!hasStarted && vid.currentTime === 0 && vid.duration && Number.isFinite(vid.duration)) {
+      vid.currentTime = Math.min(1.5, Math.max(0.2, vid.duration * 0.15));
+    }
+  };
+
   const handleLoadedMetadata = () => {
     const vid = videoRef.current;
     if (!vid) return;
@@ -58,17 +88,7 @@ function TheaterVideoPlayer({
       setDurationLabel(formatDuration(vid.duration));
     }
 
-    if (initialTime > 0) {
-      vid.currentTime = initialTime;
-      if (autoPlay && isActive) {
-        vid.play().catch(() => {});
-      }
-      return;
-    }
-
-    if (!hasStarted && vid.currentTime === 0 && vid.duration) {
-      vid.currentTime = Math.min(1.5, Math.max(0.2, vid.duration * 0.15));
-    }
+    tryAutoPlayOrPreview(vid);
   };
 
   const handleStartPlayback = (e: React.MouseEvent) => {
@@ -78,10 +98,12 @@ function TheaterVideoPlayer({
     if (!vid) return;
 
     if (!hasStarted) {
-      vid.currentTime = 0;
+      vid.currentTime = initialTime > 0 ? initialTime : 0;
       setHasStarted(true);
     }
-    vid.play().catch(() => {});
+    vid.play().catch(() => {
+      setHasStarted(false);
+    });
   };
 
   return (
@@ -94,7 +116,12 @@ function TheaterVideoPlayer({
         preload={isActive ? "auto" : "metadata"}
         onLoadedMetadata={handleLoadedMetadata}
         onLoadedData={() => setIsReady(true)}
-        onCanPlay={() => setIsReady(true)}
+        onCanPlay={() => {
+          setIsReady(true);
+          if (videoRef.current && autoPlay && isActive && !autoPlayAttemptedRef.current) {
+            tryAutoPlayOrPreview(videoRef.current);
+          }
+        }}
         onSeeked={() => setIsReady(true)}
         onPlay={() => setHasStarted(true)}
         className={`h-full w-full max-h-full max-w-full object-contain transition-opacity duration-300 ${
@@ -578,7 +605,7 @@ function PostImageShowDialog({
                     <button
                       type="button"
                       onClick={() => setIsExpanded((prev) => !prev)}
-                      className="text-xs font-semibold text-primaryColor hover:underline cursor-pointer"
+                      className="rounded-sm text-xs font-semibold text-primaryColor outline-none hover:underline focus-visible:ring-2 focus-visible:ring-primaryColor/40 cursor-pointer"
                     >
                       {isExpanded ? "See less" : "See more"}
                     </button>
